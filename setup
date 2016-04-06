@@ -1,0 +1,3 @@
+npm config --global get prefix –
+
+export PATH="/usr/local/Cellar/node/5.10.0/libexec/npm/bin:$PATH"
