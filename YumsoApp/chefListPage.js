@@ -40,16 +40,16 @@ class ChefListPage extends Component {
         this.setState({dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress:false});    
     }
     
-    renderRow(rowData) {
+    renderRow(chef) {
         return (
             <View style={styles.chefListView_chef}>
-                <TouchableHighlight onPress={()=>this.goToDishList(rowData.chefId)} underlayColor='#C0C0C0'>
-                    <Image source={{ uri: rowData.shopPictures[0] }} style={styles.chefListView_Chef_shopPic}
+                <TouchableHighlight onPress={()=>this.goToDishList(chef.chefId)} underlayColor='#C0C0C0'>
+                    <Image source={{ uri: chef.shopPictures[0] }} style={styles.chefListView_Chef_shopPic}
                     onError={(e) => this.setState({error: e.nativeEvent.error, loading: false})}/>
                 </TouchableHighlight>
                 <View style={styles.chefListView_chef_Info}>
                     <View style={styles.chefListView_chef_col1}>
-                        <Image source={{ uri: rowData.chefProfilePic }} style={styles.chefListView_Chef_profilePic}/>
+                        <Image source={{ uri: chef.chefProfilePic }} style={styles.chefListView_Chef_profilePic}/>
                         <Text>1.5 miles</Text>
                     </View>
                     <View style={styles.chefListView_chef_col2}>
@@ -59,7 +59,7 @@ class ChefListPage extends Component {
                             backgroundColor: '#fff',
                             textAlign: 'left'
                         }}>
-                            {rowData.shopname} 
+                            {chef.shopname} 
                         </Text>
                     </View>
                     <View style={styles.chefListView_chef_col3}>
@@ -68,7 +68,7 @@ class ChefListPage extends Component {
                             backgroundColor: '#fff',
                             textAlign: 'right'
                         }}>
-                            {rowData.rateStar} 
+                            {chef.rateStar} 
                         </Text>
                     </View>
                 </View>

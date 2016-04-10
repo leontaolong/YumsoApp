@@ -128,6 +128,26 @@ module.exports = StyleSheet.create({
         top:-windowsWidth/6/5,
         padding:3,  
         position: 'relative',
-    }
-    
+    },
+    dishListView:{
+        alignSelf:'stretch',
+        backgroundColor:'#81c04d',
+        paddingTop:30,
+        paddingBottom:10,
+        flexDirection:'column',
+        height: windowHeight*9/10
+    }, 
+    dishListView_dish:{
+        margin:5,
+        alignSelf:'stretch',
+        backgroundColor:'#FFFFFF',  
+        flexDirection:'row',
+        flex:1 
+    },
+    dishListView_dish_pic:{
+        height:windowsWidth/6,
+        width:windowsWidth/6,
+        padding:3,  
+        position: 'relative',
+    },  
 });
