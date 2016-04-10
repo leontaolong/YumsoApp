@@ -6,6 +6,7 @@
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
+    "bluebird": "^3.3.4",
     "react": "^0.14.8",
     "react-native": "^0.22.2"
   }

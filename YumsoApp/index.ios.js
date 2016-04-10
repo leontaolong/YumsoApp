@@ -1,7 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
+var ChefListPage = require('./chefListPage');
+var DishListPage = require('./dishListPage');
+
+var LoginPage = require('./loginPage');
+var styles = require('./style');
 
 import React, {
   AppRegistry,
@@ -10,54 +11,32 @@ import React, {
   Text,
   View,
   Image,
+  Navigator
 } from 'react-native';
 
-var MOCKED_MOVIES_DATA = [
-  {title: 'Title', year: '2015', posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'}},
-];
 
 class YumsoApp extends Component {
     render() {
-        var movie = MOCKED_MOVIES_DATA[0];
-        var url = 'http://assets.worldwildlife.org/photos/1620/images/carousel_small/bengal-tiger-why-matter_7341043.jpg?1345548942';
+                // <Login onLogin={this.onLogin}/>
         return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>
-                    Yumso
-                </Text>
-                <Text style={styles.instructions}>
-                    Bring you Home
-                </Text>
-                <Text style={styles.instructions}>
-                    Loading...
-                </Text>
-                <Image source={{ uri: url }} style={styles.thumbnail}/>
-            </View>
+                <Navigator
+                    style={{ flex:1 }}
+                    initialRoute={{ name: 'ChefListPage' }}
+                    renderScene={ this.renderScene } />     
         );
     }
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
-    thumbnail: {
-        width: 53,
-        height: 81,
+    
+    renderScene(route, navigator) {
+        if(route.name === 'ChefListPage') {
+            return <ChefListPage navigator={navigator} />
+        }else if(route.name==='DishListPage'){
+            return <DishListPage navigator={navigator} />
+        }
+    }  
+    
+    onLogin(){
+        console.log("Loggedin!");
     }
-});
+}
 
 AppRegistry.registerComponent('YumsoApp', () => YumsoApp);
