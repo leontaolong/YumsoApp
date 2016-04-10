@@ -1,5 +1,7 @@
 var ChefListPage = require('./chefListPage');
 var DishListPage = require('./dishListPage');
+var ShoppingCartPage = require('./shoppingCartPage');
+var PaymentPage = require('./paymentPage');
 
 var LoginPage = require('./loginPage');
 var styles = require('./style');
@@ -20,7 +22,6 @@ class YumsoApp extends Component {
                 // <Login onLogin={this.onLogin}/>
         return (
                 <Navigator
-                    style={{ flex:1 }}
                     initialRoute={{ name: 'ChefListPage' }}
                     renderScene={ this.renderScene } />     
         );
@@ -31,6 +32,10 @@ class YumsoApp extends Component {
             return <ChefListPage navigator={navigator} />
         }else if(route.name==='DishListPage'){
             return <DishListPage navigator={navigator} />
+        }else if(route.name==='ShoppingCartPage'){
+            return <ShoppingCartPage navigator={navigator}/>
+        }else if (route.name==='PaymentPage'){
+            return <PaymentPage navigator={navigator}/>
         }
     }  
     

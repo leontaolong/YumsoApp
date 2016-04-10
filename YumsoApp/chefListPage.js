@@ -1,6 +1,5 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
-var DishListPage = require('./dishListPage');
 var ChefPage = require('./chefPage');
 
 import React, {
@@ -29,7 +28,7 @@ class ChefListPage extends Component {
     }
     
     componentDidMount(){
-        this.client = new HttpsClient('http://192.168.1.134:8080', false, 'xihe243@gmail.com', '123', "/api/v1/auth/authenticateByEmail/chef")
+        this.client = new HttpsClient('http://172.31.99.87:8080', false, 'xihe243@gmail.com', '123', "/api/v1/auth/authenticateByEmail/chef")
         this.fetchChefDishes(); 
     }
     
@@ -111,7 +110,6 @@ class ChefListPage extends Component {
     
     goToDishList(chefId){
         this.props.navigator.push({
-            component:DishListPage,
             name: 'DishListPage', 
             passProps:{
                 chefId:chefId      
