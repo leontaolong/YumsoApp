@@ -24,6 +24,7 @@ class PaymentPage extends Component {
             showProgress:false,
             totalPrice:totalPrice
         };
+        this.client = new HttpsClient('http://172.31.99.87:8080', false, 'xihe243@gmail.com', '123', "/api/v1/auth/authenticateByEmail/chef")  
     }
     
     render() {
@@ -35,12 +36,34 @@ class PaymentPage extends Component {
         }         
         return (
             <View style={styles.container}>
-                      <Text>Pay amount: ${this.totalPrice}</Text>   
-                      
+                <Text>Pay amount: ${this.state.totalPrice}</Text>   
+                <TouchableHighlight style={styles.button}
+                    onPress={()=>this.confirm()}>
+                    <Text style={styles.buttonText}>Place the order</Text>
+                </TouchableHighlight>   
+                <TouchableHighlight style={styles.button}
+                    onPress={()=>this.navigateBackToShoppingCartPage()}>
+                    <Text style={styles.buttonText}>Go Back</Text>
+                </TouchableHighlight>      
             </View>
         );
     }
+      
+    confirm(){
+        Alert.alert(
+            'Order placement',
+            'Ready to place the order? Your total is $'+this.state.totalPrice,
+            [
+                { text: 'Pay', onPress: () => createAnOrder() },              
+                { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }             
+            ]
+        );    
+    }  
+    
+    createAnOrder(){
         
+    }
+    
     navigateBackToShoppingCartPage(){
         this.props.navigator.pop();
     }
@@ -48,12 +71,3 @@ class PaymentPage extends Component {
 
 module.exports = PaymentPage;
 
-            // Alert.alert(
-            //     'Alert Title',
-            //     'My Alert Msg',
-            //     [
-            //         { text: 'Ask me later', onPress: () => console.log('Ask me later pressed') },
-            //         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-            //         { text: 'OK', onPress: () => console.log('OK Pressed') },
-            //     ]
-            // )

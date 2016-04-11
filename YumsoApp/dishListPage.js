@@ -1,5 +1,6 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
+var ListPopover = require('react-native-list-popover');
 
 import React, {
   Component,
@@ -12,8 +13,10 @@ import React, {
   TouchableHighlight,
   ActivityIndicatorIOS,
   AsyncStorage,
-  Alert
+  Alert,
+  Picker
 } from 'react-native';
+var items = ["Item 1", "Item 2"];
 
 class DishListPage extends Component {
     constructor(props){
@@ -24,9 +27,10 @@ class DishListPage extends Component {
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:true,
-            shoppingCart:{}
+            shoppingCart:{},
+            scheduleTime:["s","w"],
+            isVisible:false
         };
-        console.log(props.navigator.state.routeStack); 
     }
 
     componentDidMount(){
@@ -38,15 +42,26 @@ class DishListPage extends Component {
     
     async fetchDishesAndSchedules(chefId) {
         const start = 'start=0';
-        const end = 'end=999999999999'
+        const end = 'end=99999999999999999999'
         let getDishesTask = this.client.getWithAuth('/api/v1/chef/getDishes/'+chefId);
         let getScheduleTask = this.client.getWithAuth('/api/v1/chef/getSchedules/'+chefId+'?'+start+'&'+end);
         let responseDish = await getDishesTask;
         let responseSchedule = await getScheduleTask;
         let dishes = responseDish.data.dishes;
         let schedules = responseSchedule.data.schedules;
-        console.log('schedules'+schedules);
-        this.setState({dishes:dishes, dataSource:this.state.dataSource.cloneWithRows(dishes), showProgress:false});
+        let scheduleMapping = {};
+        for(var schedule of schedules){
+            var time = new Date(schedule.deliverTimestamp).toString();
+            if(!scheduleMapping[time]){
+                scheduleMapping[time]= {[schedule.dishId]:schedule.quantity};
+            }else{
+                scheduleMapping[time][schedule.dishId] = schedule.quantity;
+            }
+        }
+        
+        let scheduleTime = Object.keys(scheduleMapping);
+        console.log(scheduleTime);
+        this.setState({dishes:dishes, dataSource:this.state.dataSource.cloneWithRows(dishes), showProgress:false, schedules:schedules, scheduleTime:scheduleTime});
     }
  
     renderRow(dish){
@@ -99,6 +114,14 @@ class DishListPage extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <TouchableHighlight style={styles.button} onPress={this.showPopover}>
+                    <Text>Select time</Text>
+                </TouchableHighlight>
+                <ListPopover
+                    list={items}
+                    isVisible={this.state.isVisible}
+                    onClick={this.setItem}
+                    onClose={this.closePopover}/>
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } />
@@ -110,6 +133,16 @@ class DishListPage extends Component {
         );
     }
     
+    showPopover() {
+        this.setState({ isVisible: true });
+    }
+    closePopover() {
+        this.setState({ isVisible: false });
+    }
+    setItemn(item) {
+        this.setState({ item: item });
+    }
+   
     addToShoppingCart(dish){
         if(this.state.shoppingCart[dish.dishId]){
             this.state.shoppingCart[dish.dishId].quantity+=1;

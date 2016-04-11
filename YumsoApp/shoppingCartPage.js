@@ -28,7 +28,10 @@ class ShoppingCartPage extends Component {
             showProgress:false,
             shoppingCart:shoppingCart
         };
-        console.log(props.navigator.state.routeStack);
+    }
+    
+    componentDidMount(){
+        this.getTotalPrice();    
     }
     
     renderRow(cartItem){

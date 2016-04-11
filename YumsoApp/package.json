@@ -8,6 +8,7 @@
   "dependencies": {
     "bluebird": "^3.3.4",
     "react": "^0.14.8",
-    "react-native": "^0.22.2"
+    "react-native": "^0.22.2",
+    "react-native-list-popover": "^1.0.5"
   }
 }
