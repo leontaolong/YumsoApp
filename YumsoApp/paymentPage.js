@@ -1,5 +1,6 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
+var config = require('./config');
 
 import React, {
   Component,
@@ -20,11 +21,14 @@ class PaymentPage extends Component {
         super(props);
         let routeStack = props.navigator.state.routeStack;
         let totalPrice = routeStack[routeStack.length-1].passProps.totalPrice;
+        let orderDetail = routeStack[routeStack.length-1].passProps.orderDetail;
         this.state = {
             showProgress:false,
-            totalPrice:totalPrice
+            totalPrice:totalPrice,
+            orderDetail:orderDetail
         };
-        this.client = new HttpsClient('http://172.31.99.87:8080', false, 'xihe243@gmail.com', '123', "/api/v1/auth/authenticateByEmail/chef")  
+        console.log(orderDetail);
+        this.client = new HttpsClient(config.baseUrl, true);
     }
     
     render() {
@@ -54,14 +58,15 @@ class PaymentPage extends Component {
             'Order placement',
             'Ready to place the order? Your total is $'+this.state.totalPrice,
             [
-                { text: 'Pay', onPress: () => createAnOrder() },              
+                { text: 'Pay', onPress: () => this.createAnOrder() },              
                 { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }             
             ]
         );    
     }  
     
-    createAnOrder(){
-        
+    async createAnOrder(){
+        let response = await this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail});
+        console.log(response.statusCode);
     }
     
     navigateBackToShoppingCartPage(){

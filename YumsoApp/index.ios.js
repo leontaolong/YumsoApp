@@ -2,9 +2,11 @@ var ChefListPage = require('./chefListPage');
 var DishListPage = require('./dishListPage');
 var ShoppingCartPage = require('./shoppingCartPage');
 var PaymentPage = require('./paymentPage');
+var AuthService = require('./authService');
 
 var LoginPage = require('./loginPage');
 var styles = require('./style');
+var AuthService = require('./authService');
 
 import React, {
   AppRegistry,
@@ -16,8 +18,8 @@ import React, {
   Navigator
 } from 'react-native';
 
-
 class YumsoApp extends Component {
+    
     render() {
                 // <Login onLogin={this.onLogin}/>
         return (

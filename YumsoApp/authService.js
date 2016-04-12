@@ -2,19 +2,20 @@ var HttpsClient = require('./httpsClient');
 var princpalKey = 'principal';
 var authTokenKey = 'token';
 var AsyncStorage = require('react-native').AsyncStorage;
+var config = require('./config');
 class AuthService {
    
     constructor(props){
-        this.client = new HttpsClient('http://192.168.1.134:8080');
+        this.client = new HttpsClient(config.baseUrl);
     }
     
     async getPrincipalInfo(){
-        let user = await AsyncStorage.getItem('principal');
-        return user;
+        let eaterStr = await AsyncStorage.getItem('principal');
+        return JSON.parse(eaterStr);
     }
     
     async loginWithEmail(email, password){
-        var response = await this.client.postWithoutAuth("/api/v1/auth/authenticateByEmail/chef", {
+        var response = await this.client.postWithoutAuth(config.authEndpointEmail, {
             email: email,
             password: password
         });

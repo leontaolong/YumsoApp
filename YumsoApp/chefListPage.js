@@ -1,6 +1,8 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var ChefPage = require('./chefPage');
+var config = require('./config');
+var AuthService = require('./authService');
 
 import React, {
   Component,
@@ -27,9 +29,13 @@ class ChefListPage extends Component {
         };
     }
     
-    componentDidMount(){
-        this.client = new HttpsClient('http://172.31.99.87:8080', false, 'xihe243@gmail.com', '123', "/api/v1/auth/authenticateByEmail/chef")
-        this.fetchChefDishes(); 
+    async componentDidMount(){
+        await AuthService.loginWithEmail(config.email, config.password);
+        console.log(this.state);
+        let user = await AuthService.getPrincipalInfo();
+        console.log(user);
+        this.client = new HttpsClient(config.baseUrl, true)
+        await this.fetchChefDishes(); 
     }
     
     async fetchChefDishes() {

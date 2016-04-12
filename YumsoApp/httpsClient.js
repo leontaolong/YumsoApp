@@ -23,6 +23,7 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                     if (token == null) {
                        throw new Error('Token not exist in storage');
                     }
+                    return token;
                 });      
         }
         if(Math.ceil((new Date().getTime()- accessToken.timeAquired.getTime())/(1000*60))>3) {
@@ -52,7 +53,6 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
     };
     
     this.postWithAuth = function (partialUrl, data) {
-        var postData = JSON.stringify(data);
         return accessToken.getToken()
         .then((token) =>{
             var options = {
@@ -63,12 +63,13 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                 },
                 body: JSON.stringify(data)
             };
-            return request(partialUrl, options, postData);
+            console.log(data);
+            console.log(options);
+            return request(partialUrl, options);
         });
     };
     
     this.postWithoutAuth = function (partialUrl, data) {
-        var postData = JSON.stringify(data); 
         var options = {
             method: 'POST',
             headers: {
@@ -76,7 +77,7 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
             },
             body: JSON.stringify(data)
         };
-        return request(partialUrl, options, postData);
+        return request(partialUrl, options);
     };
     
     this.getWithAuth = function (partialUrl) {
@@ -102,6 +103,7 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
     var request = function (partialUrl, options) {    
         var url = self.host+partialUrl;
         var status;
+        //console.log(options);
         return fetch(url, options)
             .then((response)=>{
                 status = response.status

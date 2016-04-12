@@ -1,6 +1,7 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
-var ListPopover = require('react-native-list-popover');
+import ModalPicker from 'react-native-modal-picker'
+var config = require('./config');
 
 import React, {
   Component,
@@ -16,7 +17,6 @@ import React, {
   Alert,
   Picker
 } from 'react-native';
-var items = ["Item 1", "Item 2"];
 
 class DishListPage extends Component {
     constructor(props){
@@ -24,20 +24,20 @@ class DishListPage extends Component {
         var ds = new ListView.DataSource({
            rowHasChanged: (r1, r2) => r1!=r2 
         }); 
+        var routeStack = this.props.navigator.state.routeStack;
+        this.chefId = routeStack[routeStack.length-1].passProps.chefId;
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:true,
             shoppingCart:{},
-            scheduleTime:["s","w"],
-            isVisible:false
+            timeData:[],
+            chefId:this.chefId
         };
     }
 
     componentDidMount(){
-        var routeStack = this.props.navigator.state.routeStack;
-        this.chefId = routeStack[routeStack.length-1].passProps.chefId;
-        this.client = new HttpsClient('http://172.31.99.87:8080', false, 'xihe243@gmail.com', '123', "/api/v1/auth/authenticateByEmail/chef")
-        this.fetchDishesAndSchedules(this.chefId); 
+        this.client = new HttpsClient(config.baseUrl, true)
+        this.fetchDishesAndSchedules(this.state.chefId); 
     }
     
     async fetchDishesAndSchedules(chefId) {
@@ -50,10 +50,13 @@ class DishListPage extends Component {
         let dishes = responseDish.data.dishes;
         let schedules = responseSchedule.data.schedules;
         let scheduleMapping = {};
+        let timeData = [];
+        let index = 0;
         for(var schedule of schedules){
-            var time = new Date(schedule.deliverTimestamp).toString();
+            var time = new Date(schedule.deliverTimestamp).toString();   
             if(!scheduleMapping[time]){
                 scheduleMapping[time]= {[schedule.dishId]:schedule.quantity};
+                timeData.push({ key: index++, label: time });
             }else{
                 scheduleMapping[time][schedule.dishId] = schedule.quantity;
             }
@@ -61,7 +64,27 @@ class DishListPage extends Component {
         
         let scheduleTime = Object.keys(scheduleMapping);
         console.log(scheduleTime);
-        this.setState({dishes:dishes, dataSource:this.state.dataSource.cloneWithRows(dishes), showProgress:false, schedules:schedules, scheduleTime:scheduleTime});
+        var displayDishes = [];
+        var selectedTime;
+        if(scheduleTime.length>0){
+            var selectedTime = scheduleTime[0];
+            var selectedTimeDishSchedules = scheduleMapping[selectedTime];
+            for(var dish of dishes){
+                if(selectedTimeDishSchedules[dish.dishId]){
+                    displayDishes.push(dish);
+                }
+            }
+        }
+        console.log(displayDishes);
+        this.setState({
+                dishes:dishes, 
+                dataSource:this.state.dataSource.cloneWithRows(displayDishes), 
+                showProgress:false, 
+                schedules:schedules,
+                scheduleMapping:scheduleMapping, 
+                scheduleTime:scheduleTime, 
+                timeData:timeData,
+                selectedTime:selectedTime});
     }
  
     renderRow(dish){
@@ -114,14 +137,12 @@ class DishListPage extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TouchableHighlight style={styles.button} onPress={this.showPopover}>
-                    <Text>Select time</Text>
-                </TouchableHighlight>
-                <ListPopover
-                    list={items}
-                    isVisible={this.state.isVisible}
-                    onClick={this.setItem}
-                    onClose={this.closePopover}/>
+                <View style={{flex:1, justifyContent:'space-around', padding:50}}>
+                    <ModalPicker
+                        data={this.state.timeData}
+                        initValue={'Select a time'}
+                        onChange={(option)=>{ this.displayDish(`${option.label}`)}} />
+                </View>
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } />
@@ -132,15 +153,18 @@ class DishListPage extends Component {
             </View>
         );
     }
-    
-    showPopover() {
-        this.setState({ isVisible: true });
-    }
-    closePopover() {
-        this.setState({ isVisible: false });
-    }
-    setItemn(item) {
-        this.setState({ item: item });
+   
+   displayDish(selectedTime){
+        let scheduleTime = this.state.scheduleTime;
+        var displayDishes = [];
+        var selectedTimeDishSchedules = this.state.scheduleMapping[selectedTime];
+        for (var dish of this.state.dishes) {
+            if (selectedTimeDishSchedules[dish.dishId]) {
+                displayDishes.push(dish);
+            }
+        }
+        let dishes = JSON.parse(JSON.stringify(displayDishes));
+        this.setState({dataSource:this.state.dataSource.cloneWithRows(dishes), showProgress:false, selectedTime:selectedTime});
     }
    
     addToShoppingCart(dish){
@@ -166,7 +190,9 @@ class DishListPage extends Component {
         this.props.navigator.push({
             name: 'ShoppingCartPage', 
             passProps:{
-                shoppingCart:this.state.shoppingCart      
+                shoppingCart:this.state.shoppingCart,
+                selectedTime:this.state.selectedTime,
+                chefId:this.state.chefId
             }
         });    
     }
@@ -177,13 +203,3 @@ class DishListPage extends Component {
 }
 
 module.exports = DishListPage;
-
-            // Alert.alert(
-            //     'Alert Title',
-            //     'My Alert Msg',
-            //     [
-            //         { text: 'Ask me later', onPress: () => console.log('Ask me later pressed') },
-            //         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-            //         { text: 'OK', onPress: () => console.log('OK Pressed') },
-            //     ]
-            // )

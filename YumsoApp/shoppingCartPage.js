@@ -1,5 +1,6 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
+var AuthService = require('./authService');
 
 import React, {
   Component,
@@ -23,11 +24,16 @@ class ShoppingCartPage extends Component {
         }); 
         var routeStack = this.props.navigator.state.routeStack;
         let shoppingCart = routeStack[routeStack.length-1].passProps.shoppingCart;        
+        let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;        
+        let chefId = routeStack[routeStack.length-1].passProps.chefId;        
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(shoppingCart)),
             showProgress:false,
-            shoppingCart:shoppingCart
+            shoppingCart:shoppingCart,
+            selectedTime:selectedTime,
+            chefId:chefId
         };
+        console.log(Date.parse(this.state.selectedTime));
     }
     
     componentDidMount(){
@@ -89,7 +95,8 @@ class ShoppingCartPage extends Component {
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } />
-                <Text>{this.state.totalPrice}</Text>
+                <Text>Your total is ${this.state.totalPrice}</Text>
+                <Text>Deliver time: {this.state.selectedTime}}</Text>
                 <View style={{flexDirection:'row', flex:2, alignSelf:'stretch'}}>
                     <TouchableHighlight style={styles.button}
                         onPress={() => this.navigateToPaymentPage() }>
@@ -134,11 +141,36 @@ class ShoppingCartPage extends Component {
         this.setState({dataSource:this.state.dataSource.cloneWithRows(dishes),totalPrice:total});
     }    
     
-    navigateToPaymentPage(){
+    async navigateToPaymentPage(){
+        let eater = await AuthService.getPrincipalInfo();
+        var orderList ={};
+        console.log(this.state.shoppingCart);
+        for(var cartItemKey in this.state.shoppingCart){
+            var dishItem=this.state.shoppingCart[cartItemKey];
+            orderList[cartItemKey]={quantity:dishItem.quantity, price:dishItem.dish.price};
+        }
+        var order = {
+            chefId: this.state.chefId,
+            orderDeliverTime: Date.parse(this.state.selectedTime),//Sun Apr 03 2016 12:00:00
+            eaterId: eater.userId,
+            orderList: orderList,
+            shippingAddress: "10715 NE37th Ct, Apt.227 WA, Kirkland 98033",
+            subtotal: 50,
+            shippingFee: 10,
+            totalb4Tax: 60,
+            estimateTax: 5.7,
+            rewardPoints: 5,
+            grandTotal: this.state.totalPrice,
+            paymentMethod: 'American Express',
+            notesToChef: 'Please put less salt',
+            refundDll: 1459596400618,
+        };   
+        console.log(order);
         this.props.navigator.push({
             name: 'PaymentPage', 
             passProps:{
-                totalPrice: this.state.totalPrice   
+                totalPrice: this.state.totalPrice,
+                orderDetail: order
             }
         });    
     }
