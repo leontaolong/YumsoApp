@@ -97,7 +97,7 @@ class ChefListPage extends Component {
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } />
                 <View style={styles.toolbar}>
-                    <TouchableHighlight style={styles.toolbarTitle}>
+                    <TouchableHighlight style={styles.toolbarTitle} onPress={()=>this.goToOrderHistory()}>
                         <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
                     </TouchableHighlight>
                     <TouchableHighlight style={styles.toolbarTitle}>
@@ -122,6 +122,12 @@ class ChefListPage extends Component {
             }
         });
     }  
+    
+    goToOrderHistory(){
+        this.props.navigator.push({
+            name: 'HistoryOrderPage', 
+        });    
+    }
 }
 
 module.exports = ChefListPage;

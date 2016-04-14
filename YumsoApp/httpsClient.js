@@ -117,6 +117,11 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                     statusCode:status,
                     data:result
                 };
+            }).catch((err)=>{
+                return {
+                    statusCode:status,
+                    err:err
+                };
             });
     };
 };
