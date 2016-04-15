@@ -101,7 +101,7 @@ class HistoryOrderPage extends Component {
     displayCommentOrBox(order) {
         if (order.comment) {
             return <View>
-                <Text>eater comment: {order.comment.eaterComment}</Text>
+                <Text>eater comment: {order.comment.eaterComment==undefined?'no comment':order.comment.eaterComment}</Text>
                 <Text>rating: {order.comment.starRating}</Text>
                 <Text>Chef's comment: {order.comment.chefComment}</Text>
             </View>
@@ -134,6 +134,7 @@ class HistoryOrderPage extends Component {
         }
         return (
             <View style={styles.container}>
+               <Text>History Order</Text>
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } />
@@ -150,10 +151,10 @@ class HistoryOrderPage extends Component {
         var comment = this.state.comment;
         var orderTheCommentIsFor = this.state.orderTheCommentIsFor;
         var starRating = this.state.starRating;
-        if (!orderTheCommentIsFor || !starRating) {
+        if (!starRating) {
             Alert.alert(
                 '',
-                'Please input both comment and rating',
+                'Please rate the order',
                 [
                     { text: 'OK' }
                 ]
