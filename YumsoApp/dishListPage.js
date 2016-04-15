@@ -41,8 +41,8 @@ class DishListPage extends Component {
     }
     
     async fetchDishesAndSchedules(chefId) {
-        const start = 'start=0';
-        const end = 'end=99999999999999999999'
+        const start = 'start='+new Date().getTime();
+        const end = 'end='+new Date().setDate(new Date().getDate()+2);
         let getDishesTask = this.client.getWithAuth('/api/v1/chef/getDishes/'+chefId);
         let getScheduleTask = this.client.getWithAuth('/api/v1/chef/getSchedules/'+chefId+'?'+start+'&'+end);
         let responseDish = await getDishesTask;
@@ -146,6 +146,10 @@ class DishListPage extends Component {
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } />
+                <TouchableHighlight style={styles.button}
+                    onPress={() => this.navigateBackToChefList() }>
+                    <Text style={styles.buttonText}>back to chef list</Text>
+                </TouchableHighlight>            
                 <TouchableHighlight style={styles.button}
                     onPress={() => this.navigateToShoppingCart() }>
                     <Text style={styles.buttonText}>Go to cart</Text>

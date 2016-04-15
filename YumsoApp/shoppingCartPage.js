@@ -97,16 +97,14 @@ class ShoppingCartPage extends Component {
                     renderRow={this.renderRow.bind(this) } />
                 <Text>Your total is ${this.state.totalPrice}</Text>
                 <Text>Deliver time: {this.state.selectedTime}}</Text>
-                <View style={{flexDirection:'row', flex:2, alignSelf:'stretch'}}>
-                    <TouchableHighlight style={styles.button}
-                        onPress={() => this.navigateToPaymentPage() }>
-                        <Text style={styles.buttonText}>Checkout</Text>
-                    </TouchableHighlight>         
-                    <TouchableHighlight style={styles.button}
-                        onPress={() => this.navigateBackToDishList() }>
-                        <Text style={styles.buttonText}>Back</Text>
-                    </TouchableHighlight> 
-                </View>          
+                <TouchableHighlight style={styles.button}
+                    onPress={() => this.navigateToPaymentPage() }>
+                    <Text style={styles.buttonText}>Checkout</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.button}
+                    onPress={() => this.navigateBackToDishList() }>
+                    <Text style={styles.buttonText}>Back</Text>
+                </TouchableHighlight> 
             </View>
         );
     }
@@ -142,9 +140,18 @@ class ShoppingCartPage extends Component {
     }    
     
     async navigateToPaymentPage(){
+        if(!this.state.shoppingCart || Object.keys(this.state.shoppingCart).length==0){
+            Alert.alert(
+                'Warning',
+                'You do not have any item in your shopping cart',
+                [
+                    { text: 'OK' }
+                ]
+            );
+            return;
+        }
         let eater = await AuthService.getPrincipalInfo();
         var orderList ={};
-        console.log(this.state.shoppingCart);
         for(var cartItemKey in this.state.shoppingCart){
             var dishItem=this.state.shoppingCart[cartItemKey];
             orderList[cartItemKey]={quantity:dishItem.quantity, price:dishItem.dish.price};
@@ -182,12 +189,3 @@ class ShoppingCartPage extends Component {
 
 module.exports = ShoppingCartPage;
 
-            // Alert.alert(
-            //     'Alert Title',
-            //     'My Alert Msg',
-            //     [
-            //         { text: 'Ask me later', onPress: () => console.log('Ask me later pressed') },
-            //         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-            //         { text: 'OK', onPress: () => console.log('OK Pressed') },
-            //     ]
-            // )
