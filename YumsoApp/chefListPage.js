@@ -54,7 +54,10 @@ class ChefListPage extends Component {
                 </TouchableHighlight>
                 <View style={styles.chefListView_chef_Info}>
                     <View style={styles.chefListView_chef_col1}>
+                      <TouchableHighlight style={styles.button}
+                    onPress={() => this.navigateToChefPage(chef.chefId) }>
                         <Image source={{ uri: chef.chefProfilePic }} style={styles.chefListView_Chef_profilePic}/>
+                      </TouchableHighlight>  
                         <Text>1.5 miles</Text>
                     </View>
                     <View style={styles.chefListView_chef_col2}>
@@ -121,6 +124,15 @@ class ChefListPage extends Component {
                 chefId:chefId      
             }
         });
+    }
+    
+    navigateToChefPage(chefId){
+        this.props.navigator.push({
+            name: 'ChefPage', 
+            passProps:{
+                chefId:chefId
+            }
+        });    
     }  
 }
 

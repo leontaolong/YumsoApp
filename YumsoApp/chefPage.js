@@ -23,13 +23,14 @@ class ChefPage extends Component {
         
         this.state = {
             dataSource: ds.cloneWithRows(['A','B']),
-            showProgress:true
+            showProgress:true,
+            chefId:this.chefId
         };
     }
     
     componentDidMount(){
         this.client = new HttpsClient('http://192.168.1.134:8080', false, 'xihe243@gmail.com', '123', "/api/v1/auth/authenticateByEmail/chef")
-        this.fetchChefDishes(); 
+        // this.fetchChefDishes(); 
     }
     
     async fetchChefDishes() {
@@ -41,9 +42,19 @@ class ChefPage extends Component {
 
     render() {
         return (
-            <View>
+            <View  style={styles.container}>
+               <Text style={styles.heading}>ChefPage!</Text>
+               <TouchableHighlight style={styles.button}
+                    onPress={() => this.navigateBackToChefList() }>
+                    <Text style={styles.buttonText}>Back</Text>
+               </TouchableHighlight> 
             </View>
+
         );
+    }
+    
+    navigateBackToChefList(){
+         this.props.navigator.pop();
     }
 
 }
