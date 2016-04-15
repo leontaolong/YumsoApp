@@ -59,7 +59,7 @@ class HistoryOrderPage extends Component {
                 }
             }
         }
-        this.setState({dataSource: this.state.dataSource.cloneWithRows(orders), showProgress:false});
+        this.setState({dataSource: this.state.dataSource.cloneWithRows(orders), showProgress:false, orders:orders});
     }
  
     renderRow(order){
@@ -98,9 +98,12 @@ class HistoryOrderPage extends Component {
         );
     }
     
-    displayCommentOrBox(order){
+    displayCommentOrBox(order) {
         if (order.comment) {
-            return <Text>eater comment:{order.comment.eaterComment}</Text>
+            return <View>
+                <Text>eater comment: {order.comment.eaterComment}</Text>
+                <Text>rating: {order.comment.starRating}</Text>
+            </View>
         } else {
             return <TouchableHighlight style={styles.button}
                 onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }>
@@ -115,6 +118,8 @@ class HistoryOrderPage extends Component {
                 <View style={styles.container}> 
                     <TextInput placeholder="comments" style={styles.loginInput}
                         onChangeText = {(text) => this.setState({ comment: text }) }/>
+                    <TextInput placeholder="Star Rating integer" style={styles.loginInput}
+                        onChangeText = {(text) => this.setState({ starRating: text }) }/>                    
                     <TouchableHighlight style={styles.button}
                         onPress={()=>this.submitComment()}>
                         <Text style={styles.buttonText}>Submit</Text>    
@@ -143,12 +148,23 @@ class HistoryOrderPage extends Component {
         var self = this;
         var comment = this.state.comment;
         var orderTheCommentIsFor = this.state.orderTheCommentIsFor;
+        var starRating = this.state.starRating;
+        if (!orderTheCommentIsFor || !starRating) {
+            Alert.alert(
+                '',
+                'Please input both comment and rating',
+                [
+                    { text: 'OK' }
+                ]
+            );
+            return;
+        }
         var data = {
             chefId: orderTheCommentIsFor.chefId,
             orderId: orderTheCommentIsFor.orderId,
             eaterId: orderTheCommentIsFor.eaterId,
             commentText: comment,
-            starRating: 5
+            starRating: Number(starRating)
         };
         return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
         .then((res)=>{
@@ -161,8 +177,12 @@ class HistoryOrderPage extends Component {
                     ]
                 );    
             }
-            orderTheCommentIsFor.comment=self.state.comment;
-            self.setState({showCommentBox:false});
+            this.state.orderTheCommentIsFor.comment={
+                        eaterComment:comment,
+                        starRating: data.starRating
+                    };
+            var orders = this.state.orders;       
+            self.setState({showCommentBox:false, dataSource: this.state.dataSource.cloneWithRows(orders), orders:orders, comment:undefined, orderTheCommentIsFor:undefined});
         });
     }
 
