@@ -103,6 +103,7 @@ class HistoryOrderPage extends Component {
             return <View>
                 <Text>eater comment: {order.comment.eaterComment}</Text>
                 <Text>rating: {order.comment.starRating}</Text>
+                <Text>Chef's comment: {order.comment.chefComment}</Text>
             </View>
         } else {
             return <TouchableHighlight style={styles.button}
