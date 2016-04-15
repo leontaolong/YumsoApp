@@ -3,6 +3,7 @@ var styles = require('./style');
 var ChefPage = require('./chefPage');
 var config = require('./config');
 var AuthService = require('./authService');
+var SideMenu = require('react-native-side-menu');
 
 import React, {
   Component,
@@ -25,7 +26,8 @@ class ChefListPage extends Component {
         
         this.state = {
             dataSource: ds.cloneWithRows(['A','B']),
-            showProgress:true
+            showProgress:true,
+            isMenuOpen:false
         };
     }
     
@@ -34,6 +36,7 @@ class ChefListPage extends Component {
         console.log(this.state);
         let user = await AuthService.getPrincipalInfo();
         console.log(user);
+        this.setState({eater:user});
         this.client = new HttpsClient(config.baseUrl, true)
         await this.fetchChefDishes(); 
     }
@@ -82,6 +85,7 @@ class ChefListPage extends Component {
     }
 
     render() {
+        const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} caller = {this}/>;
         if (this.state.showProgress) {
             return (
                 <View>
@@ -92,25 +96,30 @@ class ChefListPage extends Component {
                 </View>);
         }
         return (
-            <View>
-                <ListView style={styles.chefListView}
-                    dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this) } />
-                <View style={styles.toolbar}>
-                    <TouchableHighlight style={styles.toolbarTitle} onPress={()=>this.goToOrderHistory()}>
-                        <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
-                    </TouchableHighlight>
-                    <TouchableHighlight style={styles.toolbarTitle}>
-                        <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
-                    </TouchableHighlight>
-                    <TouchableHighlight style={styles.toolbarTitle}>
-                        <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
-                    </TouchableHighlight>
-                    <TouchableHighlight style={styles.toolbarTitle}>
-                        <Image source={require('./ok.jpeg') } />
-                    </TouchableHighlight>
+            <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
+                <View>
+                    <TouchableHighlight style={styles.button} onPress={() => this.setState({ isMenuOpen: true }) }>
+                        <Text style={styles.buttonText}> Menu</Text>
+                    </TouchableHighlight>             
+                    <ListView style={styles.chefListView}
+                        dataSource = {this.state.dataSource}
+                        renderRow={this.renderRow.bind(this) } />
+                    <View style={styles.toolbar}>
+                        <TouchableHighlight style={styles.toolbarTitle} onPress={() => this.goToOrderHistory() }>
+                            <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
+                        </TouchableHighlight>
+                        <TouchableHighlight style={styles.toolbarTitle}>
+                            <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
+                        </TouchableHighlight>
+                        <TouchableHighlight style={styles.toolbarTitle}>
+                            <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
+                        </TouchableHighlight>
+                        <TouchableHighlight style={styles.toolbarTitle}>
+                            <Image source={require('./ok.jpeg') } />
+                        </TouchableHighlight>
+                    </View>
                 </View>
-            </View>
+            </SideMenu>
         );
     } 
     
@@ -129,5 +138,45 @@ class ChefListPage extends Component {
         });    
     }
 }
+
+var Menu = React.createClass({
+  goToOrderHistory: function() {
+      this.props.caller.setState({isMenuOpen:false});
+      this.props.navigator.push({
+          name: 'HistoryOrderPage',
+      }); 
+  },
+
+  render: function() {
+    return (
+      <View style={sideMenuStyle.sidemenu}>
+        <Text style={sideMenuStyle.paddingMenuItem}>{this.props.eater.firstname} {this.props.eater.lastname}</Text>
+        <Image source={require('./ok.jpeg') } />
+        <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>History Order</Text>
+      </View>
+    );
+  }
+});
+
+var sideMenuStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  sidemenu: {
+    paddingTop: 50,
+  },
+  paddingMenuItem: {
+    padding: 10,
+  },
+});
+
 
 module.exports = ChefListPage;
