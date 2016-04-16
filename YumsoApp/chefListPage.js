@@ -4,6 +4,7 @@ var ChefPage = require('./chefPage');
 var config = require('./config');
 var AuthService = require('./authService');
 var SideMenu = require('react-native-side-menu');
+var Swiper = require('react-native-swiper')
 
 import React, {
   Component,
@@ -23,11 +24,12 @@ class ChefListPage extends Component {
         var ds = new ListView.DataSource({
            rowHasChanged: (r1, r2) => r1!=r2 
         });
-        
+
         this.state = {
             dataSource: ds.cloneWithRows(['A','B']),
             showProgress:true,
-            isMenuOpen:false
+            isMenuOpen:false,
+            chefView:{}           
         };
     }
     
@@ -42,19 +44,32 @@ class ChefListPage extends Component {
     }
     
     async fetchChefDishes() {
-        let response = await this.client.getWithAuth('/api/v1/eater/chefs');
+        let response = await this.client.getWithAuth(config.chefList);
         var chefs = response.data.chefs;
-        console.log(chefs);
-        this.setState({dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress:false});    
+        var chefView = {};
+        for(var chef of chefs){
+            chefView[chef.chefId] = chef.shopPictures;
+        }        
+        this.setState({dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress:false, chefView:chefView});    
     }
     
     renderRow(chef) {
         return (
             <View style={styles.chefListView_chef}>
-                <TouchableHighlight onPress={()=>this.goToDishList(chef.chefId)} underlayColor='#C0C0C0'>
-                    <Image source={{ uri: chef.shopPictures[0] }} style={styles.chefListView_Chef_shopPic}
-                    onError={(e) => this.setState({error: e.nativeEvent.error, loading: false})}/>
-                </TouchableHighlight>
+                <View style={styles.chefListView_Chef_shopPic}>
+                    <Swiper showsButtons={false} height={200} horizontal={true} autoplay={true}
+                        dot={<View style={{backgroundColor:'rgba(0,0,0,.2)', width: 5, height: 5,borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />}
+                        activeDot={<View style={{backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3,}} />} >
+                        {this.state.chefView[chef.chefId].map((picture) => {
+                            return (
+                                <TouchableHighlight key={picture} onPress={() => this.goToDishList(chef.chefId) } underlayColor='#C0C0C0'>
+                                    <Image source={{ uri: picture }} style={styles.chefListView_Chef_shopPic}
+                                        onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }/>
+                                </TouchableHighlight>
+                            );
+                        }) }
+                    </Swiper>
+                </View>
                 <View style={styles.chefListView_chef_Info}>
                     <View style={styles.chefListView_chef_col1}>
                         <Image source={{ uri: chef.chefProfilePic }} style={styles.chefListView_Chef_profilePic}/>

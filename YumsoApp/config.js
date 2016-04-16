@@ -8,4 +8,5 @@ module.exports={
     orderHistoryEndpoint:'/api/v1/chef/order/eaterOrders/',
     orderCommentEndpoint:'/api/v1/chef/order/eaterComments/',
     leaveEaterCommentEndpoint:'/api/v1/chef/order/leaveEaterComment/',
+    chefList: '/api/v1/eater/chefs'
 }
