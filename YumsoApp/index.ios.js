@@ -2,13 +2,9 @@ var ChefListPage = require('./chefListPage');
 var DishListPage = require('./dishListPage');
 var ShoppingCartPage = require('./shoppingCartPage');
 var PaymentPage = require('./paymentPage');
-<<<<<<< HEAD
-var ChefPage = require('./chefPage')
-=======
+var ChefPage = require('./chefPage');
 var HistoryOrderPage = require('./historyOrderPage');
->>>>>>> 0aad31e98c08ecc08915c0d51726a5e122e28c9a
 var AuthService = require('./authService');
-
 var LoginPage = require('./loginPage');
 var styles = require('./style');
 var AuthService = require('./authService');
