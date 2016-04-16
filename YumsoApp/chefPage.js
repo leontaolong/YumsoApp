@@ -83,9 +83,9 @@ class ChefPage extends Component {
                      <Text style={{fontSize:18}}>{this.state.chef.shopname}</Text>
                      <View style={{flex:1,flexDirection:'row'}}>
                       <Image source={require('./icons/Icon-Small.png')} style={{width:12,height:12,padding:5}}/>
-                      <Image source={require('./icons/Icon-Small.png')} style={{width:12,height:12}}/>
-                      <Image source={require('./icons/Icon-Small.png')} style={{width:12,height:12}}/>
-                      <Image source={require('./icons/Icon-Small.png')} style={{width:12,height:12}}/>
+                      <Image source={require('./icons/Icon-Small.png')} style={{width:12,height:12,padding:5}}/>
+                      <Image source={require('./icons/Icon-Small.png')} style={{width:12,height:12,padding:5}}/>
+                      <Image source={require('./icons/Icon-Small.png')} style={{width:12,height:12,padding:5}}/>
                      </View>
                      <Text style={{fontSize:14,color:'#696969'}}>{this.state.chef.firstname} {this.state.chef.lastname}, Kirkland</Text>
                    </View>
