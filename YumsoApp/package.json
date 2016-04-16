@@ -9,6 +9,7 @@
     "bluebird": "^3.3.4",
     "react": "^0.14.8",
     "react-native": "^0.22.2",
-    "react-native-modal-picker": "0.0.13"
+    "react-native-modal-picker": "0.0.13",
+    "react-native-side-menu": "^0.18.0"
   }
 }
