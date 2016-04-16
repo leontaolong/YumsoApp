@@ -1,6 +1,6 @@
 module.exports={
     
-    baseUrl: 'http://192.168.1.134:8080',
+    baseUrl: 'http://172.31.98.111:8080',
     email:'xihe@yumso.com',
     password:'123',
     authEndpointEmail:'/api/v1/auth/authenticateByEmail/eater',
@@ -8,4 +8,5 @@ module.exports={
     orderHistoryEndpoint:'/api/v1/chef/order/eaterOrders/',
     orderCommentEndpoint:'/api/v1/chef/order/eaterComments/',
     leaveEaterCommentEndpoint:'/api/v1/chef/order/leaveEaterComment/',
+    getOneChefEndpoint:'/api/v1/eater/chef/'
 }
