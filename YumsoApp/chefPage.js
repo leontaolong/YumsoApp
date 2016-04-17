@@ -101,13 +101,11 @@ class ChefPage extends Component {
                  <Image source={{ uri: this.state.chef.shopPictures[0] }} style={styleChefPage.shopPicture}
                     onError={(e) => this.setState({error: e.nativeEvent.error, loading: false})}>
                     <View style={{flex:1,flexDirection:'row'}}>
-                      
-                      <View style={{flex:0.1,flexDirection:'row',paddingTop:10,height:40}}>
+                      <View style={{flex:0.1,flexDirection:'row',paddingTop:10,height:40, backgroundColor: 'transparent'}}>
                       <TouchableHighlight onPress={() => this.navigateBackToChefList()}>
                         <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={{width:40,height:40}}/>
                       </TouchableHighlight> 
                       </View>
-
                       <View style={{flex:0.8,flexDirection:'row',paddingTop:10}}>
                       </View>
                       <View style={{flex:0.1,flexDirection:'row',paddingTop:10}}>
@@ -148,9 +146,9 @@ class ChefPage extends Component {
                      <Text style={{fontSize: windowHeight/52.6, color:'#A9A9A9'}}>{this.state.chef.pickupAddress}</Text>
                    </View>
                  </View>
-                 <View style={{flex:1,height:40,backgroundColor:'#ffcc33'}}>
-                   <View style={{flex:0.2,height:20,color:'#ffcc33',marginLeft:20,marginTop:5}}>
-                     <Image source={require('./icons/ic_shopping_cart_36pt_3x.png')} style={{width:30,height:30}}/>
+                 <View style={{position:'absolute',top:windowHeight-40,left:0,right:0,flex:1,height:40,backgroundColor:'#ff9933'}}>
+                   <View style={{height:30,width:50,color:'#ffcc33',paddingLeft:20,paddingTop:3,paddingBottom:2,marginVertical:5,backgroundColor:'#fff'}}>
+                     <Image source={require('./icons/ic_shopping_cart_36pt_3x.png')} style={{width:25,height:25}}/>
                    </View>
                  </View>                 
               </View>
