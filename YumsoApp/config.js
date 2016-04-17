@@ -15,5 +15,5 @@ module.exports={
     leaveEaterCommentEndpoint:'/api/v1/chef/order/leaveEaterComment/',
     chefListEndpoint: '/api/v1/eater/chefs',
     chefCommentsEndpoint:'/api/v1/chef/order/chefComments/',
-    
+    getOneChefEndpoint:'/api/v1/eater/chef/',
 }
