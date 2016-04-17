@@ -78,13 +78,13 @@ class DishListPage extends Component {
         console.log(displayDishes);
         this.setState({
                 dishes:dishes, 
-                dataSource:this.state.dataSource.cloneWithRows(displayDishes), 
+                dataSource:this.state.dataSource.cloneWithRows(dishes), 
                 showProgress:false, 
                 schedules:schedules,
                 scheduleMapping:scheduleMapping, 
                 scheduleTime:scheduleTime, 
-                timeData:timeData,
-                selectedTime:selectedTime});
+                timeData:timeData
+                });
     }
  
     renderRow(dish){
@@ -137,10 +137,14 @@ class DishListPage extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <TouchableHighlight style={styles.button}
+                    onPress={() => this.navigateToChefCommentsPage() }>
+                    <Text style={styles.buttonText}>Go to chef's comments</Text>
+                </TouchableHighlight>                     
                 <View style={{flex:1, justifyContent:'space-around', padding:50}}>
                     <ModalPicker
                         data={this.state.timeData}
-                        initValue={'Select a time'}
+                        initValue={'All Schedules'}
                         onChange={(option)=>{ this.displayDish(`${option.label}`)}} />
                 </View>
                <ListView style={styles.dishListView}
@@ -191,6 +195,10 @@ class DishListPage extends Component {
     }
     
     navigateToShoppingCart(){
+        if(!this.state.selectedTime){
+            Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
+            return;
+        }
         this.props.navigator.push({
             name: 'ShoppingCartPage', 
             passProps:{
@@ -199,6 +207,15 @@ class DishListPage extends Component {
                 chefId:this.state.chefId
             }
         });    
+    }
+    
+    navigateToChefCommentsPage(){
+        this.props.navigator.push({
+            name: 'ChefCommentsPage', 
+            passProps:{
+                chefId:this.state.chefId
+            }
+        });       
     }
     
     navigateBackToChefList(){

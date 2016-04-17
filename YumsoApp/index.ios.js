@@ -3,6 +3,8 @@ var DishListPage = require('./dishListPage');
 var ShoppingCartPage = require('./shoppingCartPage');
 var PaymentPage = require('./paymentPage');
 var HistoryOrderPage = require('./historyOrderPage');
+var ChefCommentsPage = require('./chefCommentsPage');
+
 var AuthService = require('./authService');
 
 var LoginPage = require('./loginPage');
@@ -41,6 +43,8 @@ class YumsoApp extends Component {
             return <PaymentPage navigator={navigator}/>
         }else if (route.name==='HistoryOrderPage'){
             return <HistoryOrderPage navigator={navigator}/>
+        }else if (route.name==='ChefCommentsPage'){
+            return <ChefCommentsPage navigator={navigator}/>
         }
     }  
     
