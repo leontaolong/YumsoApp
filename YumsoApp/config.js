@@ -1,6 +1,6 @@
 module.exports={
     
-    baseUrl: 'http://172.31.99.87:8080',
+    baseUrl: 'http://10.0.0.242:8080',
     email:'xihe@yumso.com',
     password:'123',
     googleGeoBaseUrl: 'https://maps.googleapis.com',
@@ -10,5 +10,6 @@ module.exports={
     orderHistoryEndpoint:'/api/v1/chef/order/eaterOrders/',
     orderCommentEndpoint:'/api/v1/chef/order/eaterComments/',
     leaveEaterCommentEndpoint:'/api/v1/chef/order/leaveEaterComment/',
+    getOneChefEndpoint:'/api/v1/eater/chef/',
     chefList: '/api/v1/eater/chefs'
 }
