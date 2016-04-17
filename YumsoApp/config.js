@@ -1,6 +1,6 @@
 module.exports={
     
-    baseUrl: 'http://172.31.98.111:8080',
+    baseUrl: 'http://10.0.0.242:8080',
     email:'xihe@yumso.com',
     password:'123',
     googleGeoBaseUrl: 'https://maps.googleapis.com',
