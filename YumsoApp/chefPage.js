@@ -103,7 +103,7 @@ class ChefPage extends Component {
                     <View style={{flex:1,flexDirection:'row'}}>
                       
                       <View style={{flex:0.1,flexDirection:'row',paddingTop:10,height:40}}>
-                      <TouchableHighlight onPress={() => this.navigateBackToChefList() }>
+                      <TouchableHighlight onPress={() => this.navigateBackToChefList()}>
                         <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={{width:40,height:40}}/>
                       </TouchableHighlight> 
                       </View>
@@ -148,12 +148,11 @@ class ChefPage extends Component {
                      <Text style={{fontSize: windowHeight/52.6, color:'#A9A9A9'}}>{this.state.chef.pickupAddress}</Text>
                    </View>
                  </View>
-                 
-                 <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateBackToChefList() }>
-                    <Text style={styles.buttonText}>Back</Text>
-                 </TouchableHighlight> 
-
+                 <View style={{flex:1,height:40,backgroundColor:'#ffcc33'}}>
+                   <View style={{flex:0.2,height:20,color:'#ffcc33',marginLeft:20,marginTop:5}}>
+                     <Image source={require('./icons/ic_shopping_cart_36pt_3x.png')} style={{width:30,height:30}}/>
+                   </View>
+                 </View>                 
               </View>
             );     
             }                      
