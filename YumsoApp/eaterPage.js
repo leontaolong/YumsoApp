@@ -79,10 +79,24 @@ class EaterPage extends Component {
               }
               
               return(
-               <View>
+              <View>
                 <View style={styleEaterPage.headerBannerView}>
+                <TouchableHighlight onPress={() => this.navigateBackToChefList()}>
+                   <View style={styleEaterPage.backButtonView}>
+                     <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleEaterPage.iconImage}/>
+                   </View>
+                </TouchableHighlight>
+                <TouchableHighlight>
+                   <View style={styleEaterPage.editButtonView}>
+                     <Text style={styleEaterPage.editButtonText}>Edit</Text>
+                   </View>
+                </TouchableHighlight>
                 </View>
-                <Image source={require('./TestImages/Obama.jpg')} style={styleEaterPage.eaterProfilePic}/>
+                <Image source={require('./TestImages/Obama.jpg')} style={styleEaterPage.eaterProfilePic}>
+                   <View style={styleEaterPage.uploadPhotoButtonView}>
+                     <Image source={require('./icons/ic_add_a_photo_48pt_3x.png')} style={styleEaterPage.iconImage}/>                      
+                   </View>
+                </Image>
                 <View style={styleEaterPage.eaterPageRowView}>
                    <Text style={styleEaterPage.eaterNameText}>{this.state.eater.firstname} {this.state.eater.lastname}({this.state.eater.eaterAlias})</Text>
                    <Text style={styleEaterPage.eaterPageGreyText}>Email:{this.state.eater.email}</Text>
@@ -95,12 +109,8 @@ class EaterPage extends Component {
                    <Text style={styleEaterPage.eaterPageGreyText}>Payment:</Text>
                    <Text style={styleEaterPage.eaterPageGreyText}>+ Credit Card: xxxx xxxx xxxx 1234</Text>
                     <Text style={styleEaterPage.eaterPageGreyText}>+ Paypal:</Text>
-                </View>
-                <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateBackToChefList() }>
-                    <Text style={styles.buttonText}>Back</Text>
-                </TouchableHighlight>   
-               </View>
+                </View> 
+              </View>
               );     
             }                      
     }
@@ -108,10 +118,31 @@ class EaterPage extends Component {
     navigateBackToChefList(){
          this.props.navigator.pop();
     }
-
 }
 
 var styleEaterPage = StyleSheet.create({
+    backButtonView:{
+        position:'absolute',
+        top:18,
+        left:0,
+    },
+    editButtonText:{
+        color:'#ff9933',
+    },
+    uploadPhotoButtonView:{
+        position:'absolute',
+        right:12,
+        top:windowHeight/2.63-40,
+    },
+    iconImage:{
+        width:30,
+        height:30
+    },
+    editButtonView:{
+        position:'absolute',
+        top:25,
+        right:10
+    },
     headerBannerView:{
         flex: 1,
         height:60,
