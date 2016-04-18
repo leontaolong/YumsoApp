@@ -98,7 +98,7 @@ class EaterPage extends Component {
                    </View>
                 </Image>
                 <View style={styleEaterPage.eaterPageRowView}>
-                   <Text style={styleEaterPage.eaterNameText}>{this.state.eater.firstname} {this.state.eater.lastname}({this.state.eater.eaterAlias})</Text>
+                   <Text style={styleEaterPage.eaterNameText}>{this.state.eater.firstname} {this.state.eater.lastname} ({this.state.eater.eaterAlias})</Text>
                    <Text style={styleEaterPage.eaterPageGreyText}>Email:{this.state.eater.email}</Text>
                 </View>
                 <View style={styleEaterPage.eaterPageRowView}>
