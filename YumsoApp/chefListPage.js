@@ -235,11 +235,19 @@ var Menu = React.createClass({
         });
     },
 
+    goToEaterPage: function() {
+        this.props.navigator.push({
+            name: 'EaterPage',
+        });
+    },
+    
     render: function() {
         return (
             <View style={sideMenuStyle.sidemenu}>
                 <Text style={sideMenuStyle.paddingMenuItem}>{this.props.eater.firstname} {this.props.eater.lastname}</Text>
-                <Image source={require('./ok.jpeg') } />
+                <TouchableHighlight onPress={this.goToEaterPage}>
+                  <Image source={require('./ok.jpeg') } />
+                </TouchableHighlight>
                 <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>History Order</Text>
             </View>
         );

@@ -52,19 +52,6 @@ class ChefPage extends Component {
         });
     }
     
-    fetchDishes(){
-        var self = this;
-        var chefId = this.state.chefId;
-        return this.client.getWithAuth(config.getOneChefEndpoint+chefId).then(function(res){
-            if(res.statusCode===200){
-               var chef=res.data.chef;
-               console.log("chef:");
-               console.log(chef); 
-               self.setState({chef:chef, showProgress:false});
-            }
-        });
-    }
-   
     render() {
             if(this.state.showProgress){
                 return (
@@ -127,7 +114,7 @@ class ChefPage extends Component {
                        <View style={{flex:0.5,flexDirection:'row'}}>{ratingIcons}</View>
                        <View style={{flex:0.5,flexDirection:'row',marginLeft:windowWidth/27.6}}><Text style={{color:'#A9A9A9'}}>10 reviews | $$</Text></View>
                      </View>                     
-                     <Text style={{fontSize:16,color:'#696969'}}>{this.state.chef.firstname} {this.state.chef.lastname}, Kirkland</Text>
+                     <Text style={{fontSize:windowHeight/46.0,color:'#696969'}}>{this.state.chef.firstname} {this.state.chef.lastname}, Kirkland</Text>
                    </View>
                  </View>
                  <View style={styleChefPage.chefDiscriptionView}>
@@ -147,7 +134,7 @@ class ChefPage extends Component {
                    </View>
                  </View>
                  <View style={{position:'absolute',top:windowHeight-40,left:0,right:0,flex:1,height:40,backgroundColor:'#ff9933'}}>
-                   <View style={{height:30,width:50,color:'#ffcc33',paddingLeft:20,paddingTop:3,paddingBottom:2,marginVertical:5,backgroundColor:'#fff'}}>
+                   <View style={{height:30,width:50,paddingLeft:20,paddingTop:3,paddingBottom:2,marginVertical:5,backgroundColor:'#fff'}}>
                      <Image source={require('./icons/ic_shopping_cart_36pt_3x.png')} style={{width:25,height:25}}/>
                    </View>
                  </View>                 
