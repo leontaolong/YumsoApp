@@ -3,8 +3,8 @@ var ShoppingCartPage = require('./shoppingCartPage');
 var PaymentPage = require('./paymentPage');
 var ShopPage = require('./shopPage');
 var HistoryOrderPage = require('./historyOrderPage');
+var EaterPage = require('./eaterPage');
 var ChefCommentsPage = require('./chefCommentsPage');
-
 var AuthService = require('./authService');
 var LoginPage = require('./loginPage');
 var styles = require('./style');
@@ -41,11 +41,12 @@ class YumsoApp extends Component {
             return <ShopPage navigator={navigator}/>
         }else if (route.name==='HistoryOrderPage'){
             return <HistoryOrderPage navigator={navigator}/>
+        }else if (route.name==='EaterPage'){
+            return <EaterPage navigator={navigator}/>
         }else if (route.name==='ChefCommentsPage'){
             return <ChefCommentsPage navigator={navigator}/>
         }
     }  
-
 }
 
 AppRegistry.registerComponent('YumsoApp', () => YumsoApp);
