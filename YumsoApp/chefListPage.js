@@ -1,6 +1,5 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
-var ChefPage = require('./chefPage');
 var config = require('./config');
 var AuthService = require('./authService');
 var SideMenu = require('react-native-side-menu');
@@ -104,7 +103,7 @@ class ChefListPage extends Component {
                         activeDot={<View style={{ backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />} >
                         {this.state.chefView[chef.chefId].map((picture) => {
                             return (
-                                <TouchableHighlight key={picture} onPress={() => this.goToDishList(chef.chefId) } underlayColor='#C0C0C0'>
+                                <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef.chefId) } underlayColor='#C0C0C0'>
                                     <Image source={{ uri: picture }} style={styles.chefListView_Chef_shopPic}
                                         onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }/>
                                 </TouchableHighlight>
@@ -115,7 +114,7 @@ class ChefListPage extends Component {
                 <View style={styles.chefListView_chef_Info}>
                     <View style={styles.chefListView_chef_col1}>
                       <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateToChefPage(chef.chefId) }>
+                    onPress={() => this.navigateToShopPage(chef.chefId) }>
                         <Image source={{ uri: chef.chefProfilePic }} style={styles.chefListView_Chef_profilePic}/>
                       </TouchableHighlight>  
                         <Text>1.5 miles</Text>
@@ -281,20 +280,10 @@ class ChefListPage extends Component {
            })
     
     }
-    
-    goToDishList(chefId) {
-        this.state.isMenuOpen=false;
+ 
+    navigateToShopPage(chefId){
         this.props.navigator.push({
-            name: 'DishListPage',
-            passProps: {
-                chefId: chefId
-            }
-        });
-    }
-        
-    navigateToChefPage(chefId){
-        this.props.navigator.push({
-            name: 'ChefPage', 
+            name: 'ShopPage', 
             passProps:{
                 chefId:chefId
             }

@@ -1,8 +1,7 @@
 var ChefListPage = require('./chefListPage');
-var DishListPage = require('./dishListPage');
 var ShoppingCartPage = require('./shoppingCartPage');
 var PaymentPage = require('./paymentPage');
-var ChefPage = require('./chefPage');
+var ShopPage = require('./shopPage');
 var HistoryOrderPage = require('./historyOrderPage');
 var ChefCommentsPage = require('./chefCommentsPage');
 
@@ -24,7 +23,6 @@ import React, {
 class YumsoApp extends Component {
     
     render() {
-                // <Login onLogin={this.onLogin}/>
         return (
                 <Navigator
                     initialRoute={{ name: 'ChefListPage' }}
@@ -35,24 +33,19 @@ class YumsoApp extends Component {
     renderScene(route, navigator) {
         if(route.name === 'ChefListPage') {
             return <ChefListPage navigator={navigator} />
-        }else if(route.name==='DishListPage'){
-            return <DishListPage navigator={navigator} />
         }else if(route.name==='ShoppingCartPage'){
             return <ShoppingCartPage navigator={navigator}/>
         }else if (route.name==='PaymentPage'){
             return <PaymentPage navigator={navigator}/>
-        }else if(route.name==='ChefPage'){
-            return <ChefPage navigator={navigator}/>
+        }else if(route.name==='ShopPage'){
+            return <ShopPage navigator={navigator}/>
         }else if (route.name==='HistoryOrderPage'){
             return <HistoryOrderPage navigator={navigator}/>
         }else if (route.name==='ChefCommentsPage'){
             return <ChefCommentsPage navigator={navigator}/>
         }
     }  
-    
-    onLogin(){
-        console.log("Loggedin!");
-    }
+
 }
 
 AppRegistry.registerComponent('YumsoApp', () => YumsoApp);
