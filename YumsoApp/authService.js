@@ -1,10 +1,14 @@
 var HttpsClient = require('./httpsClient');
-var princpalKey = 'principal';
+var principalKey = 'principal';
 var authTokenKey = 'token';
 var AsyncStorage = require('react-native').AsyncStorage;
 var config = require('./config');
-class AuthService {
-   
+
+import React, {
+  Alert
+} from 'react-native';
+
+class AuthService {   
     constructor(props){
         this.client = new HttpsClient(config.baseUrl);
     }
@@ -20,10 +24,35 @@ class AuthService {
             password: password
         });
         console.log(response);
+        if(response.statusCode!=200){
+            Alert.alert( 'Warning', response.data,[ { text: 'OK' }]); 
+            return false;
+        }
         await AsyncStorage.multiSet([
-            [princpalKey, JSON.stringify(response.data.principal)],
+            [principalKey, JSON.stringify(response.data.principal)],
             [authTokenKey, response.data.token]
         ]);
+        return true;
+    }
+    
+    async loginWithFbToken(token){
+        var response = await this.client.postWithoutAuth(config.authEndpointFacebook, {
+            token:token
+        });
+        console.log(response);
+        if(response.statusCode!=200){
+            Alert.alert( 'Warning', 'Failed login to facebook with its token',[ { text: 'OK' }]); 
+            return false;
+        }
+        await AsyncStorage.multiSet([
+            [principalKey, JSON.stringify(response.data.principal)],
+            [authTokenKey, response.data.token]
+        ]);    
+        return true;   
+    }
+    
+    async logOut(){
+        await AsyncStorage.multiRemove([principalKey,authTokenKey])
     }
 }
 

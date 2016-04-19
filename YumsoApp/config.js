@@ -1,6 +1,6 @@
 module.exports={
     
-    baseUrl: 'http://172.31.99.87:8080',
+    baseUrl: 'http://192.168.1.134:8080',
     email:'xihe@yumso.com',
     password:'123',
     googleApiName:'yumsoIOS	',
@@ -9,6 +9,7 @@ module.exports={
     reverseGeoCoding:'/maps/api/geocode/json?latlng=',
     searchAddress:'/maps/api/geocode/json?address=',
     authEndpointEmail:'/api/v1/auth/authenticateByEmail/eater',
+    authEndpointFacebook:'/api/v1/auth/authenticateFbToken/eater',
     createOrderEndpoint:'/api/v1/chef/order/createOrder',
     orderHistoryEndpoint:'/api/v1/chef/order/eaterOrders/',
     orderCommentEndpoint:'/api/v1/chef/order/eaterComments/',

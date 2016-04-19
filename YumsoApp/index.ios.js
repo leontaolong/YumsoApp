@@ -43,6 +43,8 @@ class YumsoApp extends Component {
             return <HistoryOrderPage navigator={navigator}/>
         }else if (route.name==='ChefCommentsPage'){
             return <ChefCommentsPage navigator={navigator}/>
+        }else if (route.name==='LoginPage'){
+            return <LoginPage navigator={navigator}/>
         }
     }  
 

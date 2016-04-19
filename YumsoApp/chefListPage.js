@@ -299,12 +299,24 @@ var Menu = React.createClass({
         });
     },
 
+    logOut: function(){
+        console.log('log out');
+        return AuthService.logOut()
+        .then(()=>{
+            this.props.caller.setState({ isMenuOpen: false });
+            this.props.navigator.push({
+                name: 'LoginPage',
+            }); 
+        });    
+    },
+    
     render: function() {
         return (
             <View style={sideMenuStyle.sidemenu}>
                 <Text style={sideMenuStyle.paddingMenuItem}>{this.props.eater.firstname} {this.props.eater.lastname}</Text>
                 <Image source={require('./ok.jpeg') } />
                 <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>History Order</Text>
+                <Text onPress={this.logOut} style={sideMenuStyle.paddingMenuItem}>Log out</Text>
             </View>
         );
     }
