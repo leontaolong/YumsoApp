@@ -11,6 +11,9 @@
 
 #import "RCTRootView.h"
 
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -31,7 +34,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://10.0.0.242:8081/index.ios.bundle?platform=ios&dev=false"];
+  jsCodeLocation = [NSURL URLWithString:@"http://10.0.0.242:8081/index.ios.bundle?platform=ios&dev=true"];
 
   /**
    * OPTION 2
@@ -53,7 +56,20 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  return YES;
+  //return YES;
+  return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                  didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+  [FBSDKAppEvents activateApp];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+  return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                        openURL:url
+                                              sourceApplication:sourceApplication
+                                                     annotation:annotation];
 }
 
 @end

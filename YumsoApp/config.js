@@ -9,6 +9,7 @@ module.exports={
     reverseGeoCoding:'/maps/api/geocode/json?latlng=',
     searchAddress:'/maps/api/geocode/json?address=',
     authEndpointEmail:'/api/v1/auth/authenticateByEmail/eater',
+    authEndpointFacebook:'/api/v1/auth/authenticateFbToken/eater',
     createOrderEndpoint:'/api/v1/chef/order/createOrder',
     orderHistoryEndpoint:'/api/v1/chef/order/eaterOrders/',
     orderCommentEndpoint:'/api/v1/chef/order/eaterComments/',
