@@ -123,20 +123,21 @@ class EaterPage extends Component {
 var styleEaterPage = StyleSheet.create({
     backButtonView:{
         position:'absolute',
-        top:18,
+        top:15,
         left:0,
     },
     editButtonText:{
         color:'#ff9933',
+        fontSize:15,
     },
     uploadPhotoButtonView:{
         position:'absolute',
         right:12,
-        top:windowHeight/2.63-40,
+        top:windowHeight/2.63-47,
     },
     iconImage:{
-        width:30,
-        height:30
+        width:40,
+        height:40
     },
     editButtonView:{
         position:'absolute',
