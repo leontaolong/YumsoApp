@@ -45,6 +45,8 @@ class YumsoApp extends Component {
             return <EaterPage navigator={navigator}/>
         }else if (route.name==='ChefCommentsPage'){
             return <ChefCommentsPage navigator={navigator}/>
+        }else if (route.name==='LoginPage'){
+            return <LoginPage navigator={navigator}/>
         }
     }  
 }

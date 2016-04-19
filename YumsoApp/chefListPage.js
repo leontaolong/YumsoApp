@@ -299,7 +299,19 @@ var Menu = React.createClass({
         });
     },
 
+    logOut: function(){
+        console.log('log out');
+        return AuthService.logOut()
+        .then(()=>{
+            this.props.caller.setState({ isMenuOpen: false });
+            this.props.navigator.push({
+                name: 'LoginPage',
+            }); 
+        });    
+    },
+    
     goToEaterPage: function() {
+        this.props.caller.setState({ isMenuOpen: false });
         this.props.navigator.push({
             name: 'EaterPage',
         });
@@ -313,6 +325,7 @@ var Menu = React.createClass({
                   <Image source={require('./ok.jpeg') } />
                 </TouchableHighlight>
                 <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>History Order</Text>
+                <Text onPress={this.logOut} style={sideMenuStyle.paddingMenuItem}>Log out</Text>
             </View>
         );
     }
