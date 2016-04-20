@@ -48,7 +48,8 @@ class YumsoApp extends Component {
         }else if (route.name==='LoginPage'){
             return <LoginPage navigator={navigator}/>
         }
-    }  
+    } 
+
 }
 
 AppRegistry.registerComponent('YumsoApp', () => YumsoApp);

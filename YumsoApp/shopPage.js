@@ -51,7 +51,7 @@ class ShopPage extends Component {
     fetchChefProfile(){
         var self = this;
         var chefId = this.state.chefId;
-        return this.client.getWithAuth(config.getOneChefEndpoint+chefId).then(function(res){
+        return this.client.getWithoutAuth(config.getOneChefEndpoint+chefId).then(function(res){
             if(res.statusCode===200){
                var chef=res.data.chef;
                self.setState({chef:chef});
@@ -62,8 +62,8 @@ class ShopPage extends Component {
     async fetchDishesAndSchedules(chefId) {
         const start = 'start='+new Date().getTime();
         const end = 'end='+new Date().setDate(new Date().getDate()+2);
-        let getDishesTask = this.client.getWithAuth('/api/v1/chef/getDishes/'+chefId);
-        let getScheduleTask = this.client.getWithAuth('/api/v1/chef/getSchedules/'+chefId+'?'+start+'&'+end);
+        let getDishesTask = this.client.getWithoutAuth(config.chefDishesEndpoint+chefId);
+        let getScheduleTask = this.client.getWithoutAuth(config.chefSchedulesEndpoint+chefId+'?'+start+'&'+end);
         let responseDish = await getDishesTask;
         let responseSchedule = await getScheduleTask;
         let dishes = responseDish.data.dishes;

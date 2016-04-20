@@ -3,6 +3,7 @@ var principalKey = 'principal';
 var authTokenKey = 'token';
 var AsyncStorage = require('react-native').AsyncStorage;
 var config = require('./config');
+var FBLoginManager = require('NativeModules').FBLoginManager;
 
 import React, {
   Alert
@@ -52,7 +53,14 @@ class AuthService {
     }
     
     async logOut(){
-        await AsyncStorage.multiRemove([principalKey,authTokenKey])
+        FBLoginManager.logout(function(error, data){
+            if (!error) {
+                console.log("fb logged out");
+            } else {
+                console.log(error, data);
+            }
+        });
+        await AsyncStorage.multiRemove([principalKey,authTokenKey]);
     }
 }
 
