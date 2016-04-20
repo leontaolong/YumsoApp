@@ -1,6 +1,6 @@
 module.exports={
     
-    baseUrl: 'http://192.168.1.134:8080',
+    baseUrl: 'http://10.0.0.242:8080',
     email:'xihe@yumso.com',
     password:'123',
     googleApiName:'yumsoIOS	',
