@@ -320,7 +320,7 @@ var Menu = React.createClass({
     render: function() {
         return (
             <View style={sideMenuStyle.sidemenu}>
-                <Text style={sideMenuStyle.paddingMenuItem}>{this.props.eater.firstname} {this.props.eater.lastname}</Text>
+                <Text style={sideMenuStyle.paddingMenuItem}>{this.props.eater==undefined? 'Not logged in':this.props.eater.firstname + ' '+ this.props.eater.lastname}</Text>
                 <TouchableHighlight onPress={this.goToEaterPage}>
                   <Image source={require('./ok.jpeg') } />
                 </TouchableHighlight>
