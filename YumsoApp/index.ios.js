@@ -46,9 +46,13 @@ class YumsoApp extends Component {
         }else if (route.name==='ChefCommentsPage'){
             return <ChefCommentsPage navigator={navigator}/>
         }else if (route.name==='LoginPage'){
-            return <LoginPage navigator={navigator}/>
+            return <LoginPage navigator={navigator} onLogin={this.onLogin}/>
         }
-    }  
+    } 
+    
+    onLogin(){
+        this.props.navigator.pop();  
+    } 
 }
 
 AppRegistry.registerComponent('YumsoApp', () => YumsoApp);

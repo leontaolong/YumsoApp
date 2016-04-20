@@ -62,8 +62,8 @@ class ShopPage extends Component {
     async fetchDishesAndSchedules(chefId) {
         const start = 'start='+new Date().getTime();
         const end = 'end='+new Date().setDate(new Date().getDate()+2);
-        let getDishesTask = this.client.getWithAuth('/api/v1/chef/getDishes/'+chefId);
-        let getScheduleTask = this.client.getWithAuth('/api/v1/chef/getSchedules/'+chefId+'?'+start+'&'+end);
+        let getDishesTask = this.client.getWithAuth(config.chefDishesEndpoint+chefId);
+        let getScheduleTask = this.client.getWithAuth(config.chefSchedulesEndpoint+chefId+'?'+start+'&'+end);
         let responseDish = await getDishesTask;
         let responseSchedule = await getScheduleTask;
         let dishes = responseDish.data.dishes;

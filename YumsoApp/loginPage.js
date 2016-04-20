@@ -12,7 +12,8 @@ import React, {
   TextInput,
   TouchableHighlight,
   ActivityIndicatorIOS,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 
 const facebookPermissions = ["public_profile"];
@@ -86,6 +87,10 @@ class LoginPage extends Component {
                         animating={this.state.showProgress}
                         size="large"
                         style={styles.loader} />
+                <TouchableHighlight style={styles.button}
+                    onPress={() => this.navigateBackToChefList() }>
+                    <Text style={styles.buttonText}>back</Text>
+                </TouchableHighlight>            
                 </View>
             );
     }
@@ -104,6 +109,8 @@ class LoginPage extends Component {
         this.setState({ showProgress: false });
         let user = await AuthService.getPrincipalInfo();
         console.log(user);
+        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
+        this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();
         }
@@ -120,10 +127,16 @@ class LoginPage extends Component {
         this.setState({ success: true });
         this.setState({ showProgress: false });   
         let user = await AuthService.getPrincipalInfo();
-        console.log(user);   
+        console.log(user);  
+        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
+        this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();
         }
+    }
+    
+    navigateBackToChefList() {
+        this.props.navigator.pop();
     }
 }
 

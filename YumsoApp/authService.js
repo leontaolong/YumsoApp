@@ -60,7 +60,7 @@ class AuthService {
                 console.log(error, data);
             }
         });
-        await AsyncStorage.multiRemove([principalKey,authTokenKey])
+        await AsyncStorage.multiRemove([principalKey,authTokenKey]);
     }
 }
 
