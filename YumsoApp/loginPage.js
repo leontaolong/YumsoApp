@@ -22,8 +22,15 @@ class LoginPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            showProgress:false
+            showProgress: false
         };
+        var routeStack = this.props.navigator.state.routeStack;
+        if(routeStack && routeStack.length>0){
+            var passProps = routeStack[routeStack.length-1].passProps;
+            if(passProps){
+                this.state.callback = passProps.callback;
+            }
+        }
     }
     
     render() {
@@ -88,7 +95,7 @@ class LoginPage extends Component {
                         size="large"
                         style={styles.loader} />
                 <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateBackToChefList() }>
+                    onPress={() => this.navigateBack() }>
                     <Text style={styles.buttonText}>back</Text>
                 </TouchableHighlight>            
                 </View>
@@ -114,6 +121,9 @@ class LoginPage extends Component {
         if(this.props.onLogin){
             this.props.onLogin();
         }
+        if(this.state.callback){
+            this.state.callback();
+        }
     }
     
     async onGettingFbToken(credentials){
@@ -133,9 +143,15 @@ class LoginPage extends Component {
         if(this.props.onLogin){
             this.props.onLogin();
         }
+        if(this.state.callback){
+            this.state.callback();
+        }
     }
     
-    navigateBackToChefList() {
+    navigateBack() {
+        if (this.state.callback) {
+            this.state.callback();
+        }
         this.props.navigator.pop();
     }
 }
