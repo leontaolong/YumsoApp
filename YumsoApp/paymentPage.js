@@ -64,9 +64,24 @@ class PaymentPage extends Component {
         );    
     }  
     
-    async createAnOrder(){
-        let response = await this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail});
-        console.log(response.statusCode);
+    createAnOrder(){
+         return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail})
+         .then((response)=>{
+            if(response.statusCode==401){
+                this.props.navigator.push({
+                    name: 'LoginPage',//todo: fb cached will signin and redirect back right away.
+                }); 
+                return; //todo: require pass in callback to verify eater is same as loged in user.
+            }else if(response.statusCode==200){
+                Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]);  
+                this.props.navigator.push({
+                    name: 'OrderConfirmation',//todo: fb cached will signin and redirect back right away.
+                    //todo: perhaps pass orderId
+                });                     
+            }else{
+                Alert.alert('Fail','Failed creating order',[{ text: 'OK' }]);            
+            }
+         });   
     }
     
     navigateBackToShoppingCartPage(){

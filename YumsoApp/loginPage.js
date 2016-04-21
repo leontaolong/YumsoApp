@@ -12,7 +12,8 @@ import React, {
   TextInput,
   TouchableHighlight,
   ActivityIndicatorIOS,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 
 const facebookPermissions = ["public_profile"];
@@ -21,8 +22,15 @@ class LoginPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            showProgress:false
+            showProgress: false
         };
+        var routeStack = this.props.navigator.state.routeStack;
+        if(routeStack && routeStack.length>0){
+            var passProps = routeStack[routeStack.length-1].passProps;
+            if(passProps){
+                this.state.callback = passProps.callback;
+            }
+        }
     }
     
     render() {
@@ -86,6 +94,10 @@ class LoginPage extends Component {
                         animating={this.state.showProgress}
                         size="large"
                         style={styles.loader} />
+                <TouchableHighlight style={styles.button}
+                    onPress={() => this.navigateBack() }>
+                    <Text style={styles.buttonText}>back</Text>
+                </TouchableHighlight>            
                 </View>
             );
     }
@@ -104,8 +116,13 @@ class LoginPage extends Component {
         this.setState({ showProgress: false });
         let user = await AuthService.getPrincipalInfo();
         console.log(user);
+        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
+        this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();
+        }
+        if(this.state.callback){
+            this.state.callback();
         }
     }
     
@@ -120,10 +137,22 @@ class LoginPage extends Component {
         this.setState({ success: true });
         this.setState({ showProgress: false });   
         let user = await AuthService.getPrincipalInfo();
-        console.log(user);   
+        console.log(user);  
+        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
+        this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();
         }
+        if(this.state.callback){
+            this.state.callback();
+        }
+    }
+    
+    navigateBack() {
+        if (this.state.callback) {
+            this.state.callback();
+        }
+        this.props.navigator.pop();
     }
 }
 

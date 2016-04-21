@@ -44,17 +44,29 @@ class ChefListPage extends Component {
     }
 
     async componentDidMount() {
-        this.getLocation();
-        await AuthService.loginWithEmail(config.email, config.password);
-        console.log(this.state);
-        let user = await AuthService.getPrincipalInfo();
-        console.log(user);
-        this.setState({ eater: user });
+        this.getLocation();//todo: render croods may be undefined if it's too slow
+        if(config.autoLogin){//this is for debugging so to auto login
+           await AuthService.loginWithEmail(config.email, config.password);
+        }
+        let principal = await AuthService.getPrincipalInfo();
+        if(principal==null) principal=undefined;
+        if(principal){
+            let response = await this.client.getWithAuth(config.eaterEndpoint);
+            if(response.statusCode===200){
+                console.log(response.data);
+                this.setState({eater:response.data.eater});
+            }else{ //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
+                this.setState({eater:undefined});    //todo: clear the token and cache.      
+            }
+        }else{
+            this.setState({eater:undefined});          
+        }
+        this.setState({ principal: principal });
         this.fetchChefDishes();
     }
 
     async fetchChefDishes() {
-        let response = await this.client.getWithAuth(config.chefListEndpoint);
+        let response = await this.client.getWithoutAuth(config.chefListEndpoint);
         var chefs = response.data.chefs;
         var chefView = {};
         for (var chef of chefs) {
@@ -246,7 +258,7 @@ class ChefListPage extends Component {
     searchChef(){
         var filter = this.state.searchFilter;
         this.setState({showProgress:true});
-        this.client.getWithAuth(config.chefListEndpoint)
+        this.client.getWithoutAuth(config.chefListEndpoint)
         .then((res)=>{
             if(res.statusCode===200){
                 var chefs = res.data.chefs;
@@ -294,20 +306,42 @@ class ChefListPage extends Component {
 var Menu = React.createClass({
     goToOrderHistory: function() {
         this.props.caller.setState({ isMenuOpen: false });
+        if(!this.props.eater){
+            this.props.navigator.push({
+                name: 'LoginPage',
+                passProps:{
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller)
+                }
+            });  
+            return;
+        }
         this.props.navigator.push({
             name: 'HistoryOrderPage',
         });
     },
 
     logOut: function(){
-        console.log('log out');
         return AuthService.logOut()
         .then(()=>{
+            Alert.alert( '', 'You have successfully logged out',[ { text: 'OK' }]); 
             this.props.caller.setState({ isMenuOpen: false });
             this.props.navigator.push({
                 name: 'LoginPage',
+                passProps:{
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller)
+                }
             }); 
         });    
+    },
+    
+    logIn: function(){
+        this.props.caller.setState({ isMenuOpen: false });
+        this.props.navigator.push({
+            name: 'LoginPage',
+            passProps: {
+                callback: this.props.caller.componentDidMount.bind(this.props.caller)
+            }            
+        }); 
     },
     
     goToEaterPage: function() {
@@ -318,14 +352,26 @@ var Menu = React.createClass({
     },
     
     render: function() {
+        let isAuthenticated = this.props.eater!=undefined;
+        var displayName = isAuthenticated? (this.props.eater.firstname + ' '+ this.props.eater.lastname): '';
+        var profileImg = require('./ok.jpeg');
+        if(this.props.eater && this.props.eater.eaterProfilePic){
+            profileImg = {uri:this.props.eater.eaterProfilePic};
+        }
+        var profile;
+        if(!isAuthenticated){
+            profile = <Image source={profileImg} style={styles.chefListView_Chef_profilePic}/>;
+        }else{
+            profile = <TouchableHighlight style = {styles.chefProfilePic} onPress={this.goToEaterPage}>
+                    <Image source={profileImg} style={styles.chefListView_Chef_profilePic}/>
+                </TouchableHighlight>;
+        }
         return (
             <View style={sideMenuStyle.sidemenu}>
-                <Text style={sideMenuStyle.paddingMenuItem}>{this.props.eater.firstname} {this.props.eater.lastname}</Text>
-                <TouchableHighlight onPress={this.goToEaterPage}>
-                  <Image source={require('./ok.jpeg') } />
-                </TouchableHighlight>
+                <Text style={sideMenuStyle.paddingMenuItem}>{displayName}</Text>
+                {profile}
                 <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>History Order</Text>
-                <Text onPress={this.logOut} style={sideMenuStyle.paddingMenuItem}>Log out</Text>
+                <Text onPress={isAuthenticated?this.logOut:this.logIn} style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
             </View>
         );
     }
