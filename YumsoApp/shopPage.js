@@ -44,8 +44,9 @@ class ShopPage extends Component {
     
     componentDidMount(){
         this.client = new HttpsClient(config.baseUrl, true);
-        this.fetchChefProfile(); 
-        this.fetchDishesAndSchedules(this.state.chefId);      
+        let task1 = this.fetchChefProfile(); 
+        let task2 = this.fetchDishesAndSchedules(this.state.chefId);   
+        return Promise.all([task1,task2]);   
     }
     
     fetchChefProfile(){

@@ -44,7 +44,7 @@ class ChefListPage extends Component {
     }
 
     async componentDidMount() {
-        this.getLocation();
+        this.getLocation();//todo: render croods may be undefined if it's too slow
         if(config.autoLogin){//this is for debugging so to auto login
            await AuthService.loginWithEmail(config.email, config.password);
         }
@@ -55,10 +55,13 @@ class ChefListPage extends Component {
             if(response.statusCode===200){
                 console.log(response.data);
                 this.setState({eater:response.data.eater});
+            }else{ //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
+                this.setState({eater:undefined});    //todo: clear the token and cache.      
             }
+        }else{
+            this.setState({eater:undefined});          
         }
         this.setState({ principal: principal });
-        console.log(principal);
         this.fetchChefDishes();
     }
 
@@ -303,6 +306,15 @@ class ChefListPage extends Component {
 var Menu = React.createClass({
     goToOrderHistory: function() {
         this.props.caller.setState({ isMenuOpen: false });
+        if(!this.props.eater){
+            this.props.navigator.push({
+                name: 'LoginPage',
+                passProps:{
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller)
+                }
+            });  
+            return;
+        }
         this.props.navigator.push({
             name: 'HistoryOrderPage',
         });
@@ -315,6 +327,9 @@ var Menu = React.createClass({
             this.props.caller.setState({ isMenuOpen: false });
             this.props.navigator.push({
                 name: 'LoginPage',
+                passProps:{
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller)
+                }
             }); 
         });    
     },
@@ -323,6 +338,9 @@ var Menu = React.createClass({
         this.props.caller.setState({ isMenuOpen: false });
         this.props.navigator.push({
             name: 'LoginPage',
+            passProps: {
+                callback: this.props.caller.componentDidMount.bind(this.props.caller)
+            }            
         }); 
     },
     
@@ -335,18 +353,23 @@ var Menu = React.createClass({
     
     render: function() {
         let isAuthenticated = this.props.eater!=undefined;
-        console.log(isAuthenticated);
         var displayName = isAuthenticated? (this.props.eater.firstname + ' '+ this.props.eater.lastname): '';
         var profileImg = require('./ok.jpeg');
         if(this.props.eater && this.props.eater.eaterProfilePic){
             profileImg = {uri:this.props.eater.eaterProfilePic};
         }
+        var profile;
+        if(!isAuthenticated){
+            profile = <Image source={profileImg} style={styles.chefListView_Chef_profilePic}/>;
+        }else{
+            profile = <TouchableHighlight style = {styles.chefProfilePic} onPress={this.goToEaterPage}>
+                    <Image source={profileImg} style={styles.chefListView_Chef_profilePic}/>
+                </TouchableHighlight>;
+        }
         return (
             <View style={sideMenuStyle.sidemenu}>
                 <Text style={sideMenuStyle.paddingMenuItem}>{displayName}</Text>
-                <TouchableHighlight style = {styles.chefProfilePic} onPress={this.goToEaterPage}>
-                    <Image source={profileImg} style={styles.chefListView_Chef_profilePic}/>
-                </TouchableHighlight>
+                {profile}
                 <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>History Order</Text>
                 <Text onPress={isAuthenticated?this.logOut:this.logIn} style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
             </View>

@@ -1,5 +1,6 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
+var config = require('./config');
 var AuthService = require('./authService');
 
 import React, {
@@ -33,7 +34,7 @@ class ShoppingCartPage extends Component {
             selectedTime:selectedTime,
             chefId:chefId
         };
-        console.log(Date.parse(this.state.selectedTime));
+        this.client = new HttpsClient(config.baseUrl, true);
     }
     
     componentDidMount(){
@@ -141,16 +142,27 @@ class ShoppingCartPage extends Component {
     
     async navigateToPaymentPage(){
         if(!this.state.shoppingCart || Object.keys(this.state.shoppingCart).length==0){
-            Alert.alert(
-                'Warning',
-                'You do not have any item in your shopping cart',
-                [
-                    { text: 'OK' }
-                ]
-            );
+            Alert.alert('Warning','You do not have any item in your shopping cart',[{ text: 'OK' }]);
             return;
         }
-        let eater = await AuthService.getPrincipalInfo();
+        let principal = await AuthService.getPrincipalInfo();
+        if(principal && principal!=null){
+            let response = await this.client.getWithAuth(config.eaterEndpoint);
+            if(response.statusCode===200){
+                this.setState({eater:response.data.eater});
+            }else{
+                this.setState({eater:undefined});//todo: clear the token and cache.      
+            }
+        }else{
+            this.setState({eater:undefined});          
+        }
+        if(!this.state.eater){
+            this.props.navigator.push({
+                name: 'LoginPage',
+            });  
+            return;
+        }   //todo: Best practise is not to get eater here but cache it somewhere, but have to ensure the cached user is indeed not expired.
+        console.log(this.state.eater);
         var orderList ={};
         for(var cartItemKey in this.state.shoppingCart){
             var dishItem=this.state.shoppingCart[cartItemKey];
@@ -159,7 +171,7 @@ class ShoppingCartPage extends Component {
         var order = {
             chefId: this.state.chefId,
             orderDeliverTime: Date.parse(this.state.selectedTime),//Sun Apr 03 2016 12:00:00
-            eaterId: eater.userId,
+            eaterId: principal.userId,
             orderList: orderList,
             shippingAddress: "10715 NE37th Ct, Apt.227 WA, Kirkland 98033",
             subtotal: -1,

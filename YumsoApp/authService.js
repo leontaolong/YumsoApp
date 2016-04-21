@@ -62,6 +62,8 @@ class AuthService {
         });
         await AsyncStorage.multiRemove([principalKey,authTokenKey]);
     }
+    
+    //todo: refresh token behind the scene.
 }
 
 module.exports = new AuthService();

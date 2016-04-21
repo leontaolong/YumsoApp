@@ -5,6 +5,7 @@ var ShopPage = require('./shopPage');
 var HistoryOrderPage = require('./historyOrderPage');
 var EaterPage = require('./eaterPage');
 var ChefCommentsPage = require('./chefCommentsPage');
+var OrderConfirmation = require('./orderConfirmation');
 var AuthService = require('./authService');
 var LoginPage = require('./loginPage');
 var styles = require('./style');
@@ -45,6 +46,8 @@ class YumsoApp extends Component {
             return <EaterPage navigator={navigator}/>
         }else if (route.name==='ChefCommentsPage'){
             return <ChefCommentsPage navigator={navigator}/>
+        }else if (route.name==='OrderConfirmation'){
+            return <OrderConfirmation navigator={navigator}/>
         }else if (route.name==='LoginPage'){
             return <LoginPage navigator={navigator}/>
         }
