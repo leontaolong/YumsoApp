@@ -1,6 +1,7 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
+var rating = require('./rating');
 import Dimensions from 'Dimensions';
 import ModalPicker from 'react-native-modal-picker'
 
@@ -162,26 +163,6 @@ class ShopPage extends Component {
                         style={styles.loader}/>
                 </View>);
         } else {
-            var ratingIcons = [];
-            //var starNumber = this.state.chef.rateStar;
-            var rating = 3;
-            var maxRating = 5;
-            for (let i = 0; i < maxRating; i++) {
-                if (i < rating) {
-                    ratingIcons.push(
-                        <View key={i} style={{ marginRight: windowWidth / 83.0 }}>
-                            <Image source={require('./icons/Icon-Small.png') } style={{ width: windowWidth / 32, height: windowWidth / 32 }}/>
-                        </View>
-                    );
-                } else {
-                    ratingIcons.push(
-                        <View key={i} style={{ marginRight: windowWidth / 83.0 }}>
-                            <Image source={require('./icons/forkhand2.png') } style={{ width: windowWidth / 32, height: windowWidth / 32 }}/>
-                        </View>
-                    );
-                }
-            }
-
             return (
                 <View style={{height:windowHeight-40}}>
                     <ScrollView >
@@ -209,7 +190,7 @@ class ShopPage extends Component {
                             <View style={styleShopPage.shopChefNameRatingView}>
                                 <Text style={styleShopPage.shopNameText}>{this.state.chef.shopname}</Text>
                                 <View style={styleShopPage.shopRatingDollarSignView}>
-                                    <View style={styleShopPage.ratingView}>{ratingIcons}</View>
+                                    <View style={styleShopPage.ratingView}>{rating.renderRating(3)}</View>
                                     <View style={styleShopPage.dollarSignView}><Text style={{ color: '#A9A9A9' }}>10 reviews | $$</Text></View>
                                 </View>
                                 <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, Kirkland</Text>
@@ -413,7 +394,7 @@ var styleShopPage = StyleSheet.create({
         alignItems: 'center',
         borderColor: '#D7D7D7',
         borderBottomWidth: 1,
-        backgroundColor: '#f5f5f5'
+        backgroundColor: '#f5f5f5',
     },
     chefProfilePicView:{
         borderRadius: 12, 
@@ -425,7 +406,7 @@ var styleShopPage = StyleSheet.create({
         height:windowHeight/10.8,
     },
     shopChefNameRatingView:{ 
-        paddingLeft: windowWidth/20.7 
+        paddingLeft: windowWidth/20.7, 
     },
     shopNameText:{ 
         fontSize: windowHeight/36.8, 

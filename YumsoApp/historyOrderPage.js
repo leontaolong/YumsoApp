@@ -2,6 +2,8 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
+var rating = require('./rating');
+import Dimensions from 'Dimensions';
 
 import React, {
   Component,
@@ -17,6 +19,9 @@ import React, {
   Alert,
   Picker
 } from 'react-native';
+
+var windowHeight = Dimensions.get('window').height;
+var windowWidth = Dimensions.get('window').width;
 
 class HistoryOrderPage extends Component {
     constructor(props){
@@ -63,10 +68,6 @@ class HistoryOrderPage extends Component {
     }
  
     renderRow(order){
-        let imageSrc =require('./ok.jpeg') ;
-        if(order.chefProfilePic){
-            imageSrc={uri:order.chefProfilePic};   
-        }
         if(this.state.showProgress){
             return <ActivityIndicatorIOS
                 animating={this.state.showProgress}
@@ -74,42 +75,81 @@ class HistoryOrderPage extends Component {
                 style={styles.loader}/> 
         }   
         return (
-            <View style={styles.dishListView_dish}>
-                <Image source={imageSrc} style={styles.dishListView_dish_pic}/>
-                <View >
-                    <View>
-                        <Text>
-                            {order.shopname}
-                        </Text>
-                        <Text>
-                            {new Date(order.orderCreatedTime).getDate()+'/'+new Date(order.orderCreatedTime).getMonth()+'/'+new Date(order.orderCreatedTime).getFullYear()}
-                        </Text>   
-                    </View>  
-                    <View style={{flexDirection:'row', flex:1}}>
-                        <View>
-                            <Text>
-                                ${order.grandTotal}
-                            </Text>                          
-                            {this.displayCommentOrBox(order)}
-                        </View>                                   
-                    </View>                           
-                </View>           
+            <View style={styleHistoryOrderPage.oneCommentView}>
+                <View style={styleHistoryOrderPage.shopNameTimePriceView}>
+                   <View style={styleHistoryOrderPage.shopNameOrderTimeView}>
+                      <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>
+                      <Text style={styleHistoryOrderPage.orderTimeText}>{new Date(order.orderCreatedTime).getDate()+'/'+new Date(order.orderCreatedTime).getMonth()+'/'+new Date(order.orderCreatedTime).getFullYear()}</Text>
+                   </View>
+                   <View style={styleHistoryOrderPage.orderPriceView}>
+                      <Text style={styleHistoryOrderPage.orderPriceText}>${order.grandTotal}</Text>
+                   </View>
+                </View>
+                {this.displayCommentOrBox(order)}
             </View>
         );
     }
     
     displayCommentOrBox(order) {
-        if (order.comment) {
-            return <View>
-                <Text>eater comment: {order.comment.eaterComment==undefined?'no comment':order.comment.eaterComment}</Text>
-                <Text>rating: {order.comment.starRating}</Text>
-                <Text>Chef's comment: {order.comment.chefComment}</Text>
-            </View>
-        } else {
-            return <TouchableHighlight style={styles.button}
-                onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }>
-                <Text style={styles.buttonText}>Leave Comment</Text>
-            </TouchableHighlight>
+        console.log(order);
+        var imageSrc;
+        
+        if(order.chefProfilePic){
+            imageSrc={uri:order.chefProfilePic};   
+        }
+        
+        if(!order.comment){
+           var noRateNoComment = (<View style={styleHistoryOrderPage.eaterNoCommentView}>
+                                <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }>
+                                  <Text style={styleHistoryOrderPage.addCommentTextClickable}>Rate and Comment</Text>
+                                </TouchableHighlight>
+                             </View>);
+                             
+           return noRateNoComment;
+        }else{
+           if(order.comment.chefComment){
+              hasChefComment = (<View key={'chefComment'} style={styleHistoryOrderPage.chefCommentView}>
+                                  <View style={styleHistoryOrderPage.chefPhotoView}>
+                                       <Image source={imageSrc} style={styleHistoryOrderPage.chefPhoto}/>
+                                  </View>
+                                  <View style={styleHistoryOrderPage.chefCommentTextView}>
+                                      <Text style={styleHistoryOrderPage.commentText}>{order.comment.chefComment}</Text>                                  
+                                      <View style={styleHistoryOrderPage.commentTimeView}>
+                                         <Text style={styleHistoryOrderPage.commentTimeText}>03/10/2016</Text>
+                                      </View>
+                                  </View>                           
+                              </View>);
+           }  
+            
+           if(order.comment.starRating && order.comment.eaterComment){
+             var hasRateAndComment =[
+                                    (<View key={'rating'} style={styleHistoryOrderPage.orderRatingView}>
+                                        {rating.renderRating(order.comment.starRating)}
+                                    </View>),
+                                    (<View key={'eaterComment'} style={styleHistoryOrderPage.eaterCommentView}>
+                                        <Text style={styleHistoryOrderPage.commentText}>{order.comment.eaterComment}</Text>
+                                        <View style={styleHistoryOrderPage.commentTimeView}>
+                                            <Text style={styleHistoryOrderPage.commentTimeText}>04/30/2016</Text>
+                                        </View>
+                                    </View>)
+                                    ];
+             return [hasRateAndComment,hasChefComment];
+           }else if(order.comment.starRating && !order.comment.eaterComment){
+              hasRateNoComment = [
+                                  (<View key={'rating'} style={styleHistoryOrderPage.orderRatingView}>
+                                    {rating.renderRating(order.comment.starRating)}
+                                  </View>),
+                                  (<View key={'eaterComment'} style={styleHistoryOrderPage.eaterNoCommentView}>
+                                   <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }> 
+                                    <Text style={styleHistoryOrderPage.addCommentTextClickable}>Add Comment</Text>
+                                   </TouchableHighlight>
+                                    <View style={styleHistoryOrderPage.commentTimeView}>
+                                      <Text style={styleHistoryOrderPage.commentTimeText}>04/30/2016</Text>
+                                    </View>
+                                   </View>)
+                                 ];
+             return [hasRateNoComment,hasChefComment];
+           }            
         }
     }
     
@@ -134,7 +174,14 @@ class HistoryOrderPage extends Component {
         }
         return (
             <View style={styles.container}>
-               <Text>History Order</Text>
+               <View style={styleHistoryOrderPage.headerBannerView}>
+                 <TouchableHighlight onPress={() => this.navigateBackToChefList()}>
+                   <View style={styleHistoryOrderPage.backButtonView}>
+                     <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleHistoryOrderPage.backButtonIcon}/>
+                   </View>
+                 </TouchableHighlight>
+                 <Text>History Order</Text>
+               </View>
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } />
@@ -192,5 +239,122 @@ class HistoryOrderPage extends Component {
         this.props.navigator.pop();
     }
 }
+
+var styleHistoryOrderPage = StyleSheet.create({
+    backButtonView:{
+        position:'absolute',
+        top:15,
+        left:0,
+    },
+    backButtonIcon:{
+        width:40,
+        height:40,
+    },
+    oneCommentView:{
+       flex:1,
+       flexDirection:'column',
+       paddingHorizontal:10,
+       paddingVertical:20,
+       borderTopWidth:1,
+       borderColor: '#D7D7D7',
+    },
+    shopNameTimePriceView:{
+        flex:1,
+        flexDirection:'row',
+        marginBottom:7,
+    },
+    shopNameOrderTimeView:{
+        flex:0.8,
+        flexDirection:'row',
+    },
+    shopNameText:{
+        fontSize:15,
+        fontWeight:'600',
+    },
+    orderTimeText:{
+        marginTop:3,
+        marginLeft:12,
+        fontSize:12,
+        color:'#A9A9A9',
+    },
+    orderPriceView:{
+        flex:0.2,
+        flexDirection:'row',
+        justifyContent:'flex-end',
+    },
+    orderPriceText:{     
+        fontSize:14,
+        color:'#696969',
+        marginTop:2,
+    },
+    orderRatingView:{
+        flex:1,
+        flexDirection:'row',
+        marginBottom:10,
+    },
+    eaterCommentView:{
+        flex:1,
+        paddingHorizontal:10,
+        paddingVertical:6,
+        borderRadius: 6, 
+        borderWidth: 0, 
+        backgroundColor: '#f5f5f5',
+        overflow: 'hidden', 
+        marginBottom:10,
+    },
+    chefCommentView:{
+        flex:1,
+        flexDirection:'row',
+        marginBottom:10,
+    },
+    chefPhotoView:{
+        borderRadius: 8, 
+        borderWidth: 0, 
+        overflow: 'hidden', 
+    },
+    chefPhoto:{
+        width:windowHeight/13.8,
+        height:windowHeight/13.8,
+    },
+    chefCommentTextView:{
+        flex:1,
+        flexDirection:'column',
+        backgroundColor: '#DCDCDC',
+        paddingHorizontal:12,
+        paddingVertical:6,
+        marginLeft:10,
+        borderRadius: 8, 
+        borderWidth: 0, 
+        overflow: 'hidden', 
+    },
+    commentText:{
+        fontSize:12,
+        color:'#696969',
+        marginBottom:5,
+    },
+    commentTimeView:{
+        flex:1,
+        flexDirection:'row',
+        justifyContent:'flex-end',
+    },
+    commentTimeText:{
+        fontSize:12,
+        color:'#696969',
+    },
+    eaterNoCommentView:{
+        flex:1,
+        flexDirection:'row',
+        paddingHorizontal:10,
+        paddingVertical:6,
+        borderRadius: 6, 
+        borderWidth: 0, 
+        backgroundColor: '#f5f5f5',
+        overflow: 'hidden', 
+    },
+    addCommentTextClickable:{
+        color:'#ff9933',
+        fontSize:13,
+    }
+});    
 
 module.exports = HistoryOrderPage;
