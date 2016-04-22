@@ -70,7 +70,7 @@ class ChefListPage extends Component {
         var chefs = response.data.chefs;
         var chefView = {};
         for (var chef of chefs) {
-            chefView[chef.chefId] = chef.shopPictures;
+            chefView[chef.chefId] = chef.starDishPictures;
         }
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, chefView: chefView });
     }

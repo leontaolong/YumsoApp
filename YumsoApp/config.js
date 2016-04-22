@@ -10,6 +10,7 @@ module.exports={
     searchAddress:'/maps/api/geocode/json?address=',
     //auth
     authEndpointEmail:'/api/v1/auth/authenticateByEmail/eater',
+    registerEndpointEmail:'/api/v1/auth/registerByEmail/eater',
     authEndpointFacebook:'/api/v1/auth/authenticateFbToken/eater',
     //non-public
     createOrderEndpoint:'/api/v1/chef/order/createOrder',
