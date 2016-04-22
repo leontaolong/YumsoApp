@@ -107,8 +107,34 @@ class HistoryOrderPage extends Component {
                              
            return noRateNoComment;
         }else{
+           var commentSectionRender = [];
+           var hasRating = (<View style={styleHistoryOrderPage.orderRatingView}>
+                                {rating.renderRating(order.comment.starRating)}
+                           </View>);
+           commentSectionRender.push(hasRating);
+                        
+           if(order.comment.starRating && order.comment.eaterComment){
+              var hasEaterComment =(<View style={styleHistoryOrderPage.eaterCommentView}>
+                                        <Text style={styleHistoryOrderPage.commentText}>{order.comment.eaterComment}</Text>
+                                        <View style={styleHistoryOrderPage.commentTimeView}>
+                                            <Text style={styleHistoryOrderPage.commentTimeText}>04/30/2016</Text>
+                                        </View>
+                                    </View>);
+              commentSectionRender.push(hasEaterComment);
+           }else if(order.comment.starRating && !order.comment.eaterComment){
+              var noEaterComment = (<View style={styleHistoryOrderPage.eaterNoCommentView}>
+                                       <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }> 
+                                         <Text style={styleHistoryOrderPage.addCommentTextClickable}>Add Comment</Text>
+                                       </TouchableHighlight>
+                                       <View style={styleHistoryOrderPage.commentTimeView}>
+                                         <Text style={styleHistoryOrderPage.commentTimeText}>04/30/2016</Text>
+                                       </View>
+                                    </View>);
+              commentSectionRender.push(noEaterComment);
+           }
+           
            if(order.comment.chefComment){
-              hasChefComment = (<View key={'chefComment'} style={styleHistoryOrderPage.chefCommentView}>
+              hasChefComment = (<View style={styleHistoryOrderPage.chefCommentView}>
                                   <View style={styleHistoryOrderPage.chefPhotoView}>
                                        <Image source={imageSrc} style={styleHistoryOrderPage.chefPhoto}/>
                                   </View>
@@ -119,37 +145,10 @@ class HistoryOrderPage extends Component {
                                       </View>
                                   </View>                           
                               </View>);
+              commentSectionRender.push(hasChefComment);
            }  
-            
-           if(order.comment.starRating && order.comment.eaterComment){
-             var hasRateAndComment =[
-                                    (<View key={'rating'} style={styleHistoryOrderPage.orderRatingView}>
-                                        {rating.renderRating(order.comment.starRating)}
-                                    </View>),
-                                    (<View key={'eaterComment'} style={styleHistoryOrderPage.eaterCommentView}>
-                                        <Text style={styleHistoryOrderPage.commentText}>{order.comment.eaterComment}</Text>
-                                        <View style={styleHistoryOrderPage.commentTimeView}>
-                                            <Text style={styleHistoryOrderPage.commentTimeText}>04/30/2016</Text>
-                                        </View>
-                                    </View>)
-                                    ];
-             return [hasRateAndComment,hasChefComment];
-           }else if(order.comment.starRating && !order.comment.eaterComment){
-              hasRateNoComment = [
-                                  (<View key={'rating'} style={styleHistoryOrderPage.orderRatingView}>
-                                    {rating.renderRating(order.comment.starRating)}
-                                  </View>),
-                                  (<View key={'eaterComment'} style={styleHistoryOrderPage.eaterNoCommentView}>
-                                   <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }> 
-                                    <Text style={styleHistoryOrderPage.addCommentTextClickable}>Add Comment</Text>
-                                   </TouchableHighlight>
-                                    <View style={styleHistoryOrderPage.commentTimeView}>
-                                      <Text style={styleHistoryOrderPage.commentTimeText}>04/30/2016</Text>
-                                    </View>
-                                   </View>)
-                                 ];
-             return [hasRateNoComment,hasChefComment];
-           }            
+           
+           return commentSectionRender;
         }
     }
     
@@ -199,13 +198,7 @@ class HistoryOrderPage extends Component {
         var orderTheCommentIsFor = this.state.orderTheCommentIsFor;
         var starRating = this.state.starRating;
         if (!starRating) {
-            Alert.alert(
-                '',
-                'Please rate the order',
-                [
-                    { text: 'OK' }
-                ]
-            );
+            Alert.alert('','Please rate the order',[{ text: 'OK' }]);
             return;
         }
         var data = {
@@ -218,13 +211,7 @@ class HistoryOrderPage extends Component {
         return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
         .then((res)=>{
             if(res.statusCode===200){
-                Alert.alert(
-                    'Success',
-                    'Comment is left for this order',
-                    [
-                        { text: 'OK' }            
-                    ]
-                );    
+               Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
             }
             this.state.orderTheCommentIsFor.comment={
                         eaterComment:comment,

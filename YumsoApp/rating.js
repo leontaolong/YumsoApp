@@ -11,10 +11,6 @@ var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
  class Rating {
-    constructor(props) {
-       
-    }
-    
     renderRating(rating){
        var ratingIcons = [];
        var maxRating = 5;
