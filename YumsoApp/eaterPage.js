@@ -137,12 +137,12 @@ var styleEaterPage = StyleSheet.create({
     },
     iconImage:{
         width:40,
-        height:40
+        height:40,
     },
     editButtonView:{
         position:'absolute',
         top:25,
-        right:10
+        right:10,
     },
     headerBannerView:{
         flex: 1,
