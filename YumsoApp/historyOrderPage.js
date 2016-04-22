@@ -39,7 +39,7 @@ class HistoryOrderPage extends Component {
 
     componentDidMount(){
         this.client = new HttpsClient(config.baseUrl, true);
-        this.fetchOrderAndComments(); 
+        return this.fetchOrderAndComments(); 
     }
     
     async fetchOrderAndComments() {
