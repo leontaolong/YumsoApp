@@ -115,12 +115,14 @@ class ShopPage extends Component {
         }   
         return (
             <View style={styleShopPage.oneDishInListView}>
-               <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
+               <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)}>
+                    <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
+               </TouchableHighlight>
                <View style={styleShopPage.oneDishNameDiscriptionView}>
                   <Image source={require('./icons/icon_bowl.png')} style={styleShopPage.bowlIcon}/>
                   <View style={styleShopPage.oneDishNameDiscriptionTextView}>
                      <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
-                     <Text style={styleShopPage.oneDishDiscriptionText}>Very short discription</Text>
+                     <Text style={styleShopPage.oneDishDiscriptionText}>{dish.description}</Text>
                   </View>
                   <View style={styleShopPage.forwardIconView}>
                       <TouchableHighlight>
@@ -357,6 +359,15 @@ class ShopPage extends Component {
                 chefId:this.state.chefId
             }
         });       
+    }
+    
+    navigateToDishPage(dish){
+        this.props.navigator.push({
+            name: 'DishPage', 
+            passProps:{
+                dish:dish
+            }
+        });      
     }
     
     navigateBackToChefList(){
