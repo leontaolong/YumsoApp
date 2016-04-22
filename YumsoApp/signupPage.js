@@ -56,6 +56,11 @@ class SignUpPage extends Component {
     }
     
     async onSignUpPressed(){
+        if(!this.state.firstname || !this.state.lastname){
+            Alert.alert( 'Warning', 'Missing first name or last name',[ { text: 'OK' }]);
+            return;
+        }
+        
         if(!this.state.email || !this.state.password){
             Alert.alert( 'Warning', 'No email or password',[ { text: 'OK' }]);
             return;
