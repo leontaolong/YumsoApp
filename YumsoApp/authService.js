@@ -18,7 +18,26 @@ class AuthService {
         let eaterStr = await AsyncStorage.getItem('principal');
         return JSON.parse(eaterStr);
     }
-    
+
+    async registerWithEmail(firstname, lastname, email, password, password_re){
+        let response = await this.client.postWithoutAuth(config.registerEndpointEmail, {
+            entity:{
+                firstname:firstname, 
+                lastname:lastname,
+                email: email,
+                password: password,
+                password_re:password_re
+            }
+        });
+        if(response.statusCode==200){
+            Alert.alert( 'Success', 'successfully registered. Please confirm your email. You will not be able to log in till your email is verified',[ { text: 'OK' }]); 
+            return true;
+        }else{
+            Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);
+            return false; 
+        }
+    }
+        
     async loginWithEmail(email, password){
         var response = await this.client.postWithoutAuth(config.authEndpointEmail, {
             email: email,

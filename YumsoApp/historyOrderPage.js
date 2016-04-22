@@ -39,7 +39,7 @@ class HistoryOrderPage extends Component {
 
     componentDidMount(){
         this.client = new HttpsClient(config.baseUrl, true);
-        this.fetchOrderAndComments(); 
+        return this.fetchOrderAndComments(); 
     }
     
     async fetchOrderAndComments() {
@@ -165,7 +165,7 @@ class HistoryOrderPage extends Component {
                         <Text style={styles.buttonText}>Submit</Text>    
                     </TouchableHighlight>                                                
                     <TouchableHighlight style={styles.button}
-                        onPress={()=>this.setState({showCommentBox:false, comment:undefined, orderTheCommentIsFor:undefined}) }>
+                        onPress={()=>this.setState({showCommentBox:false, comment:undefined, starRating:undefined, orderTheCommentIsFor:undefined}) }>
                         <Text style={styles.buttonText}>Cancel</Text>
                     </TouchableHighlight>       
                 </View>
@@ -218,7 +218,7 @@ class HistoryOrderPage extends Component {
                         starRating: data.starRating
                     };
             var orders = this.state.orders;       
-            self.setState({showCommentBox:false, dataSource: this.state.dataSource.cloneWithRows(orders), orders:orders, comment:undefined, orderTheCommentIsFor:undefined});
+            self.setState({showCommentBox:false, dataSource: this.state.dataSource.cloneWithRows(orders), orders:orders, comment:undefined, starRating:undefined, orderTheCommentIsFor:undefined});
         });
     }
 
