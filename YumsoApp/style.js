@@ -9,7 +9,7 @@ var {
 
 var windowHeight = Dimensions.get('window').height;
 var windowsWidth = Dimensions.get('window').width;
-console.log(windowHeight);
+
 module.exports = StyleSheet.create({
     container:{
         marginTop:15,
