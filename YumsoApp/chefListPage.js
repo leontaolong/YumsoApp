@@ -350,7 +350,10 @@ var Menu = React.createClass({
             name: 'EaterPage',
             passProps:{
                 eater:this.props.eater,
-                principal:this.props.principal
+                principal:this.props.principal,
+                callback: function(eater){
+                    this.props.caller.setState({eater:eater});
+                }.bind(this)
             }
         });
     },
