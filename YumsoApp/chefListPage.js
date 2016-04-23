@@ -54,7 +54,7 @@ class ChefListPage extends Component {
             let response = await this.client.getWithAuth(config.eaterEndpoint);
             if(response.statusCode===200){
                 console.log(response.data);
-                this.setState({eater:response.data.eater});
+                this.setState({eater:response.data.eater, principal:principal});
             }else{ //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
                 this.setState({eater:undefined});    //todo: clear the token and cache.      
             }
@@ -162,7 +162,7 @@ class ChefListPage extends Component {
     }
     
     render() {
-        const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} caller = {this}/>;
+        const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} principal={this.state.principal} caller = {this}/>;
         if (this.state.showProgress) {
             return (
                 <View>
@@ -348,6 +348,10 @@ var Menu = React.createClass({
         this.props.caller.setState({ isMenuOpen: false });
         this.props.navigator.push({
             name: 'EaterPage',
+            passProps:{
+                eater:this.props.eater,
+                principal:this.props.principal
+            }
         });
     },
     
@@ -362,7 +366,7 @@ var Menu = React.createClass({
         if(!isAuthenticated){
             profile = <Image source={profileImg} style={styles.chefListView_Chef_profilePic}/>;
         }else{
-            profile = <TouchableHighlight style = {styles.chefProfilePic} onPress={this.goToEaterPage}>
+            profile = <TouchableHighlight style = {styles.chefProfilePic} onPress={()=>this.goToEaterPage()}>
                     <Image source={profileImg} style={styles.chefListView_Chef_profilePic}/>
                 </TouchableHighlight>;
         }

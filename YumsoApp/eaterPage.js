@@ -2,6 +2,7 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
+var ImageCamera = require('./imageCamera');
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -23,42 +24,14 @@ class EaterPage extends Component {
      constructor(props){
         super(props);
         var routeStack = this.props.navigator.state.routeStack;
-                
+        let eater = routeStack[routeStack.length-1].passProps.eater;      
+        let principal = routeStack[routeStack.length-1].passProps.eater;
         this.state = {
-            showProgress:true,
+            eater:eater,
+            authProvider:principal.identityProvider,
+            showProgress:false
         };
-    }
-    
-    componentDidMount(){
-        this.client = new HttpsClient(config.baseUrl, true);
-        this.fetchEaterProfile(); 
-    }
-    
-    fetchEaterProfile(){
-        var self = this;
-        return AuthService.getPrincipalInfo().then(function(res){
-           if(res){
-              var eaterId = res.userId;
-              console.log('eaterPrinciple: ');
-              console.log(res);
-            //   this.client.getWithAuth(config.getOneChefEndpoint+eaterId).then(function(res){
-            //      if(res.statusCode===200){
-            //         var chef=res.data.chef;
-            //         console.log("chef:");
-            //         console.log(chef); 
-            //         self.setState({chef:chef, showProgress:false});
-            //     }
-            //  });
-              var eater = res;
-              eater['eaterAlias'] = 'xihe';
-              eater['telephoneNumber'] = '(425)802-4885';
-              eater['addressList'] = ['10715 NE37 Ct, Apt.227,Kirkland,WA 98033','1306 17th Ave SE,Seattle, WA 98108'];
-              eater['creditCard'] = '1234 4567 7890 1234';
-              eater['paypal'] = null; 
-              eater['eaterProfilePic'] = './TestImages/Obama.jpg';
-              self.setState({eater:eater, showProgress:false});
-           }
-        });
+        this.client = new HttpsClient(config.baseUrl);
     }
     
     render() {
@@ -77,7 +50,7 @@ class EaterPage extends Component {
                     <Text key={i} style={styleEaterPage.eaterPageGreyText}>+ {this.state.eater.addressList[i]}</Text>  
                   );
               }
-              
+              var chefProfile = this.state.eater.eaterProfilePic==null? require('./TestImages/Obama.jpg'):{uri: this.state.eater.eaterProfilePic}
               return(
               <View>
                 <View style={styleEaterPage.headerBannerView}>
@@ -92,14 +65,16 @@ class EaterPage extends Component {
                    </View>
                 </TouchableHighlight>
                 </View>
-                <Image source={require('./TestImages/Obama.jpg')} style={styleEaterPage.eaterProfilePic}>
+                <Image source={chefProfile} style={styleEaterPage.eaterProfilePic}>
                    <View style={styleEaterPage.uploadPhotoButtonView}>
-                     <Image source={require('./icons/ic_add_a_photo_48pt_3x.png')} style={styleEaterPage.iconImage}/>                      
+                     <TouchableHighlight onPress={()=>this.uploadPic()}>
+                        <Image source={require('./icons/ic_add_a_photo_48pt_3x.png')} style={styleEaterPage.iconImage}/>                      
+                     </TouchableHighlight>
                    </View>
                 </Image>
                 <View style={styleEaterPage.eaterPageRowView}>
                    <Text style={styleEaterPage.eaterNameText}>{this.state.eater.firstname} {this.state.eater.lastname} ({this.state.eater.eaterAlias})</Text>
-                   <Text style={styleEaterPage.eaterPageGreyText}>Email:{this.state.eater.email}</Text>
+                   <Text style={styleEaterPage.eaterPageGreyText}>{this.state.authProvider==='Yumso'?`Email:${this.state.eater.email}`:'Logged in using Facebook'}</Text>
                 </View>
                 <View style={styleEaterPage.eaterPageRowView}>
                    <Text style={styleEaterPage.eaterPageGreyText}>Address:</Text>
@@ -113,6 +88,13 @@ class EaterPage extends Component {
               </View>
               );     
             }                      
+    }
+    
+    uploadPic(){
+           ImageCamera.PickImage((source)=>{
+               this.state.eater.eaterProfilePic = source.uri;
+               this.setState({eater:this.state.eater});
+           });     
     }
     
     navigateBackToChefList(){
