@@ -12,11 +12,9 @@ var windowsWidth = Dimensions.get('window').width;
 console.log(windowHeight);
 module.exports = StyleSheet.create({
     container:{
-        backgroundColor: '#F5FCFF',
-        paddingTop:40,
-        padding:10,
-        alignItems: 'center',
-        flex:1
+        marginTop:15,
+        flex:1,
+        flexDirection:'column',
     },
     logo:{
         width:66,
