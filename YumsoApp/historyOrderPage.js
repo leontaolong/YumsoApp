@@ -3,6 +3,7 @@ var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var rating = require('./rating');
+var dateRender = require('./commonModules/dateRender');
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -43,8 +44,8 @@ class HistoryOrderPage extends Component {
     }
     
     async fetchOrderAndComments() {
-        const start = 'start='+new Date().setDate(new Date().getDate()-7);
-        const end = 'end=9999999999999999';
+        const start = 'start='+new Date().setDate(new Date().getDate()-30);
+        const end = 'end='+ new Date().getTime();
         let eater = await AuthService.getPrincipalInfo();
         let pastOneWeekOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+start+'&'+end);
         let pastOneWeekComment = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+start+'&'+end);
@@ -79,7 +80,7 @@ class HistoryOrderPage extends Component {
                 <View style={styleHistoryOrderPage.shopNameTimePriceView}>
                    <View style={styleHistoryOrderPage.shopNameOrderTimeView}>
                       <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>
-                      <Text style={styleHistoryOrderPage.orderTimeText}>{new Date(order.orderCreatedTime).getDate()+'/'+new Date(order.orderCreatedTime).getMonth()+'/'+new Date(order.orderCreatedTime).getFullYear()}</Text>
+                      <Text style={styleHistoryOrderPage.orderTimeText}>{dateRender.renderDate1(order.orderCreatedTime)}</Text>
                    </View>
                    <View style={styleHistoryOrderPage.orderPriceView}>
                       <Text style={styleHistoryOrderPage.orderPriceText}>${order.grandTotal}</Text>
@@ -98,53 +99,65 @@ class HistoryOrderPage extends Component {
             imageSrc={uri:order.chefProfilePic};   
         }
         
+        var todayInMillisec = new Date().getTime()
+        
         if(!order.comment){
-           var noRateNoComment = (<View style={styleHistoryOrderPage.eaterNoCommentView}>
-                                <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }>
-                                  <Text style={styleHistoryOrderPage.addCommentTextClickable}>Rate and Comment</Text>
-                                </TouchableHighlight>
-                             </View>);
-                             
-           return noRateNoComment;
+          if(todayInMillisec-order.orderCreatedTime < 604800000){//Only order with 7 days from now can be rated and commented
+             return (<View style={styleHistoryOrderPage.eaterNoCommentView}>
+                           <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }>
+                                <Text style={styleHistoryOrderPage.addCommentTextClickable}>Rate and Comment</Text>
+                           </TouchableHighlight>
+                    </View>);
+          }else{
+            return (<View style={styleHistoryOrderPage.eaterNoCommentView}>
+                        <Text style={styleHistoryOrderPage.commentText}>No Rate or Comment</Text>
+                    </View>);
+          }                            
         }else{
            var commentSectionRender = [];
-           var hasRating = (<View style={styleHistoryOrderPage.orderRatingView}>
+           var hasRating = (<View key={'ratingSection'} style={styleHistoryOrderPage.orderRatingView}>
                                 {rating.renderRating(order.comment.starRating)}
-                           </View>);
+                            </View>);
            commentSectionRender.push(hasRating);
                         
            if(order.comment.starRating && order.comment.eaterComment){
-              var hasEaterComment =(<View style={styleHistoryOrderPage.eaterCommentView}>
-                                        <Text style={styleHistoryOrderPage.commentText}>{order.comment.eaterComment}</Text>
-                                        <View style={styleHistoryOrderPage.commentTimeView}>
-                                            <Text style={styleHistoryOrderPage.commentTimeText}>04/30/2016</Text>
-                                        </View>
-                                    </View>);
+              var hasEaterComment = (<View key={'eaterCommentSection'} style={styleHistoryOrderPage.eaterCommentView}>
+                                         <Text style={styleHistoryOrderPage.commentText}>{order.comment.eaterComment}</Text>
+                                         <View style={styleHistoryOrderPage.commentTimeView}>
+                                            <Text style={styleHistoryOrderPage.commentTimeText}>{dateRender.renderDate1(order.comment.eaterCommentTime)}</Text>
+                                         </View>
+                                     </View>);
               commentSectionRender.push(hasEaterComment);
            }else if(order.comment.starRating && !order.comment.eaterComment){
-              var noEaterComment = (<View style={styleHistoryOrderPage.eaterNoCommentView}>
-                                       <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }> 
-                                         <Text style={styleHistoryOrderPage.addCommentTextClickable}>Add Comment</Text>
-                                       </TouchableHighlight>
+              if(todayInMillisec-order.orderCreatedTime < 604800000){//Only order with 7 days from now can be rated and commented
+                 var noEaterComment = (<View key={'eaterCommentSection'} style={styleHistoryOrderPage.eaterNoCommentView}>
+                                          <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }> 
+                                             <Text style={styleHistoryOrderPage.addCommentTextClickable}>Add Comment</Text>
+                                          </TouchableHighlight>
                                        <View style={styleHistoryOrderPage.commentTimeView}>
-                                         <Text style={styleHistoryOrderPage.commentTimeText}>04/30/2016</Text>
+                                           <Text style={styleHistoryOrderPage.commentTimeText}>{dateRender.renderDate1(order.comment.eaterCommentTime)}</Text>
                                        </View>
-                                    </View>);
-              commentSectionRender.push(noEaterComment);
+                                       </View>);
+            }else{
+               var noEaterComment = (<View style={styleHistoryOrderPage.eaterNoCommentView}>
+                                        <Text style={styleHistoryOrderPage.commentText}>No Comment</Text>
+                                     </View>); 
+            }
+            commentSectionRender.push(noEaterComment);
            }
            
            if(order.comment.chefComment){
-              hasChefComment = (<View style={styleHistoryOrderPage.chefCommentView}>
+              hasChefComment = (<View key={'chefCommentSection'} style={styleHistoryOrderPage.chefCommentView}>
                                   <View style={styleHistoryOrderPage.chefPhotoView}>
                                        <Image source={imageSrc} style={styleHistoryOrderPage.chefPhoto}/>
                                   </View>
                                   <View style={styleHistoryOrderPage.chefCommentTextView}>
                                       <Text style={styleHistoryOrderPage.commentText}>{order.comment.chefComment}</Text>                                  
                                       <View style={styleHistoryOrderPage.commentTimeView}>
-                                         <Text style={styleHistoryOrderPage.commentTimeText}>03/10/2016</Text>
+                                         <Text style={styleHistoryOrderPage.commentTimeText}>{dateRender.renderDate1(order.comment.chefCommentTime)}</Text>
                                       </View>
                                   </View>                           
-                              </View>);
+                                </View>);
               commentSectionRender.push(hasChefComment);
            }  
            
@@ -153,8 +166,8 @@ class HistoryOrderPage extends Component {
     }
     
     render() {
-        if(this.state.showCommentBox==true){
-            return (
+        if(this.state.showCommentBox == true){
+           return (
                 <View style={styles.container}> 
                     <TextInput placeholder="comments" style={styles.loginInput}
                         onChangeText = {(text) => this.setState({ comment: text }) }/>
@@ -173,21 +186,21 @@ class HistoryOrderPage extends Component {
         }
         return (
             <View style={styles.container}>
-               <View style={styleHistoryOrderPage.headerBannerView}>
-                 <TouchableHighlight onPress={() => this.navigateBackToChefList()}>
+               <View style={styleHistoryOrderPage.headerBannerView}>    
                    <View style={styleHistoryOrderPage.backButtonView}>
+                   <TouchableHighlight onPress={() => this.navigateBackToChefList()}>
                      <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleHistoryOrderPage.backButtonIcon}/>
+                   </TouchableHighlight>
+                   </View>    
+                   <View style={styleHistoryOrderPage.historyOrderTitleView}>
+                     <Text style={styleHistoryOrderPage.historyOrderTitleText}>History Order</Text>
                    </View>
-                 </TouchableHighlight>
-                 <Text>History Order</Text>
+                   <View style={{flex:0.1/3,width:windowWidth/3}}>
+                   </View>
                </View>
-               <ListView style={styles.dishListView}
+               <ListView style={styleHistoryOrderPage.commentListView}
                     dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this) } />
-                <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateBackToChefList() }>
-                    <Text style={styles.buttonText}>back to chef list</Text>
-                </TouchableHighlight>                      
+                    renderRow={this.renderRow.bind(this) }/>                    
             </View>
         );
     }
@@ -228,22 +241,41 @@ class HistoryOrderPage extends Component {
 }
 
 var styleHistoryOrderPage = StyleSheet.create({
+    headerBannerView:{
+        flex:0.1,
+        flexDirection:'row',
+        borderBottomWidth:1,
+        borderColor:'#D7D7D7',
+    },
     backButtonView:{
-        position:'absolute',
-        top:15,
-        left:0,
+        flex:0.1/3,
+        width:windowWidth/3,
+        paddingTop:6,
     },
     backButtonIcon:{
-        width:40,
-        height:40,
+        width:30,
+        height:30,
+    },
+    historyOrderTitleView:{
+        flex:0.1/3, 
+        width:windowWidth/3,
+        alignItems:'center',     
+    },
+    historyOrderTitleText:{
+        marginTop:12,
+    },
+    commentListView:{
+        alignSelf:'stretch',
+        flexDirection:'column',
+        height: windowHeight*9/10
     },
     oneCommentView:{
        flex:1,
        flexDirection:'column',
        paddingHorizontal:10,
        paddingVertical:20,
-       borderTopWidth:1,
-       borderColor: '#D7D7D7',
+       borderBottomWidth:1,
+       borderColor: '#f5f5f5',
     },
     shopNameTimePriceView:{
         flex:1,
