@@ -131,17 +131,17 @@ class HistoryOrderPage extends Component {
            }else if(order.comment.starRating && !order.comment.eaterComment){
               if(todayInMillisec-order.orderCreatedTime < 604800000){//Only order with 7 days from now can be rated and commented
                  var noEaterComment = (<View key={'eaterCommentSection'} style={styleHistoryOrderPage.eaterNoCommentView}>
-                                          <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }> 
-                                             <Text style={styleHistoryOrderPage.addCommentTextClickable}>Add Comment</Text>
-                                          </TouchableHighlight>
+                                         <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }> 
+                                           <Text style={styleHistoryOrderPage.addCommentTextClickable}>Add Comment</Text>
+                                         </TouchableHighlight>
                                        <View style={styleHistoryOrderPage.commentTimeView}>
                                            <Text style={styleHistoryOrderPage.commentTimeText}>{dateRender.renderDate1(order.comment.eaterCommentTime)}</Text>
                                        </View>
                                        </View>);
             }else{
-               var noEaterComment = (<View style={styleHistoryOrderPage.eaterNoCommentView}>
-                                        <Text style={styleHistoryOrderPage.commentText}>No Comment</Text>
-                                     </View>); 
+                 var noEaterComment = (<View style={styleHistoryOrderPage.eaterNoCommentView}>
+                                           <Text style={styleHistoryOrderPage.commentText}>No Comment</Text>
+                                       </View>); 
             }
             commentSectionRender.push(noEaterComment);
            }
