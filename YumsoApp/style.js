@@ -9,7 +9,6 @@ var {
 
 var windowHeight = Dimensions.get('window').height;
 var windowsWidth = Dimensions.get('window').width;
-
 module.exports = StyleSheet.create({
     container:{
         marginTop:15,
@@ -26,14 +25,16 @@ module.exports = StyleSheet.create({
         marginBottom:20
     },
     loginInput:{
-      height:50,
-      marginTop:10,
-      padding:4,
-      fontSize:18,
-      borderWidth:1,
-      borderColor: '#48BBEC' ,
-      borderRadius: 0,
-      color: '#48BBEC' 
+      height:windowHeight/14.72,
+      fontSize:windowHeight/36.8,
+      color: '#A9A9A9',
+    },
+    loginInputView:{
+      borderBottomWidth:0.8,
+      borderColor: '#D7D7D7',
+      justifyContent: 'center',
+      paddingVertical:5,
+      paddingHorizontal:windowHeight/49.0,
     },
     button:{
       height: 50,
