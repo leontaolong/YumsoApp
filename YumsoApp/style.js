@@ -14,6 +14,7 @@ module.exports = StyleSheet.create({
         marginTop:15,
         flex:1,
         flexDirection:'column',
+        backgroundColor:'#fff',
     },
     logo:{
         width:66,
@@ -40,13 +41,11 @@ module.exports = StyleSheet.create({
       height: 50,
       backgroundColor:'#48BBEC'  ,
       borderColor:'#48BBEC',
-      alignSelf:'stretch',
       justifyContent: 'center',
-      marginTop:10
     },
     buttonText:{
       color:'#fff',
-      fontSize:24,
+      fontSize:20,
       alignSelf:'center'
     },
     loader:{
