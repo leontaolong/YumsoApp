@@ -23,6 +23,8 @@ import React, {
   Navigator
 } from 'react-native';
 
+console.disableYellowBox = true; 
+
 class YumsoApp extends Component {
     
     render() {

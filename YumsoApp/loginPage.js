@@ -107,21 +107,19 @@ class LoginPage extends Component {
         }
         this.setState({ success: true });
         this.setState({ showProgress: false });
-        let user = await AuthService.getPrincipalInfo();
-        console.log(user);
+        let user = await AuthService.getEater();
         Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
         this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();
         }
         if(this.state.callback){
-            this.state.callback();
+            this.state.callback(user);
         }
     }
     
     async onGettingFbToken(credentials){
         let token  = credentials.token;
-        //let fbId = credentials.userId;
         this.setState({showProgress:true});
         let result = await AuthService.loginWithFbToken(token);
         if(!result){
@@ -129,15 +127,14 @@ class LoginPage extends Component {
         }
         this.setState({ success: true });
         this.setState({ showProgress: false });   
-        let user = await AuthService.getPrincipalInfo();
-        console.log(user);  
+        let user = await AuthService.getEater();
         Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
         this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();
         }
         if(this.state.callback){
-            this.state.callback();
+            this.state.callback(user);
         }
     }
     
@@ -148,9 +145,9 @@ class LoginPage extends Component {
     }
     
     navigateBack() {
-        if (this.state.callback) {
-            this.state.callback();
-        }
+        // if (this.state.callback) {
+        //     this.state.callback();
+        // }
         this.props.navigator.pop();
     }
 }

@@ -170,15 +170,16 @@ class EaterPage extends Component {
         eater.firstname = this.state.firstname.trim();
         eater.lastname = this.state.lastname.trim();
         eater.eaterAlias = this.state.eaterAlias.trim();
-        console.log(eater);
-        console.log(this.state.eater);
         return this.client.postWithAuth(config.eaterUpdateEndpoint,{
             eater: eater
         }).then((res)=>{
             if(res.statusCode ===200){
                 Alert.alert('Success', 'Successfully updated your profile', [{ text: 'OK' }]); 
-                _this.setState({eater:eater, edit:false});  
-                _this.state.callback(_this.state.eater);           
+                return AuthService.updateCacheEater(eater)
+                    .then(()=>{
+                        _this.setState({eater:eater, edit:false});             
+                        _this.state.callback(_this.state.eater);           
+                    }); 
             }else {
                 Alert.alert('Fail', 'Failed update your profile. Please retry again later', [{ text: 'OK' }]);          
             }
