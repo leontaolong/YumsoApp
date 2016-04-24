@@ -1,6 +1,7 @@
 var HttpsClient = require('./httpsClient');
 var principalKey = 'principal';
 var authTokenKey = 'token';
+var eaterKey = 'eater';
 var AsyncStorage = require('react-native').AsyncStorage;
 var config = require('./config');
 var FBLoginManager = require('NativeModules').FBLoginManager;
@@ -11,14 +12,29 @@ import React, {
 
 class AuthService {   
     constructor(props){
-        this.client = new HttpsClient(config.baseUrl);
+        this.client = new HttpsClient(config.baseUrl, true);
     }
     
     async getPrincipalInfo(){
-        let eaterStr = await AsyncStorage.getItem('principal');
+        let eaterStr = await AsyncStorage.getItem(principalKey);
+        if(eaterStr==undefined || eaterStr==null){
+            return undefined;
+        }
         return JSON.parse(eaterStr);
     }
 
+    async getEater(){
+        let eaterStr = await AsyncStorage.getItem(eaterKey);
+        if(eaterStr==undefined || eaterStr==null){
+            return undefined;
+        }   
+        return JSON.parse(eaterStr);   
+    }
+    
+    async updateCacheEater(eater){
+        await AsyncStorage.multiSet([[eaterKey, JSON.stringify(eater)]]);
+    }
+    
     async registerWithEmail(firstname, lastname, email, password, password_re){
         let response = await this.client.postWithoutAuth(config.registerEndpointEmail, {
             entity:{
@@ -39,11 +55,10 @@ class AuthService {
     }
         
     async loginWithEmail(email, password){
-        var response = await this.client.postWithoutAuth(config.authEndpointEmail, {
+        let response = await this.client.postWithoutAuth(config.authEndpointEmail, {
             email: email,
             password: password
         });
-        console.log(response);
         if(response.statusCode!=200){
             Alert.alert( 'Warning', response.data,[ { text: 'OK' }]); 
             return false;
@@ -52,15 +67,22 @@ class AuthService {
             [principalKey, JSON.stringify(response.data.principal)],
             [authTokenKey, response.data.token]
         ]);
+        let res = await this.client.getWithAuth(config.eaterEndpoint);
+        if(res.statusCode!==200){
+            Alert.alert( 'Warning', 'Failed login and get your profile',[ { text: 'OK' }]); 
+            return false;          
+        }
+        await AsyncStorage.multiSet([
+            [eaterKey, JSON.stringify(res.data.eater)]
+        ]); 
         return true;
     }
     
     async loginWithFbToken(token){
-        var response = await this.client.postWithoutAuth(config.authEndpointFacebook, {
+        let response = await this.client.postWithoutAuth(config.authEndpointFacebook, {
             token:token
         });
-        console.log(response);
-        if(response.statusCode!=200){
+        if(response.statusCode!==200){
             Alert.alert( 'Warning', 'Failed login to facebook with its token',[ { text: 'OK' }]); 
             return false;
         }
@@ -68,20 +90,46 @@ class AuthService {
             [principalKey, JSON.stringify(response.data.principal)],
             [authTokenKey, response.data.token]
         ]);    
+        let res = await this.client.getWithAuth(config.eaterEndpoint);
+        if(res.statusCode!==200){
+            Alert.alert( 'Warning', 'Failed login and get your profile',[ { text: 'OK' }]); 
+            return false;          
+        }
+        await AsyncStorage.multiSet([
+            [eaterKey, JSON.stringify(res.data.eater)]
+        ]); 
         return true;   
     }
     
     async logOut(){
-        FBLoginManager.logout(function(error, data){
+        await FBLoginManager.logout(function(error, data){
             if (!error) {
                 console.log("fb logged out");
             } else {
                 console.log(error, data);
             }
-        });
-        await AsyncStorage.multiRemove([principalKey,authTokenKey]);
+        });              
+        await AsyncStorage.multiRemove([principalKey,authTokenKey,eaterKey]);
     }
     
+    getLoginStatus(){
+        return this.client.getWithAuth(config.authStatusEndpoint)
+        .then((res)=>{
+            if(res.statusCode===200){
+                return true;
+            }else{
+                return AsyncStorage.multiRemove([principalKey,authTokenKey,eaterKey])
+                .then(()=>{
+                    return false;
+                });
+            }
+        }).catch((err)=>{
+            return AsyncStorage.multiRemove([principalKey,authTokenKey,eaterKey])
+                .then(()=>{
+                    return false;
+                });     
+        });
+    }
     //todo: refresh token behind the scene.
 }
 

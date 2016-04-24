@@ -12,6 +12,7 @@ module.exports={
     authEndpointEmail:'/api/v1/auth/authenticateByEmail/eater',
     registerEndpointEmail:'/api/v1/auth/registerByEmail/eater',
     authEndpointFacebook:'/api/v1/auth/authenticateFbToken/eater',
+    authStatusEndpoint:'/api/v1/auth/getloginstatus',
     //non-public
     createOrderEndpoint:'/api/v1/chef/order/createOrder',
     orderHistoryEndpoint:'/api/v1/chef/order/eaterOrders/',
@@ -20,6 +21,8 @@ module.exports={
     eaterEndpoint:'/api/v1/eater/getEater',
     eaterUpdateEndpoint:'/api/v1/eater/updateEater',
     eaterPicUploadEndpoint:'/api/v1/eater/eaterPicUpload',
+    addFavoriteEndpoint:'/api/v1/eater/addOrRemoveFavorite/add',
+    removeFavoriteEndpoint:'/api/v1/eater/addOrRemoveFavorite/remove',
     //public
     chefDishesEndpoint:'/api/v1/public/getDishes/',
     chefSchedulesEndpoint:'/api/v1/public/getSchedules/',

@@ -50,7 +50,7 @@ class HistoryOrderPage extends Component {
         let pastOneWeekOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+start+'&'+end);
         let pastOneWeekComment = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+start+'&'+end);
         if(pastOneWeekOrder.statusCode!=200){
-            throw new Error('Fail getting past orders');
+            throw new Error('Fail getting past orders');//todo: 401 jump
         }
         if(pastOneWeekComment.statusCode!=200){
             throw new Error('Fail getting past comments');

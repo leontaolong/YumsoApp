@@ -2,6 +2,8 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var rating = require('./rating');
+var AuthService = require('./authService');
+
 import Dimensions from 'Dimensions';
 import ModalPicker from 'react-native-modal-picker'
 
@@ -32,6 +34,7 @@ class ShopPage extends Component {
         });
         var routeStack = this.props.navigator.state.routeStack;
         this.chefId = routeStack[routeStack.length-1].passProps.chefId;      
+        this.callback = routeStack[routeStack.length-1].passProps.callback;      
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:true,
@@ -39,15 +42,21 @@ class ShopPage extends Component {
             timeData:[],
             shoppingCart:{},  
             selectedTime:'All Schedules',
-            totalPrice:0
-        };
+            totalPrice:0,
+        };            
     }
     
-    componentDidMount(){
+    componentDidMount(){   
         this.client = new HttpsClient(config.baseUrl, true);
         let task1 = this.fetchChefProfile(); 
         let task2 = this.fetchDishesAndSchedules(this.state.chefId);   
-        return Promise.all([task1,task2]);   
+        let task3 = AuthService.getEater().then((eater)=>{
+            if(eater){
+                if (!eater.favoriteChefs) eater.favoriteChefs = []; //todo: remove this.
+                this.setState({like:eater.favoriteChefs.indexOf(this.state.chefId) !== -1});
+            }
+        })
+        return Promise.all([task1, task2, task3]);   
     }
     
     fetchChefProfile(){
@@ -166,6 +175,10 @@ class ShopPage extends Component {
                         style={styles.loader}/>
                 </View>);
         } else {
+            let likeImg = require('./icons/ic_favorite_border_48pt_3x.png')
+            if(this.state.like){
+                likeImg = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+            }
             return (
                 <View style={{height:windowHeight-40}}>
                     <ScrollView >
@@ -178,7 +191,9 @@ class ShopPage extends Component {
                                     </TouchableHighlight>
                                 </View>
                                 <View style={styleShopPage.likeButtonView}>
-                                    <Image source={require('./icons/ic_favorite_border_48pt_3x.png') } style={styleShopPage.likeButtonIcon}/>
+                                    <TouchableHighlight onPress={()=>{this.addToFavorite()}}>
+                                        <Image source={likeImg} style={styleShopPage.likeButtonIcon}/>
+                                    </TouchableHighlight>
                                 </View>
                                 <View style={styleShopPage.shareButtonView}>
                                     <Image source={require('./icons/ic_share_48pt_3x.png') } style={styleShopPage.shareButtonIcon}/>
@@ -318,6 +333,50 @@ class ShopPage extends Component {
         this.getTotalPrice();
     }
     
+    addToFavorite(){
+        var _this = this;
+        return AuthService.getEater()
+        .then((eater)=>{
+            if(eater){
+                if (!eater.favoriteChefs) eater.favoriteChefs = []; //todo: remove this.
+                let isAdd = eater.favoriteChefs.indexOf(_this.state.chefId) === -1
+                console.log(isAdd);
+                _this.client.postWithAuth(isAdd?config.addFavoriteEndpoint:config.removeFavoriteEndpoint, {
+                    info:{ chefId: _this.state.chefId, eaterId: eater.eaterId}
+                }).then((res)=>{
+                    if(res.statusCode===200){
+                        isAdd?eater.favoriteChefs.push(_this.state.chefId):eater.favoriteChefs.splice(eater.favoriteChefs.indexOf(_this.state.chefId), 1);
+                        return AuthService.updateCacheEater(eater)
+                            .then(()=>{ 
+                                _this.setState({like:isAdd});
+                                Alert.alert('Success', isAdd?'Added to favorite list':'Removed from favorite list', [{ text: 'OK' }]);                          
+                            });
+                    }else if(res.statusCode===401){
+                        _this.props.navigator.push({
+                            name: 'LoginPage',
+                            passProps:{
+                                callback:(eater)=>{
+                                _this.setState({like:eater.favoriteChefs.indexOf(_this.state.chefId) !== -1});                  
+                                }  
+                            }                
+                        });
+                    }else{
+                        Alert.alert( 'Failed', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                    }
+                });         
+            }else{
+                _this.props.navigator.push({
+                    name: 'LoginPage',
+                    passProps:{
+                        callback:(eater)=>{
+                           _this.setState({like:eater.favoriteChefs.indexOf(_this.state.chefId) !== -1});                  
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
     navigateToShoppingCart(){
         if(this.state.selectedTime =='All Schedules'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
@@ -357,6 +416,9 @@ class ShopPage extends Component {
                 { text: 'OK', onPress: () => {this.props.navigator.pop(); this.state.shoppingCart={}}},
                 {text:'Cancel'}]);
         }else{
+            if(this.callback){
+                this.callback();
+            }
             this.props.navigator.pop();
         }
     }

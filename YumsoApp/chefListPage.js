@@ -48,20 +48,16 @@ class ChefListPage extends Component {
         if(config.autoLogin){//this is for debugging so to auto login
            await AuthService.loginWithEmail(config.email, config.password);
         }
-        let principal = await AuthService.getPrincipalInfo();
-        if(principal==null) principal=undefined;
-        if(principal){
-            let response = await this.client.getWithAuth(config.eaterEndpoint);
-            if(response.statusCode===200){
-                console.log(response.data);
-                this.setState({eater:response.data.eater, principal:principal});
-            }else{ //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
-                this.setState({eater:undefined});    //todo: clear the token and cache.      
-            }
-        }else{
-            this.setState({eater:undefined});          
+        let status = await AuthService.getLoginStatus();
+        let eater = undefined;
+        let principal = undefined;
+        if(status===true){
+            eater = await AuthService.getEater();
+            principal = await  AuthService.getPrincipalInfo();
         }
-        this.setState({ principal: principal });
+        //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
+        //todo: clear the token and cache.      
+        this.setState({ principal: principal, eater:eater });
         this.fetchChefDishes();
     }
 
@@ -125,8 +121,7 @@ class ChefListPage extends Component {
                 </View>
                 <View style={styles.chefListView_chef_Info}>
                     <View style={styles.chefListView_chef_col1}>
-                      <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateToShopPage(chef.chefId) }>
+                      <TouchableHighlight style={styles.button} onPress={() => this.navigateToShopPage(chef.chefId) }>
                         <Image source={{ uri: chef.chefProfilePic }} style={styles.chefListView_Chef_profilePic}/>
                       </TouchableHighlight>  
                         <Text>1.5 miles</Text>
@@ -294,10 +289,12 @@ class ChefListPage extends Component {
     }
  
     navigateToShopPage(chefId){
+        this.setState({ isMenuOpen: false });
         this.props.navigator.push({
             name: 'ShopPage', 
             passProps:{
-                chefId:chefId
+                chefId:chefId,
+                callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
             }
         });    
     }  
@@ -310,7 +307,7 @@ var Menu = React.createClass({
             this.props.navigator.push({
                 name: 'LoginPage',
                 passProps:{
-                    callback: this.props.caller.componentDidMount.bind(this.props.caller)
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller)//todo: change to force re-render.
                 }
             });  
             return;
