@@ -52,6 +52,7 @@ class ShopPage extends Component {
         let task2 = this.fetchDishesAndSchedules(this.state.chefId);   
         let task3 = AuthService.getEater().then((eater)=>{
             if(eater){
+                if (!eater.favoriteChefs) eater.favoriteChefs = []; //todo: remove this.
                 this.setState({like:eater.favoriteChefs.indexOf(this.state.chefId) !== -1});
             }
         })
