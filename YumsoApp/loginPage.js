@@ -2,7 +2,10 @@ var HttpsClient = require('./httpsClient');
 var AuthService = require('./authService');
 var styles = require('./style');
 var FBLogin = require('react-native-facebook-login');
+import Dimensions from 'Dimensions';
 
+var windowHeight = Dimensions.get('window').height;
+var windowWidth = Dimensions.get('window').width;
 import React, {
   Component,
   StyleSheet,
@@ -37,26 +40,53 @@ class LoginPage extends Component {
         var _this = this;
         return (
             <View style={styles.container}>
-                <TextInput placeholder="Email" style={styles.loginInput}
-                    onChangeText = {(text) => this.setState({ email: text }) }/>
-                <TextInput placeholder="Password" style={styles.loginInput}
-                    onChangeText = {(text) => this.setState({ password: text }) }
-                    secureTextEntry={true}/>
-                <TouchableHighlight style={styles.button}
-                    onPress = {this.onLoginPressed.bind(this) }>
-                    <Text style={styles.buttonText}>Log in</Text>
-                </TouchableHighlight>
-                <ActivityIndicatorIOS
-                    animating={this.state.showProgress}
-                    size="large"
-                    style={styles.loader} />
-                <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateToSignUp() }>
-                    <Text style={styles.buttonText}>Don't have an account? Sign up using email</Text>  
-                </TouchableHighlight> 
-                <Text>or</Text>
-                <View style={styleLogin.loginContainer}>
-                    <FBLogin style={{ marginBottom: 10, }}
+                <View style={styleLoginPage.headerBannerView}>    
+                   <View style={styleLoginPage.backButtonView}>
+                       <TouchableHighlight onPress={() => this.navigateBack()}>
+                            <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleLoginPage.backButtonIcon}/>
+                       </TouchableHighlight>
+                   </View>    
+                   <View style={styleLoginPage.titleView}>
+                       <Text style={styleLoginPage.titleText}>Sign In</Text>
+                   </View>
+                   <View style={{flex:0.1/3,width:windowWidth/3}}>
+                   </View>
+                </View>
+                
+                <View style={styleLoginPage.logoView}>
+                    <Image source={require('./icons/Icon-Large.png')} style={styleLoginPage.logoIcon}/>
+                </View>
+                
+                <View style={styles.loginInputView}>
+                    <TextInput placeholder="Email" style={styles.loginInput}
+                       onChangeText = {(text) => this.setState({ email: text }) }/>
+                </View>
+                
+                <View style={styles.loginInputView}>
+                    <TextInput placeholder="Password" style={styles.loginInput}
+                        onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
+                </View>
+                
+                <View style={styleLoginPage.signInButtonView}>
+                   <TouchableHighlight onPress = {this.onLoginPressed.bind(this) }>
+                       <Text style={styleLoginPage.signInButtonText}>Log in</Text>
+                   </TouchableHighlight>
+                </View>
+                       
+                <View style={styleLoginPage.askToSignUpView}>
+                    <Text style={styleLoginPage.askToSignUpText}>- No Yumso account? -</Text>
+                </View>
+                
+                <View style={styleLoginPage.signUpButtonView}>
+                   <TouchableHighlight onPress={() => this.navigateToSignUp() }>
+                       <Text style={styleLoginPage.signUpButtonText}>Sign up</Text>  
+                   </TouchableHighlight> 
+                </View>
+                <View style={styleLoginPage.askToSignUpView}>
+                    <Text style={styleLoginPage.askToSignUpText}>- Or -</Text>
+                </View>
+                <View style={styleLoginPage.fbSignInButtonView}>
+                    <FBLogin style={styles.fbSignInButton}
                         permissions={facebookPermissions}
                         onLogin={function(data) {
                             _this.onGettingFbToken(data.credentials);
@@ -86,11 +116,8 @@ class LoginPage extends Component {
                             console.log("Check permissions!");
                             console.log(data);
                         } }/>
-                </View>                 
-                <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateBack() }>
-                    <Text style={styles.buttonText}>back</Text>
-                </TouchableHighlight>
+                </View> 
+                <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader} />
             </View>
         );
     }
@@ -155,17 +182,88 @@ class LoginPage extends Component {
     }
 }
 
-var styleLogin = StyleSheet.create({
-  loginContainer: {
-    marginTop: 150,
-
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bottomBump: {
-    marginBottom: 15,
-  },
+var styleLoginPage = StyleSheet.create({
+    headerBannerView:{
+      flexDirection:'row',
+      borderBottomWidth:1,
+      borderColor:'#D7D7D7',
+      height:windowHeight/16.4,
+    },
+    backButtonView:{
+      flex:0.1/3,
+      width:windowWidth/3,
+      paddingTop:6,
+    },
+    backButtonIcon:{
+      width:30,
+      height:30,
+    },
+    logoView:{
+      alignItems:'center',
+      paddingTop:windowHeight/18.4,
+      paddingBottom:windowHeight/9.2,
+      borderBottomWidth:0.8,
+      borderColor: '#D7D7D7',
+    },
+    logoIcon:{
+      width:windowWidth/4.14,
+      height:windowWidth/4.14,
+    },
+    titleView:{
+      flex:0.1/3, 
+      width:windowWidth/3,
+      alignItems:'center',     
+    },
+    titleText:{
+      marginTop:12,
+      fontSize:14,
+      fontWeight:'600',  
+    },
+    signInButtonView:{
+      marginTop:30,
+      height:windowHeight/13.38,
+      backgroundColor:'#ff9933',
+      justifyContent: 'center',
+    }, 
+    signInButtonText:{
+      color:'#fff',
+      fontSize:windowHeight/30.6,
+      fontWeight:'300',
+      alignSelf:'center',
+      marginBottom:3,
+    },
+    askToSignUpView:{
+      paddingHorizontal:windowHeight/49.0,
+      justifyContent: 'center',
+    },
+    askToSignUpText:{
+      fontSize:18,
+      color:'#696969',
+      alignSelf:'center',
+      height:40,
+      marginTop:18,
+    },
+    signUpButtonView:{
+      height:windowHeight/13.38,
+      backgroundColor:'#ffcc33',
+      justifyContent: 'center',
+    }, 
+    signUpButtonText:{
+      color:'#fff',
+      fontSize:windowHeight/30.6,
+      fontWeight:'300',
+      alignSelf:'center',
+      marginBottom:3,
+    },
+    fbSignInButtonView:{
+      alignItems:'center',
+    },
+    fbSignInButton:{
+      alignSelf:'center',
+    },
+    bottomBump: {
+      marginBottom: 15,
+    },
 });
 
 module.exports = LoginPage;

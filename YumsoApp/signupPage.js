@@ -42,29 +42,30 @@ class SignUpPage extends Component {
                         <View style={{flex:0.1/3,width:windowWidth/3}}>
                         </View>
                     </View>
+                    
                     <View style={styleSignUpPage.logoView}>
                         <Image source={require('./icons/Icon-Large.png')} style={styleSignUpPage.logoIcon}/>
                     </View>
                     
-                    <View style={styleSignUpPage.loginInputView}>
-                        <TextInput placeholder="First Name" style={styleSignUpPage.loginInput}
+                    <View style={styles.loginInputView}>
+                        <TextInput placeholder="First Name" style={styles.loginInput}
                                 onChangeText = {(text)=>this.setState({firstname: text})}/>
                     </View> 
-                    <View style={styleSignUpPage.loginInputView}>
-                        <TextInput placeholder="Last Name" style={styleSignUpPage.loginInput}
+                    <View style={styles.loginInputView}>
+                        <TextInput placeholder="Last Name" style={styles.loginInput}
                                 onChangeText = {(text)=>this.setState({lastname: text})}/> 
                     </View>
-                    <View style={styleSignUpPage.loginInputView}>                      
-                        <TextInput placeholder="Email" style={styleSignUpPage.loginInput}
+                    <View style={styles.loginInputView}>                      
+                        <TextInput placeholder="Email" style={styles.loginInput}
                                 onChangeText = {(text)=>this.setState({email: text})}/>
                     </View>
-                    <View style={styleSignUpPage.loginInputView}>
-                        <TextInput placeholder="Password" style={styleSignUpPage.loginInput}
+                    <View style={styles.loginInputView}>
+                        <TextInput placeholder="Password" style={styles.loginInput}
                                 onChangeText = {(text)=>this.setState({password: text})}
                                 secureTextEntry={true}/>
                     </View>
-                    <View style={styleSignUpPage.loginInputView}>
-                        <TextInput placeholder="Confirm Password" style={styleSignUpPage.loginInput}
+                    <View style={styles.loginInputView}>
+                        <TextInput placeholder="Confirm Password" style={styles.loginInput}
                                 onChangeText = {(text)=>this.setState({password_re: text})}
                                 secureTextEntry={true}/>
                     </View>
@@ -141,7 +142,7 @@ var styleSignUpPage = StyleSheet.create({
       flexDirection:'row',
       borderBottomWidth:1,
       borderColor:'#D7D7D7',
-      height:45,
+      height:windowHeight/16.4,
     },
     backButtonView:{
       flex:0.1/3,
@@ -164,34 +165,22 @@ var styleSignUpPage = StyleSheet.create({
     },
     logoView:{
       alignItems:'center',
-      paddingTop:40,
-      paddingBottom:80,
+      paddingTop:windowHeight/18.4,
+      paddingBottom:windowHeight/9.2,
       borderBottomWidth:0.8,
       borderColor: '#D7D7D7',
     },
     logoIcon:{
-      width:100,
-      height:100,
-    },
-    loginInput:{
-      height:50,
-      fontSize:20,
-      color: '#A9A9A9',
-    },
-    loginInputView:{
-      borderBottomWidth:0.8,
-      borderColor: '#D7D7D7',
-      justifyContent: 'center',
-      paddingVertical:5,
-      paddingHorizontal:15,
+      width:windowWidth/4.14,
+      height:windowWidth/4.14,
     },
     legalView:{
       flex:1,
-      paddingHorizontal:15,
+      paddingHorizontal:windowHeight/49.0,
       justifyContent: 'center',
     },
     legalText:{
-      fontSize:13,
+      fontSize:windowHeight/56.6,
       color:'#A9A9A9',
     },
     signUpButtonView:{
@@ -199,13 +188,13 @@ var styleSignUpPage = StyleSheet.create({
       left: 0, 
       right: 0,
       top:1,
-      height:55,
+      height:windowHeight/13.38,
       backgroundColor:'#ff9933',
       justifyContent: 'center',
      },
      signUpButtonText:{
       color:'#fff',
-      fontSize:24,
+      fontSize:windowHeight/30.6,
       fontWeight:'300',
       alignSelf:'center',
       marginBottom:3,
