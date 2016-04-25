@@ -74,7 +74,7 @@ class EaterPage extends Component {
              var addressListRendered = [];
              for (let i = 0; i < this.state.eater.addressList.length; i++) {
                  addressListRendered.push(
-                     <Text key={i} style={styleEaterPage.eaterPageGreyText}>+ {this.state.eater.addressList[i]}</Text>
+                     <Text key={i} style={styleEaterPage.eaterPageGreyText}>+ {this.state.eater.addressList[i].formatted_address}</Text>
                  );
              }
              var chefProfile = this.state.eater.eaterProfilePic == null ? require('./TestImages/Obama.jpg') : { uri: this.state.eater.eaterProfilePic }
