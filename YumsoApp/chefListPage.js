@@ -6,6 +6,9 @@ var SideMenu = require('react-native-side-menu');
 var Swiper = require('react-native-swiper')
 import Dimensions from 'Dimensions';
 
+var windowHeight = Dimensions.get('window').height;
+var windowWidth = Dimensions.get('window').width;
+
 import React, {
     Component,
     StyleSheet,
@@ -206,8 +209,25 @@ class ChefListPage extends Component {
         }
         return (
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
-                <View>
-                    <View>
+                <View>                    
+                    <View style={styleChefListPage.headerBannerView}>
+                        <View style={styleChefListPage.menuButtonView}>
+                        <TouchableHighlight style={styles.button} onPress={() => this.setState({ isMenuOpen: true }) }>
+                            <Text style={styles.buttonText}> Menu</Text>
+                        </TouchableHighlight>
+                        </View>
+                        <View style={styleChefListPage.locationView}>
+                        <TouchableHighlight style={styles.button} onPress={() => this.setState({showLocationSearch:true}) }>
+                            <Text style={styles.buttonText}> Location</Text>
+                        </TouchableHighlight>
+                        </View>
+                        <View style={styleChefListPage.searchButtonView}>
+                        <TouchableHighlight style={styles.button} onPress={() => this.setState({showChefSearch:true}) }>
+                            <Text style={styles.buttonText}> Search</Text>
+                        </TouchableHighlight>
+                        </View>
+                    </View> 
+                    <View  style={{flex:0.1, flexDirection:'column',height:40,backgroundColor:'#fff',}}>
                         <Text>
                             <Text style={styles.title}>position: </Text>
                             {this.state.position.coords.longitude + ',' + this.state.position.coords.latitude}
@@ -216,18 +236,7 @@ class ChefListPage extends Component {
                             <Text style={styles.title}>Current position: </Text>
                             {this.state.city+','+this.state.state}
                         </Text>               
-                    </View>
-                    <View style={{flexDirection:'row', flex:1}}>
-                        <TouchableHighlight style={styles.button} onPress={() => this.setState({ isMenuOpen: true }) }>
-                            <Text style={styles.buttonText}> Menu</Text>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.button} onPress={() => this.setState({showLocationSearch:true}) }>
-                            <Text style={styles.buttonText}> Location</Text>
-                        </TouchableHighlight> 
-                        <TouchableHighlight style={styles.button} onPress={() => this.setState({showChefSearch:true}) }>
-                            <Text style={styles.buttonText}> Search</Text>
-                        </TouchableHighlight>  
-                    </View>                 
+                    </View>             
                     <ListView style={styles.chefListView}
                         dataSource = {this.state.dataSource}
                         renderRow={this.renderRow.bind(this) } />
@@ -244,6 +253,7 @@ class ChefListPage extends Component {
                         <TouchableHighlight style={styles.toolbarTitle}>
                             <Image source={require('./ok.jpeg') } />
                         </TouchableHighlight>
+                        
                     </View>
                 </View>
             </SideMenu>
@@ -358,7 +368,7 @@ var Menu = React.createClass({
     render: function() {
         let isAuthenticated = this.props.eater!=undefined;
         var displayName = isAuthenticated? (this.props.eater.firstname + ' '+ this.props.eater.lastname): '';
-        var profileImg = require('./ok.jpeg');
+        var profileImg = require('./TestImages/Obama.jpg');
         if(this.props.eater && this.props.eater.eaterProfilePic){
             profileImg = {uri:this.props.eater.eaterProfilePic};
         }
@@ -367,14 +377,18 @@ var Menu = React.createClass({
             profile = <Image source={profileImg} style={styles.chefListView_Chef_profilePic}/>;
         }else{
             profile = <TouchableHighlight style = {styles.chefProfilePic} onPress={()=>this.goToEaterPage()}>
-                    <Image source={profileImg} style={styles.chefListView_Chef_profilePic}/>
-                </TouchableHighlight>;
+                        <Image source={profileImg} style={sideMenuStyle.chefPhoto}/>
+                     </TouchableHighlight>;
         }
         return (
             <View style={sideMenuStyle.sidemenu}>
-                <Text style={sideMenuStyle.paddingMenuItem}>{displayName}</Text>
                 {profile}
-                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>History Order</Text>
+                <View style={{height:windowHeight/5.0}}></View>
+                <Text style={sideMenuStyle.paddingMenuItem}>My Favorites</Text>
+                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>History Orders</Text>
+                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>Settings</Text>
+                <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
+                <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
                 <Text onPress={isAuthenticated?this.logOut:this.logIn} style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
             </View>
         );
@@ -394,12 +408,45 @@ var sideMenuStyle = StyleSheet.create({
         margin: 10,
     },
     sidemenu: {
-        paddingTop: 50,
+        height:windowHeight,
+        width:windowWidth*2/3.0,
+        backgroundColor:'#ff9933',
+        marginTop:20,
+    },
+    chefPhoto:{
+        width:windowWidth*2/3.0,
+        height:windowWidth*2/3.0,
     },
     paddingMenuItem: {
-        padding: 10,
+        paddingLeft:30,
+        paddingVertical: 10,
+        color:'#fff',
     },
 });
 
+var styleChefListPage = StyleSheet.create({
+    headerBannerView:{
+        flex:0.1,
+        flexDirection:'row',
+        height:50,
+        backgroundColor:'#fff',
+        marginTop:20,
+    },
+    menuButtonView:{
+        flex:0.1/3,
+        width:windowWidth/3,
+        alignItems:'flex-start',
+    },
+    locationView:{
+      flex:0.1/3, 
+      width:windowWidth/3,
+      alignItems:'center',     
+    },
+    searchButtonView:{
+      flex:0.1/3, 
+      width:windowWidth/3,
+      alignItems:'flex-end',     
+    },
+});
 
 module.exports = ChefListPage;
