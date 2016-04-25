@@ -8,7 +8,7 @@ var {
 } = React;
 
 var windowHeight = Dimensions.get('window').height;
-var windowsWidth = Dimensions.get('window').width;
+var windowWidth = Dimensions.get('window').width;
 module.exports = StyleSheet.create({
     container:{
         marginTop:15,
@@ -16,6 +16,33 @@ module.exports = StyleSheet.create({
         flexDirection:'column',
         backgroundColor:'#fff',
     },
+    headerBannerView:{
+      flexDirection:'row',
+      borderBottomWidth:1,
+      borderColor:'#D7D7D7',
+      height:windowHeight/16.4,
+    },
+    backButtonView:{
+      flex:0.1/3.0,
+      width:windowWidth/3.0,
+      paddingTop:6,
+    },
+    backButtonIcon:{
+      width:30,
+      height:30,
+    },
+    titleView:{
+      flex:0.1/3, 
+      width:windowWidth/3,
+      alignItems:'center',     
+    },
+    titleText:{
+      marginTop:12,
+      fontSize:14,
+      fontWeight:'600',  
+    },
+
+
     logo:{
         width:66,
         height:55
@@ -102,7 +129,7 @@ module.exports = StyleSheet.create({
     },
     chefListView_chef_Info:{
         flexDirection:'row', 
-        left:windowsWidth/6/3,
+        left:windowWidth/6/3,
         margin:3,
         alignSelf:'stretch',
     },
@@ -121,9 +148,9 @@ module.exports = StyleSheet.create({
         padding:3
     },
     chefListView_Chef_profilePic: {
-        height:windowsWidth/6,
-        width:windowsWidth/6,
-        top:-windowsWidth/6/5,
+        height:windowWidth/6,
+        width:windowWidth/6,
+        top:-windowWidth/6/5,
         padding:3,  
         position: 'relative',
     },
@@ -143,8 +170,8 @@ module.exports = StyleSheet.create({
         flex:1 
     },
     dishListView_dish_pic:{
-        height:windowsWidth/6,
-        width:windowsWidth/6,
+        height:windowWidth/6,
+        width:windowWidth/6,
         padding:3,  
         position: 'relative',
     },  

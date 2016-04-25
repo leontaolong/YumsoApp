@@ -69,22 +69,6 @@ class ChefCommentsPage extends Component {
                 size="large"
                 style={styles.loader}/> 
         }   
-        // return (
-        //     <View style={styles.dishListView_dish}>
-        //         <Image source={imageSrc} style={styles.dishListView_dish_pic}/>
-        //         <View >
-        //             <View>
-        //                 <Text> {comment.eaterAlias}</Text>
-        //                 <Text> {comment.eaterComment==undefined?'no comment':comment.eaterComment}</Text>
-        //                 <Text> rating: {comment.starRating}</Text>
-        //                 <Text>{comment.eaterCommentTime==undefined? '':this.parseTime(comment.eaterCommentTime)}</Text>     
-        //                 <Text>Chef reply:</Text>
-        //                 <Text>{comment.chefComment==undefined? 'no reply':comment.chefComment}</Text>
-        //                 <Text>{comment.chefCommentTime==undefined? '':this.parseTime(comment.chefCommentTime)}</Text>
-        //             </View>                          
-        //         </View>           
-        //     </View>
-        // );
         
         return (
             <View style={styleChefCommentsPage.oneListingView}>
