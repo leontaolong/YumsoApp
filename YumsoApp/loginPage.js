@@ -155,7 +155,7 @@ class LoginPage extends Component {
         this.setState({ success: true });
         this.setState({ showProgress: false });   
         let user = await AuthService.getEater();
-        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
+        Alert.alert( '', 'Successfully logged in through Facebook',[ { text: 'OK' }]);
         this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();

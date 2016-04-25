@@ -3,7 +3,9 @@ var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var SideMenu = require('react-native-side-menu');
-var Swiper = require('react-native-swiper')
+var Swiper = require('react-native-swiper');
+var MapPage = require('./mapPage');
+
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -30,21 +32,17 @@ class ChefListPage extends Component {
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
         this.state = {
             dataSource: ds.cloneWithRows([]),
-            searchAddressResultDataSoruce: ds.cloneWithRows([]),
             showProgress: true,
-            showLocationSearch:false,
             showChefSearch:false,
-            isMenuOpen: false,
+            showLocSearch:false,
             chefView: {},
-            initialPosition: {},
-            lastPosition: {},
-            city:'unknown',
-            state:'unknown',
+            city:'Seattle',
+            state:'WA',
         };
     }
 
     async componentDidMount() {
-        this.getLocation();//todo: render croods may be undefined if it's too slow
+        //this.getLocation();//todo: render croods may be undefined if it's too slow
         if(config.autoLogin){//this is for debugging so to auto login
            await AuthService.loginWithEmail(config.email, config.password);
         }
@@ -93,8 +91,9 @@ class ChefListPage extends Component {
                                     }
                                 }
                             }
+                            self.setState({GPSproxAddress: {formatted_address: address, lat: position.coords.latitude, lng:position.coords.longitude}});
                         }
-                        self.setState({ city: city, state: state, GPSproxAddress: address });
+                        self.setState({ city: city, state: state });
                     });       
             },
             (error) => alert(error.message),
@@ -149,12 +148,6 @@ class ChefListPage extends Component {
             </View>
         );
     }
-
-    renderSearchResult(address){
-        return <View>
-                    <Text>{address.formatted_address}</Text>
-                </View>
-    }
     
     render() {
         const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} principal={this.state.principal} caller = {this}/>;
@@ -165,29 +158,9 @@ class ChefListPage extends Component {
                         animating={this.state.showProgress}
                         size="large"
                         style={styles.loader}/>
-                </View>);
-        }else if(this.state.showLocationSearch){
-            return(
-                <View style={styles.container}>
-                    <TouchableHighlight style={styles.button} onPress={() => this.setState({showLocationSearch:false, isMenuOpen:false}) }>
-                        <Text style={styles.buttonText}> Cancel</Text>
-                    </TouchableHighlight>   
-                    <View style={{alignSelf:'stretch', alignItems:'center'}}>
-                        <Text> {this.state.city+','+this.state.state} </Text>  
-                        <TextInput placeholder="City/State/Zip Code" style={styles.loginInput}
-                        onChangeText = {(text)=>this.setState({searchAddress: text})}/>  
-                        <TouchableHighlight style={styles.button} onPress={() => this.searchAddress() }>
-                            <Text style={styles.buttonText}> Search Location</Text>
-                        </TouchableHighlight>   
-                        <ListView style={{height:300}}
-                            dataSource = {this.state.searchAddressResultDataSoruce}
-                            renderRow={this.renderSearchResult.bind(this) } />
-                        <Text style={styles.title} onPress={()=>this.getLocation()}>Click get Current Location </Text>
-                        <Text> {this.state.GPSproxAddress}</Text>                 
-                    </View>   
-                </View>
-                
-            );
+                </View>);  
+        }else if(this.state.showLocSearch){
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)}/>);   
         }else if(this.state.showChefSearch){
             return <View style={styles.container}>
                 <TouchableHighlight style={styles.button} onPress={() => this.setState({ showChefSearch: false, isMenuOpen: false }) }>
@@ -199,8 +172,7 @@ class ChefListPage extends Component {
                     <TouchableHighlight style={styles.button} onPress={() => this.searchChef() }>
                         <Text style={styles.buttonText}> Search</Text>
                     </TouchableHighlight>
-                    <Text>Next delivery in ... hours $ $$ $$$</Text>
-                  
+                    <Text>Next delivery in ... hours $ $$ $$$</Text>             
                 </View>
             </View>                    
         }
@@ -208,10 +180,6 @@ class ChefListPage extends Component {
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
                 <View>
                     <View>
-                        <Text>
-                            <Text style={styles.title}>position: </Text>
-                            {this.state.position.coords.longitude + ',' + this.state.position.coords.latitude}
-                        </Text>
                         <Text>
                             <Text style={styles.title}>Current position: </Text>
                             {this.state.city+','+this.state.state}
@@ -221,7 +189,7 @@ class ChefListPage extends Component {
                         <TouchableHighlight style={styles.button} onPress={() => this.setState({ isMenuOpen: true }) }>
                             <Text style={styles.buttonText}> Menu</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight style={styles.button} onPress={() => this.setState({showLocationSearch:true}) }>
+                        <TouchableHighlight style={styles.button} onPress={() => this.setState({showLocSearch:true}) }>
                             <Text style={styles.buttonText}> Location</Text>
                         </TouchableHighlight> 
                         <TouchableHighlight style={styles.button} onPress={() => this.setState({showChefSearch:true}) }>
@@ -231,25 +199,23 @@ class ChefListPage extends Component {
                     <ListView style={styles.chefListView}
                         dataSource = {this.state.dataSource}
                         renderRow={this.renderRow.bind(this) } />
-                    <View style={styles.toolbar}>
-                        <TouchableHighlight style={styles.toolbarTitle}>
-                            <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.toolbarTitle}>
-                            <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.toolbarTitle}>
-                            <Image source={require('./ok.jpeg') } style={styles.toolbarImage}/>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.toolbarTitle}>
-                            <Image source={require('./ok.jpeg') } />
-                        </TouchableHighlight>
-                    </View>
                 </View>
             </SideMenu>
         );
     }
-
+    
+    mapDone(address){
+         if(address){
+             Alert.alert( '', 'Your delivery location is set to '+address.formatted_address,[ { text: 'OK' }]); 
+             //todo: get chef use location info;                 
+         }
+         this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state});
+    }
+    
+    onCancelMap(){
+         this.setState({showLocSearch:false});
+    }
+    
     searchChef(){
         var filter = this.state.searchFilter;
         this.setState({showProgress:true});
@@ -262,31 +228,6 @@ class ChefListPage extends Component {
             this.setState({showChefSearch:false, showProgress:false});
         });
     }
-    
-    searchAddress(){
-        var address = this.state.searchAddress;
-        if(!address){
-            Alert.alert( 'Warning', 'Enter a address',[ { text: 'OK' }]);
-            return;
-        }
-        address = address.replace(/\s/g, "%20");
-        this.googleClient.getWithoutAuth(config.searchAddress+address+'&key='+config.googleApiKey)
-           .then((res)=>{
-                if(res.statusCode===200 && res.data.status==='OK'){
-                    var addresses = [];
-                    for(var possibleAddress of res.data.results){
-                        var onePossibility = {
-                            formatted_address: possibleAddress.formatted_address,
-                            lat: possibleAddress.geometry.location.lat,
-                            lng: possibleAddress.geometry.location.lng,
-                        };
-                        addresses.push(onePossibility);
-                    }
-                    this.setState({searchAddressResult: addresses, searchAddressResultDataSoruce: this.state.searchAddressResultDataSoruce.cloneWithRows(addresses)});
-                }
-           })
-    
-    }
  
     navigateToShopPage(chefId){
         this.setState({ isMenuOpen: false });
@@ -298,6 +239,7 @@ class ChefListPage extends Component {
             }
         });    
     }  
+    
 }
 
 var Menu = React.createClass({
