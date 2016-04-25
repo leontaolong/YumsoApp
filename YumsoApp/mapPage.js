@@ -28,7 +28,6 @@ var windowWidth = Dimensions.get('window').width;
 class MapPage extends Component {
     constructor(props){
         super(props);
-        console.log(this);
         let routeStack;
         if(this.props.navigator){
            routeStack = this.props.navigator.state.routeStack;
