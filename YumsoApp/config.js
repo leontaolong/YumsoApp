@@ -1,5 +1,5 @@
 module.exports={
-    autoLogin:true,
+    autoLogin:false,
     baseUrl: 'http://192.168.1.134:8080',
     email:'xihe@yumso.com',
     password:'123',

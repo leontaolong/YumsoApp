@@ -32,6 +32,7 @@ class LoginPage extends Component {
             var passProps = routeStack[routeStack.length-1].passProps;
             if(passProps){
                 this.state.callback = passProps.callback;
+                this.state.backCallback = passProps.backCallback;
             }
         }
     }
@@ -155,7 +156,7 @@ class LoginPage extends Component {
         this.setState({ success: true });
         this.setState({ showProgress: false });   
         let user = await AuthService.getEater();
-        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
+        Alert.alert( '', 'Successfully logged in through Facebook',[ { text: 'OK' }]);
         this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();
@@ -172,9 +173,9 @@ class LoginPage extends Component {
     }
     
     navigateBack() {
-        // if (this.state.callback) {
-        //     this.state.callback();
-        // }
+        if (this.state.backCallback) {
+            this.state.backCallback();
+        }
         this.props.navigator.pop();
     }
 }

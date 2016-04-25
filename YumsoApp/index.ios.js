@@ -7,6 +7,7 @@ var EaterPage = require('./eaterPage');
 var ChefCommentsPage = require('./chefCommentsPage');
 var OrderConfirmation = require('./orderConfirmation');
 var DishPage = require('./dishPage');
+var MapPage = require('./mapPage');
 var AuthService = require('./authService');
 var LoginPage = require('./loginPage');
 var SignUpPage = require('./signupPage');
@@ -23,7 +24,7 @@ import React, {
   Navigator
 } from 'react-native';
 
-//console.disableYellowBox = true; 
+console.disableYellowBox = true; 
 
 class YumsoApp extends Component {
     
@@ -58,8 +59,9 @@ class YumsoApp extends Component {
             return <SignUpPage navigator={navigator}/>
         }else if (route.name==='DishPage'){
             return <DishPage navigator={navigator}/>
-        }
-    } 
+        }else if (route.name==='MapPage'){
+            return <MapPage navigator={navigator}/>
+        }    } 
 
 }
 

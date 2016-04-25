@@ -93,7 +93,7 @@ module.exports = StyleSheet.create({
         paddingTop:30,
         paddingBottom:10,
         flexDirection:'column',
-        height: windowHeight*8.3/10
+        height: windowHeight*8.7/10
     },
     chefListView_chef:{
         margin:5,
