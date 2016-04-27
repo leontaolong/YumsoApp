@@ -30,14 +30,14 @@ class SignUpPage extends Component {
     render() {
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
-                    <View style={styleSignUpPage.headerBannerView}>    
-                        <View style={styleSignUpPage.backButtonView}>
+                    <View style={styles.headerBannerView}>    
+                        <View style={styles.backButtonView}>
                         <TouchableHighlight onPress={() => this.navigateBack()}>
-                            <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleSignUpPage.backButtonIcon}/>
+                            <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styles.backButtonIcon}/>
                         </TouchableHighlight>
                         </View>    
-                        <View style={styleSignUpPage.titleView}>
-                            <Text style={styleSignUpPage.titleText}>Sign Up</Text>
+                        <View style={styles.titleView}>
+                            <Text style={styles.titleText}>Sign Up</Text>
                         </View>
                         <View style={{flex:0.1/3,width:windowWidth/3}}>
                         </View>
@@ -138,31 +138,6 @@ var styleLogin = StyleSheet.create({
 });
 
 var styleSignUpPage = StyleSheet.create({
-    headerBannerView:{
-      flexDirection:'row',
-      borderBottomWidth:1,
-      borderColor:'#D7D7D7',
-      height:windowHeight/16.4,
-    },
-    backButtonView:{
-      flex:0.1/3,
-      width:windowWidth/3,
-      paddingTop:6,
-    },
-    backButtonIcon:{
-      width:30,
-      height:30,
-    },
-    titleView:{
-      flex:0.1/3, 
-      width:windowWidth/3,
-      alignItems:'center',     
-    },
-    titleText:{
-      marginTop:12,
-      fontSize:14,
-      fontWeight:'600',  
-    },
     logoView:{
       alignItems:'center',
       paddingTop:windowHeight/18.4,

@@ -514,7 +514,7 @@ var styleShopPage = StyleSheet.create({
     },
     chefNameAreaText:{ 
         fontSize: 16, 
-        color: '#696969' 
+        color: '#696969', 
     },
     shopRadioView:{
         flex: 1,
@@ -573,20 +573,20 @@ var styleShopPage = StyleSheet.create({
     },
     footerView:{ 
         position: 'absolute', 
-        top: windowHeight - 40, 
+        top: windowHeight - 55, 
         left: 0, 
         right: 0, 
         flex: 1, 
         flexDirection:'row', 
-        height: 40, 
-        backgroundColor: '#ff9933',
+        height:55, 
+        backgroundColor:'#ff9933',
+        paddingTop:3,
     },
     shoppingCartIconView:{ 
-        height: 30, 
+        height: 40, 
         width: 50, 
         paddingLeft: 20, 
-        paddingTop: 3, 
-        paddingBottom: 2, 
+        paddingTop: 10, 
         marginVertical: 5, 
         backgroundColor: '#fff', 
         flexDirection:'row',
@@ -597,8 +597,9 @@ var styleShopPage = StyleSheet.create({
     },
     shoppingCartTimePriceText:{
         color:'#fff',
-        marginTop:11,
+        marginTop:15,
         marginLeft:13,
+        fontSize:15,
     },
     oneDishInListView:{
         marginBottom:10,
