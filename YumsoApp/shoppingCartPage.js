@@ -144,11 +144,14 @@ class ShoppingCartPage extends Component {
                     <View style={{flex:0.1/3,width:windowWidth/3}}>
                     </View>
                </View>
+
                <ListView style={styleShoppingCartPage.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } 
                     renderFooter={this.renderFooter.bind(this)}/>
+
                <Text>Deliver time: {this.state.selectedTime}}</Text>
+
                <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
                <View style={styleShoppingCartPage.checkOutButtonView}>
                    <Text style={styleShoppingCartPage.checkOutButtonText}>Check Out Now!</Text>
@@ -340,8 +343,7 @@ var styleShoppingCartPage = StyleSheet.create({
         color:'#ff9933',
     },
     checkOutButtonView:{
-        height:55,
-        flex:1,
+        height:windowHeight/13.4,
         flexDirection:'row',        
         justifyContent: 'center',
         backgroundColor:'#ff9933',
