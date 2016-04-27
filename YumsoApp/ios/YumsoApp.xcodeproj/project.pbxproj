@@ -427,7 +427,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = G45AUWV3TZ;
+						DevelopmentTeam = UJTY38LWA5;
 					};
 				};
 			};
@@ -732,6 +732,7 @@
 				INFOPLIST_FILE = YumsoApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = YumsoIOSApp;
 				PRODUCT_NAME = YumsoApp;
 				PROVISIONING_PROFILE = "";
 			};
@@ -760,6 +761,7 @@
 				INFOPLIST_FILE = YumsoApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = YumsoIOSApp;
 				PRODUCT_NAME = YumsoApp;
 				PROVISIONING_PROFILE = "";
 			};
