@@ -11,10 +11,10 @@ var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 module.exports = StyleSheet.create({
     container:{
-        marginTop:15,
-        flex:1,
-        flexDirection:'column',
-        backgroundColor:'#fff',
+      marginTop:15,
+      flex:1,
+      flexDirection:'column',
+      backgroundColor:'#fff',
     },
     headerBannerView:{
       flexDirection:'row',
@@ -31,9 +31,17 @@ module.exports = StyleSheet.create({
       width:30,
       height:30,
     },
+    likeButtonIcon:{
+      width:30,
+      height:30,
+    },
+    shareButtonIcon:{
+      width:30,
+      height:30,
+    },
     titleView:{
       flex:0.1/3, 
-      width:windowWidth/3,
+      width:windowWidth/3.0,
       alignItems:'center',     
     },
     titleText:{
@@ -41,16 +49,21 @@ module.exports = StyleSheet.create({
       fontSize:14,
       fontWeight:'600',  
     },
-
+    headerRightView:{
+      flex:0.1/3.0,
+      width:windowWidth/3.0,
+      alignItems:'flex-end',
+      paddingTop:7,
+    },
 
     logo:{
-        width:66,
-        height:55
+      width:66,
+      height:55,
     },
     heading:{
-        fontSize:30,
-        margin:10,
-        marginBottom:20
+      fontSize:30,
+      margin:10,
+      marginBottom:20
     },
     loginInput:{
       height:windowHeight/14.72,
