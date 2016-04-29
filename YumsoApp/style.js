@@ -28,16 +28,16 @@ module.exports = StyleSheet.create({
       paddingTop:6,
     },
     backButtonIcon:{
-      width:30,
-      height:30,
+      width:windowWidth/14.6,
+      height:windowWidth/14.6,
     },
     likeButtonIcon:{
-      width:30,
-      height:30,
+      width:windowWidth/14.6,
+      height:windowWidth/14.6,
     },
     shareButtonIcon:{
-      width:30,
-      height:30,
+      width:windowWidth/14.6,
+      height:windowWidth/14.6,
     },
     titleView:{
       flex:0.1/3, 
@@ -156,14 +156,14 @@ module.exports = StyleSheet.create({
         padding:3,  
     },    
     chefListView_Chef_shopPic:{
-        height:Dimensions.get('window').height/4,
+        height:Dimensions.get('window').height/3,
         alignSelf:'stretch',
         padding:3
     },
     chefListView_Chef_profilePic: {
         height:windowWidth/6,
         width:windowWidth/6,
-        top:-windowWidth/6/5,
+        top:-windowWidth/6/4,
         padding:3,  
         position: 'relative',
     },
