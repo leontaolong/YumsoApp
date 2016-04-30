@@ -7,6 +7,9 @@ var shareIcon = require('./icons/ic_share_48pt_3x.png');
 var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
 var notlikedIcon = require('./icons/ic_favorite_border_48pt_3x.png')
 var likedIcon = require('./icons/ic_favorite_48pt_3x.png');
+var bowlIcon = require('./icons/icon_bowl.png');
+var plusIcon = require('./icons/icon-plus.png');
+var minusIcon = require('./icons/icon-minus.png');
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -86,7 +89,7 @@ class DishPage extends Component {
                         }) }
                </Swiper>
                <View style={styleShopPage.oneDishNameDiscriptionView}>
-                  <Image source={require('./icons/icon_bowl.png')} style={styleShopPage.bowlIcon}/>
+                  <Image source={bowlIcon} style={styleShopPage.bowlIcon}/>
                   <View style={styleShopPage.oneDishNameDiscriptionTextView}>
                      <Text style={styleShopPage.oneDishNameText}>{this.state.dish.dishName}</Text>
                      <Text style={styleShopPage.oneDishDiscriptionText}>{this.state.dish.description}</Text>
@@ -102,13 +105,13 @@ class DishPage extends Component {
                   <View style={styleShopPage.chooseQuantityView}>
                     <View style={styleShopPage.plusIconView}>
                       <TouchableHighlight onPress={() => this.addToShoppingCart(this.state.dish) }>
-                        <Image source={require('./icons/icon-plus.png')} style={styleShopPage.plusMinusIcon}/>
+                        <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
                      
                     <View style={styleShopPage.minusIconView}>
                       <TouchableHighlight onPress={() => this.removeFromShoppingCart(this.state.dish) }>
-                         <Image source={require('./icons/icon-minus.png')} style={styleShopPage.plusMinusIcon}/>
+                         <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
                   </View>

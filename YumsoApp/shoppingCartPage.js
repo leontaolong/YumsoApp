@@ -2,6 +2,9 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
+var plusIcon = require('./icons/icon-plus.png');
+var minusIcon = require('./icons/icon-minus.png');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -70,12 +73,12 @@ class ShoppingCartPage extends Component {
                       <View style={styleShoppingCartPage.quantityView}>
                         <TouchableHighlight style={styleShoppingCartPage.plusIconView}
                             onPress={()=>this.addToShoppingCart(dish)}>
-                            <Image source={require('./icons/icon-plus.png')} style={styleShoppingCartPage.plusMinusIcon}/>
+                            <Image source={plusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
                         </TouchableHighlight> 
                         <Text style={styleShoppingCartPage.quantityText}>{this.state.shoppingCart[dish.dishId]?this.state.shoppingCart[dish.dishId].quantity:'  '}</Text>          
                         <TouchableHighlight style={styleShoppingCartPage.minusIconView}
                             onPress={()=>this.removeFromShoppingCart(dish)}>                
-                            <Image source={require('./icons/icon-minus.png')} style={styleShoppingCartPage.plusMinusIcon}/>
+                            <Image source={minusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
                         </TouchableHighlight>
                       </View>
                       <View style={styleShoppingCartPage.totalPriceView}>
@@ -135,7 +138,7 @@ class ShoppingCartPage extends Component {
                <View style={styles.headerBannerView}>    
                     <View style={styles.backButtonView}>
                        <TouchableHighlight onPress={() => this.navigateBackToDishList()}>
-                          <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styles.backButtonIcon}/>
+                          <Image source={backIcon} style={styles.backButtonIcon}/>
                        </TouchableHighlight>
                     </View>    
                     <View style={styles.titleView}>

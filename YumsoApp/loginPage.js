@@ -2,6 +2,8 @@ var HttpsClient = require('./httpsClient');
 var AuthService = require('./authService');
 var styles = require('./style');
 var FBLogin = require('react-native-facebook-login');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var logoIcon = require('./icons/Icon-Large.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -44,7 +46,7 @@ class LoginPage extends Component {
                 <View style={styleLoginPage.headerBannerView}>    
                    <View style={styleLoginPage.backButtonView}>
                        <TouchableHighlight onPress={() => this.navigateBack()}>
-                            <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleLoginPage.backButtonIcon}/>
+                            <Image source={backIcon} style={styleLoginPage.backButtonIcon}/>
                        </TouchableHighlight>
                    </View>    
                    <View style={styleLoginPage.titleView}>
@@ -55,7 +57,7 @@ class LoginPage extends Component {
                 </View>
                 
                 <View style={styleLoginPage.logoView}>
-                    <Image source={require('./icons/Icon-Large.png')} style={styleLoginPage.logoIcon}/>
+                    <Image source={logoIcon} style={styleLoginPage.logoIcon}/>
                 </View>
                 
                 <TextInput placeholder="Email" style={styleLoginPage.loginInput}

@@ -1,6 +1,9 @@
 var HttpsClient = require('./httpsClient');
 var AuthService = require('./authService');
 var styles = require('./style');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var logoIcon = require('./icons/Icon-Large.png');
+
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -33,7 +36,7 @@ class SignUpPage extends Component {
                     <View style={styles.headerBannerView}>    
                         <View style={styles.backButtonView}>
                         <TouchableHighlight onPress={() => this.navigateBack()}>
-                            <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styles.backButtonIcon}/>
+                            <Image source={backIcon} style={styles.backButtonIcon}/>
                         </TouchableHighlight>
                         </View>    
                         <View style={styles.titleView}>
@@ -44,7 +47,7 @@ class SignUpPage extends Component {
                     </View>
                     
                     <View style={styleSignUpPage.logoView}>
-                        <Image source={require('./icons/Icon-Large.png')} style={styleSignUpPage.logoIcon}/>
+                        <Image source={logoIcon} style={styleSignUpPage.logoIcon}/>
                     </View>
                     
                     <View style={styles.loginInputView}>
