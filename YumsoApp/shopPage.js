@@ -416,7 +416,9 @@ class ShopPage extends Component {
         this.props.navigator.push({
             name: 'DishPage', 
             passProps:{
-                dish:dish
+                dish:dish,
+                shoppingCart:this.state.shoppingCart[this.state.selectedTime],
+                selectedTime:this.state.selectedTime,
             }
         });      
     }
