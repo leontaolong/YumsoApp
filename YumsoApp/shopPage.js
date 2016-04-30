@@ -3,7 +3,10 @@ var styles = require('./style');
 var config = require('./config');
 var rating = require('./rating');
 var AuthService = require('./authService');
-
+var shareIcon = require('./icons/ic_share_48pt_3x.png');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var notlikedIcon = require('./icons/ic_favorite_border_48pt_3x.png')
+var likedIcon = require('./icons/ic_favorite_48pt_3x.png');
 import Dimensions from 'Dimensions';
 import ModalPicker from 'react-native-modal-picker'
 
@@ -228,12 +231,13 @@ class ShopPage extends Component {
                         style={styles.loader}/>
                 </View>);
         } else {
-            let likeIcon = require('./icons/ic_favorite_border_48pt_3x.png')
+            
             if(this.state.like){
-                likeIcon = require('./icons/ic_favorite_48pt_3x.png');
+                likeIcon = likedIcon;
+            }else{
+                likeIcon = notlikedIcon;
             }
-            let shareIcon = require('./icons/ic_share_48pt_3x.png');
-            let backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+            
             return (
                 <View style={styles.container}>
                         <View style={styles.headerBannerView}>    
