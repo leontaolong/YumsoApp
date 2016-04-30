@@ -116,12 +116,12 @@ class ShopPage extends Component {
     }
     
     renderHeader(){
-        return        [(<View style={styleShopPage.shopPictureView}>
+        return        [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
                             <Image source={{ uri: this.state.chef.shopPictures[0] }} style={styleShopPage.shopPicture}
                                 onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }>
                             </Image>
                         </View>),
-                       (<View style={styleShopPage.chefNameRow}>
+                       (<View key={'chefNameRow'} style={styleShopPage.chefNameRow}>
                             <View style={styleShopPage.chefProfilePicView}>
                                 <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShopPage.chefProfilePic}
                                     onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }/>
@@ -135,11 +135,11 @@ class ShopPage extends Component {
                                 <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, Kirkland</Text>
                             </View>
                         </View>),
-                       (<View style={styleShopPage.chefDiscriptionView}>
+                       (<View key={'chefDiscriptionView'} style={styleShopPage.chefDiscriptionView}>
                             <Text style={styleShopPage.myStoryTitleText}>My Story</Text>
                             <Text style={styleShopPage.chefDiscriptionText}>{this.state.chef.storeDescription}{this.state.chef.storeDescription}</Text>
                         </View>),
-                       (<View style={styleShopPage.shopRadioView}>
+                       (<View key={'shopRadioView'} style={styleShopPage.shopRadioView}>
                             <Image source={require('./icons/ic_radio_48pt_3x.png') } style={styleShopPage.radioIcon}/>
                             <View style={styleShopPage.shopDiscriptionTextView}>
                                 <Text style={styleShopPage.shopRadioText}>{this.state.chef.storeDescription}</Text>
@@ -150,17 +150,17 @@ class ShopPage extends Component {
                                 </TouchableHighlight>
                             </View>
                         </View>),
-                       (<View style={styleShopPage.pickupAddressView}>
+                       (<View key={'pickupAddressView'} style={styleShopPage.pickupAddressView}>
                             <Image source={require('./icons/ic_map_48pt_3x-2.png') } style={styleShopPage.pickupAddressIcon}/>
                             <View style={styleShopPage.pickupAddressTextView}>
                                 <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddress}</Text>
                             </View>
                         </View>),
-                       (<TouchableHighlight style={styles.button}
+                       (<TouchableHighlight key={'gotochefcommentsbutton'} style={styles.button}
                                 onPress={() => this.navigateToChefCommentsPage() }>
                                 <Text style={styles.buttonText}>Go to chef comments</Text>
                         </TouchableHighlight>),                     
-                       (<View style={styleShopPage.timeSelectorView}>
+                       (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
                                 <ModalPicker
                                     data={this.state.timeData}
                                     initValue={'Select a delivery time'}
