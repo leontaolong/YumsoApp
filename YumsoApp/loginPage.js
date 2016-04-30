@@ -58,14 +58,15 @@ class LoginPage extends Component {
                     <Image source={require('./icons/Icon-Large.png')} style={styleLoginPage.logoIcon}/>
                 </View>
                 
-                <View style={styles.loginInputView}>
-                    <TextInput placeholder="Email" style={styles.loginInput}
+                <TextInput placeholder="Email" style={styleLoginPage.loginInput}
                        onChangeText = {(text) => this.setState({ email: text }) }/>
-                </View>
+
                 
-                <View style={styles.loginInputView}>
-                    <TextInput placeholder="Password" style={styles.loginInput}
+                <TextInput placeholder="Password" style={styleLoginPage.loginInput}
                         onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
+                
+                <View style={styleLoginPage.forgotPasswordView}>
+                      <Text style={styleLoginPage.forgotPasswordText}>Forgot password? </Text>
                 </View>
                 
                 <View style={styleLoginPage.signInButtonView}>
@@ -75,7 +76,7 @@ class LoginPage extends Component {
                 </View>
                        
                 <View style={styleLoginPage.askToSignUpView}>
-                    <Text style={styleLoginPage.askToSignUpText}>- No Yumso account? -</Text>
+                    <Text style={styleLoginPage.askToSignUpText}>No Yumso account?</Text>
                 </View>
                 
                 <View style={styleLoginPage.signUpButtonView}>
@@ -83,11 +84,9 @@ class LoginPage extends Component {
                        <Text style={styleLoginPage.signUpButtonText}>Sign up</Text>  
                    </TouchableHighlight> 
                 </View>
-                <View style={styleLoginPage.askToSignUpView}>
-                    <Text style={styleLoginPage.askToSignUpText}>- Or -</Text>
-                </View>
+
                 <View style={styleLoginPage.fbSignInButtonView}>
-                    <FBLogin style={styles.fbSignInButton}
+                    <FBLogin style={styleLoginPage.fbSignInButton}
                         permissions={facebookPermissions}
                         onLogin={function(data) {
                             _this.onGettingFbToken(data.credentials);
@@ -198,10 +197,8 @@ var styleLoginPage = StyleSheet.create({
     },
     logoView:{
       alignItems:'center',
-      paddingTop:windowHeight/18.4,
-      paddingBottom:windowHeight/9.2,
-      borderBottomWidth:0.8,
-      borderColor: '#D7D7D7',
+      paddingTop:windowHeight/15.4,
+      paddingBottom:windowHeight/20,
     },
     logoIcon:{
       width:windowWidth/4.14,
@@ -217,34 +214,46 @@ var styleLoginPage = StyleSheet.create({
       fontSize:14,
       fontWeight:'600',  
     },
+    loginInput:{
+      height:windowHeight/12.6,
+      fontSize:windowHeight/33.4,
+      color: '#696969',
+      justifyContent:'center',
+      borderWidth:1,
+      borderColor: '#D7D7D7',
+      paddingVertical:5,
+      paddingHorizontal:windowHeight/49.0,
+      marginHorizontal:windowWidth/24.6,
+      marginTop:windowWidth/49.2,
+      marginBottom:windowWidth/49.2,
+      textAlign:'center',
+    },
     signInButtonView:{
-      marginTop:30,
       height:windowHeight/13.38,
       backgroundColor:'#ff9933',
       justifyContent: 'center',
+      marginHorizontal:windowWidth/24.6,
     }, 
     signInButtonText:{
       color:'#fff',
       fontSize:windowHeight/30.6,
       fontWeight:'300',
       alignSelf:'center',
-      marginBottom:3,
     },
     askToSignUpView:{
-      paddingHorizontal:windowHeight/49.0,
-      justifyContent: 'center',
+      height:windowHeight/13.38, 
+      justifyContent: 'center',     
     },
     askToSignUpText:{
-      fontSize:18,
+      fontSize:12,
       color:'#696969',
       alignSelf:'center',
-      height:40,
-      marginTop:18,
     },
     signUpButtonView:{
       height:windowHeight/13.38,
       backgroundColor:'#ffcc33',
       justifyContent: 'center',
+      marginHorizontal:windowWidth/24.6,
     }, 
     signUpButtonText:{
       color:'#fff',
@@ -253,14 +262,26 @@ var styleLoginPage = StyleSheet.create({
       alignSelf:'center',
       marginBottom:3,
     },
+    forgotPasswordView:{
+      height:windowHeight/25,
+      marginHorizontal:windowWidth/24.6,
+      justifyContent: 'flex-end',
+      flexDirection:'row',
+      marginBottom:windowWidth/49.2,
+    },
+    forgotPasswordText:{
+      fontSize:12,
+      color:'#A9A9A9',
+    },
     fbSignInButtonView:{
-      alignItems:'center',
-    },
-    fbSignInButton:{
-      alignSelf:'center',
-    },
-    bottomBump: {
-      marginBottom: 15,
+      justifyContent:'center',
+      flexDirection:'row',
+      height:windowHeight/13.38,
+      backgroundColor:'#3b5998',
+      position:'absolute',
+      left: 0, 
+      right: 0,
+      top:windowHeight-windowHeight/13.38,
     },
 });
 

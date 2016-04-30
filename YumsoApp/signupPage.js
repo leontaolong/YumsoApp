@@ -74,10 +74,8 @@ class SignUpPage extends Component {
                          <Text style={styleSignUpPage.legalText}>By clicking Sign up, you agree with the terms and condictions</Text>
                     </View>
                     
-                    <TouchableHighlight onPress = {this.onSignUpPressed.bind(this)}>
-                    <View style={styleSignUpPage.signUpButtonView}>
+                    <TouchableHighlight style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
                         <Text style={styleSignUpPage.signUpButtonText}>Sign up</Text>
-                    </View>
                     </TouchableHighlight>
 
                     <ActivityIndicatorIOS
@@ -162,12 +160,12 @@ var styleSignUpPage = StyleSheet.create({
       position:'absolute',
       left: 0, 
       right: 0,
-      top:1,
+      top:windowHeight-windowHeight/13.38,
       height:windowHeight/13.38,
       backgroundColor:'#ff9933',
       justifyContent: 'center',
-     },
-     signUpButtonText:{
+    },
+    signUpButtonText:{
       color:'#fff',
       fontSize:windowHeight/30.6,
       fontWeight:'300',

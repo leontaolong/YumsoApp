@@ -7,7 +7,11 @@ var Swiper = require('react-native-swiper');
 var MapPage = require('./mapPage');
 var rating = require('./rating');
 var dollarSign = require('./commonModules/dollarIconRender');
-
+var profileImg = require('./TestImages/Obama.jpg');
+var ballonIcon = require('./icons/ic_location_on_48pt_3x.png');
+var labelIcon = require('./icons/2000px-Tag_font_awesome.svg.png');
+var searchIcon = require('./icons/ic_search_48pt_3x.png');
+var menuIcon = require('./icons/icon-menu.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -108,8 +112,6 @@ class ChefListPage extends Component {
     }
 
     renderRow(chef) {
-        let ballonIcon = require('./icons/ic_location_on_48pt_3x.png');
-        let labelIcon = require('./icons/2000px-Tag_font_awesome.svg.png');
         return (
             <View style={styleChefListPage.oneShopListView}>
                 <View style={styleChefListPage.oneShopPhotoView}>
@@ -203,9 +205,7 @@ class ChefListPage extends Component {
                 </View>
             </View>                    
         }
-        let ballonIcon = require('./icons/ic_location_on_48pt_3x.png');
-        let searchIcon = require('./icons/ic_search_48pt_3x.png');
-        let menuIcon = require('./icons/icon-menu.png');
+        
         return (
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
                 <View style={styles.container}>                    
@@ -275,6 +275,7 @@ class ChefListPage extends Component {
 }
 
 var Menu = React.createClass({
+
     goToOrderHistory: function() {
         this.props.caller.setState({ isMenuOpen: false });
         if(!this.props.eater){
@@ -334,7 +335,7 @@ var Menu = React.createClass({
     render: function() {
         let isAuthenticated = this.props.eater!=undefined;
         var displayName = isAuthenticated? (this.props.eater.firstname + ' '+ this.props.eater.lastname): '';
-        var profileImg = require('./TestImages/Obama.jpg');
+        
         if(this.props.eater && this.props.eater.eaterProfilePic){
             profileImg = {uri:this.props.eater.eaterProfilePic};
         }

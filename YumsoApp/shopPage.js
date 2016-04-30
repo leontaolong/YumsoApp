@@ -20,7 +20,7 @@ import React, {
   AsyncStorage,
   Alert,
   Picker,
-  ScrollView
+  Modal
 } from 'react-native';
 
 var windowHeight = Dimensions.get('window').height;
@@ -230,7 +230,7 @@ class ShopPage extends Component {
         } else {
             let likeIcon = require('./icons/ic_favorite_border_48pt_3x.png')
             if(this.state.like){
-                likeIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+                likeIcon = require('./icons/ic_favorite_48pt_3x.png');
             }
             let shareIcon = require('./icons/ic_share_48pt_3x.png');
             let backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
