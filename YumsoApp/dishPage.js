@@ -91,26 +91,23 @@ class DishPage extends Component {
                      <Text style={styleShopPage.oneDishNameText}>{this.state.dish.dishName}</Text>
                      <Text style={styleShopPage.oneDishDiscriptionText}>{this.state.dish.description}</Text>
                   </View>
-                  <View style={styleShopPage.forwardIconView}>
-                      <TouchableHighlight>
-                        <Image source={require('./icons/ic_keyboard_arrow_right_48pt_3x.png')} style={styleShopPage.forwardIcon}/>
-                      </TouchableHighlight>
-                  </View>
                </View>
                <View style={styleShopPage.priceView}>
                   <View style={styleShopPage.priceTextView}>
                     <Text style={styleShopPage.priceText}>${this.state.dish.price}</Text>
-
+                    <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' ? '' : '3 orders left'} 
+                      {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity + ' ordered ' : ''} 
+                    </Text>
                   </View>
                   <View style={styleShopPage.chooseQuantityView}>
                     <View style={styleShopPage.plusIconView}>
-                      <TouchableHighlight onPress={() => this.addToShoppingCart(dish) }>
+                      <TouchableHighlight onPress={() => this.addToShoppingCart(this.state.dish) }>
                         <Image source={require('./icons/icon-plus.png')} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
                      
                     <View style={styleShopPage.minusIconView}>
-                      <TouchableHighlight onPress={() => this.removeFromShoppingCart(dish) }>
+                      <TouchableHighlight onPress={() => this.removeFromShoppingCart(this.state.dish) }>
                          <Image source={require('./icons/icon-minus.png')} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
@@ -118,6 +115,52 @@ class DishPage extends Component {
                 </View>
             </View>
         );
+    }
+    
+    getTotalPrice(){
+        var total = 0;
+        var deliverTime = this.state.selectedTime;
+        for(var cartItemId in this.state.shoppingCart[deliverTime]){
+            var cartItem = this.state.shoppingCart[deliverTime][cartItemId];
+            total+=cartItem.dish.price * cartItem.quantity;
+        }
+        this.setState({shoppingCart:this.state.shoppingCart, totalPrice:total});
+    }  
+    
+    addToShoppingCart(dish){
+        if(this.state.selectedTime==='All Schedules'){
+            Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
+            return;  
+        }
+        if(!this.state.shoppingCart[this.state.selectedTime]){
+            this.state.shoppingCart[this.state.selectedTime] = {};
+        }
+        if(this.state.shoppingCart[this.state.selectedTime][dish.dishId]){
+            this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity+=1;
+        }else{
+            this.state.shoppingCart[this.state.selectedTime][dish.dishId] = {dish:dish, quantity:1};
+        }
+        this.getTotalPrice();
+    }
+    
+    removeFromShoppingCart(dish){
+        if(this.state.selectedTime==='All Schedules'){
+            Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
+            return;  
+        }
+        if(!this.state.shoppingCart[this.state.selectedTime]){
+            return;
+        }   
+        if(this.state.shoppingCart[this.state.selectedTime][dish.dishId] && this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity>0){
+            this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity-=1;
+            if(this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity===0){
+                delete this.state.shoppingCart[this.state.selectedTime][dish.dishId];
+                if(Object.keys(this.state.shoppingCart[this.state.selectedTime])===0){
+                    delete this.state.shoppingCart[this.state.selectedTime];
+                }
+            }
+        } 
+        this.getTotalPrice();
     }
     
     addToFavorite(){

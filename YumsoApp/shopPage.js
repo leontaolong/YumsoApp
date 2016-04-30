@@ -182,18 +182,18 @@ class ShopPage extends Component {
         return (
             <View style={styleShopPage.oneDishInListView}>
                <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)}>
-                    <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
+                  <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
                </TouchableHighlight>
                <View style={styleShopPage.oneDishNameDiscriptionView}>
                   <Image source={require('./icons/icon_bowl.png')} style={styleShopPage.bowlIcon}/>
                   <View style={styleShopPage.oneDishNameDiscriptionTextView}>
-                     <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
-                     <Text style={styleShopPage.oneDishDiscriptionText}>{dish.description}</Text>
+                    <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
+                    <Text style={styleShopPage.oneDishDiscriptionText}>{dish.description}</Text>
                   </View>
                   <View style={styleShopPage.forwardIconView}>
-                      <TouchableHighlight>
-                        <Image source={require('./icons/ic_keyboard_arrow_right_48pt_3x.png')} style={styleShopPage.forwardIcon}/>
-                      </TouchableHighlight>
+                    <TouchableHighlight>
+                       <Image source={require('./icons/ic_keyboard_arrow_right_48pt_3x.png')} style={styleShopPage.forwardIcon}/>
+                    </TouchableHighlight>
                   </View>
                </View>
                <View style={styleShopPage.priceView}>
@@ -212,7 +212,7 @@ class ShopPage extends Component {
                      
                     <View style={styleShopPage.minusIconView}>
                       <TouchableHighlight onPress={() => this.removeFromShoppingCart(dish) }>
-                         <Image source={require('./icons/icon-minus.png')} style={styleShopPage.plusMinusIcon}/>
+                        <Image source={require('./icons/icon-minus.png')} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
                   </View>
@@ -417,7 +417,7 @@ class ShopPage extends Component {
             name: 'DishPage', 
             passProps:{
                 dish:dish,
-                shoppingCart:this.state.shoppingCart[this.state.selectedTime],
+                shoppingCart:this.state.shoppingCart,
                 selectedTime:this.state.selectedTime,
             }
         });      
