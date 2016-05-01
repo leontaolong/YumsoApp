@@ -48,7 +48,7 @@ class ChefCommentsPage extends Component {
     fetchComments() {
         const start = 'start=' + new Date().setDate(new Date().getDate() - 7);
         const end = 'end=9999999999999999';
-        return this.client.getWithAuth(config.chefCommentsEndpoint + this.state.chefId + '?' + start + '&' + end)
+        return this.client.getWithoutAuth(config.chefCommentsEndpoint + this.state.chefId + '?' + start + '&' + end)
             .then((res) => {
                 if (res.statusCode != 200) {
                     throw new Error('Fail getting past comments');

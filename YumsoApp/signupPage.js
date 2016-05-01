@@ -1,6 +1,9 @@
 var HttpsClient = require('./httpsClient');
 var AuthService = require('./authService');
 var styles = require('./style');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var logoIcon = require('./icons/Icon-Large.png');
+
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -33,7 +36,7 @@ class SignUpPage extends Component {
                     <View style={styles.headerBannerView}>    
                         <View style={styles.backButtonView}>
                         <TouchableHighlight onPress={() => this.navigateBack()}>
-                            <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styles.backButtonIcon}/>
+                            <Image source={backIcon} style={styles.backButtonIcon}/>
                         </TouchableHighlight>
                         </View>    
                         <View style={styles.titleView}>
@@ -44,7 +47,7 @@ class SignUpPage extends Component {
                     </View>
                     
                     <View style={styleSignUpPage.logoView}>
-                        <Image source={require('./icons/Icon-Large.png')} style={styleSignUpPage.logoIcon}/>
+                        <Image source={logoIcon} style={styleSignUpPage.logoIcon}/>
                     </View>
                     
                     <View style={styles.loginInputView}>
@@ -74,10 +77,8 @@ class SignUpPage extends Component {
                          <Text style={styleSignUpPage.legalText}>By clicking Sign up, you agree with the terms and condictions</Text>
                     </View>
                     
-                    <TouchableHighlight onPress = {this.onSignUpPressed.bind(this)}>
-                    <View style={styleSignUpPage.signUpButtonView}>
+                    <TouchableHighlight style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
                         <Text style={styleSignUpPage.signUpButtonText}>Sign up</Text>
-                    </View>
                     </TouchableHighlight>
 
                     <ActivityIndicatorIOS
@@ -162,12 +163,12 @@ var styleSignUpPage = StyleSheet.create({
       position:'absolute',
       left: 0, 
       right: 0,
-      top:1,
+      top:windowHeight-windowHeight/13.38,
       height:windowHeight/13.38,
       backgroundColor:'#ff9933',
       justifyContent: 'center',
-     },
-     signUpButtonText:{
+    },
+    signUpButtonText:{
       color:'#fff',
       fontSize:windowHeight/30.6,
       fontWeight:'300',

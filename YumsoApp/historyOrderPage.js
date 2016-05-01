@@ -4,6 +4,7 @@ var config = require('./config');
 var AuthService = require('./authService');
 var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -189,7 +190,7 @@ class HistoryOrderPage extends Component {
                <View style={styleHistoryOrderPage.headerBannerView}>    
                    <View style={styleHistoryOrderPage.backButtonView}>
                    <TouchableHighlight onPress={() => this.navigateBackToChefList()}>
-                     <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleHistoryOrderPage.backButtonIcon}/>
+                     <Image source={backIcon} style={styleHistoryOrderPage.backButtonIcon}/>
                    </TouchableHighlight>
                    </View>    
                    <View style={styleHistoryOrderPage.historyOrderTitleView}>

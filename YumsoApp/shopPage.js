@@ -3,7 +3,17 @@ var styles = require('./style');
 var config = require('./config');
 var rating = require('./rating');
 var AuthService = require('./authService');
-
+var shareIcon = require('./icons/ic_share_48pt_3x.png');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var notlikedIcon = require('./icons/ic_favorite_border_48pt_3x.png')
+var likedIcon = require('./icons/ic_favorite_48pt_3x.png');
+var bowlIcon = require('./icons/icon_bowl.png');
+var plusIcon = require('./icons/icon-plus.png');
+var minusIcon = require('./icons/icon-minus.png');
+var forwardIcon = require('./icons/ic_keyboard_arrow_right_48pt_3x.png');
+var radioIcon = require('./icons/ic_radio_48pt_3x.png');
+var mapIcon = require('./icons/ic_map_48pt_3x-2.png');
+var shoppingCartIcon = require('./icons/ic_shopping_cart_36pt_3x.png');
 import Dimensions from 'Dimensions';
 import ModalPicker from 'react-native-modal-picker'
 
@@ -20,7 +30,7 @@ import React, {
   AsyncStorage,
   Alert,
   Picker,
-  ScrollView
+  Modal
 } from 'react-native';
 
 var windowHeight = Dimensions.get('window').height;
@@ -113,12 +123,12 @@ class ShopPage extends Component {
     }
     
     renderHeader(){
-        return        [(<View style={styleShopPage.shopPictureView}>
+        return        [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
                             <Image source={{ uri: this.state.chef.shopPictures[0] }} style={styleShopPage.shopPicture}
                                 onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }>
                             </Image>
                         </View>),
-                       (<View style={styleShopPage.chefNameRow}>
+                       (<View key={'chefNameRow'} style={styleShopPage.chefNameRow}>
                             <View style={styleShopPage.chefProfilePicView}>
                                 <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShopPage.chefProfilePic}
                                     onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }/>
@@ -132,32 +142,32 @@ class ShopPage extends Component {
                                 <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, Kirkland</Text>
                             </View>
                         </View>),
-                       (<View style={styleShopPage.chefDiscriptionView}>
+                       (<View key={'chefDiscriptionView'} style={styleShopPage.chefDiscriptionView}>
                             <Text style={styleShopPage.myStoryTitleText}>My Story</Text>
                             <Text style={styleShopPage.chefDiscriptionText}>{this.state.chef.storeDescription}{this.state.chef.storeDescription}</Text>
                         </View>),
-                       (<View style={styleShopPage.shopRadioView}>
-                            <Image source={require('./icons/ic_radio_48pt_3x.png') } style={styleShopPage.radioIcon}/>
+                       (<View key={'shopRadioView'} style={styleShopPage.shopRadioView}>
+                            <Image source={radioIcon} style={styleShopPage.radioIcon}/>
                             <View style={styleShopPage.shopDiscriptionTextView}>
                                 <Text style={styleShopPage.shopRadioText}>{this.state.chef.storeDescription}</Text>
                             </View>
                             <View style={styleShopPage.forwardIconView}>
                                 <TouchableHighlight>
-                                  <Image source={require('./icons/ic_keyboard_arrow_right_48pt_3x.png')} style={styleShopPage.forwardIcon}/>
+                                  <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                                 </TouchableHighlight>
                             </View>
                         </View>),
-                       (<View style={styleShopPage.pickupAddressView}>
-                            <Image source={require('./icons/ic_map_48pt_3x-2.png') } style={styleShopPage.pickupAddressIcon}/>
+                       (<View key={'pickupAddressView'} style={styleShopPage.pickupAddressView}>
+                            <Image source={mapIcon} style={styleShopPage.pickupAddressIcon}/>
                             <View style={styleShopPage.pickupAddressTextView}>
                                 <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddress}</Text>
                             </View>
                         </View>),
-                       (<TouchableHighlight style={styles.button}
+                       (<TouchableHighlight key={'gotochefcommentsbutton'} style={styles.button}
                                 onPress={() => this.navigateToChefCommentsPage() }>
                                 <Text style={styles.buttonText}>Go to chef comments</Text>
                         </TouchableHighlight>),                     
-                       (<View style={styleShopPage.timeSelectorView}>
+                       (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
                                 <ModalPicker
                                     data={this.state.timeData}
                                     initValue={'Select a delivery time'}
@@ -179,18 +189,18 @@ class ShopPage extends Component {
         return (
             <View style={styleShopPage.oneDishInListView}>
                <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)}>
-                    <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
+                  <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
                </TouchableHighlight>
                <View style={styleShopPage.oneDishNameDiscriptionView}>
-                  <Image source={require('./icons/icon_bowl.png')} style={styleShopPage.bowlIcon}/>
+                  <Image source={bowlIcon} style={styleShopPage.bowlIcon}/>
                   <View style={styleShopPage.oneDishNameDiscriptionTextView}>
-                     <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
-                     <Text style={styleShopPage.oneDishDiscriptionText}>{dish.description}</Text>
+                    <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
+                    <Text style={styleShopPage.oneDishDiscriptionText}>{dish.description}</Text>
                   </View>
                   <View style={styleShopPage.forwardIconView}>
-                      <TouchableHighlight>
-                        <Image source={require('./icons/ic_keyboard_arrow_right_48pt_3x.png')} style={styleShopPage.forwardIcon}/>
-                      </TouchableHighlight>
+                    <TouchableHighlight>
+                       <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+                    </TouchableHighlight>
                   </View>
                </View>
                <View style={styleShopPage.priceView}>
@@ -203,13 +213,13 @@ class ShopPage extends Component {
                   <View style={styleShopPage.chooseQuantityView}>
                     <View style={styleShopPage.plusIconView}>
                       <TouchableHighlight onPress={() => this.addToShoppingCart(dish) }>
-                        <Image source={require('./icons/icon-plus.png')} style={styleShopPage.plusMinusIcon}/>
+                        <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
                      
                     <View style={styleShopPage.minusIconView}>
                       <TouchableHighlight onPress={() => this.removeFromShoppingCart(dish) }>
-                         <Image source={require('./icons/icon-minus.png')} style={styleShopPage.plusMinusIcon}/>
+                        <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
                   </View>
@@ -228,12 +238,13 @@ class ShopPage extends Component {
                         style={styles.loader}/>
                 </View>);
         } else {
-            let likeIcon = require('./icons/ic_favorite_border_48pt_3x.png')
+            
             if(this.state.like){
-                likeIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+                likeIcon = likedIcon;
+            }else{
+                likeIcon = notlikedIcon;
             }
-            let shareIcon = require('./icons/ic_share_48pt_3x.png');
-            let backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+            
             return (
                 <View style={styles.container}>
                         <View style={styles.headerBannerView}>    
@@ -265,7 +276,7 @@ class ShopPage extends Component {
                         <View style={styleShopPage.footerView}>          
                           <TouchableHighlight onPress={() => this.navigateToShoppingCart() }>
                             <View style={styleShopPage.shoppingCartIconView}>
-                                <Image source={require('./icons/ic_shopping_cart_36pt_3x.png') } style={styleShopPage.shoppingCartIcon}/>    
+                                <Image source={shoppingCartIcon} style={styleShopPage.shoppingCartIcon}/>    
                             </View>
                           </TouchableHighlight>
                             <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Select a delivery time':'$'+this.state.totalPrice+' at '+this.state.selectedTime}</Text>
@@ -412,7 +423,9 @@ class ShopPage extends Component {
         this.props.navigator.push({
             name: 'DishPage', 
             passProps:{
-                dish:dish
+                dish:dish,
+                shoppingCart:this.state.shoppingCart,
+                selectedTime:this.state.selectedTime,
             }
         });      
     }

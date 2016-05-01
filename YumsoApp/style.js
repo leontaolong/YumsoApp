@@ -11,7 +11,7 @@ var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 module.exports = StyleSheet.create({
     container:{
-      marginTop:15,
+      paddingTop:15,
       flex:1,
       flexDirection:'column',
       backgroundColor:'#fff',
