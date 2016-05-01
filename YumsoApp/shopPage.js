@@ -405,7 +405,8 @@ class ShopPage extends Component {
             passProps:{
                 shoppingCart:this.state.shoppingCart[this.state.selectedTime],
                 selectedTime:this.state.selectedTime,
-                chefId:this.state.chefId
+                chefId:this.state.chefId,
+                shopName:this.state.chef.shopname,
             }
         });    
     }
@@ -609,9 +610,6 @@ var styleShopPage = StyleSheet.create({
     },
     oneDishInListView:{
         marginBottom:0,
-        // alignSelf:'stretch',
-        // flexDirection:'row',
-        // flex:1 ,
     },
     oneDishPicture:{
         width: windowWidth,

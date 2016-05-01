@@ -33,19 +33,29 @@ class ShoppingCartPage extends Component {
         var routeStack = this.props.navigator.state.routeStack;
         let shoppingCart = routeStack[routeStack.length-1].passProps.shoppingCart;        
         let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;        
-        let chefId = routeStack[routeStack.length-1].passProps.chefId;        
+        let chefId = routeStack[routeStack.length-1].passProps.chefId;
+        let shopName = routeStack[routeStack.length-1].passProps.shopName;
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(shoppingCart)),
             showProgress:false,
             shoppingCart:shoppingCart,
             selectedTime:selectedTime,
-            chefId:chefId
+            chefId:chefId,
+            shopName:shopName,
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
     
     componentDidMount(){
         this.getTotalPrice();    
+    }
+    
+    renderHeader(){
+        return[(<View style={styleShoppingCartPage.chefShopNameView}>
+                    <Text style={styleShoppingCartPage.chefShopNameText}>{this.state.shopName}</Text>
+                </View>),
+             
+              ]
     }
     
     renderRow(cartItem){
@@ -66,9 +76,11 @@ class ShoppingCartPage extends Component {
                       <View style={styleShoppingCartPage.dishPriceView}>
                         <Text style={styleShoppingCartPage.dishPriceText}>${dish.price}</Text>   
                       </View>
-                    </View>  
+                    </View> 
+                     
                     <View style={styleShoppingCartPage.dishDescriptionView}>
                     </View>
+                    
                     <View style={styleShoppingCartPage.quantityTotalPriceView}>
                       <View style={styleShoppingCartPage.quantityView}>
                         <TouchableHighlight style={styleShoppingCartPage.plusIconView}
@@ -84,7 +96,8 @@ class ShoppingCartPage extends Component {
                       <View style={styleShoppingCartPage.totalPriceView}>
                           <Text style={styleShoppingCartPage.totalPriceText}>${dish.price*quantity}</Text>
                       </View>                               
-                    </View>                           
+                    </View>  
+                                             
                 </View>
             </View>
         );
@@ -92,7 +105,7 @@ class ShoppingCartPage extends Component {
     
     renderFooter(){
       
-       return [(<View style={styleShoppingCartPage.totalView}>
+       return [(<View style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
                   </View>
@@ -150,11 +163,10 @@ class ShoppingCartPage extends Component {
 
                <ListView style={styleShoppingCartPage.dishListView}
                     dataSource = {this.state.dataSource}
+                    renderHeader={this.renderHeader.bind(this)}
                     renderRow={this.renderRow.bind(this) } 
                     renderFooter={this.renderFooter.bind(this)}/>
-
-               <Text>Deliver time: {this.state.selectedTime}}</Text>
-
+                    
                <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
                <View style={styleShoppingCartPage.checkOutButtonView}>
                    <Text style={styleShoppingCartPage.checkOutButtonText}>Check Out Now!</Text>
@@ -244,34 +256,57 @@ class ShoppingCartPage extends Component {
 }
 
 var styleShoppingCartPage = StyleSheet.create({
+    chefShopNameView:{
+        flexDirection:'row',
+        justifyContent:'center',
+        height:50,
+        borderBottomWidth:1,
+        borderColor:'#D7D7D7',
+    },
+    chefShopNameText:{
+        color:'#ff9933',
+        fontSize:20,
+        fontWeight:'500',
+        marginTop:10,
+    },
     dishListView:{
         flex:1,
         backgroundColor:'#fff',
         flexDirection:'column',
     },
-    totalView:{
-        flex:1,
+    subtotalView:{
         flexDirection:'row',
-        paddingHorizontal:10,
-        paddingVertical:30,
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        paddingTop:windowHeight/56.6,
+        borderWidth:1,
+        borderColor:'#D7D7D7',
+        justifyContent:'center'
+    },
+    totalView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        paddingTop:windowHeight/56.6,
         borderBottomWidth:1,
         borderColor:'#D7D7D7',
+        justifyContent:'center'
     },
     priceTitleView:{
         flex:1/2.0,
         alignItems:'flex-start',
     },
     priceTitleText:{ 
-        fontSize:18,
-        fontWeight:'600',
+        fontSize:windowHeight/40.89,
+        fontWeight:'500',
     },
     priceNumberView:{
         flex:1/2.0,
         alignItems:'flex-end',
     },
     priceNumberText:{
-        fontSize:22,
-        fontWeight:'600',
+        fontSize:windowHeight/33.45,
+        fontWeight:'500',
     },
     oneListingView:{
         backgroundColor:'#FFFFFF',  
@@ -279,14 +314,16 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1,
     },
     dishPhoto:{
-        width:150,
-        height:150,
+        width:windowWidth/2.76,
+        height:windowWidth/2.76,
     },
     shoppingCartInfoView:{
         flex:1,
+        height:windowWidth/2.76,
         flexDirection:'column',
-        paddingHorizontal:20,
-        paddingVertical:10,
+        paddingLeft:windowWidth/20.7,
+        paddingRight:windowWidth/27.6,
+        paddingVertical:windowHeight/73.6,
     },
     dishNamePriceView:{
         flex:1,
@@ -297,20 +334,20 @@ var styleShoppingCartPage = StyleSheet.create({
         alignItems:'flex-start',     
     },
     dishNameText:{
-        fontSize:18,
-        fontWeight:'600'
+        fontSize:windowHeight/40.89,
+        fontWeight:'500'
     },
     dishPriceView:{
         flex:0.3,
         alignItems:'flex-end',
     },
     dishPriceText:{
-        fontSize:18,
+        fontSize:windowHeight/40.89,
         fontWeight:'600',
         color:'#808080',
     },
     dishDescriptionView:{
-        height:80,  
+        height:windowHeight/10,  
     },
     quantityTotalPriceView:{
         flex:1,
@@ -326,22 +363,22 @@ var styleShoppingCartPage = StyleSheet.create({
         alignItems:'flex-end',
     },
     totalPriceText:{
-        fontSize:22,
-        fontWeight:'600',
+        fontSize:windowHeight/33.45,
+        fontWeight:'500',
     },
     plusMinusIcon:{
         width: windowHeight/27.6, 
         height: windowHeight/27.6,
     },
     plusIconView:{
-        marginRight:15,
+        marginRight:windowWidth/27.6,
     },
     minusIconView:{
-        marginLeft:15,
+        marginLeft:windowWidth/27.6,
     },
     quantityText:{
-        marginTop:5,
-        fontSize:16,
+        marginTop:windowHeight/147.2,
+        fontSize:windowHeight/46.0,
         fontWeight:'500',
         color:'#ff9933',
     },
@@ -354,12 +391,12 @@ var styleShoppingCartPage = StyleSheet.create({
     }, 
     checkOutButtonText:{
         fontSize:windowHeight/37.8,
-        fontWeight:'600',
+        fontWeight:'500',
         color:'#fff',   
     },
     bowlIcon:{
-        width:30,
-        height:30,
+        width:windowHeight/24.53,
+        height:windowHeight/24.53,
     }
 });
 
