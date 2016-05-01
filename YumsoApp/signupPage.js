@@ -1,6 +1,9 @@
 var HttpsClient = require('./httpsClient');
 var AuthService = require('./authService');
 var styles = require('./style');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var logoIcon = require('./icons/Icon-Large.png');
+
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -30,21 +33,21 @@ class SignUpPage extends Component {
     render() {
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
-                    <View style={styleSignUpPage.headerBannerView}>    
-                        <View style={styleSignUpPage.backButtonView}>
+                    <View style={styles.headerBannerView}>    
+                        <View style={styles.backButtonView}>
                         <TouchableHighlight onPress={() => this.navigateBack()}>
-                            <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleSignUpPage.backButtonIcon}/>
+                            <Image source={backIcon} style={styles.backButtonIcon}/>
                         </TouchableHighlight>
                         </View>    
-                        <View style={styleSignUpPage.titleView}>
-                            <Text style={styleSignUpPage.titleText}>Sign Up</Text>
+                        <View style={styles.titleView}>
+                            <Text style={styles.titleText}>Sign Up</Text>
                         </View>
                         <View style={{flex:0.1/3,width:windowWidth/3}}>
                         </View>
                     </View>
                     
                     <View style={styleSignUpPage.logoView}>
-                        <Image source={require('./icons/Icon-Large.png')} style={styleSignUpPage.logoIcon}/>
+                        <Image source={logoIcon} style={styleSignUpPage.logoIcon}/>
                     </View>
                     
                     <View style={styles.loginInputView}>
@@ -74,10 +77,8 @@ class SignUpPage extends Component {
                          <Text style={styleSignUpPage.legalText}>By clicking Sign up, you agree with the terms and condictions</Text>
                     </View>
                     
-                    <TouchableHighlight onPress = {this.onSignUpPressed.bind(this)}>
-                    <View style={styleSignUpPage.signUpButtonView}>
+                    <TouchableHighlight style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
                         <Text style={styleSignUpPage.signUpButtonText}>Sign up</Text>
-                    </View>
                     </TouchableHighlight>
 
                     <ActivityIndicatorIOS
@@ -138,31 +139,6 @@ var styleLogin = StyleSheet.create({
 });
 
 var styleSignUpPage = StyleSheet.create({
-    headerBannerView:{
-      flexDirection:'row',
-      borderBottomWidth:1,
-      borderColor:'#D7D7D7',
-      height:windowHeight/16.4,
-    },
-    backButtonView:{
-      flex:0.1/3,
-      width:windowWidth/3,
-      paddingTop:6,
-    },
-    backButtonIcon:{
-      width:30,
-      height:30,
-    },
-    titleView:{
-      flex:0.1/3, 
-      width:windowWidth/3,
-      alignItems:'center',     
-    },
-    titleText:{
-      marginTop:12,
-      fontSize:14,
-      fontWeight:'600',  
-    },
     logoView:{
       alignItems:'center',
       paddingTop:windowHeight/18.4,
@@ -187,12 +163,12 @@ var styleSignUpPage = StyleSheet.create({
       position:'absolute',
       left: 0, 
       right: 0,
-      top:1,
+      top:windowHeight-windowHeight/13.38,
       height:windowHeight/13.38,
       backgroundColor:'#ff9933',
       justifyContent: 'center',
-     },
-     signUpButtonText:{
+    },
+    signUpButtonText:{
       color:'#fff',
       fontSize:windowHeight/30.6,
       fontWeight:'300',

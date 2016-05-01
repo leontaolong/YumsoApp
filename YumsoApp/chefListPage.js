@@ -5,11 +5,18 @@ var AuthService = require('./authService');
 var SideMenu = require('react-native-side-menu');
 var Swiper = require('react-native-swiper');
 var MapPage = require('./mapPage');
-
+var rating = require('./rating');
+var dollarSign = require('./commonModules/dollarIconRender');
+var profileImg = require('./TestImages/Obama.jpg');
+var ballonIcon = require('./icons/ic_location_on_48pt_3x.png');
+var labelIcon = require('./icons/2000px-Tag_font_awesome.svg.png');
+var searchIcon = require('./icons/ic_search_48pt_3x.png');
+var menuIcon = require('./icons/icon-menu.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
+console.log(windowHeight+" "+windowWidth);
 
 import React, {
     Component,
@@ -106,46 +113,65 @@ class ChefListPage extends Component {
 
     renderRow(chef) {
         return (
-            <View style={styles.chefListView_chef}>
-                <View style={styles.chefListView_Chef_shopPic}>
-                    <Swiper showsButtons={false} height={Dimensions.get('window').height / 4} horizontal={true} autoplay={true}
+            <View style={styleChefListPage.oneShopListView}>
+                <View style={styleChefListPage.oneShopPhotoView}>
+                    <Swiper showsButtons={false} height={windowHeight/3.0} horizontal={true} autoplay={true}
                         dot={<View style={{ backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />}
                         activeDot={<View style={{ backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />} >
                         {this.state.chefView[chef.chefId].map((picture) => {
                             return (
-                                <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef.chefId) } underlayColor='#C0C0C0'>
+                                <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef.chefId)} underlayColor='#C0C0C0'>
                                     <Image source={{ uri: picture }} style={styles.chefListView_Chef_shopPic}
-                                        onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }/>
+                                        onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}/>
                                 </TouchableHighlight>
                             );
                         }) }
                     </Swiper>
                 </View>
-                <View style={styles.chefListView_chef_Info}>
-                    <View style={styles.chefListView_chef_col1}>
-                      <TouchableHighlight style={styles.button} onPress={() => this.navigateToShopPage(chef.chefId) }>
-                        <Image source={{ uri: chef.chefProfilePic }} style={styles.chefListView_Chef_profilePic}/>
-                      </TouchableHighlight>  
-                        <Text>1.5 miles</Text>
+                <View style={{flexDirection:'row',marginBottom:25}}>
+                    <View style={styleChefListPage.chefListView_chef_col1}>
+                      <View style={styleChefListPage.oneShopChefPhotoDistanceView}>
+                      <TouchableHighlight style={styleChefListPage.oneShopChefPhotoView} onPress={() => this.navigateToShopPage(chef.chefId) }>
+                          <Image source={{ uri: chef.chefProfilePic }} style={styleChefListPage.chefPhoto}/>
+                      </TouchableHighlight>
+                      
+                      </View>
                     </View>
-                    <View style={styles.chefListView_chef_col2}>
-                        <Text style={{
-                            color: '#333',
-                            fontWeight: '600',
-                            backgroundColor: '#fff',
-                            textAlign: 'left'
-                        }}>
-                            {chef.shopname}
-                        </Text>
-                    </View>
-                    <View style={styles.chefListView_chef_col3}>
-                        <Text style={{
-                            color: '#333',
-                            backgroundColor: '#fff',
-                            textAlign: 'right'
-                        }}>
-                            {chef.rateStar}
-                        </Text>
+                    <View style={styleChefListPage.chefListView_chef_col2}>
+                          <View style={{position:'absolute',right:windowWidth/28,top:windowHeight/65.53,width:windowWidth*0.69}}>
+                          <Text style={styleChefListPage.oneShopNameText}>{chef.shopname}</Text>
+                          </View>
+                          
+                          <View style={styleChefListPage.labelView}>
+                                <View style={{flexDirection:'row',width:windowWidth/3.6,alignItems:'flex-start'}}>
+                                    <View style={styleChefListPage.labelIconView}>
+                                    <Image style={styleChefListPage.labelIcon} source={labelIcon}/>
+                                    </View>
+                                    <Text style={styleChefListPage.labelText}>Spicy</Text>
+                                </View>
+                                <View style={styleChefListPage.ratingView}>
+                                        {rating.renderRating(3)}
+                                </View>
+                                <Text style={styleChefListPage.reviewNumberText}>10 Reviews</Text>
+                          </View>
+                          <View style={styleChefListPage.labelDollarView}>
+                             <View style={styleChefListPage.distanceView}>
+                                <View style={styleChefListPage.labelIconView}>
+                                   <Image style={styleChefListPage.ballonIcon} source={ballonIcon}/>
+                                </View>
+                                <Text style={styleChefListPage.distanceText}>1.5 miles</Text>
+                            </View>
+                             <View style={{flexDirection:'row',width:windowWidth/3.6,alignItems:'flex-start'}}>
+                                <View style={styleChefListPage.labelIconView}>
+                                   <Image style={styleChefListPage.labelIcon} source={labelIcon}/>
+                                </View>
+                                <Text style={styleChefListPage.labelText}>Japanese</Text>
+                             </View>
+                             <View style={styleChefListPage.ratingView}>
+                                    {dollarSign.renderLevel(3)}
+                             </View>
+                             <Text style={styleChefListPage.reviewNumberText2}>10 Reviews</Text>
+                          </View>
                     </View>
                 </View>
             </View>
@@ -179,33 +205,30 @@ class ChefListPage extends Component {
                 </View>
             </View>                    
         }
+        
         return (
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
-                <View>                    
+                <View style={styles.container}>                    
                     <View style={styleChefListPage.headerBannerView}>
                         <View style={styleChefListPage.menuButtonView}>
-                        <TouchableHighlight style={styles.button} onPress={() => this.setState({ isMenuOpen: true }) }>
-                            <Text style={styles.buttonText}> Menu</Text>
-                        </TouchableHighlight>
+                          <TouchableHighlight onPress={() => this.setState({ isMenuOpen: true }) }>
+                            <Image source={menuIcon} style={styleChefListPage.menuIcon}/>
+                          </TouchableHighlight>
                         </View>
+                        <TouchableHighlight onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styleChefListPage.locationView}>
-                        <TouchableHighlight style={styles.button} onPress={() => this.setState({showLocSearch:true}) }>
-                            <Text style={styles.buttonText}> Location</Text>
-                        </TouchableHighlight>
+                            <View style={{marginTop:3,marginLeft:2,}}><Image source={ballonIcon} style={styleChefListPage.locationIcon}/></View>
+                            <Text style={styleChefListPage.locationText}>{this.state.city}</Text>
                         </View>
-                        <View style={styleChefListPage.searchButtonView}>
-                        <TouchableHighlight style={styles.button} onPress={() => this.setState({showChefSearch:true}) }>
-                            <Text style={styles.buttonText}> Search</Text>
                         </TouchableHighlight>
+                        <View style={styleChefListPage.searchButtonView}>
+                          <TouchableHighlight onPress={() => this.setState({showChefSearch:true}) }>
+                            <Image source={searchIcon} style={styleChefListPage.searchIcon}/>
+                          </TouchableHighlight>
                         </View>
                     </View> 
-                    <View  style={{flex:0.1, flexDirection:'column',height:40,backgroundColor:'#fff',}}>
-                        <Text>
-                            <Text style={styles.title}>Current position: </Text>
-                            {this.state.city+','+this.state.state}
-                        </Text>               
-                    </View>             
-                    <ListView style={styles.chefListView}
+          
+                    <ListView style={styles.dishListView}
                         dataSource = {this.state.dataSource}
                         renderRow={this.renderRow.bind(this) } />
                 </View>
@@ -252,6 +275,7 @@ class ChefListPage extends Component {
 }
 
 var Menu = React.createClass({
+
     goToOrderHistory: function() {
         this.props.caller.setState({ isMenuOpen: false });
         if(!this.props.eater){
@@ -311,7 +335,7 @@ var Menu = React.createClass({
     render: function() {
         let isAuthenticated = this.props.eater!=undefined;
         var displayName = isAuthenticated? (this.props.eater.firstname + ' '+ this.props.eater.lastname): '';
-        var profileImg = require('./TestImages/Obama.jpg');
+        
         if(this.props.eater && this.props.eater.eaterProfilePic){
             profileImg = {uri:this.props.eater.eaterProfilePic};
         }
@@ -369,27 +393,141 @@ var sideMenuStyle = StyleSheet.create({
 
 var styleChefListPage = StyleSheet.create({
     headerBannerView:{
-        flex:0.1,
         flexDirection:'row',
-        height:50,
+        height:windowHeight/16.4,
         backgroundColor:'#fff',
-        marginTop:20,
     },
     menuButtonView:{
         flex:0.1/3,
         width:windowWidth/3,
         alignItems:'flex-start',
+        paddingLeft:windowWidth/27.6,
+        paddingTop:windowHeight/73.6,
+    },
+    menuIcon:{
+        width:windowHeight/29.4,
+        height:windowHeight/29.4,
+    },
+    searchIcon:{
+        width:windowHeight/24.5,
+        height:windowHeight/24.5,
     },
     locationView:{
-      flex:0.1/3, 
-      width:windowWidth/3,
-      alignItems:'center',     
+        flex:0.1/3, 
+        flexDirection:'row',
+        width:windowWidth/3,
+        justifyContent:'center',
+        paddingTop:windowHeight/52.6,   
+    },
+    locationIcon:{
+        width:windowHeight/49,
+        height:windowHeight/49,
+    },
+    locationText:{
+        fontSize:windowHeight/43.3,
+        color:'#696969',
     },
     searchButtonView:{
-      flex:0.1/3, 
-      width:windowWidth/3,
-      alignItems:'flex-end',     
+        flex:0.1/3, 
+        width:windowWidth/3,
+        alignItems:'flex-end',
+        paddingRight:windowWidth/41.4,
+        paddingTop:windowHeight/105.14,     
     },
+    oneShopListView:{
+        alignSelf:'stretch',
+        backgroundColor:'#FFFFFF',  
+    },
+    oneShopPhotoView:{
+        height:windowHeight/3,
+        alignSelf:'stretch',
+    },
+    chefListView_chef_col1:{
+        flex:1/4,
+        flexDirection:'row', 
+        justifyContent:'flex-end',
+    },
+    chefListView_chef_col2:{
+        flex:3/4,
+        flexDirection:'column',
+        paddingTop:windowHeight/73.6,
+        paddingLeft:windowWidth/41.4,
+        alignItems:'flex-start',
+    },
+    oneShopChefPhotoDistanceView:{
+        flexDirection:'column',
+    },
+    oneShopChefPhotoView:{
+        top:-windowWidth/6/2.5,
+        position: 'relative',
+    },
+    chefPhoto:{
+        height:windowWidth/5,
+        width:windowWidth/5,
+        borderRadius: 12, 
+        borderWidth: 0, 
+        overflow: 'hidden',
+    },
+    distanceView:{
+        marginRight:10,
+        flexDirection:'row',
+    },
+    ballonIcon:{
+        width:windowHeight/52.6,
+        height:windowHeight/52.6,
+    },
+    distanceText:{
+        fontSize:12,
+        color:'#696969',
+        marginLeft:2,
+    },
+    oneShopNameText:{
+        fontSize:15,
+        fontWeight:'600',
+        alignSelf:'flex-start',
+    },
+    labelIcon:{
+        width:windowHeight/56.7, 
+        height:windowHeight/56.7,
+    },
+    labelView:{
+        marginTop:windowHeight/105.14,
+        flexDirection:'row',
+        flex:0.8,
+        position:'absolute',
+        right:windowWidth/28,
+        top:windowHeight/22.53,
+    },
+    labelDollarView:{
+        marginTop:windowHeight/105.14,
+        flexDirection:'row',
+        flex:1,
+        position:'absolute',
+        right:windowWidth/28,
+        top:windowHeight/12.72,
+    },
+    labelIconView:{
+        marginTop:1,
+    },
+    labelText:{
+        fontSize:12,
+        color:'#696969',
+        marginLeft:windowWidth/82.8,
+    },
+    ratingView:{
+        flexDirection:'row',
+    },
+    reviewNumberText:{
+        fontSize:12,
+        color:'#A9A9A9',
+        marginLeft:windowWidth/138,
+    },
+    reviewNumberText2:{
+        fontSize:12,
+        color:'#fff',
+        marginLeft:windowWidth/138,
+    }
+
 });
 
 module.exports = ChefListPage;

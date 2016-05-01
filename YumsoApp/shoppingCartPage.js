@@ -2,6 +2,13 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
+var plusIcon = require('./icons/icon-plus.png');
+var minusIcon = require('./icons/icon-minus.png');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+import Dimensions from 'Dimensions';
+
+var windowHeight = Dimensions.get('window').height;
+var windowWidth = Dimensions.get('window').width;
 
 import React, {
   Component,
@@ -49,39 +56,74 @@ class ShoppingCartPage extends Component {
             imageSrc={uri:dish.pictures[0]};   
         } 
         return (
-            <View style={styles.dishListView_dish}>
-                <Image source={imageSrc} style={styles.dishListView_dish_pic}/>
-                <View >
-                    <View>
-                        <Text>
-                            {dish.dishName}
-                        </Text>
-                        <Text>
-                            {dish.description}
-                        </Text>   
+            <View style={styleShoppingCartPage.oneListingView}>
+                <Image source={imageSrc} style={styleShoppingCartPage.dishPhoto}/>
+                <View style={styleShoppingCartPage.shoppingCartInfoView}>
+                    <View style={styleShoppingCartPage.dishNamePriceView}>
+                      <View style={styleShoppingCartPage.dishNameView}>
+                        <Text style={styleShoppingCartPage.dishNameText}>{dish.dishName}</Text>
+                      </View>
+                      <View style={styleShoppingCartPage.dishPriceView}>
+                        <Text style={styleShoppingCartPage.dishPriceText}>${dish.price}</Text>   
+                      </View>
                     </View>  
-                    <View style={{flexDirection:'row', flex:1}}>
-                        <View>
-                            <Text>
-                                ${dish.price}
-                            </Text>
-                            <Text>
-                                {cartItem.quantity}
-                            </Text> 
-                        </View>  
-                        <TouchableHighlight style={styles.button}
+                    <View style={styleShoppingCartPage.dishDescriptionView}>
+                    </View>
+                    <View style={styleShoppingCartPage.quantityTotalPriceView}>
+                      <View style={styleShoppingCartPage.quantityView}>
+                        <TouchableHighlight style={styleShoppingCartPage.plusIconView}
                             onPress={()=>this.addToShoppingCart(dish)}>
-                            <Text style={styles.buttonText}>+</Text>
-                        </TouchableHighlight>  
-                        <Text>{this.state.shoppingCart[dish.dishId]?this.state.shoppingCart[dish.dishId].quantity:'  '}</Text>          
-                        <TouchableHighlight style={styles.button}
+                            <Image source={plusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
+                        </TouchableHighlight> 
+                        <Text style={styleShoppingCartPage.quantityText}>{this.state.shoppingCart[dish.dishId]?this.state.shoppingCart[dish.dishId].quantity:'  '}</Text>          
+                        <TouchableHighlight style={styleShoppingCartPage.minusIconView}
                             onPress={()=>this.removeFromShoppingCart(dish)}>                
-                            <Text style={styles.buttonText}>-</Text>
-                        </TouchableHighlight>                                   
+                            <Image source={minusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
+                        </TouchableHighlight>
+                      </View>
+                      <View style={styleShoppingCartPage.totalPriceView}>
+                          <Text style={styleShoppingCartPage.totalPriceText}>${dish.price*quantity}</Text>
+                      </View>                               
                     </View>                           
-                </View>           
+                </View>
             </View>
         );
+    }
+    
+    renderFooter(){
+      
+       return [(<View style={styleShoppingCartPage.totalView}>
+                  <View style={styleShoppingCartPage.priceTitleView}>
+                      <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
+                  </View>
+                  <View style={styleShoppingCartPage.priceNumberView}>
+                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice}</Text>
+                  </View>
+               </View>),
+               (<View style={styleShoppingCartPage.totalView}>
+                  <View style={styleShoppingCartPage.priceTitleView}>
+                      <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
+                  </View>
+                  <View style={styleShoppingCartPage.priceNumberView}>
+                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice*0.095}</Text>
+                  </View>
+               </View>),
+               (<View style={styleShoppingCartPage.totalView}>
+                  <View style={styleShoppingCartPage.priceTitleView}>
+                      <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
+                  </View>
+                  <View style={styleShoppingCartPage.priceNumberView}>
+                      <Text style={styleShoppingCartPage.priceNumberText}>$10</Text>
+                  </View>
+               </View>),
+               (<View style={styleShoppingCartPage.totalView}>
+                  <View style={styleShoppingCartPage.priceTitleView}>
+                      <Text style={styleShoppingCartPage.priceTitleText}>Promotion Deduction</Text>
+                  </View>
+                  <View style={styleShoppingCartPage.priceNumberView}>
+                      <Text style={styleShoppingCartPage.priceNumberText}>0</Text>
+                  </View>
+               </View>)];
     }
     
     render() {
@@ -93,19 +135,31 @@ class ShoppingCartPage extends Component {
         }         
         return (
             <View style={styles.container}>
-               <ListView style={styles.dishListView}
+               <View style={styles.headerBannerView}>    
+                    <View style={styles.backButtonView}>
+                       <TouchableHighlight onPress={() => this.navigateBackToDishList()}>
+                          <Image source={backIcon} style={styles.backButtonIcon}/>
+                       </TouchableHighlight>
+                    </View>    
+                    <View style={styles.titleView}>
+                       <Text style={styles.titleText}>Shopping Cart</Text>
+                    </View>
+                    <View style={{flex:0.1/3,width:windowWidth/3}}>
+                    </View>
+               </View>
+
+               <ListView style={styleShoppingCartPage.dishListView}
                     dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this) } />
-                <Text>Your total is ${this.state.totalPrice}</Text>
-                <Text>Deliver time: {this.state.selectedTime}}</Text>
-                <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateToPaymentPage() }>
-                    <Text style={styles.buttonText}>Checkout</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.button}
-                    onPress={() => this.navigateBackToDishList() }>
-                    <Text style={styles.buttonText}>Back</Text>
-                </TouchableHighlight> 
+                    renderRow={this.renderRow.bind(this) } 
+                    renderFooter={this.renderFooter.bind(this)}/>
+
+               <Text>Deliver time: {this.state.selectedTime}}</Text>
+
+               <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
+               <View style={styleShoppingCartPage.checkOutButtonView}>
+                   <Text style={styleShoppingCartPage.checkOutButtonText}>Check Out Now!</Text>
+               </View>
+               </TouchableHighlight>
             </View>
         );
     }
@@ -188,6 +242,126 @@ class ShoppingCartPage extends Component {
         this.props.navigator.pop();
     }
 }
+
+var styleShoppingCartPage = StyleSheet.create({
+    dishListView:{
+        flex:1,
+        backgroundColor:'#fff',
+        flexDirection:'column',
+    },
+    totalView:{
+        flex:1,
+        flexDirection:'row',
+        paddingHorizontal:10,
+        paddingVertical:30,
+        borderBottomWidth:1,
+        borderColor:'#D7D7D7',
+    },
+    priceTitleView:{
+        flex:1/2.0,
+        alignItems:'flex-start',
+    },
+    priceTitleText:{ 
+        fontSize:18,
+        fontWeight:'600',
+    },
+    priceNumberView:{
+        flex:1/2.0,
+        alignItems:'flex-end',
+    },
+    priceNumberText:{
+        fontSize:22,
+        fontWeight:'600',
+    },
+    oneListingView:{
+        backgroundColor:'#FFFFFF',  
+        flexDirection:'row',
+        flex:1,
+    },
+    dishPhoto:{
+        width:150,
+        height:150,
+    },
+    shoppingCartInfoView:{
+        flex:1,
+        flexDirection:'column',
+        paddingHorizontal:20,
+        paddingVertical:10,
+    },
+    dishNamePriceView:{
+        flex:1,
+        flexDirection:'row', 
+    },
+    dishNameView:{
+        flex:0.7,   
+        alignItems:'flex-start',     
+    },
+    dishNameText:{
+        fontSize:18,
+        fontWeight:'600'
+    },
+    dishPriceView:{
+        flex:0.3,
+        alignItems:'flex-end',
+    },
+    dishPriceText:{
+        fontSize:18,
+        fontWeight:'600',
+        color:'#808080',
+    },
+    dishDescriptionView:{
+        height:80,  
+    },
+    quantityTotalPriceView:{
+        flex:1,
+        flexDirection:'row', 
+    },
+    quantityView:{
+        flex:0.6,
+        flexDirection:'row', 
+        alignItems:'flex-start',
+    },
+    totalPriceView:{
+        flex:0.4,
+        alignItems:'flex-end',
+    },
+    totalPriceText:{
+        fontSize:22,
+        fontWeight:'600',
+    },
+    plusMinusIcon:{
+        width: windowHeight/27.6, 
+        height: windowHeight/27.6,
+    },
+    plusIconView:{
+        marginRight:15,
+    },
+    minusIconView:{
+        marginLeft:15,
+    },
+    quantityText:{
+        marginTop:5,
+        fontSize:16,
+        fontWeight:'500',
+        color:'#ff9933',
+    },
+    checkOutButtonView:{
+        height:windowHeight/13.4,
+        flexDirection:'row',        
+        justifyContent: 'center',
+        backgroundColor:'#ff9933',
+        paddingTop:12,
+    }, 
+    checkOutButtonText:{
+        fontSize:22,
+        fontWeight:'600',
+        color:'#fff',   
+    },
+    bowlIcon:{
+        width:30,
+        height:30,
+    }
+});
 
 module.exports = ShoppingCartPage;
 
