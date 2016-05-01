@@ -1,6 +1,6 @@
 module.exports={
     autoLogin:false,
-    baseUrl: 'http://192.168.1.134:8080',
+    baseUrl: 'http://172.31.99.87:8080',
     email:'xihe@yumso.com',
     password:'123',
     googleApiName:'yumsoIOS	',
@@ -13,6 +13,8 @@ module.exports={
     registerEndpointEmail:'/api/v1/auth/registerByEmail/eater',
     authEndpointFacebook:'/api/v1/auth/authenticateFbToken/eater',
     authStatusEndpoint:'/api/v1/auth/getloginstatus',
+    braintreeTokenEndpoint:'/api/v1/payment/client_token',
+    braintreeCheckout:'/api/v1/payment/checkout',
     //non-public
     createOrderEndpoint:'/api/v1/chef/order/createOrder',
     orderHistoryEndpoint:'/api/v1/chef/order/eaterOrders/',

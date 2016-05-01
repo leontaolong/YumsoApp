@@ -1,6 +1,7 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
+var BTClient = require('react-native-braintree');
 
 import React, {
   Component,
@@ -85,9 +86,38 @@ class PaymentPage extends Component {
     }
     
     navigateBackToShoppingCartPage(){
-        this.props.navigator.pop();
+        this.create();
+        //this.props.navigator.pop();
+    }
+    
+    create(){
+        var client = new HttpsClient(config.baseUrl, true);
+        client.getWithAuth(config.braintreeTokenEndpoint)
+            .then((res) => {
+                var clientToken = res.data.clientToken;
+                return BTClient.setup(clientToken)
+                    .then(() => {
+                        // return BTClient.getCardNonce("4111111111111111", "10", "20").then(function(nonce) {
+                        // //payment succeeded, pass nonce to server
+                        //     console.log(nonce);
+                        //     return client.postWithoutAuth(config.braintreeCheckout, { payment_method_nonce: nonce })
+                        // })
+                        // .catch(function(err) {
+                        // //error handling
+                        // console.log(err);
+                        // });                
+                        return BTClient.showPaymentViewController()
+                            .then((nonce) => {
+                                return client.postWithAuth(config.braintreeCheckout, { payment_method_nonce: nonce })
+                            }).catch((err) => {
+                                console.log(err);
+                            });
+                    });
+            });
     }
 }
+
+
 
 module.exports = PaymentPage;
 
