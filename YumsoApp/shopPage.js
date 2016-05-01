@@ -123,7 +123,7 @@ class ShopPage extends Component {
     }
     
     renderHeader(){
-        return        [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
+               return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
                             <Image source={{ uri: this.state.chef.shopPictures[0] }} style={styleShopPage.shopPicture}
                                 onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }>
                             </Image>
@@ -169,9 +169,9 @@ class ShopPage extends Component {
                         </TouchableHighlight>),                     
                        (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
                                 <ModalPicker
-                                    data={this.state.timeData}
-                                    initValue={'Select a delivery time'}
-                                    onChange={(option)=>{ this.displayDish(`${option.label}`)}} />
+                                 data={this.state.timeData}
+                                 initValue={'Select a delivery time'}
+                                 onChange={(option)=>{ this.displayDish(`${option.label}`)}} />
                         </View>)];
     }
 
@@ -181,7 +181,7 @@ class ShopPage extends Component {
             imageSrc={uri:dish.pictures[0]};   
         }
         if(this.state.showProgress){
-            return <ActivityIndicatorIOS
+           return <ActivityIndicatorIOS
                 animating={this.state.showProgress}
                 size="large"
                 style={styles.loader}/> 
@@ -274,12 +274,12 @@ class ShopPage extends Component {
                                 renderHeader={this.renderHeader.bind(this)}/>           
 
                         <View style={styleShopPage.footerView}>          
-                          <TouchableHighlight onPress={() => this.navigateToShoppingCart() }>
-                            <View style={styleShopPage.shoppingCartIconView}>
-                                <Image source={shoppingCartIcon} style={styleShopPage.shoppingCartIcon}/>    
-                            </View>
+                          <TouchableHighlight style={styleShopPage.shoppingCartIconView} onPress={() => this.navigateToShoppingCart() }>
+                               <Image source={shoppingCartIcon} style={styleShopPage.shoppingCartIcon}/>    
                           </TouchableHighlight>
-                            <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Select a delivery time':'$'+this.state.totalPrice+' at '+this.state.selectedTime}</Text>
+                          <View style={styleShopPage.shoppingCartTimeView}>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Select a delivery time':'$'+this.state.totalPrice+' at '+this.state.selectedTime}</Text>
+                          </View>
                        </View>
                 </View>      
             );
@@ -596,14 +596,16 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
     },
     shoppingCartIcon:{ 
-        width: 25, 
-        height: 25,
+        width: windowHeight/29.44, 
+        height: windowHeight/29.44,
+    },
+    shoppingCartTimeView:{
+        alignItems:'flex-start',
     },
     shoppingCartTimePriceText:{
         color:'#fff',
-        marginTop:15,
-        marginLeft:13,
-        fontSize:15,
+        fontSize:windowHeight/37.8,
+        marginTop:windowHeight/63,
     },
     oneDishInListView:{
         marginBottom:0,

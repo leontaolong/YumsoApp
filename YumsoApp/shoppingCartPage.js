@@ -350,10 +350,10 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row',        
         justifyContent: 'center',
         backgroundColor:'#ff9933',
-        paddingTop:12,
+        paddingTop:windowHeight/47.33,
     }, 
     checkOutButtonText:{
-        fontSize:22,
+        fontSize:windowHeight/37.8,
         fontWeight:'600',
         color:'#fff',   
     },
