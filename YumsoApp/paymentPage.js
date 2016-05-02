@@ -1,7 +1,7 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
-var BTClient = require('react-native-braintree');
+var AuthService = require('./authService');
 
 import React, {
   Component,
@@ -47,6 +47,10 @@ class PaymentPage extends Component {
                     <Text style={styles.buttonText}>Place the order</Text>
                 </TouchableHighlight>   
                 <TouchableHighlight style={styles.button}
+                    onPress={()=>this.selectPayment()}>
+                    <Text style={styles.buttonText}>Select Payment</Text>
+                </TouchableHighlight>   
+                <TouchableHighlight style={styles.button}
                     onPress={()=>this.navigateBackToShoppingCartPage()}>
                     <Text style={styles.buttonText}>Go Back</Text>
                 </TouchableHighlight>      
@@ -66,7 +70,11 @@ class PaymentPage extends Component {
     }  
     
     createAnOrder(){
-         return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail})
+        if(!this.state.paymentOption){
+            Alert.alert('Warning','Please select a payment option.',[{ text: 'OK' }]);    
+            return; 
+        }
+         return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail, paymentOption: this.state.paymentOption})
          .then((response)=>{
             if(response.statusCode==401){
                 this.props.navigator.push({
@@ -86,34 +94,20 @@ class PaymentPage extends Component {
     }
     
     navigateBackToShoppingCartPage(){
-        this.create();
-        //this.props.navigator.pop();
+        this.props.navigator.pop();
     }
-    
-    create(){
-        var client = new HttpsClient(config.baseUrl, true);
-        client.getWithAuth(config.braintreeTokenEndpoint)
-            .then((res) => {
-                var clientToken = res.data.clientToken;
-                return BTClient.setup(clientToken)
-                    .then(() => {
-                        // return BTClient.getCardNonce("4111111111111111", "10", "20").then(function(nonce) {
-                        // //payment succeeded, pass nonce to server
-                        //     console.log(nonce);
-                        //     return client.postWithoutAuth(config.braintreeCheckout, { payment_method_nonce: nonce })
-                        // })
-                        // .catch(function(err) {
-                        // //error handling
-                        // console.log(err);
-                        // });                
-                        return BTClient.showPaymentViewController()
-                            .then((nonce) => {
-                                return client.postWithAuth(config.braintreeCheckout, { payment_method_nonce: nonce })
-                            }).catch((err) => {
-                                console.log(err);
-                            });
-                    });
-            });
+
+    async selectPayment() {
+        let principal = await AuthService.getPrincipalInfo()
+        this.props.navigator.push({
+            name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
+            passProps:{
+                eaterId: principal.userId,
+                onPaymentSelected: function(payment){
+                    this.setState({paymentOption:payment});
+                }.bind(this)
+            }
+        });
     }
 }
 
