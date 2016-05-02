@@ -209,11 +209,9 @@ class ShopPage extends Component {
                     <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
                     <Text style={styleShopPage.oneDishDiscriptionText}>{dish.description}</Text>
                   </View>
-                  <View style={styleShopPage.forwardIconView}>
-                    <TouchableHighlight>
+                  <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)} style={styleShopPage.forwardIconView}>
                        <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                    </TouchableHighlight>
-                  </View>
+                  </TouchableHighlight>
                </View>
                <View style={styleShopPage.priceView}>
                   <View style={styleShopPage.priceTextView}>
