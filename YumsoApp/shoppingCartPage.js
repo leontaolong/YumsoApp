@@ -354,9 +354,9 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     totalView:{
         flexDirection:'row',
-        height:windowHeight/14.72,
+        height:windowHeight/10,
         paddingHorizontal:windowWidth/27.6,
-        paddingTop:windowHeight/26.6,
+        paddingTop:windowHeight/20.0,
         borderBottomWidth:1,
         borderColor:'#D7D7D7',
         justifyContent:'center'
@@ -385,7 +385,7 @@ var styleShoppingCartPage = StyleSheet.create({
         borderWidth:1,
         borderRadius:6, 
         overflow: 'hidden', 
-        marginBottom:30,
+        marginBottom:windowHeight/24.53,
     },
     addressChangeButtonText:{
         fontSize:windowHeight/49.06,
