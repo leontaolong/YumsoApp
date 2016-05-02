@@ -6,6 +6,7 @@ var HistoryOrderPage = require('./historyOrderPage');
 var EaterPage = require('./eaterPage');
 var ChefCommentsPage = require('./chefCommentsPage');
 var OrderConfirmation = require('./orderConfirmation');
+var PaymentOptionPage = require('./paymentOptionPage');
 var DishPage = require('./dishPage');
 var MapPage = require('./mapPage');
 var AuthService = require('./authService');
@@ -61,8 +62,10 @@ class YumsoApp extends Component {
             return <DishPage navigator={navigator}/>
         }else if (route.name==='MapPage'){
             return <MapPage navigator={navigator}/>
-        }    } 
-
+        }else if (route.name==='PaymentOptionPage'){
+            return <PaymentOptionPage navigator={navigator}/>
+        }      
+    } 
 }
 
 AppRegistry.registerComponent('YumsoApp', () => YumsoApp);
