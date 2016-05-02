@@ -1,10 +1,12 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
+var dateRender = require('./commonModules/dateRender');
 var AuthService = require('./authService');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
 var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var addPromoCodeIcon = require('./icons/Icon-add.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -54,7 +56,9 @@ class ShoppingCartPage extends Component {
         return[(<View style={styleShoppingCartPage.chefShopNameView}>
                     <Text style={styleShoppingCartPage.chefShopNameText}>{this.state.shopName}</Text>
                 </View>),
-             
+               (<View style={styleShoppingCartPage.deliverTimeView}>
+                    <Text style={styleShoppingCartPage.deliverTimeText}>To be delivered at {dateRender.renderDate2(this.state.selectedTime)}</Text>
+                </View>)
               ]
     }
     
@@ -113,7 +117,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice}</Text>
                   </View>
                </View>),
-               (<View style={styleShoppingCartPage.totalView}>
+               (<View style={styleShoppingCartPage.taxView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
                   </View>
@@ -121,7 +125,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice*0.095}</Text>
                   </View>
                </View>),
-               (<View style={styleShoppingCartPage.totalView}>
+               (<View style={styleShoppingCartPage.deliveryFeeView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
                   </View>
@@ -129,12 +133,32 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.priceNumberText}>$10</Text>
                   </View>
                </View>),
+               (<View style={styleShoppingCartPage.addressView}>
+                  <View style={styleShoppingCartPage.addressTextView}>
+                      <Text style={styleShoppingCartPage.addressLine}>10715 NE37th Court,Apt.227</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>Seattle,WA</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>98123</Text>
+                  </View>
+                  <View style={styleShoppingCartPage.addressChangeButtonView}>
+                     <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonWrapper}>
+                        <Text style={styleShoppingCartPage.addressChangeButtonText}>Change Address</Text>
+                     </TouchableHighlight>
+                  </View>
+               </View>),
+               (<View style={styleShoppingCartPage.promotionCodeView}>
+                  <View style={styleShoppingCartPage.priceTitleView}>
+                      <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
+                  </View>
+                  <TouchableHighlight style={styleShoppingCartPage.priceNumberView}>
+                      <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
+                  </TouchableHighlight>
+               </View>),
                (<View style={styleShoppingCartPage.totalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Promotion Deduction</Text>
+                      <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
                   </View>
                   <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>0</Text>
+                      <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.totalPrice+this.state.totalPrice*0.095+10}</Text>
                   </View>
                </View>)];
     }
@@ -259,15 +283,25 @@ var styleShoppingCartPage = StyleSheet.create({
     chefShopNameView:{
         flexDirection:'row',
         justifyContent:'center',
-        height:50,
+        height:windowHeight/14.72,
         borderBottomWidth:1,
         borderColor:'#D7D7D7',
     },
     chefShopNameText:{
         color:'#ff9933',
-        fontSize:20,
+        fontSize:windowHeight/36.8,
         fontWeight:'500',
-        marginTop:10,
+        marginTop:windowHeight/73.6,
+    },
+    deliverTimeView:{
+        flexDirection:'row',
+        justifyContent:'center',
+        height:windowHeight/18.4,
+    },
+    deliverTimeText:{
+        color:'#696969',
+        fontSize:windowHeight/49.06,
+        marginTop:windowHeight/73.6,
     },
     dishListView:{
         flex:1,
@@ -283,7 +317,7 @@ var styleShoppingCartPage = StyleSheet.create({
         borderColor:'#D7D7D7',
         justifyContent:'center'
     },
-    totalView:{
+    taxView:{
         flexDirection:'row',
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
@@ -291,6 +325,80 @@ var styleShoppingCartPage = StyleSheet.create({
         borderBottomWidth:1,
         borderColor:'#D7D7D7',
         justifyContent:'center'
+    },
+    deliveryFeeView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        paddingTop:windowHeight/56.6,
+        justifyContent:'center'
+    },
+    addressView:{
+        marginLeft:windowWidth/9,
+        flexDirection:'row',
+        height:windowHeight/7.36,
+        paddingTop:windowHeight/56.6,
+        borderTopWidth:1,
+        borderColor:'#D7D7D7',
+        justifyContent:'flex-end'
+    },
+    promotionCodeView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        paddingTop:windowHeight/56.6,
+        borderTopWidth:1,
+        borderBottomWidth:1,
+        borderColor:'#D7D7D7',
+        justifyContent:'center'
+    },
+    totalView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        paddingTop:windowHeight/26.6,
+        borderBottomWidth:1,
+        borderColor:'#D7D7D7',
+        justifyContent:'center'
+    },
+    totalPriceTitleText:{ 
+        fontSize:windowHeight/36.8,
+        fontWeight:'500',
+    },
+    totalPriceNumberText:{
+        fontSize:windowHeight/36.66,
+        fontWeight:'500',
+    },
+    addressTextView:{
+        flex:0.6,
+        flexDirection:'column',
+    },
+    addressLine:{
+        color:'#696969',
+        fontSize:windowHeight/49.06,
+        marginTop:windowHeight/147.2,
+    },
+    addressChangeButtonWrapper:{
+        width:windowWidth/3.18,
+        height:windowWidth/3.18*3.0/13.0,
+        borderColor:'#ff9933',
+        borderWidth:1,
+        borderRadius:6, 
+        overflow: 'hidden', 
+        marginBottom:30,
+    },
+    addressChangeButtonText:{
+        fontSize:windowHeight/49.06,
+        color:'#ff9933',
+        fontWeight:'400',
+        marginTop:windowHeight/147.2,
+        alignSelf:'center',
+    },
+    addressChangeButtonView:{
+        flex:0.4,
+        flexDirection:'row',
+        alignItems:'flex-end',
+        marginLeft:3,
     },
     priceTitleView:{
         flex:1/2.0,
@@ -381,6 +489,10 @@ var styleShoppingCartPage = StyleSheet.create({
         fontSize:windowHeight/46.0,
         fontWeight:'500',
         color:'#ff9933',
+    },
+    addPromoCodeIcon:{
+        width: windowHeight/36.8, 
+        height: windowHeight/36.8,
     },
     checkOutButtonView:{
         height:windowHeight/13.4,

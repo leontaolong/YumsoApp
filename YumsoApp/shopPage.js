@@ -2,6 +2,7 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var rating = require('./rating');
+var dateRender = require('./commonModules/dateRender');
 var AuthService = require('./authService');
 var shareIcon = require('./icons/ic_share_48pt_3x.png');
 var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
@@ -123,6 +124,17 @@ class ShopPage extends Component {
     }
     
     renderHeader(){
+            
+               let deliveryTimeRendered = [];
+               for(var oneTimeString of this.state.timeData){
+                   if(oneTimeString.label=='All Schedules'){
+                     deliveryTimeRendered.push({key:oneTimeString.label, label: 'All Schedules'});
+                   }else{
+                     deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
+                   }
+               }
+               console.log(this.state.timeData);
+               console.log(deliveryTimeRendered);
                return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
                             <Image source={{ uri: this.state.chef.shopPictures[0] }} style={styleShopPage.shopPicture}
                                 onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }>
@@ -169,9 +181,9 @@ class ShopPage extends Component {
                         </TouchableHighlight>),                     
                        (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
                                 <ModalPicker
-                                 data={this.state.timeData}
+                                 data={deliveryTimeRendered}
                                  initValue={'Select a delivery time'}
-                                 onChange={(option)=>{ this.displayDish(`${option.label}`)}} />
+                                 onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
                         </View>)];
     }
 
@@ -278,7 +290,7 @@ class ShopPage extends Component {
                                <Image source={shoppingCartIcon} style={styleShopPage.shoppingCartIcon}/>    
                           </TouchableHighlight>
                           <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Select a delivery time':'$'+this.state.totalPrice+' at '+this.state.selectedTime}</Text>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Select a delivery time':'$'+this.state.totalPrice+' at '+dateRender.renderDate2(this.state.selectedTime)}</Text>
                           </View>
                        </View>
                 </View>      
