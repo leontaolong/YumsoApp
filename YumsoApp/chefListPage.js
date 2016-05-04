@@ -189,7 +189,7 @@ class ChefListPage extends Component {
                         style={styles.loader}/>
                 </View>);  
         }else if(this.state.showLocSearch){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)}/>);   
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
         }else if(this.state.showChefSearch){
             return <View style={styles.container}>
                 <TouchableHighlight style={styles.button} onPress={() => this.setState({ showChefSearch: false, isMenuOpen: false }) }>
@@ -267,6 +267,7 @@ class ChefListPage extends Component {
             name: 'ShopPage', 
             passProps:{
                 chefId:chefId,
+                defaultDeliveryAddress: this.state.pickedAddress,
                 callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
             }
         });    
