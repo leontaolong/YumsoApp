@@ -29,16 +29,22 @@ class MapPage extends Component {
     constructor(props){
         super(props);
         let routeStack;
+        let eater;
         if(this.props.navigator){
            routeStack = this.props.navigator.state.routeStack;
         }   
         if(routeStack && routeStack.length!=0){
-            this.callback = routeStack[routeStack.length-1].passProps.callback;
+            this.onSelectAddress = routeStack[routeStack.length-1].passProps.onSelectAddress;
+            eater = routeStack[routeStack.length-1].passProps.eater;
+        }
+        if(this.props.eater && this.props.eater!=null){
+            eater = this.props.eater;
         }
         this.state = {
             showProgress:true,
             showLocLookup:false,
-            markers:[]
+            markers:[],
+            eater:eater
         };
         this.client = new HttpsClient(config.baseUrl, true);
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
@@ -48,7 +54,7 @@ class MapPage extends Component {
     render() {
             let locLookupView;
             if(this.state.showLocLookup){
-                this.state.historyAddressesView = this.renderHistoryAddresses(); 
+                this.state.savedAddressesView = this.renderSavedAddresses(); //todo: also include home and work addresses for selection.
                 locLookupView = (//todo: GPS location currect should be pin on map. //gps turn of what to do?
                     <View style={styles.container}>
                         <TouchableHighlight style={styles.button} onPress={() => this.setState({showLocLookup:false}) }>
@@ -65,7 +71,7 @@ class MapPage extends Component {
                             <Text style={styles.title} onPress={()=>this.getLocation()}>Click get Current Location </Text>
                             <Text onPress={()=>this.useAddress(this.state.GPSproxAddress)}> {this.state.GPSproxAddress?this.state.GPSproxAddress.formatted_address:''}</Text>   
                             <Text>history addresses:</Text>    
-                            {this.state.historyAddressesView}                  
+                            {this.state.savedAddressesView}                  
                         </View>   
                     </View>   );        
             }
@@ -103,13 +109,13 @@ class MapPage extends Component {
             );                      
     }
 
-    renderHistoryAddresses(){
+    renderSavedAddresses(){
         if(!this.state.eater){
             return undefined;
         }
-        let hisAddresses = this.state.eater.addressList;
+        let savedAddresses = this.state.eater.addressList;
         var addressesView = []
-        for(let address of hisAddresses){
+        for(let address of savedAddresses){
             addressesView.push(<Text key={address.formatted_address} onPress={()=>this.useAddress(address)}>{address.formatted_address}</Text>);
         }
         return addressesView;
@@ -190,30 +196,25 @@ class MapPage extends Component {
             }); 
     } 
 
-    doneSelectAddress(){
-        let _this = this;
-        if(this.state.selectedAddress){
-            if(this.state.eater){
-                this.state.eater.addressList.push(this.state.selectedAddress);
-                return AuthService.updateCacheEater(this.state.eater)
-                    .then(()=>{
-                         if(_this.callback){
-                             _this.callback(this.state.selectedAddress);
-                         }  
-                         if(_this.props.onSelectAddress){
-                             _this.props.onSelectAddress(this.state.selectedAddress);
-                         }
-                         this.state.selectedAddress = undefined;                  
-                    });    
-            }else{
-               if(_this.callback){
-                     _this.callback(this.state.selectedAddress);
-               }  
-               if(_this.props.onSelectAddress){
-                     _this.props.onSelectAddress(this.state.selectedAddress);
-               }
-                this.state.selectedAddress = undefined;       
-            } 
+    doneSelectAddress() {
+        if (this.state.selectedAddress) {
+            if (this.state.eater) {
+                if (this.onSelectAddress) {
+                    this.onSelectAddress(this.state.selectedAddress);
+                }
+                if (this.props.onSelectAddress) {
+                    this.props.onSelectAddress(this.state.selectedAddress);
+                }
+                this.state.selectedAddress = undefined;
+            } else {
+                if (this.onSelectAddress) {
+                    this.onSelectAddress(this.state.selectedAddress);
+                }
+                if (this.props.onSelectAddress) {
+                    this.props.onSelectAddress(this.state.selectedAddress);
+                }
+                this.state.selectedAddress = undefined;
+            }
         }
     }
     

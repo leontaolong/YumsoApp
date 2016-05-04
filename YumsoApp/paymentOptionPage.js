@@ -94,7 +94,7 @@ class PaymentOptionPage extends Component {
             <View style={styles.container}>
                <View style={styleChefCommentsPage.headerBannerView}>    
                    <View style={styleChefCommentsPage.backButtonView}>
-                   <TouchableHighlight onPress={() => this.navigateBackToChefPage()}>
+                   <TouchableHighlight onPress={() => this.navigateBack()}>
                      <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleChefCommentsPage.backButtonIcon}/>
                    </TouchableHighlight>
                    </View>    
@@ -114,7 +114,7 @@ class PaymentOptionPage extends Component {
         );
     }
 
-    navigateBackToChefPage() {
+    navigateBack() {
         this.props.navigator.pop();
     }
     

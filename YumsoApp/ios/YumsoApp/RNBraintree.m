@@ -48,11 +48,11 @@ RCT_EXPORT_METHOD(showPaymentViewController:(RCTResponseSenderBlock)callback)
       
         //customization of color, title, summary, description.
         dropInViewController.view.tintColor = [UIColor colorWithRed:255/255.0f green:136/255.0f blue:51/255.0f alpha:1.0f];
-//        BTPaymentRequest *paymentRequest = [[BTPaymentRequest alloc] init];
+        BTPaymentRequest *paymentRequest = [[BTPaymentRequest alloc] init];
 //        paymentRequest.summaryTitle = @"1 Yellow T-Shirt";
 //        paymentRequest.summaryDescription = @"Ships in five days";
 //        paymentRequest.displayAmount = @"$10";
-//        paymentRequest.callToActionText = @"Pay this amount";
+        paymentRequest.callToActionText = @"Add";
 //        dropInViewController.paymentRequest = paymentRequest;
       
         dropInViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(userDidCancelPayment)];

@@ -34,12 +34,15 @@ class ShoppingCartPage extends Component {
         let shoppingCart = routeStack[routeStack.length-1].passProps.shoppingCart;        
         let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;        
         let chefId = routeStack[routeStack.length-1].passProps.chefId;        
+        let defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress!=undefined? routeStack[routeStack.length-1].passProps.defaultDeliveryAddress:'';        
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(shoppingCart)),
             showProgress:false,
             shoppingCart:shoppingCart,
             selectedTime:selectedTime,
-            chefId:chefId
+            deliveryAddress: defaultDeliveryAddress,
+            chefId:chefId,
+            selectDeliveryAddress:false
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
@@ -115,6 +118,10 @@ class ShoppingCartPage extends Component {
                   <View style={styleShoppingCartPage.priceNumberView}>
                       <Text style={styleShoppingCartPage.priceNumberText}>$10</Text>
                   </View>
+                  <Text>address: {this.state.deliveryAddress.formatted_address}</Text>
+                  <TouchableHighlight onPress={() => this.changeDeliveryAddress()}>
+                     <Text>Change Address</Text>
+                  </TouchableHighlight>               
                </View>),
                (<View style={styleShoppingCartPage.totalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
@@ -132,7 +139,11 @@ class ShoppingCartPage extends Component {
                 animating={this.state.showProgress}
                 size="large"
                 style={styles.loader}/> 
-        }         
+        }  
+        if(this.state.selectDeliveryAddress){
+             //return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
+             //todo: complete this part;
+        }       
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -194,7 +205,16 @@ class ShoppingCartPage extends Component {
         this.setState({dataSource:this.state.dataSource.cloneWithRows(dishes),totalPrice:total});
     }    
     
+    changeDeliveryAddress(){
+        //todo: onSelect address list and assign it to deliveryAddress set State.
+        //todo: shall we have a sepreate component for displaying saved addresses?
+    }
+    
     async navigateToPaymentPage(){
+        if(!this.state.deliveryAddress){
+            Alert.alert('Warning','You do not have a delivery address',[{ text: 'OK' }]);
+            return;
+        }
         if(!this.state.shoppingCart || Object.keys(this.state.shoppingCart).length==0){
             Alert.alert('Warning','You do not have any item in your shopping cart',[{ text: 'OK' }]);
             return;
@@ -217,7 +237,7 @@ class ShoppingCartPage extends Component {
             orderDeliverTime: Date.parse(this.state.selectedTime),//Sun Apr 03 2016 12:00:00
             eaterId: eater.eaterId,
             orderList: orderList,
-            shippingAddress: "10715 NE37th Ct, Apt.227 WA, Kirkland 98033",
+            shippingAddress: this.state.deliveryAddress,
             subtotal: -1,
             shippingFee: -1,
             totalb4Tax: -1,

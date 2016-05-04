@@ -44,6 +44,7 @@ class ShopPage extends Component {
         });
         var routeStack = this.props.navigator.state.routeStack;
         this.chefId = routeStack[routeStack.length-1].passProps.chefId;      
+        this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;      
         this.callback = routeStack[routeStack.length-1].passProps.callback;      
         this.state = {
             dataSource: ds.cloneWithRows([]),
@@ -405,6 +406,7 @@ class ShopPage extends Component {
             passProps:{
                 shoppingCart:this.state.shoppingCart[this.state.selectedTime],
                 selectedTime:this.state.selectedTime,
+                defaultDeliveryAddress: this.defaultDeliveryAddress,
                 chefId:this.state.chefId
             }
         });    
