@@ -37,6 +37,7 @@ class ShoppingCartPage extends Component {
         let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;        
         let chefId = routeStack[routeStack.length-1].passProps.chefId;        
         let defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress!=undefined? routeStack[routeStack.length-1].passProps.defaultDeliveryAddress:'';        
+        console.log(defaultDeliveryAddress);
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(shoppingCart)),
@@ -135,19 +136,15 @@ class ShoppingCartPage extends Component {
                   <View style={styleShoppingCartPage.priceNumberView}>
                       <Text style={styleShoppingCartPage.priceNumberText}>$10</Text>
                   </View>
-                  <Text>address: {this.state.deliveryAddress.formatted_address}</Text>
-                  <TouchableHighlight onPress={() => this.changeDeliveryAddress()}>
-                     <Text>Change Address</Text>
-                  </TouchableHighlight>               
                </View>),
                (<View style={styleShoppingCartPage.addressView}>
                   <View style={styleShoppingCartPage.addressTextView}>
                       <Text style={styleShoppingCartPage.addressLine}>10715 NE37th Court,Apt.227</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>Seattle,WA</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress.city},{this.state.deliveryAddress.state}</Text>
                       <Text style={styleShoppingCartPage.addressLine}>98123</Text>
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>
-                     <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonWrapper}>
+                     <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={() => this.changeDeliveryAddress()}>
                         <Text style={styleShoppingCartPage.addressChangeButtonText}>Change Address</Text>
                      </TouchableHighlight>
                   </View>
