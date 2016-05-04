@@ -70,22 +70,18 @@ class LoginPage extends Component {
                 <View style={styleLoginPage.forgotPasswordView}>
                       <Text style={styleLoginPage.forgotPasswordText}>Forgot password? </Text>
                 </View>
-                
-                <View style={styleLoginPage.signInButtonView}>
-                   <TouchableHighlight onPress = {this.onLoginPressed.bind(this) }>
+               
+                <TouchableHighlight onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
                        <Text style={styleLoginPage.signInButtonText}>Log in</Text>
-                   </TouchableHighlight>
-                </View>
+                </TouchableHighlight>
                        
                 <View style={styleLoginPage.askToSignUpView}>
                     <Text style={styleLoginPage.askToSignUpText}>No Yumso account?</Text>
                 </View>
                 
-                <View style={styleLoginPage.signUpButtonView}>
-                   <TouchableHighlight onPress={() => this.navigateToSignUp() }>
-                       <Text style={styleLoginPage.signUpButtonText}>Sign up</Text>  
-                   </TouchableHighlight> 
-                </View>
+                <TouchableHighlight onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpButtonView}>
+                    <Text style={styleLoginPage.signUpButtonText}>Sign up</Text>  
+                </TouchableHighlight> 
 
                 <View style={styleLoginPage.fbSignInButtonView}>
                     <FBLogin style={styleLoginPage.fbSignInButton}
