@@ -142,6 +142,7 @@ class MapPage extends Component {
                     .then((res) => {
                         var city = 'unknown';
                         var state = 'unknown';
+                        var postal = 'unknown';
                         if (res.statusCode === 200 && res.data.status === 'OK' && res.data.results.length > 0) {
                             var results = res.data.results;
                             var address = results[0].formatted_address;
@@ -153,9 +154,12 @@ class MapPage extends Component {
                                     if (type === 'administrative_area_level_1') {
                                         state = component.short_name;
                                     }
+                                    if (type === 'postal_code') {
+                                        postal = component.short_name;
+                                    }
                                 }
                             }
-                            self.setState({GPSproxAddress: {formatted_address: address, lat: position.coords.latitude, lng:position.coords.longitude, city:city, state:state}});
+                            self.setState({GPSproxAddress: {formatted_address: address, lat: position.coords.latitude, lng:position.coords.longitude, city:city, state:state, postal: postal}});
                         }
                         self.setState({ city: city, state: state });
                     });       
@@ -166,15 +170,15 @@ class MapPage extends Component {
     }
     
     onDragEnd(cords){
-        console.log(cords);
         let address = {
             lat:cords.latitude,
             lng : cords.longitude
         }
         return this.googleClient.getWithoutAuth(config.reverseGeoCoding + address.lat + ',' + address.lng)
             .then((res) => {
-                var city = 'unknown';
-                var state = 'unknown';
+                var city;
+                var state;
+                var postal;
                 if (res.statusCode === 200 && res.data.status === 'OK' && res.data.results.length > 0) {
                     let results = res.data.results;
                     let formatAddress = results[0].formatted_address;
@@ -186,11 +190,15 @@ class MapPage extends Component {
                             if (type === 'administrative_area_level_1') {
                                 state = component.short_name;
                             }
+                            if (type === 'postal_code') {
+                                postal = component.short_name;
+                            }
                         }
                     }
                     address.formatted_address = formatAddress;
                     address.city = city;
                     address.state = state;
+                    address.postal = postal;
                     this.useAddress(address);
                }
             }); 
@@ -250,7 +258,7 @@ class MapPage extends Component {
                 if(res.statusCode===200 && res.data.status==='OK'){
                     var addresses = [];
                     for(var possibleAddress of res.data.results){
-                        let city; let state;
+                        let city; let state; let postal;
                         for (var component of possibleAddress.address_components) {
                             for (var type of component.types) {
                                 if (type === 'locality') {
@@ -259,6 +267,9 @@ class MapPage extends Component {
                                 if (type === 'administrative_area_level_1') {
                                     state = component.short_name;
                                 }
+                                if (type === 'postal_code') {
+                                    postal = component.short_name;
+                                }
                             }
                         }
                         var onePossibility = {
@@ -266,7 +277,8 @@ class MapPage extends Component {
                             lat: possibleAddress.geometry.location.lat,
                             lng: possibleAddress.geometry.location.lng,
                             city: city,
-                            state: state
+                            state: state,
+                            postal:postal
                         };
                         addresses.push(onePossibility);
                     }
