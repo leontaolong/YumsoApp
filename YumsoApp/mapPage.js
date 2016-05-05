@@ -114,7 +114,7 @@ class MapPage extends Component {
                             <Text style={styleMapPage.currentLocationClickableText}>Current Location</Text>
                        </View>
                        </TouchableHighlight>
-                       <View style={styleMapPage.searchAddressResultView}>
+                       <View>
                          {this.state.searchAddressResultView}
                        </View>                                         
                     </View>
@@ -383,21 +383,21 @@ var styleMapPage = StyleSheet.create({
         flexDirection:'row',
         width:windowWidth*0.7,
         height:windowWidth*0.7/8,
-        marginTop:20,
-        marginBottom:5,
+        marginTop:windowHeight/36.8,
+        marginBottom:windowHeight/147.2,
         borderWidth:1,
         borderRadius:8,
         borderColor:'#D7D7D7',
     },
     locationSearchIconView:{
         alignSelf:'flex-end',
-        marginLeft:5,
-        marginRight:4,
-        marginBottom:1,
+        marginLeft:windowHeight/147.2,
+        marginRight:windowWidth/103.5,
+        marginBottom:windowHeight/736.0,
     },
     searchIcon:{
-        width:27,
-        height:27,
+        width:windowHeight/27.26,
+        height:windowHeight/27.26,
     },
     locationSearchInput:{
         flex:0.9,
@@ -419,8 +419,8 @@ var styleMapPage = StyleSheet.create({
         fontSize:windowHeight/36.8,
         color:'#ff9933',
         fontWeight:'400',
-        marginTop:7,
-        marginLeft:2,
+        marginTop:windowHeight/105.14,
+        marginLeft:windowWidth/207.0,
     },
     searchAddressResultView:{
         backgroundColor:'#D7D7D7',
