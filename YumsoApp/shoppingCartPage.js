@@ -37,6 +37,7 @@ class ShoppingCartPage extends Component {
         let shoppingCart = routeStack[routeStack.length-1].passProps.shoppingCart;        
         let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;        
         let chefId = routeStack[routeStack.length-1].passProps.chefId;        
+        let eater = routeStack[routeStack.length-1].passProps.eater;        
         let defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;//!=undefined? routeStack[routeStack.length-1].passProps.defaultDeliveryAddress:'';        
         console.log(defaultDeliveryAddress);
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
@@ -48,7 +49,8 @@ class ShoppingCartPage extends Component {
             deliveryAddress: defaultDeliveryAddress,
             chefId:chefId,
             selectDeliveryAddress:false,
-            shopName:shopName
+            shopName:shopName,
+            eater:eater
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
@@ -141,7 +143,7 @@ class ShoppingCartPage extends Component {
                (<View style={styleShoppingCartPage.addressView}>
                   <View style={styleShoppingCartPage.addressTextView}>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddres!=null?this.state.deliveryAddress.state:''}</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.postal:''}</Text>
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>

@@ -267,6 +267,7 @@ class ChefListPage extends Component {
             name: 'ShopPage', 
             passProps:{
                 chefId:chefId,
+                eater:this.state.eater,
                 defaultDeliveryAddress: this.state.pickedAddress,
                 callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
             }

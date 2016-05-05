@@ -70,7 +70,6 @@ class MapPage extends Component {
                             {this.state.searchAddressResultView}
                             <Text style={styles.title} onPress={()=>this.getLocation()}>Click get Current Location </Text>
                             <Text onPress={()=>this.useAddress(this.state.GPSproxAddress)}> {this.state.GPSproxAddress?this.state.GPSproxAddress.formatted_address:''}</Text>   
-                            <Text>history addresses:</Text>    
                             {this.state.savedAddressesView}                  
                         </View>   
                     </View>   );        
@@ -113,9 +112,16 @@ class MapPage extends Component {
         if(!this.state.eater){
             return undefined;
         }
-        let savedAddresses = this.state.eater.addressList;
+        let workAddress = this.state.eater.workAddress;
+        let homeAddress = this.state.eater.homeAddress;
+        let otherAddresses = this.state.eater.addressList;
         var addressesView = []
-        for(let address of savedAddresses){
+        addressesView.push(<Text>Home Address</Text>);
+        addressesView.push(<Text key={this.state.eater.homeAddress.formatted_address} onPress={()=>this.useAddress(this.state.eater.homeAddress)}>{this.state.eater.homeAddress.formatted_address}</Text>);
+        addressesView.push(<Text>Work Address</Text>);
+        addressesView.push(<Text key={this.state.eater.workAddress.formatted_address}onPress={()=>this.useAddress(this.state.eater.workAddress)}>{this.state.eater.workAddress.formatted_address}</Text>);      
+        addressesView.push(<Text>Other Address</Text>);
+        for(let address of otherAddresses){
             addressesView.push(<Text key={address.formatted_address} onPress={()=>this.useAddress(address)}>{address.formatted_address}</Text>);
         }
         return addressesView;
