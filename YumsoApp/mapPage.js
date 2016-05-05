@@ -222,7 +222,7 @@ class MapPage extends Component {
                                                             streetName:streetName,
                                                             city:city,
                                                             state:state,
-                                                            postal:postCode,                                                          
+                                                            postal:postal,                                                          
                                                            }
                                          });
                         }
