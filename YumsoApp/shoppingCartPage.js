@@ -3,6 +3,7 @@ var styles = require('./style');
 var config = require('./config');
 var dateRender = require('./commonModules/dateRender');
 var AuthService = require('./authService');
+var MapPage = require('./mapPage');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
 var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
@@ -36,7 +37,8 @@ class ShoppingCartPage extends Component {
         let shoppingCart = routeStack[routeStack.length-1].passProps.shoppingCart;        
         let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;        
         let chefId = routeStack[routeStack.length-1].passProps.chefId;        
-        let defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress!=undefined? routeStack[routeStack.length-1].passProps.defaultDeliveryAddress:'';        
+        let eater = routeStack[routeStack.length-1].passProps.eater;        
+        let defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;//!=undefined? routeStack[routeStack.length-1].passProps.defaultDeliveryAddress:'';        
         console.log(defaultDeliveryAddress);
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
         this.state = {
@@ -47,7 +49,8 @@ class ShoppingCartPage extends Component {
             deliveryAddress: defaultDeliveryAddress,
             chefId:chefId,
             selectDeliveryAddress:false,
-            shopName:shopName
+            shopName:shopName,
+            eater:eater
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
@@ -139,12 +142,12 @@ class ShoppingCartPage extends Component {
                </View>),
                (<View style={styleShoppingCartPage.addressView}>
                   <View style={styleShoppingCartPage.addressTextView}>
-                      <Text style={styleShoppingCartPage.addressLine}>10715 NE37th Court,Apt.227</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress.city},{this.state.deliveryAddress.state}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>98123</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.postal:''}</Text>
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>
-                     <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={() => this.changeDeliveryAddress()}>
+                     <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
                         <Text style={styleShoppingCartPage.addressChangeButtonText}>Change Address</Text>
                      </TouchableHighlight>
                   </View>
@@ -175,8 +178,7 @@ class ShoppingCartPage extends Component {
                 style={styles.loader}/> 
         }  
         if(this.state.selectDeliveryAddress){
-             //return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
-             //todo: complete this part;
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
         }       
         return (
             <View style={styles.container}>
@@ -206,6 +208,17 @@ class ShoppingCartPage extends Component {
                </TouchableHighlight>
             </View>
         );
+    }
+    
+    mapDone(address){
+         if(address){
+             Alert.alert( '', 'Your delivery location is set to '+address.formatted_address,[ { text: 'OK' }]); 
+         }
+         this.setState({selectDeliveryAddress:false, deliveryAddress:address});
+    }
+    
+   onCancelMap(){
+         this.setState({selectDeliveryAddress:false});
     }
     
     addToShoppingCart(dish){

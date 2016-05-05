@@ -44,17 +44,19 @@ class ShopPage extends Component {
            rowHasChanged: (r1, r2) => r1!=r2 
         });
         var routeStack = this.props.navigator.state.routeStack;
-        this.chefId = routeStack[routeStack.length-1].passProps.chefId;      
+        let chefId = routeStack[routeStack.length-1].passProps.chefId;      
         this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;      
         this.callback = routeStack[routeStack.length-1].passProps.callback;      
+        let eater = routeStack[routeStack.length-1].passProps.eater;      
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:true,
-            chefId:this.chefId,
+            chefId: chefId,
             timeData:[],
             shoppingCart:{},  
             selectedTime:'All Schedules',
             totalPrice:0,
+            eater:eater
         };            
     }
     
@@ -418,6 +420,7 @@ class ShopPage extends Component {
                 selectedTime:this.state.selectedTime,
                 defaultDeliveryAddress: this.defaultDeliveryAddress,
                 chefId:this.state.chefId,
+                eater:this.state.eater,
                 shopName:this.state.chef.shopname
             }
         });    
