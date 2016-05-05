@@ -3,6 +3,11 @@ var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var MapView = require('react-native-maps');
+var ballonIcon = require('./icons/ic_location_on_48pt_3x.png');
+var labelIcon = require('./icons/2000px-Tag_font_awesome.svg.png');
+var searchIcon = require('./icons/ic_search_48pt_3x.png');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var locatorIcon = require('./icons/Icon-location.png');
 
 import Dimensions from 'Dimensions';
 
@@ -42,7 +47,6 @@ class MapPage extends Component {
         }
         this.state = {
             showProgress:true,
-            showLocLookup:false,
             markers:[],
             eater:eater
         };
@@ -75,16 +79,48 @@ class MapPage extends Component {
                         </View>   
                     </View>   );        
             }
+            console.log("this.state.GPSproxAddress")
+            console.log(this.state.GPSproxAddress);
+            console.log(this.state.savedAddressesView)
             return (
-                <ScrollView style={styles.container}>
-                    {locLookupView}
-                    <TouchableHighlight style={styles.button} onPress={()=>this.setState({showLocLookup:true})}>
-                        <Text style={styles.buttonText}> Search Map</Text>
-                    </TouchableHighlight> 
-                    <TouchableHighlight style={styles.button} onPress={() => this.navigateBack() }>
-                        <Text style={styles.buttonText}> Cancel</Text>
-                    </TouchableHighlight>             
-                    <MapView style={{ height: 500, width: 400 }}
+                 <View style={styles.container}>
+                     <View style={styles.headerBannerView}>
+                         <View style={styles.backButtonView}>
+                             <TouchableHighlight onPress={() => this.navigateBack() }>
+                                 <Image source={backIcon} style={styles.backButtonIcon}/>
+                             </TouchableHighlight>
+                         </View>
+                         <View style={styles.locationView}>
+                             <View style={{marginTop:3,marginLeft:2,}}><Image source={ballonIcon} style={styles.locationIcon}/></View>
+                             <Text style={styles.locationText}>{this.state.city}</Text>
+                         </View>
+                         <View style={styles.searchButtonView}>
+                             <TouchableHighlight onPress={() => this.setState({showChefSearch:true}) }>
+                                 <Image source={searchIcon} style={styles.searchIcon}/>
+                             </TouchableHighlight>
+                         </View>
+                    </View>
+                    
+                    <View style={{alignSelf:'stretch', alignItems:'center'}}>
+                       <View style={styleMapPage.locationSearchInputView}>
+                         <TouchableHighlight style={styleMapPage.locationSearchIconView} onPress={() => this.searchAddress() }>
+                               <Image source={searchIcon} style={styleMapPage.searchIcon}/>
+                         </TouchableHighlight>  
+                         <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}
+                            onChangeText = {(text)=>this.setState({searchAddress: text})}/>
+                       </View>
+                       <TouchableHighlight onPress={()=>this.locateToCurrentAddress()}>
+                       <View style={styleMapPage.currentLocationClickableView}>
+                            <Image source={locatorIcon} style={styleMapPage.currentLocationClickableIcon}/>
+                            <Text style={styleMapPage.currentLocationClickableText}>Current Location</Text>
+                       </View>
+                       </TouchableHighlight>
+                       <View style={styleMapPage.searchAddressResultView}>
+                         {this.state.searchAddressResultView}
+                       </View>                                         
+                    </View>
+                                 
+                    <MapView style={styleMapPage.mapView}
                         initialRegion={{
                             latitude: 37.78825,
                             longitude: -122.4324,
@@ -102,10 +138,14 @@ class MapPage extends Component {
                                 />
                         )) }
                     </MapView>
-                    <TouchableHighlight style={styles.button} onPress={() => this.doneSelectAddress() }>
-                        <Text style={styles.buttonText}>Use this Address</Text>
+                    <View style={styleMapPage.selectedAddressView}>
+                        <Text style={styleMapPage.selectedAddressText}>{this.state.GPSproxAddress? this.state.GPSproxAddress.streetNumber+' '+this.state.GPSproxAddress.streetName:''}</Text>
+                        <Text style={styleMapPage.selectedAddressText}>{this.state.GPSproxAddress? this.state.GPSproxAddress.city+', '+this.state.GPSproxAddress.state+' '+this.state.GPSproxAddress.postCode:''}</Text>
+                    </View>
+                    <TouchableHighlight style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress() }>
+                        <Text style={styleMapPage.confirmAddressButtonText}>Use this Address</Text>
                     </TouchableHighlight>
-                </ScrollView>
+                </View>
             );                      
     }
 
@@ -133,6 +173,7 @@ class MapPage extends Component {
         this.setState({ region });
     }
     
+    //Get current location
     getLocation(){
         var self = this;
         navigator.geolocation.getCurrentPosition(
@@ -153,9 +194,28 @@ class MapPage extends Component {
                                     if (type === 'administrative_area_level_1') {
                                         state = component.short_name;
                                     }
-                                }
+                                    if (type === 'postal_code') {
+                                        postCode = component.short_name;
+                                    }
+                                    if (type === 'street_number') {
+                                        streetNumber = component.short_name;
+                                    }
+                                    if (type === 'route') {
+                                        streetName = component.short_name;
+                                    }
+                                } 
                             }
-                            self.setState({GPSproxAddress: {formatted_address: address, lat: position.coords.latitude, lng:position.coords.longitude, city:city, state:state}});
+                            self.setState({GPSproxAddress: {
+                                                            formatted_address: address, 
+                                                            lat: position.coords.latitude, 
+                                                            lng:position.coords.longitude, 
+                                                            streetNumber:streetNumber,
+                                                            streetName:streetName,
+                                                            city:city,
+                                                            state:state,
+                                                            postCode:postCode,                                                          
+                                                           }
+                                         });
                         }
                         self.setState({ city: city, state: state });
                     });       
@@ -218,6 +278,7 @@ class MapPage extends Component {
         }
     }
     
+    //Locate the map view to current user location
     useAddress(address){
         let lat = address.lat;
         let lng = address.lng;
@@ -234,8 +295,19 @@ class MapPage extends Component {
             title: addressName,
            // description: 'testDescription'
         }];     
-        this.setState({markers: markers, region: region, selectedAddress:address, showLocLookup:false}); 
+        this.setState({markers: markers, region: region, selectedAddress: address}); 
         this.refs.m1.showCallout();
+    }
+    
+    locateToCurrentAddress(){
+        if(this.state.GPSproxAddress){
+           this.useAddress(this.state.GPSproxAddress);
+        }else{//is this correct? need to asynchronize?
+           this.getLocation();
+           if(this.state.GPSproxAddress){
+              this.useAddress(this.state.GPSproxAddress);
+           }    
+        }
     }
     
     searchAddress(){
@@ -287,5 +359,88 @@ class MapPage extends Component {
         this.props.navigator.pop();
     }
 }
+
+var styleMapPage = StyleSheet.create({
+    locationSearchInputView:{
+        flex:1,
+        flexDirection:'row',
+        width:windowWidth*0.7,
+        height:windowWidth*0.7/8,
+        marginTop:20,
+        marginBottom:5,
+        borderWidth:1,
+        borderRadius:8,
+        borderColor:'#D7D7D7',
+    },
+    locationSearchIconView:{
+        alignSelf:'flex-end',
+        marginLeft:5,
+        marginRight:4,
+        marginBottom:1,
+    },
+    searchIcon:{
+        width:27,
+        height:27,
+    },
+    locationSearchInput:{
+        flex:0.9,
+        fontSize:windowHeight/43.2,
+        color:'#696969',
+        textAlign:'center',
+    },
+    currentLocationClickableView:{
+        flex:1,
+        flexDirection:'row',
+        width:windowWidth*0.5,
+        height:windowWidth*0.5/5,
+    },
+    currentLocationClickableIcon:{
+        width:windowWidth*0.5/5,
+        height:windowWidth*0.5/5,
+    },
+    currentLocationClickableText:{
+        fontSize:windowHeight/36.8,
+        color:'#ff9933',
+        fontWeight:'400',
+        marginTop:7,
+        marginLeft:2,
+    },
+    searchAddressResultView:{
+        backgroundColor:'#D7D7D7',
+        position:'relative',
+        top:30,
+    },
+    mapView:{
+        height: windowWidth, 
+        width: windowWidth, 
+    },
+    selectedAddressView:{
+        flexDirection:'column',        
+        justifyContent: 'center',
+        height:windowHeight/8.6,
+    },
+    selectedAddressText:{
+        fontSize:windowHeight/33.45,
+        fontWeight:'300',
+        color:'#696969',
+        alignSelf:'center',
+    },
+    confirmAddressButtonView:{
+        height:windowHeight/13.38,
+        flexDirection:'row',        
+        justifyContent: 'center',
+        backgroundColor:'#ff9933',
+        position:'absolute',
+        left: 0, 
+        right: 0,
+        top:windowHeight-windowHeight/13.38,
+    }, 
+    confirmAddressButtonText:{
+        fontSize:windowHeight/30.6,
+        fontWeight:'300',
+        color:'#fff',
+        alignSelf:'center', 
+    },
+})    
 
 module.exports = MapPage;

@@ -55,6 +55,44 @@ module.exports = StyleSheet.create({
       alignItems:'flex-end',
       paddingTop:7,
     },
+    menuButtonView:{
+        flex:0.1/3,
+        width:windowWidth/3,
+        alignItems:'flex-start',
+        paddingLeft:windowWidth/27.6,
+        paddingTop:windowHeight/73.6,
+    },
+    menuIcon:{
+        width:windowHeight/29.4,
+        height:windowHeight/29.4,
+    },
+    searchIcon:{
+        width:windowHeight/24.5,
+        height:windowHeight/24.5,
+    },
+    locationView:{
+        flex:0.1/3, 
+        flexDirection:'row',
+        width:windowWidth/3,
+        justifyContent:'center',
+        paddingTop:windowHeight/52.6,   
+    },
+    locationIcon:{
+        width:windowHeight/49,
+        height:windowHeight/49,
+    },
+    locationText:{
+        fontSize:windowHeight/43.2,
+        color:'#696969',
+    },
+    searchButtonView:{
+        flex:0.1/3, 
+        width:windowWidth/3,
+        alignItems:'flex-end',
+        paddingRight:windowWidth/41.4,
+        paddingTop:windowHeight/105.14,     
+    },
+
 
     logo:{
       width:66,

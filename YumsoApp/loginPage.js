@@ -216,7 +216,6 @@ var styleLoginPage = StyleSheet.create({
       height:windowHeight/12.6,
       fontSize:windowHeight/33.4,
       color: '#696969',
-      justifyContent:'center',
       borderWidth:1,
       borderColor: '#D7D7D7',
       paddingVertical:5,
@@ -281,6 +280,9 @@ var styleLoginPage = StyleSheet.create({
       right: 0,
       top:windowHeight-windowHeight/13.38,
     },
+    fbSignInButton:{
+      alignSelf:'center',
+    }
 });
 
 module.exports = LoginPage;

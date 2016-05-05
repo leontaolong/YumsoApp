@@ -173,7 +173,6 @@ var styleSignUpPage = StyleSheet.create({
       fontSize:windowHeight/30.6,
       fontWeight:'300',
       alignSelf:'center',
-      marginBottom:3,
     },
 });
 module.exports = SignUpPage;

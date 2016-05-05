@@ -210,20 +210,20 @@ class ChefListPage extends Component {
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
                 <View style={styles.container}>                    
                     <View style={styleChefListPage.headerBannerView}>
-                        <View style={styleChefListPage.menuButtonView}>
+                        <View style={styles.menuButtonView}>
                           <TouchableHighlight onPress={() => this.setState({ isMenuOpen: true }) }>
-                            <Image source={menuIcon} style={styleChefListPage.menuIcon}/>
+                            <Image source={menuIcon} style={styles.menuIcon}/>
                           </TouchableHighlight>
                         </View>
                         <TouchableHighlight onPress={() => this.setState({showLocSearch:true}) }>
-                        <View style={styleChefListPage.locationView}>
-                            <View style={{marginTop:3,marginLeft:2,}}><Image source={ballonIcon} style={styleChefListPage.locationIcon}/></View>
-                            <Text style={styleChefListPage.locationText}>{this.state.city}</Text>
+                        <View style={styles.locationView}>
+                            <View style={{marginTop:3,marginLeft:2,}}><Image source={ballonIcon} style={styles.locationIcon}/></View>
+                            <Text style={styles.locationText}>{this.state.city}</Text>
                         </View>
                         </TouchableHighlight>
-                        <View style={styleChefListPage.searchButtonView}>
+                        <View style={styles.searchButtonView}>
                           <TouchableHighlight onPress={() => this.setState({showChefSearch:true}) }>
-                            <Image source={searchIcon} style={styleChefListPage.searchIcon}/>
+                            <Image source={searchIcon} style={styles.searchIcon}/>
                           </TouchableHighlight>
                         </View>
                     </View> 
@@ -397,43 +397,6 @@ var styleChefListPage = StyleSheet.create({
         flexDirection:'row',
         height:windowHeight/16.4,
         backgroundColor:'#fff',
-    },
-    menuButtonView:{
-        flex:0.1/3,
-        width:windowWidth/3,
-        alignItems:'flex-start',
-        paddingLeft:windowWidth/27.6,
-        paddingTop:windowHeight/73.6,
-    },
-    menuIcon:{
-        width:windowHeight/29.4,
-        height:windowHeight/29.4,
-    },
-    searchIcon:{
-        width:windowHeight/24.5,
-        height:windowHeight/24.5,
-    },
-    locationView:{
-        flex:0.1/3, 
-        flexDirection:'row',
-        width:windowWidth/3,
-        justifyContent:'center',
-        paddingTop:windowHeight/52.6,   
-    },
-    locationIcon:{
-        width:windowHeight/49,
-        height:windowHeight/49,
-    },
-    locationText:{
-        fontSize:windowHeight/43.3,
-        color:'#696969',
-    },
-    searchButtonView:{
-        flex:0.1/3, 
-        width:windowWidth/3,
-        alignItems:'flex-end',
-        paddingRight:windowWidth/41.4,
-        paddingTop:windowHeight/105.14,     
     },
     oneShopListView:{
         alignSelf:'stretch',
