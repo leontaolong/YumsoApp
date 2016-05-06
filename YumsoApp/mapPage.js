@@ -3,6 +3,7 @@ var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var MapView = require('react-native-maps');
+var RCTUIManager = require('NativeModules').UIManager;
 var ballonIcon = require('./icons/ic_location_on_48pt_3x.png');
 var labelIcon = require('./icons/2000px-Tag_font_awesome.svg.png');
 var searchIcon = require('./icons/ic_search_48pt_3x.png');
@@ -29,6 +30,7 @@ import React, {
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
+var mapViewYposition = 0;
 
 class MapPage extends Component {
     constructor(props){
@@ -83,6 +85,7 @@ class MapPage extends Component {
             console.log(this.state.savedAddressesView)
             return (
                  <View style={styles.container}>
+                     
                      <View style={styles.headerBannerView}>
                          <View style={styles.backButtonView}>
                              <TouchableHighlight onPress={() => this.navigateBack() }>
@@ -114,15 +117,13 @@ class MapPage extends Component {
                             <Text style={styleMapPage.currentLocationClickableText}>Current Location</Text>
                        </View>
                        </TouchableHighlight>
-                       <View>
-                         {this.state.searchAddressResultView}
-                       </View>                                         
+                       
                     </View>
-                                 
-                    <MapView style={styleMapPage.mapView}
+                    
+                    <MapView ref='MapView' style={styleMapPage.mapView}
                         initialRegion={{
-                            latitude: 37.78825,
-                            longitude: -122.4324,
+                            latitude: 47.6062095,
+                            longitude:  -122.3320708,
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
                         }}
@@ -136,7 +137,8 @@ class MapPage extends Component {
                                 onDragEnd={(e) => this.onDragEnd(e.nativeEvent.coordinate)}
                                 />
                         )) }
-                    </MapView>
+                    </MapView>                    
+                     
                     <View style={styleMapPage.selectedAddressView}>
                         <Text style={styleMapPage.selectedAddressText}>{this.state.GPSproxAddress? this.state.GPSproxAddress.streetNumber+' '+this.state.GPSproxAddress.streetName:''}</Text>
                         <Text style={styleMapPage.selectedAddressText}>{this.state.GPSproxAddress? this.state.GPSproxAddress.city+', '+this.state.GPSproxAddress.state+' '+this.state.GPSproxAddress.postal:''}</Text>
@@ -144,6 +146,10 @@ class MapPage extends Component {
                     <TouchableHighlight style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress() }>
                         <Text style={styleMapPage.confirmAddressButtonText}>Use this Address</Text>
                     </TouchableHighlight>
+                    
+                    <View style={{backgroundColor:'#DCDCDC', position:'absolute', top: this.state.mapViewYposition,left:0,right:0,opacity:0.7}}>
+                            {this.state.searchAddressResultView}
+                    </View>
                 </View>
             );                      
     }
@@ -170,7 +176,7 @@ class MapPage extends Component {
     renderSearchResult(addressList){
         var addressesView = []
         for(let address of addressList){
-            addressesView.push(<Text key={address.formatted_address} onPress={()=>this.useAddress(address)}>{address.formatted_address}</Text>);
+            addressesView.push(<View style={styleMapPage.possibleAddressView}><Text style={styleMapPage.possibleAddressText} key={address.formatted_address} onPress={()=>this.useAddress(address)}>  {address.formatted_address}</Text></View>);
         }
         return addressesView;
     }
@@ -359,11 +365,26 @@ class MapPage extends Component {
                         };
                         addresses.push(onePossibility);
                     }
+
                     let view = this.renderSearchResult(addresses);
-                    this.setState({searchAddressResultView: view});
+                    //If only one possible address returned, locate it on the map
+                    if(addresses.length==1){
+                       this.useAddress(addresses[0]);
+                    }else{
+                       view.push(<TouchableHighlight style={styleMapPage.dismissButtonView} onPress={() => {this.setState({searchAddressResultView:[]});}}>
+                                     <Text style={styleMapPage.possibleAddressText}>Dismiss</Text>
+                                   </TouchableHighlight>);
+                       this.setState({searchAddressResultView: view}); 
+                    }
                 }
            })
-    
+           
+           //Get the position of the MapView in order to make the dropdown panel perfectly floating on the Map
+           var view = this.refs['MapView'];
+           var handle = React.findNodeHandle(view); 
+           RCTUIManager.measure(handle, (x, y, width, height, pageX, pageY) => {
+               this.setState({mapViewYposition: y});
+           })
     }
     
     navigateBack() {
@@ -422,10 +443,22 @@ var styleMapPage = StyleSheet.create({
         marginTop:windowHeight/105.14,
         marginLeft:windowWidth/207.0,
     },
-    searchAddressResultView:{
-        backgroundColor:'#D7D7D7',
-        position:'relative',
-        top:30,
+    possibleAddressText:{
+        fontSize:windowHeight/36.8,
+        color:'#696969',
+        alignSelf:'center', 
+    },
+    possibleAddressView:{
+        height:40,
+        borderTopWidth:0.5,
+        borderColor:'#696969',
+        justifyContent:'center',
+    },
+    dismissButtonView:{
+        height:40,
+        borderTopWidth:0.5,
+        borderColor:'#696969',
+        justifyContent:'center',
     },
     mapView:{
         height: windowWidth, 
