@@ -291,7 +291,7 @@ class ShopPage extends Component {
                                <Image source={shoppingCartIcon} style={styleShopPage.shoppingCartIcon}/>    
                           </TouchableHighlight>
                           <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Select a delivery time':'$'+this.state.totalPrice+' at '+dateRender.renderDate2(this.state.selectedTime)}</Text>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Select a delivery time':'$'+this.state.totalPrice+' for '+dateRender.renderDate2(this.state.selectedTime)}</Text>
                           </View>
                        </View>
                 </View>      
@@ -598,7 +598,7 @@ var styleShopPage = StyleSheet.create({
     },
     footerView:{ 
         flexDirection:'row', 
-        height:windowHeight/13.4, 
+        height:windowHeight/13.38, 
         backgroundColor:'#ff9933',
         paddingTop:windowHeight/245.30,
     },
@@ -617,11 +617,14 @@ var styleShopPage = StyleSheet.create({
     },
     shoppingCartTimeView:{
         alignItems:'flex-start',
+        marginLeft:20,
     },
     shoppingCartTimePriceText:{
         color:'#fff',
         fontSize:windowHeight/37.8,
-        marginTop:windowHeight/63,
+        marginTop:windowHeight/80,
+        fontSize:windowHeight/30.6,
+        fontWeight:'300',
     },
     oneDishInListView:{
         marginBottom:0,

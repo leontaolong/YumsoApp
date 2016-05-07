@@ -70,22 +70,18 @@ class LoginPage extends Component {
                 <View style={styleLoginPage.forgotPasswordView}>
                       <Text style={styleLoginPage.forgotPasswordText}>Forgot password? </Text>
                 </View>
-                
-                <View style={styleLoginPage.signInButtonView}>
-                   <TouchableHighlight onPress = {this.onLoginPressed.bind(this) }>
+               
+                <TouchableHighlight onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
                        <Text style={styleLoginPage.signInButtonText}>Log in</Text>
-                   </TouchableHighlight>
-                </View>
+                </TouchableHighlight>
                        
                 <View style={styleLoginPage.askToSignUpView}>
                     <Text style={styleLoginPage.askToSignUpText}>No Yumso account?</Text>
                 </View>
                 
-                <View style={styleLoginPage.signUpButtonView}>
-                   <TouchableHighlight onPress={() => this.navigateToSignUp() }>
-                       <Text style={styleLoginPage.signUpButtonText}>Sign up</Text>  
-                   </TouchableHighlight> 
-                </View>
+                <TouchableHighlight onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpButtonView}>
+                    <Text style={styleLoginPage.signUpButtonText}>Sign up</Text>  
+                </TouchableHighlight> 
 
                 <View style={styleLoginPage.fbSignInButtonView}>
                     <FBLogin style={styleLoginPage.fbSignInButton}
@@ -220,7 +216,6 @@ var styleLoginPage = StyleSheet.create({
       height:windowHeight/12.6,
       fontSize:windowHeight/33.4,
       color: '#696969',
-      justifyContent:'center',
       borderWidth:1,
       borderColor: '#D7D7D7',
       paddingVertical:5,
@@ -285,6 +280,9 @@ var styleLoginPage = StyleSheet.create({
       right: 0,
       top:windowHeight-windowHeight/13.38,
     },
+    fbSignInButton:{
+      alignSelf:'center',
+    }
 });
 
 module.exports = LoginPage;

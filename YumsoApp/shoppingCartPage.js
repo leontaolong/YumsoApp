@@ -203,7 +203,7 @@ class ShoppingCartPage extends Component {
                     
                <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
                <View style={styleShoppingCartPage.checkOutButtonView}>
-                   <Text style={styleShoppingCartPage.checkOutButtonText}>Check Out Now!</Text>
+                   <Text style={styleShoppingCartPage.checkOutButtonText}>Check Out Now !</Text>
                </View>
                </TouchableHighlight>
             </View>
@@ -525,21 +525,17 @@ var styleShoppingCartPage = StyleSheet.create({
         height: windowHeight/36.8,
     },
     checkOutButtonView:{
-        height:windowHeight/13.4,
+        height:windowHeight/13.38,
         flexDirection:'row',        
         justifyContent: 'center',
         backgroundColor:'#ff9933',
-        paddingTop:windowHeight/47.33,
     }, 
     checkOutButtonText:{
-        fontSize:windowHeight/37.8,
-        fontWeight:'500',
-        color:'#fff',   
+        fontSize:windowHeight/30.6,
+        fontWeight:'300',
+        color:'#fff',
+        alignSelf:'center', 
     },
-    bowlIcon:{
-        width:windowHeight/24.53,
-        height:windowHeight/24.53,
-    }
 });
 
 module.exports = ShoppingCartPage;
