@@ -4,7 +4,9 @@ var config = require('./config');
 var AuthService = require('./authService');
 var ImageCamera = require('./imageCamera');
 var MapPage = require('./mapPage');
-
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var defaultAvatar = require('./TestImages/Obama.jpg');
+var uploadPhotoIcon = require('./icons/ic_add_a_photo_48pt_3x.png');
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -131,15 +133,21 @@ class EaterPage extends Component {
                      <Text key={i} style={styleEaterPage.eaterPageGreyText}>+ {this.state.eater.addressList[i].formatted_address}</Text>
                  );
              }
-             var chefProfile = this.state.eater.eaterProfilePic == null ? require('./TestImages/Obama.jpg') : { uri: this.state.eater.eaterProfilePic }
+             var chefProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic }
              return (
-                <ScrollView style={{height:windowHeight}}>
-                     <View style={styleEaterPage.headerBannerView}>
+                <View style={styles.container}>
+                     <View style={styles.headerBannerView}>
+                         
+                         <View style={styles.backButtonView}>
                          <TouchableHighlight onPress={() => this.navigateBackToChefList() }>
-                             <View style={styleEaterPage.backButtonView}>
-                                 <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png') } style={styleEaterPage.iconImage}/>
-                             </View>
-                         </TouchableHighlight>
+                             <Image source={backIcon} style={styles.backButtonIcon}/>
+                         </TouchableHighlight> 
+                         </View>
+                         
+                         <View style={styles.titleView}>
+                             <Text style={styles.titleText}></Text>
+                         </View>
+                         <View style={styles.headerRightView}>
                          <TouchableHighlight onPress={() => { this.setState({ edit: true, 
                                      firstname: this.state.eater.firstname, 
                                      lastname: this.state.eater.lastname, 
@@ -150,15 +158,15 @@ class EaterPage extends Component {
                                      workAddress: this.state.eater.workAddress,
                                      addressList: this.state.eater.addressList
                                     })}}>
-                             <View style={styleEaterPage.editButtonView}>
-                                 <Text style={styleEaterPage.editButtonText}>Edit</Text>
-                             </View>
+                             
+                               <Text style={styles.headerRightTextButtonText}>Edit</Text>
                          </TouchableHighlight>
+                         </View>
                      </View>
                      <Image source={chefProfile} style={styleEaterPage.eaterProfilePic}>
                          <View style={styleEaterPage.uploadPhotoButtonView}>
                              <TouchableHighlight onPress={() => this.uploadPic() }>
-                                 <Image source={require('./icons/ic_add_a_photo_48pt_3x.png') } style={styleEaterPage.iconImage}/>
+                                 <Image source={uploadPhotoIcon} style={styleEaterPage.iconImage}/>
                              </TouchableHighlight>
                          </View>
                      </Image>
@@ -180,7 +188,7 @@ class EaterPage extends Component {
                              </View>
                          </TouchableHighlight>
                      </View>
-                 </ScrollView>);
+                 </View>);
          }
      }
     
@@ -319,32 +327,10 @@ class EaterPage extends Component {
 }
 
 var styleEaterPage = StyleSheet.create({
-    backButtonView:{
-        position:'absolute',
-        top:15,
-        left:0,
-    },
-    editButtonText:{
-        color:'#ff9933',
-        fontSize:15,
-    },
     uploadPhotoButtonView:{
         position:'absolute',
         right:12,
         top:windowHeight/2.63-47,
-    },
-    iconImage:{
-        width:40,
-        height:40,
-    },
-    editButtonView:{
-        position:'absolute',
-        top:25,
-        right:10,
-    },
-    headerBannerView:{
-        flex: 1,
-        height:60,
     },
     eaterProfilePic:{
         width: windowWidth,

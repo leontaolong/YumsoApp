@@ -136,8 +136,7 @@ class ShopPage extends Component {
                      deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
                    }
                }
-               console.log(this.state.timeData);
-               console.log(deliveryTimeRendered);
+
                return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
                             <Image source={{ uri: this.state.chef.shopPictures[0] }} style={styleShopPage.shopPicture}
                                 onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }>

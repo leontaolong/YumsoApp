@@ -28,16 +28,16 @@ module.exports = StyleSheet.create({
       paddingTop:6,
     },
     backButtonIcon:{
-      width:windowWidth/14.6,
-      height:windowWidth/14.6,
+      width:windowWidth/12.5,
+      height:windowWidth/12.5,
     },
     likeButtonIcon:{
-      width:windowWidth/14.6,
-      height:windowWidth/14.6,
+      width:windowWidth/12.5,
+      height:windowWidth/12.5,
     },
     shareButtonIcon:{
-      width:windowWidth/14.6,
-      height:windowWidth/14.6,
+      width:windowWidth/12.5,
+      height:windowWidth/12.5,
     },
     titleView:{
       flex:0.1/3, 
@@ -54,6 +54,14 @@ module.exports = StyleSheet.create({
       width:windowWidth/3.0,
       alignItems:'flex-end',
       paddingTop:7,
+    },
+    headerRightTextButtonText:{
+      fontSize:windowHeight/39.235,
+      fontWeight:'400',
+      color:'#ff9933',
+      marginTop:windowHeight/222.33,
+      marginRight:windowWidth/53.57,
+
     },
     menuButtonView:{
         flex:0.1/3,
