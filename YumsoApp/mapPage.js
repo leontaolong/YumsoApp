@@ -7,8 +7,11 @@ var RCTUIManager = require('NativeModules').UIManager;
 var ballonIcon = require('./icons/ic_location_on_48pt_3x.png');
 var labelIcon = require('./icons/2000px-Tag_font_awesome.svg.png');
 var searchIcon = require('./icons/ic_search_48pt_3x.png');
+var houseIconOrange = require('./icons/Icon-home-orange.png');
 var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
 var locatorIcon = require('./icons/Icon-location.png');
+var houseIcon = require('./icons/Icon-house.png');
+var cancelIcon = require('./icons/Icon-cancel.png');
 
 import Dimensions from 'Dimensions';
 
@@ -49,6 +52,8 @@ class MapPage extends Component {
         }
         this.state = {
             showProgress:true,
+            showMapView:false,
+            showAddNewAddressInputView:false,
             markers:[],
             eater:eater
         };
@@ -57,35 +62,30 @@ class MapPage extends Component {
         this.getLocation();
     }
    
-    render() {
-            let locLookupView;
-            if(this.state.showLocLookup){
-                this.state.savedAddressesView = this.renderSavedAddresses(); //todo: also include home and work addresses for selection.
-                locLookupView = (//todo: GPS location currect should be pin on map. //gps turn of what to do?
-                    <View style={styles.container}>
-                        <TouchableHighlight style={styles.button} onPress={() => this.setState({showLocLookup:false}) }>
-                            <Text style={styles.buttonText}> Cancel</Text>
-                        </TouchableHighlight>   
-                        <View style={{alignSelf:'stretch', alignItems:'center'}}>
-                            <Text> {this.state.city+','+this.state.state} </Text>  
-                            <TextInput placeholder="City/State/Zip Code" style={styles.loginInput}
-                            onChangeText = {(text)=>this.setState({searchAddress: text})}/>  
-                            <TouchableHighlight style={styles.button} onPress={() => this.searchAddress() }>
-                                <Text style={styles.buttonText}> Search Location</Text>
-                            </TouchableHighlight>   
-                            {this.state.searchAddressResultView}
-                            <Text style={styles.title} onPress={()=>this.getLocation()}>Click get Current Location </Text>
-                            <Text onPress={()=>this.useAddress(this.state.GPSproxAddress)}> {this.state.GPSproxAddress?this.state.GPSproxAddress.formatted_address:''}</Text>   
-                            {this.state.savedAddressesView}                  
-                        </View>   
-                    </View>   );        
+    render() {           
+            this.state.savedAddressesView = this.renderSavedAddresses(); //todo: also include home and work addresses for selection.
+            let addressSelectionView=[];
+            if(!this.state.showMapView){
+               addressSelectionView.push(
+                    <View style={styleMapPage.addressSelectionView}>
+                        <View style={styleMapPage.addNewAddressClickableView}>
+                             <Text style={styleMapPage.addNewAddressClickableText}>
+                                 + Add a new address
+                             </Text>
+                        </View>
+                        {this.state.savedAddressesView}               
+                    </View>);  
+            }                       
+
+            var searchAddressResultViewWrapper;
+            if(this.state.searchAddressResultView){
+               searchAddressResultViewWrapper=(<View style={{backgroundColor:'#fff', position:'absolute', top: this.state.mapViewYposition,left:0,right:0, height:windowHeight-this.state.mapViewYposition,opacity:0.8}}> 
+                                                 {this.state.searchAddressResultView}
+                                               </View>);  
             }
-            console.log("this.state.GPSproxAddress")
-            console.log(this.state.GPSproxAddress);
-            console.log(this.state.savedAddressesView)
+                                            
             return (
                  <View style={styles.container}>
-                     
                      <View style={styles.headerBannerView}>
                          <View style={styles.backButtonView}>
                              <TouchableHighlight onPress={() => this.navigateBack() }>
@@ -96,30 +96,35 @@ class MapPage extends Component {
                              <View style={{marginTop:3,marginLeft:2,}}><Image source={ballonIcon} style={styles.locationIcon}/></View>
                              <Text style={styles.locationText}>{this.state.city}</Text>
                          </View>
-                         <View style={styles.searchButtonView}>
-                             <TouchableHighlight onPress={() => this.setState({showChefSearch:true}) }>
-                                 <Image source={searchIcon} style={styles.searchIcon}/>
+                         <View style={styleMapPage.houseIconOrangeView}>
+                             <TouchableHighlight onPress={() =>{this.setState({showMapView: false})}}>
+                                 <Image source={houseIconOrange} style={styleMapPage.houseIconOrange}/>
                              </TouchableHighlight>
                          </View>
                     </View>
                     
                     <View style={{alignSelf:'stretch', alignItems:'center'}}>
-                       <View style={styleMapPage.locationSearchInputView}>
-                         <TouchableHighlight style={styleMapPage.locationSearchIconView} onPress={() => this.searchAddress() }>
-                               <Image source={searchIcon} style={styleMapPage.searchIcon}/>
-                         </TouchableHighlight>  
-                         <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}
-                            onChangeText = {(text)=>this.setState({searchAddress: text})}/>
+                       <View  style={styleMapPage.locationSearchInputCancelView}>
+                            <View style={styleMapPage.locationSearchInputView}>
+                                <TouchableHighlight style={styleMapPage.locationSearchIconView} onPress={() => this.searchAddress() }>
+                                    <Image source={searchIcon} style={styleMapPage.searchIcon}/>
+                                </TouchableHighlight>  
+                                <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}
+                                    onChangeText = {(text)=>this.setState({searchAddress: text,selectedAddress:''})} value={this.state.selectedAddress?this.state.selectedAddress.formatted_address:this.state.searchAddress}/>
+                            </View>
+                            <TouchableHighlight style={styleMapPage.cancelIconView} onPress={() => {this.setState({showMapView:true,selectedAddress:'',searchAddressResultView:'',searchAddress:''})}}>
+                                <Image source={cancelIcon} style={styleMapPage.cancelIcon}/>
+                            </TouchableHighlight>
                        </View>
-                       <TouchableHighlight onPress={()=>this.locateToCurrentAddress()}>
                        <View style={styleMapPage.currentLocationClickableView}>
-                            <Image source={locatorIcon} style={styleMapPage.currentLocationClickableIcon}/>
-                            <Text style={styleMapPage.currentLocationClickableText}>Current Location</Text>
-                       </View>
-                       </TouchableHighlight>
-                       
+                            <TouchableHighlight onPress={()=>this.locateToCurrentAddress()}>
+                                <View style={styleMapPage.currentLocationClickableView}>
+                                        <Image source={locatorIcon} style={styleMapPage.currentLocationClickableIcon}/>
+                                        <Text style={styleMapPage.currentLocationClickableText}>Current Location</Text>
+                                </View>
+                            </TouchableHighlight>
+                       </View>                       
                     </View>
-                    
                     <MapView ref='MapView' style={styleMapPage.mapView}
                         initialRegion={{
                             latitude: 47.6062095,
@@ -136,20 +141,13 @@ class MapPage extends Component {
                                 description={marker.description}
                                 onDragEnd={(e) => this.onDragEnd(e.nativeEvent.coordinate)}
                                 />
-                        )) }
-                    </MapView>                    
-                     
-                    <View style={styleMapPage.selectedAddressView}>
-                        <Text style={styleMapPage.selectedAddressText}>{this.state.GPSproxAddress? this.state.GPSproxAddress.streetNumber+' '+this.state.GPSproxAddress.streetName:''}</Text>
-                        <Text style={styleMapPage.selectedAddressText}>{this.state.GPSproxAddress? this.state.GPSproxAddress.city+', '+this.state.GPSproxAddress.state+' '+this.state.GPSproxAddress.postal:''}</Text>
-                    </View>
+                        ))}
+                    </MapView>                  
                     <TouchableHighlight style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress() }>
                         <Text style={styleMapPage.confirmAddressButtonText}>Use this Address</Text>
                     </TouchableHighlight>
-                    
-                    <View style={{backgroundColor:'#DCDCDC', position:'absolute', top: this.state.mapViewYposition,left:0,right:0,opacity:0.7}}>
-                            {this.state.searchAddressResultView}
-                    </View>
+                    {searchAddressResultViewWrapper}
+                    {addressSelectionView}   
                 </View>
             );                      
     }
@@ -158,17 +156,62 @@ class MapPage extends Component {
         if(!this.state.eater){
             return undefined;
         }
-        let workAddress = this.state.eater.workAddress;
-        let homeAddress = this.state.eater.homeAddress;
+        //let workAddress = this.state.eater.workAddress;
+        let workAddress = this.state.GPSproxAddress;
+        //let homeAddress = this.state.eater.homeAddress;
+        let homeAddress = this.state.GPSproxAddress;
         let otherAddresses = this.state.eater.addressList;
         var addressesView = []
-        addressesView.push(<Text>Home Address</Text>);
-        addressesView.push(<Text key={this.state.eater.homeAddress.formatted_address} onPress={()=>this.useAddress(this.state.eater.homeAddress)}>{this.state.eater.homeAddress.formatted_address}</Text>);
-        addressesView.push(<Text>Work Address</Text>);
-        addressesView.push(<Text key={this.state.eater.workAddress.formatted_address}onPress={()=>this.useAddress(this.state.eater.workAddress)}>{this.state.eater.workAddress.formatted_address}</Text>);      
-        addressesView.push(<Text>Other Address</Text>);
+        if(homeAddress){
+            addressesView.push(
+                <TouchableHighlight key={'homeAddress'} onPress={()=>this.useAddress(homeAddress)}>
+                <View style={styleMapPage.oneAddressView}>
+                    <View style={styleMapPage.oneAddressIconTitleView}>
+                        <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
+                        <Text style={styleMapPage.oneAddressTitleText}>Home</Text>
+                    </View>
+                    <View style={styleMapPage.oneAddressTextView}>
+                        <Text style={styleMapPage.oneAddressText}>
+                            {homeAddress.formatted_address}
+                        </Text>
+                    </View>
+                </View>
+                </TouchableHighlight>
+            );
+        }
+        if(workAddress){
+            addressesView.push(
+                <TouchableHighlight key={'workAddress'} onPress={()=>this.useAddress(workAddress)}>
+                <View style={styleMapPage.oneAddressView}>
+                    <View style={styleMapPage.oneAddressIconTitleView}>
+                        <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
+                        <Text style={styleMapPage.oneAddressTitleText}>Work</Text>
+                    </View>
+                    <View style={styleMapPage.oneAddressTextView}>
+                        <Text style={styleMapPage.oneAddressText}>
+                            {workAddress.formatted_address}
+                        </Text>
+                    </View>
+                </View>
+                </TouchableHighlight>
+            );
+        }
         for(let address of otherAddresses){
-            addressesView.push(<Text key={address.formatted_address} onPress={()=>this.useAddress(address)}>{address.formatted_address}</Text>);
+            addressesView.push(
+                <TouchableHighlight key={address.formatted_address} onPress={()=>this.useAddress(address)}>
+                <View style={styleMapPage.oneAddressView}>
+                    <View style={styleMapPage.oneAddressIconTitleView}>
+                        <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
+                        <Text style={styleMapPage.oneAddressTitleText}>Other</Text>
+                    </View>
+                    <View style={styleMapPage.oneAddressTextView}>
+                        <Text style={styleMapPage.oneAddressText}>
+                            {address.formatted_address}
+                        </Text>
+                    </View>
+                </View>
+                </TouchableHighlight>
+            );
         }
         return addressesView;
     }
@@ -313,8 +356,9 @@ class MapPage extends Component {
             latlng: { latitude: lat, longitude: lng },
             title: addressName,
            // description: 'testDescription'
-        }];     
-        this.setState({markers: markers, region: region, selectedAddress: address}); 
+        }]; 
+        console.log(region);    
+        this.setState({markers: markers, region: region, selectedAddress: address, showMapView: true,searchAddressResultView:''}); 
         this.refs.m1.showCallout();
     }
     
@@ -371,10 +415,10 @@ class MapPage extends Component {
                     if(addresses.length==1){
                        this.useAddress(addresses[0]);
                     }else{
-                       view.push(<TouchableHighlight style={styleMapPage.dismissButtonView} onPress={() => {this.setState({searchAddressResultView:[]});}}>
+                       view.push(<TouchableHighlight style={styleMapPage.dismissButtonView} onPress={() => {this.setState({searchAddressResultView:''});}}>
                                      <Text style={styleMapPage.possibleAddressText}>Dismiss</Text>
-                                   </TouchableHighlight>);
-                       this.setState({searchAddressResultView: view}); 
+                                 </TouchableHighlight>);
+                       this.setState({searchAddressResultView: view,showMapView:true}); 
                     }
                 }
            })
@@ -399,10 +443,15 @@ class MapPage extends Component {
 }
 
 var styleMapPage = StyleSheet.create({
-    locationSearchInputView:{
+    locationSearchInputCancelView:{
         flex:1,
         flexDirection:'row',
-        width:windowWidth*0.7,
+    },
+    locationSearchInputView:{
+        flexDirection:'row',
+        alignItems:'flex-end',
+        marginLeft:windowWidth*0.03,
+        width:windowWidth*0.87,
         height:windowWidth*0.7/8,
         marginTop:windowHeight/36.8,
         marginBottom:windowHeight/147.2,
@@ -420,21 +469,37 @@ var styleMapPage = StyleSheet.create({
         width:windowHeight/27.26,
         height:windowHeight/27.26,
     },
+    cancelIconView:{
+        width:windowWidth*0.1,
+        flexDirection:'row',
+        alignItems:'flex-end',
+        paddingTop:windowHeight/44.47,
+        marginRight:windowWidth/75.0,  
+    },
+    cancelIcon:{
+        width:windowHeight/16.675,
+        height:windowHeight/16.675,
+    },
     locationSearchInput:{
         flex:0.9,
         fontSize:windowHeight/43.2,
         color:'#696969',
-        textAlign:'center',
+        textAlign:'left',
     },
     currentLocationClickableView:{
-        flex:1,
+        flex:0.5,
         flexDirection:'row',
         width:windowWidth*0.5,
-        height:windowWidth*0.5/5,
+        height:windowWidth*0.1,
+        borderColor:'#ff9933',
+        borderWidth:0,
+        borderRadius:6, 
+        overflow: 'hidden', 
+        alignSelf:'center',
     },
     currentLocationClickableIcon:{
-        width:windowWidth*0.5/5,
-        height:windowWidth*0.5/5,
+        width:windowWidth*0.1,
+        height:windowWidth*0.1,
     },
     currentLocationClickableText:{
         fontSize:windowHeight/36.8,
@@ -450,18 +515,14 @@ var styleMapPage = StyleSheet.create({
     },
     possibleAddressView:{
         height:40,
-        borderTopWidth:0.5,
-        borderColor:'#696969',
         justifyContent:'center',
     },
     dismissButtonView:{
         height:40,
-        borderTopWidth:0.5,
-        borderColor:'#696969',
         justifyContent:'center',
     },
     mapView:{
-        height: windowWidth, 
+        flex:1, 
         width: windowWidth, 
     },
     selectedAddressView:{
@@ -491,6 +552,62 @@ var styleMapPage = StyleSheet.create({
         color:'#fff',
         alignSelf:'center', 
     },
+    addressSelectionView:{
+        flexDirection:'column',
+        borderTopWidth:1,
+        borderColor:'#D7D7D7', 
+        backgroundColor:'#fff', 
+        position:'absolute',
+        top:windowHeight/16.4+windowHeight/36.8+windowWidth*0.7/8+windowHeight/147.2+windowWidth*0.5/5+15,
+        left:0,
+        right:0,
+        height:windowHeight-(windowHeight/16.4+windowHeight/36.8+windowWidth*0.7/8+windowHeight/147.2+windowWidth*0.5/5+15),
+        opacity:0.8,
+    },
+    addNewAddressClickableView:{
+        flexDirection:'row',
+        justifyContent:'center',    
+    },
+    addNewAddressClickableText:{
+        alignSelf:'center',
+        fontSize:windowHeight/36.8,
+        color:'#ff9933',
+        fontWeight:'400',
+        marginTop:windowHeight/105.14,
+    },
+    oneAddressView:{
+        flex:1,
+        flexDirection:'row', 
+    },
+    oneAddressIconTitleView:{
+        flex:0.3,
+        flexDirection:'row',        
+    },
+    oneAddressIcon:{
+        width:windowHeight/16.675,
+        height:windowHeight/16.675,
+    },
+    houseIconOrange:{
+        width:windowHeight/16.675,
+        height:windowHeight/16.675,
+    },
+    houseIconOrangeView:{
+        flex:0.1/3, 
+        width:windowWidth/3,
+        alignItems:'flex-end',
+    },
+    oneAddressTitleText:{
+        marginTop:windowHeight/66.7,
+        fontSize:windowHeight/39.24,
+    },
+    oneAddressTextView:{
+        flex:0.7,
+    },
+    oneAddressText:{
+        marginTop:windowHeight/55.583,
+        fontSize:windowHeight/39.24,
+    },
+
 })    
 
 module.exports = MapPage;
