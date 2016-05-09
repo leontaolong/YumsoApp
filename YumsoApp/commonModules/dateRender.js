@@ -44,7 +44,7 @@ class DateRender {
         if (dateInMilliseconds >= todayInMillisecond && dateInMilliseconds < tommorrowInMillisecond) {
             return 'Today ' + this.formatTime2String(dateString);
         } else if (dateInMilliseconds >= tommorrowInMillisecond && dateInMilliseconds < thedayaftertommorrowInMillisecond) {
-            return 'Tommorrow ' + this.formatTime2String(dateString);
+            return 'Tomorrow ' + this.formatTime2String(dateString);
         }
     }
 }

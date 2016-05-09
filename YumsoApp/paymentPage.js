@@ -2,6 +2,11 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+import Dimensions from 'Dimensions';
+
+var windowHeight = Dimensions.get('window').height;
+var windowWidth = Dimensions.get('window').width;
 
 import React, {
   Component,
@@ -41,19 +46,34 @@ class PaymentPage extends Component {
         }         
         return (
             <View style={styles.container}>
-                <Text>Pay amount: ${this.state.totalPrice}</Text>   
-                <TouchableHighlight style={styles.button}
-                    onPress={()=>this.confirm()}>
-                    <Text style={styles.buttonText}>Place the order</Text>
-                </TouchableHighlight>   
-                <TouchableHighlight style={styles.button}
-                    onPress={()=>this.selectPayment()}>
-                    <Text style={styles.buttonText}>Select Payment</Text>
-                </TouchableHighlight>   
-                <TouchableHighlight style={styles.button}
-                    onPress={()=>this.navigateBackToShoppingCartPage()}>
-                    <Text style={styles.buttonText}>Go Back</Text>
-                </TouchableHighlight>      
+                <View style={styles.headerBannerView}>
+                         <View style={styles.backButtonView}>
+                         <TouchableHighlight  onPress={()=>this.navigateBackToShoppingCartPage()}>
+                             <Image source={backIcon} style={styles.backButtonIcon}/>
+                         </TouchableHighlight> 
+                         </View>
+                         <View style={styles.titleView}>
+                             <Text style={styles.titleText}>Check out</Text>
+                         </View>
+                         <View style={styles.headerRightView}>
+                         </View>
+               </View>
+               <View style={stylePaymentPage.totalAmountView}>
+                  <Text style={stylePaymentPage.totalAmountText}>You total amount: ${this.state.totalPrice}</Text>   
+               </View>
+               <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
+                 <TouchableHighlight style={stylePaymentPage.selectPaymentbutton}
+                      onPress={()=>this.selectPayment()}>
+                      <Text style={stylePaymentPage.buttonText}>Select Payment</Text>
+                 </TouchableHighlight> 
+               </View>
+               <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
+                  <TouchableHighlight style={stylePaymentPage.placeOrderButton}
+                      onPress={()=>this.confirm()}>
+                      <Text style={stylePaymentPage.buttonText}>Place the order</Text>
+                  </TouchableHighlight> 
+                </View>
+                
             </View>
         );
     }
@@ -71,7 +91,8 @@ class PaymentPage extends Component {
     
     createAnOrder(){
         if(!this.state.paymentOption){
-            Alert.alert('Warning','Please select a payment option.',[{ text: 'OK' }]);    
+            Alert.alert('Warning','Please select a payment option.',[{ text: 'OK' }]);
+            
             return; 
         }
          return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail, paymentOption: this.state.paymentOption})
@@ -111,7 +132,38 @@ class PaymentPage extends Component {
     }
 }
 
+var stylePaymentPage = StyleSheet.create({
+    totalAmountView:{
+      height:windowHeight/3.0,
+      justifyContent:'center',
+    },
+    totalAmountText:{
+      fontSize:22,
+      fontWeight:'300',
+      alignSelf:'center',
+    },
+    selectPaymentbutton:{
+      marginVertical:20,
+      height:windowHeight/13.38,
+      width:windowWidth*0.9,
+      backgroundColor:'#ffcc33',
+      justifyContent: 'center',
+    },
+    placeOrderButton:{
+      marginVertical:20,
+      height:windowHeight/13.38,
+      width:windowWidth*0.9,
+      backgroundColor:'#ff9933',
+      justifyContent: 'center',
+    },
+    buttonText:{
+      color:'#fff',
+      fontSize:windowHeight/30.6,
+      fontWeight:'300',
+      alignSelf:'center',
+    }
 
+});
 
 module.exports = PaymentPage;
 

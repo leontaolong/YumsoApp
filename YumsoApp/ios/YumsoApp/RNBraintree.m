@@ -53,7 +53,7 @@ RCT_EXPORT_METHOD(showPaymentViewController:(RCTResponseSenderBlock)callback)
 //        paymentRequest.summaryDescription = @"Ships in five days";
 //        paymentRequest.displayAmount = @"$10";
         paymentRequest.callToActionText = @"Add";
-//        dropInViewController.paymentRequest = paymentRequest;
+        dropInViewController.paymentRequest = paymentRequest;
       
         dropInViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(userDidCancelPayment)];
         

@@ -52,7 +52,7 @@ class MapPage extends Component {
         }
         this.state = {
             showProgress:true,
-            showMapView:false,
+            showMapView:true,
             showAddNewAddressInputView:false,
             markers:[],
             eater:eater
@@ -68,11 +68,6 @@ class MapPage extends Component {
             if(!this.state.showMapView){
                addressSelectionView.push(
                     <View style={styleMapPage.addressSelectionView}>
-                        <View style={styleMapPage.addNewAddressClickableView}>
-                             <Text style={styleMapPage.addNewAddressClickableText}>
-                                 + Add a new address
-                             </Text>
-                        </View>
                         {this.state.savedAddressesView}               
                     </View>);  
             }                       
@@ -415,9 +410,6 @@ class MapPage extends Component {
                     if(addresses.length==1){
                        this.useAddress(addresses[0]);
                     }else{
-                       view.push(<TouchableHighlight style={styleMapPage.dismissButtonView} onPress={() => {this.setState({searchAddressResultView:''});}}>
-                                     <Text style={styleMapPage.possibleAddressText}>Dismiss</Text>
-                                 </TouchableHighlight>);
                        this.setState({searchAddressResultView: view,showMapView:true}); 
                     }
                 }
