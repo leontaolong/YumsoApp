@@ -3,6 +3,10 @@ var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var BTClient = require('react-native-braintree');
+var paypalIcon = require('./icons/Icon-paypal.png');
+var visaIcon = require('./icons/Icon-visa.png');
+var plusIcon = require('./icons/Icon-add.png');
+var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
 
 import Dimensions from 'Dimensions';
 
@@ -62,25 +66,32 @@ class PaymentOptionPage extends Component {
 
     renderRow(card){  
         return (
-            <View style={styleChefCommentsPage.oneListingView}>
-                <TouchableHighlight style={styleChefCommentsPage.eaterChefCommetView} onPress={()=>this.onCardClick(card)}>
-                   <View style={styleChefCommentsPage.eaterNameRatingView}>
-                      <View style={styleChefCommentsPage.eaterNameView}>
-                          <Text style={styleChefCommentsPage.eaterNameText}>{card.last4}</Text>
-                      </View>
-                      <View style={styleChefCommentsPage.orderRatingView}>
-                          <Text style={styleChefCommentsPage.eaterNameText}>{card.cardType}</Text>
-                      </View>
-                   </View>
-                </TouchableHighlight>   
-                <TouchableHighlight style={styleChefCommentsPage.orderRatingView} onPress={()=>this.editAPayment(card)}>
-                    <Text style={styleChefCommentsPage.eaterNameText}>Edit</Text>
-                </TouchableHighlight>               
-                <TouchableHighlight style={styleChefCommentsPage.orderRatingView} onPress={()=>this.removeAPayment(card)}>
-                    <Text style={styleChefCommentsPage.eaterNameText}>Remove</Text>
-                </TouchableHighlight>                   
-            </View>
+             <View style={stylePaymentOptionPage.paymentMethodView}>
+                <TouchableHighlight style={stylePaymentOptionPage.paymentMethodIconView} onPress={()=>this.onCardClick(card)}>
+                   {this.renderPaymentMethodType(card)}
+                </TouchableHighlight>
+                <View style={stylePaymentOptionPage.paymentMethodInfoView}>
+                  <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                </View>
+                <View style={stylePaymentOptionPage.paymentMethodRemoveButtonView}>
+                   <Text onPress={()=>this.removeAPayment(card)} style={stylePaymentOptionPage.paymentMethodRemoveButtonText}>Remove</Text>
+                </View>
+             </View>
         );
+    }
+    
+    renderFooter(){
+        return (
+             <View style={stylePaymentOptionPage.addCardView}>
+               <View style={stylePaymentOptionPage.addCardTitleView}>
+                  <Text style={stylePaymentOptionPage.addCardTitleText}>Credit/Debit Card</Text>
+               </View>
+               <View style={{flex:0.4}}>
+               </View>
+               <TouchableHighlight style={stylePaymentOptionPage.addCardIconView} onPress={()=>this.addAPayment()}>
+                  <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
+               </TouchableHighlight>
+             </View>) ;
     }
     
     render() {
@@ -92,24 +103,22 @@ class PaymentOptionPage extends Component {
         } 
         return (
             <View style={styles.container}>
-               <View style={styleChefCommentsPage.headerBannerView}>    
-                   <View style={styleChefCommentsPage.backButtonView}>
-                   <TouchableHighlight onPress={() => this.navigateBack()}>
-                     <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleChefCommentsPage.backButtonIcon}/>
-                   </TouchableHighlight>
-                   </View>    
-                   <View style={styleChefCommentsPage.historyOrderTitleView}>
-                     <Text style={styleChefCommentsPage.historyOrderTitleText}>Payment Options</Text>
-                   </View>
-                   <View style={{flex:0.1/3,width:windowWidth/3}}>
-                   </View>
+               <View style={styles.headerBannerView}>
+                         <View style={styles.backButtonView}>
+                         <TouchableHighlight  onPress={() => this.navigateBack()}>
+                             <Image source={backIcon} style={styles.backButtonIcon}/>
+                         </TouchableHighlight> 
+                         </View>
+                         <View style={styles.titleView}>
+                             <Text style={styles.titleText}>Payment Options</Text>
+                         </View>
+                         <View style={styles.headerRightView}>
+                         </View>
                </View>
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this) }/> 
-               <TouchableHighlight onPress={()=>this.addAPayment()}>
-                    <Text>Add more..</Text>
-               </TouchableHighlight>                 
+                    renderRow={this.renderRow.bind(this)}
+                    renderFooter={this.renderFooter.bind(this)}/>                 
             </View>
         );
     }
@@ -122,6 +131,20 @@ class PaymentOptionPage extends Component {
         if(this.onPaymentSelected){
             this.onPaymentSelected(card);
             this.props.navigator.pop();
+        }
+    }
+    renderPaymentMethodType(card){
+        switch (card.cardType) {
+            case 'Visa':
+                return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
+            case 'MasterCard':
+                return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
+            case 'AmEx':
+                return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
+            case 'Discovery':
+                return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;                    
+            default:
+                return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>; 
         }
     }
     
@@ -170,6 +193,81 @@ class PaymentOptionPage extends Component {
                         // //error handling
                         // console.log(err);
                         // });  
+                        
+var stylePaymentOptionPage = StyleSheet.create({
+    paymentMethodView:{
+        flex:1,
+        flexDirection:'row',
+        height:50,
+        paddingHorizontal:15,
+        borderBottomWidth:1,
+        borderColor:'#D7D7D7',
+    },
+    paymentMethodRemoveButtonText:{
+        alignSelf:'center',
+        fontSize:16,
+        color:'#ff9933',
+    },
+    paymentMethodInfoView:{
+        flex:0.5,
+        flexDirection:'row',
+        justifyContent:'flex-start',
+    },
+    paymentMethodInfoText:{
+        alignSelf:'center',
+        fontSize:16,
+    },
+    paymentMethodIconView:{
+        flex:0.25,
+        flexDirection:'row',
+        justifyContent:'flex-start'
+    },
+    paymentCreditCardView:{
+        flex:1,
+        flexDirection:'row',
+        borderColor:'#D7D7D7',
+        borderBottomWidth: 1,
+    },
+    paymentMethodRemoveButtonView:{
+        flex:0.25,
+        flexDirection:'row',
+        height:50,
+        justifyContent:'flex-end',
+    },
+    paymentMethodIcon:{
+        width:40,
+        height:25,
+        alignSelf:'center',
+    },
+    addCardView:{
+        flex:1,
+        flexDirection:'row',
+        height:50,
+        paddingHorizontal:15,
+        borderBottomWidth:1,
+        borderColor:'#D7D7D7',
+    },
+    addCardTitleView:{
+        flex:0.5,
+        flexDirection:'row',
+        justifyContent:'flex-start',
+    },
+    addCardTitleText:{
+        alignSelf:'center',
+        fontSize:16,
+    },
+    addCardIconView:{
+        flex:0.1,
+        flexDirection:'row',
+        justifyContent:'flex-end',
+    },
+    addCardIcon:{
+        width:30,
+        height:30,
+        alignSelf:'center',
+    },    
+});                
+                        
 var styleChefCommentsPage = StyleSheet.create({
     headerBannerView:{
         flex:0.1,
@@ -301,7 +399,7 @@ var styleChefCommentsPage = StyleSheet.create({
     addCommentTextClickable:{
         color:'#ff9933',
         fontSize:13,
-    }
+    },
 }); 
 
 module.exports = PaymentOptionPage;
