@@ -60,11 +60,11 @@ class LoginPage extends Component {
                     <Image source={logoIcon} style={styleLoginPage.logoIcon}/>
                 </View>
                 
-                <TextInput placeholder="Email" style={styleLoginPage.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'}
+                <TextInput placeholder="Email" style={styleLoginPage.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
                        onChangeText = {(text) => this.setState({ email: text }) }/>
 
                 
-                <TextInput placeholder="Password" style={styleLoginPage.loginInput}
+                <TextInput placeholder="Password" style={styleLoginPage.loginInput} returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
                         onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
                 
                 <View style={styleLoginPage.forgotPasswordView}>

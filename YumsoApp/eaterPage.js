@@ -107,7 +107,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>First Name</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ firstname: text }) }/>
                        </View>
                      </View>
@@ -116,7 +116,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>Last Name</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.lastname} clearButtonMode={'while-editing'}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.lastname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ lastname: text }) }/>
                        </View>
                      </View>
@@ -125,7 +125,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>Alias</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
                        </View>
                      </View>
@@ -147,7 +147,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>Email</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.email} autoCapitalize={'none'} clearButtonMode={'while-editing'}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.email} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ email: text }) }/>
                        </View>
                      </View>
@@ -157,7 +157,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>Phone</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.phoneNumber} keyboardType = { 'phone-pad'} clearButtonMode={'while-editing'}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.phoneNumber} keyboardType = { 'phone-pad'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>
                        </View>
                      </View>

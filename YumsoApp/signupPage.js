@@ -51,15 +51,15 @@ class SignUpPage extends Component {
                     </View>
                     
                     <View style={styles.loginInputView}>
-                        <TextInput placeholder="First Name" style={styles.loginInput}
+                        <TextInput placeholder="First Name" style={styles.loginInput} autoCorrect={false}
                                 onChangeText = {(text)=>this.setState({firstname: text})}/>
                     </View> 
                     <View style={styles.loginInputView}>
-                        <TextInput placeholder="Last Name" style={styles.loginInput}
+                        <TextInput placeholder="Last Name" style={styles.loginInput} autoCorrect={false}
                                 onChangeText = {(text)=>this.setState({lastname: text})}/> 
                     </View>
                     <View style={styles.loginInputView}>                      
-                        <TextInput placeholder="Email" style={styles.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'}
+                        <TextInput placeholder="Email" style={styles.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} autoCorrect={false}
                                 onChangeText = {(text)=>this.setState({email: text})}/>
                     </View>
                     <View style={styles.loginInputView}>
@@ -68,7 +68,7 @@ class SignUpPage extends Component {
                                 secureTextEntry={true}/>
                     </View>
                     <View style={styles.loginInputView}>
-                        <TextInput placeholder="Confirm Password" style={styles.loginInput}
+                        <TextInput placeholder="Confirm Password" style={styles.loginInput} onSubmitEditing={this.onSignUpPressed.bind(this)} returnKeyType = {'go'}
                                 onChangeText = {(text)=>this.setState({password_re: text})}
                                 secureTextEntry={true}/>
                     </View>

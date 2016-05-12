@@ -104,7 +104,7 @@ class MapPage extends Component {
                                 <TouchableHighlight style={styleMapPage.locationSearchIconView} onPress={() => this.searchAddress() }>
                                     <Image source={searchIcon} style={styleMapPage.searchIcon}/>
                                 </TouchableHighlight>  
-                                <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}  onSubmitEditing = {()=> this.searchAddress()}
+                                <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}  onSubmitEditing = {()=> this.searchAddress()} returnKeyType = {'search'}
                                     onChangeText = {(text)=>this.setState({searchAddress: text,selectedAddress:''})} value={this.state.selectedAddress?this.state.selectedAddress.formatted_address:this.state.searchAddress}/>
                             </View>
                             <TouchableHighlight style={styleMapPage.cancelIconView} onPress={() => {this.setState({showMapView:true,selectedAddress:'',searchAddressResultView:'',searchAddress:''})}}>
