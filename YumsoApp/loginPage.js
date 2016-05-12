@@ -60,7 +60,7 @@ class LoginPage extends Component {
                     <Image source={logoIcon} style={styleLoginPage.logoIcon}/>
                 </View>
                 
-                <TextInput placeholder="Email" style={styleLoginPage.loginInput}
+                <TextInput placeholder="Email" style={styleLoginPage.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'}
                        onChangeText = {(text) => this.setState({ email: text }) }/>
 
                 

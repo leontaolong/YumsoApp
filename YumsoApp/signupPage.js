@@ -59,7 +59,7 @@ class SignUpPage extends Component {
                                 onChangeText = {(text)=>this.setState({lastname: text})}/> 
                     </View>
                     <View style={styles.loginInputView}>                      
-                        <TextInput placeholder="Email" style={styles.loginInput}
+                        <TextInput placeholder="Email" style={styles.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'}
                                 onChangeText = {(text)=>this.setState({email: text})}/>
                     </View>
                     <View style={styles.loginInputView}>
