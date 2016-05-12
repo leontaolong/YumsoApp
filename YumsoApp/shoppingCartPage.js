@@ -124,14 +124,6 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice}</Text>
                   </View>
                </View>),
-               (<View style={styleShoppingCartPage.taxView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice*0.095}</Text>
-                  </View>
-               </View>),
                (<View style={styleShoppingCartPage.deliveryFeeView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
@@ -150,6 +142,14 @@ class ShoppingCartPage extends Component {
                      <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
                         <Text style={styleShoppingCartPage.addressChangeButtonText}>Change Address</Text>
                      </TouchableHighlight>
+                  </View>
+               </View>),
+               (<View style={styleShoppingCartPage.taxView}>
+                  <View style={styleShoppingCartPage.priceTitleView}>
+                      <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
+                  </View>
+                  <View style={styleShoppingCartPage.priceNumberView}>
+                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice*0.095}</Text>
                   </View>
                </View>),
                (<View style={styleShoppingCartPage.promotionCodeView}>
@@ -352,7 +352,7 @@ var styleShoppingCartPage = StyleSheet.create({
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
         paddingTop:windowHeight/56.6,
-        borderBottomWidth:1,
+        borderTopWidth:1,
         borderColor:'#D7D7D7',
         justifyContent:'center'
     },

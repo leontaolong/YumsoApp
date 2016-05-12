@@ -131,15 +131,15 @@ class EaterPage extends Component {
                      </View>
 
                      <View style={styleEaterPage.genderSelectView}>
-                        <View style={styleEaterPage.oneGenderSelectView}>
-                           <Text style={styleEaterPage.oneGenderSelectText}>Male</Text>
-                        </View>
-                        <View style={styleEaterPage.oneGenderSelectMiddleView}>
-                           <Text style={styleEaterPage.oneGenderSelectText}>Female</Text>
-                        </View>
-                        <View style={styleEaterPage.oneGenderSelectView}>
-                           <Text style={styleEaterPage.oneGenderSelectText}>Not to tell</Text>
-                        </View>
+                        <TouchableHighlight onPress = {()=>this.toggleGender('Male')} style={styleEaterPage.oneGenderSelectView}>
+                           <Text style={{fontSize:15,color:this.renderGenderTextColor('Male'),alignSelf:'center'}}>Male</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight onPress = {()=>this.toggleGender('Female')} style={styleEaterPage.oneGenderSelectMiddleView}>
+                           <Text style={{fontSize:15,color:this.renderGenderTextColor('Female'),alignSelf:'center'}}>Female</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight onPress = {()=>this.toggleGender('Not to tell')} style={styleEaterPage.oneGenderSelectView}>
+                           <Text style={{fontSize:15,color:this.renderGenderTextColor('Not to tell'),alignSelf:'center'}}>Not to tell</Text>
+                        </TouchableHighlight>
                      </View>
                      
                      <View style={styleEaterPage.nameInputView}>
@@ -388,6 +388,20 @@ class EaterPage extends Component {
     
     onCancelMap(){
          this.setState({editWorkAddress:false, editHomeAddress:false, addMoreAddress:false});
+    }
+
+    renderGenderTextColor(gender){
+         if(this.state.gender == gender){
+             return '#ff9933';
+         }else{
+             return '#808080';
+         }
+    }
+    
+    toggleGender(gender){
+        if(gender!=this.state.gender){
+           this.setState({gender:gender});
+        }
     }
     
     navigateBackToChefList(){
