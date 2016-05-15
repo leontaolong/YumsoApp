@@ -206,8 +206,8 @@ class ChefListPage extends Component {
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
                 <View style={styles.container}>                    
                     <View style={styleChefListPage.headerBannerView}>
-                        <View style={styles.menuButtonView}>
-                          <TouchableHighlight onPress={() => this.setState({ isMenuOpen: true }) }>
+                        <View style={styles.headerLeftView}>
+                          <TouchableHighlight style={styles.menuButtonView} onPress={() => this.setState({ isMenuOpen: true }) }>
                             <Image source={menuIcon} style={styles.menuIcon}/>
                           </TouchableHighlight>
                         </View>
