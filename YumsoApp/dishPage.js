@@ -3,10 +3,10 @@ var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var Swiper = require('react-native-swiper')
-var shareIcon = require('./icons/ic_share_48pt_3x.png');
-var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
-var notlikedIcon = require('./icons/ic_favorite_border_48pt_3x.png')
-var likedIcon = require('./icons/ic_favorite_48pt_3x.png');
+var shareIcon = require('./icons/icon-share.png');
+var backIcon = require('./icons/icon-back.png');
+var notlikedIcon = require('./icons/icon-unliked.png')
+var likedIcon = require('./icons/icon-liked.png');
 var bowlIcon = require('./icons/icon_bowl.png');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
@@ -60,8 +60,8 @@ class DishPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                        <View style={styles.backButtonView}>
-                             <TouchableHighlight onPress={() => this.navigateBackToShop()}>
+                        <View style={styles.headerLeftView}>
+                             <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToShop()}>
                                  <Image source={backIcon} style={styles.backButtonIcon}/>
                              </TouchableHighlight>
                          </View>    
@@ -69,15 +69,15 @@ class DishPage extends Component {
                              <Text style={styles.titleText}></Text>
                          </View>
                          <View style={styles.headerRightView}>
-                             <View style={styleShopPage.likeShareButtonView}>
-                         <TouchableHighlight style={{marginRight:8}} onPress={()=>{this.addToFavorite()}}>
-                             <Image source={likeIcon} style={styles.likeButtonIcon}/>
-                         </TouchableHighlight>
-                         <TouchableHighlight>
-                             <Image source={shareIcon} style={styles.shareButtonIcon}/>
-                         </TouchableHighlight>
-                      </View>
-                  </View>
+                             <View style={styles.likeShareButtonView}>
+                                <TouchableHighlight onPress={()=>{this.addToFavorite()}}>
+                                   <Image source={likeIcon} style={styles.likeButtonIcon}/>
+                                </TouchableHighlight>
+                                <TouchableHighlight>
+                                   <Image source={shareIcon} style={styles.shareButtonIcon}/>
+                               </TouchableHighlight>
+                            </View>
+                         </View>
                </View>
                <Swiper showsButtons={false} height={windowHeight/2.63} horizontal={true} autoplay={true}
                         dot={<View style={{ backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />}
@@ -461,9 +461,6 @@ var styleShopPage = StyleSheet.create({
         color:'#A9A9A9',
         marginTop:15,
     },
-    likeShareButtonView:{
-        flexDirection:'row'
-    }
 });
 
 module.exports = DishPage;
