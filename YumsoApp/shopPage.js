@@ -1,13 +1,14 @@
+'use strict'
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
 var AuthService = require('./authService');
-var shareIcon = require('./icons/ic_share_48pt_3x.png');
-var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
-var notlikedIcon = require('./icons/ic_favorite_border_48pt_3x.png')
-var likedIcon = require('./icons/ic_favorite_48pt_3x.png');
+var shareIcon = require('./icons/icon-share.png');
+var backIcon = require('./icons/icon-back.png');
+var notlikedIcon = require('./icons/icon-unliked-onheader.png')
+var likedIcon = require('./icons/icon-liked-onheader.png');
 var bowlIcon = require('./icons/icon_bowl.png');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
@@ -259,16 +260,16 @@ class ShopPage extends Component {
         } else {
             
             if(this.state.like){
-                likeIcon = likedIcon;
+              var  likeIcon = likedIcon;
             }else{
-                likeIcon = notlikedIcon;
+              var  likeIcon = notlikedIcon;
             }
             
             return (
                 <View style={styles.container}>
                         <View style={styles.headerBannerView}>    
-                            <View style={styles.backButtonView}>
-                                <TouchableHighlight onPress={() => this.navigateBackToChefList()}>
+                            <View style={styles.headerLeftView}>
+                                <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToChefList()}>
                                     <Image source={backIcon} style={styles.backButtonIcon}/>
                                 </TouchableHighlight>
                             </View>    
@@ -276,13 +277,13 @@ class ShopPage extends Component {
                                 <Text style={styles.titleText}></Text>
                             </View>
                             <View style={styles.headerRightView}>
-                                <View style={styleShopPage.likeShareButtonView}>
-                                <TouchableHighlight style={{marginRight:8}} onPress={()=>{this.addToFavorite()}}>
-                                    <Image source={likeIcon} style={styles.likeButtonIcon}/>
-                                </TouchableHighlight>
-                                <TouchableHighlight>
-                                    <Image source={shareIcon} style={styles.shareButtonIcon}/>
-                                </TouchableHighlight>
+                                <View style={styles.likeShareButtonView}>
+                                  <TouchableHighlight onPress={()=>{this.addToFavorite()}}>
+                                     <Image source={likeIcon} style={styles.likeButtonIcon}/>
+                                  </TouchableHighlight>
+                                  <TouchableHighlight onPress={()=>{}}>
+                                     <Image source={shareIcon} style={styles.shareButtonIcon}/>
+                                  </TouchableHighlight>
                                 </View>
                             </View>
                         </View>
@@ -720,9 +721,6 @@ var styleShopPage = StyleSheet.create({
         color:'#A9A9A9',
         marginTop:15,
     },
-    likeShareButtonView:{
-        flexDirection:'row'
-    }
 });
 
 module.exports = ShopPage;

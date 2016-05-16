@@ -4,6 +4,7 @@ var config = require('./config');
 var AuthService = require('./authService');
 var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
+var backIcon = require('./icons/icon-back.png')
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -118,9 +119,9 @@ class ChefCommentsPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styleChefCommentsPage.headerBannerView}>    
-                   <View style={styleChefCommentsPage.backButtonView}>
-                   <TouchableHighlight onPress={() => this.navigateBackToChefPage()}>
-                     <Image source={require('./icons/ic_keyboard_arrow_left_48pt_3x.png')} style={styleChefCommentsPage.backButtonIcon}/>
+                   <View style={styles.headerLeftView}>
+                   <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToChefPage()}>
+                     <Image source={backIcon} style={styleChefCommentsPage.backButtonIcon}/>
                    </TouchableHighlight>
                    </View>    
                    <View style={styleChefCommentsPage.historyOrderTitleView}>

@@ -1,10 +1,11 @@
+'use strict'
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
-var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var backIcon = require('./icons/icon-back.png');
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -188,8 +189,8 @@ class HistoryOrderPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styleHistoryOrderPage.headerBannerView}>    
-                   <View style={styleHistoryOrderPage.backButtonView}>
-                   <TouchableHighlight onPress={() => this.navigateBackToChefList()}>
+                   <View style={styles.headerLeftView}>
+                   <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToChefList()}>
                      <Image source={backIcon} style={styleHistoryOrderPage.backButtonIcon}/>
                    </TouchableHighlight>
                    </View>    

@@ -1,3 +1,4 @@
+'use strict'
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
@@ -6,7 +7,7 @@ var AuthService = require('./authService');
 var MapPage = require('./mapPage');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
-var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var backIcon = require('./icons/icon-back.png');
 var addPromoCodeIcon = require('./icons/Icon-add.png');
 import Dimensions from 'Dimensions';
 
@@ -183,8 +184,8 @@ class ShoppingCartPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                    <View style={styles.backButtonView}>
-                       <TouchableHighlight onPress={() => this.navigateBackToDishList()}>
+                    <View style={styles.headerLeftView}>
+                       <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToDishList()}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
                        </TouchableHighlight>
                     </View>    

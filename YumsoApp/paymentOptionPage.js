@@ -6,7 +6,7 @@ var BTClient = require('react-native-braintree');
 var paypalIcon = require('./icons/Icon-paypal.png');
 var visaIcon = require('./icons/Icon-visa.png');
 var plusIcon = require('./icons/Icon-add.png');
-var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var backIcon = require('./icons/icon-back.png');
 
 import Dimensions from 'Dimensions';
 
@@ -104,8 +104,8 @@ class PaymentOptionPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>
-                         <View style={styles.backButtonView}>
-                         <TouchableHighlight  onPress={() => this.navigateBack()}>
+                         <View style={styles.headerLeftView}>
+                         <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBack()}>
                              <Image source={backIcon} style={styles.backButtonIcon}/>
                          </TouchableHighlight> 
                          </View>

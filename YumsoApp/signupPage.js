@@ -1,7 +1,8 @@
+'use strict'
 var HttpsClient = require('./httpsClient');
 var AuthService = require('./authService');
 var styles = require('./style');
-var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/Icon-Large.png');
 
 import Dimensions from 'Dimensions';
@@ -34,10 +35,10 @@ class SignUpPage extends Component {
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
                     <View style={styles.headerBannerView}>    
-                        <View style={styles.backButtonView}>
-                        <TouchableHighlight onPress={() => this.navigateBack()}>
-                            <Image source={backIcon} style={styles.backButtonIcon}/>
-                        </TouchableHighlight>
+                        <View style={styles.headerLeftView}>
+                          <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBack()}>
+                              <Image source={backIcon} style={styles.backButtonIcon}/>
+                          </TouchableHighlight>
                         </View>    
                         <View style={styles.titleView}>
                             <Text style={styles.titleText}>Sign Up</Text>
