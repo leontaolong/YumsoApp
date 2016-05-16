@@ -157,7 +157,7 @@ class ShopPage extends Component {
                             <View style={styleShopPage.shopChefNameRatingView}>
                                 <Text style={styleShopPage.shopNameText}>{this.state.chef.shopname}</Text>
                                 <View style={styleShopPage.shopRatingDollarSignView}>
-                                    <View style={styleShopPage.ratingView}>{rating.renderRating(3)}</View>
+                                    <View style={styleShopPage.ratingView}>{rating.renderRating(this.state.chef.rating)}</View>
                                     <View style={styleShopPage.dollarSignView}><Text style={{ color: '#A9A9A9' }}>{this.state.chef.reviewCount} reviews | $$</Text></View>
                                 </View>
                                 <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, {this.state.chef.pickupAddress.state}</Text>

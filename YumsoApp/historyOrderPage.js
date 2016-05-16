@@ -229,7 +229,8 @@ class HistoryOrderPage extends Component {
             }
             this.state.orderTheCommentIsFor.comment={
                         eaterComment:comment,
-                        starRating: data.starRating
+                        starRating: data.starRating,
+                        eaterCommentTime:new Date().getTime(),
                     };
             var orders = this.state.orders;       
             self.setState({showCommentBox:false, dataSource: this.state.dataSource.cloneWithRows(orders), orders:orders, comment:undefined, starRating:undefined, orderTheCommentIsFor:undefined});

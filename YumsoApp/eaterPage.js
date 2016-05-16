@@ -107,7 +107,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>First Name</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.firstname}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ firstname: text }) }/>
                        </View>
                      </View>
@@ -116,7 +116,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>Last Name</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.lastname}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.lastname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ lastname: text }) }/>
                        </View>
                      </View>
@@ -125,21 +125,21 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>Alias</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.eaterAlias}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
                        </View>
                      </View>
 
                      <View style={styleEaterPage.genderSelectView}>
-                        <View style={styleEaterPage.oneGenderSelectView}>
-                           <Text style={styleEaterPage.oneGenderSelectText}>Male</Text>
-                        </View>
-                        <View style={styleEaterPage.oneGenderSelectMiddleView}>
-                           <Text style={styleEaterPage.oneGenderSelectText}>Female</Text>
-                        </View>
-                        <View style={styleEaterPage.oneGenderSelectView}>
-                           <Text style={styleEaterPage.oneGenderSelectText}>Not to tell</Text>
-                        </View>
+                        <TouchableHighlight onPress = {()=>this.toggleGender('Male')} style={styleEaterPage.oneGenderSelectView}>
+                           <Text style={{fontSize:15,color:this.renderGenderTextColor('Male'),alignSelf:'center'}}>Male</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight onPress = {()=>this.toggleGender('Female')} style={styleEaterPage.oneGenderSelectMiddleView}>
+                           <Text style={{fontSize:15,color:this.renderGenderTextColor('Female'),alignSelf:'center'}}>Female</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight onPress = {()=>this.toggleGender('Not to tell')} style={styleEaterPage.oneGenderSelectView}>
+                           <Text style={{fontSize:15,color:this.renderGenderTextColor('Not to tell'),alignSelf:'center'}}>Not to tell</Text>
+                        </TouchableHighlight>
                      </View>
                      
                      <View style={styleEaterPage.nameInputView}>
@@ -147,7 +147,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>Email</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.email}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.email} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ email: text }) }/>
                        </View>
                      </View>
@@ -157,7 +157,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.nameInputTitleText}>Phone</Text>
                        </View>
                        <View style={styleEaterPage.nameInputTextView}>
-                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.phoneNumber}
+                          <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.phoneNumber} keyboardType = { 'phone-pad'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>
                        </View>
                      </View>
@@ -388,6 +388,20 @@ class EaterPage extends Component {
     
     onCancelMap(){
          this.setState({editWorkAddress:false, editHomeAddress:false, addMoreAddress:false});
+    }
+
+    renderGenderTextColor(gender){
+         if(this.state.gender == gender){
+             return '#ff9933';
+         }else{
+             return '#808080';
+         }
+    }
+    
+    toggleGender(gender){
+        if(gender!=this.state.gender){
+           this.setState({gender:gender});
+        }
     }
     
     navigateBackToChefList(){

@@ -150,7 +150,7 @@ class ChefListPage extends Component {
                                     <Text style={styleChefListPage.labelText}>Spicy</Text>
                                 </View>
                                 <View style={styleChefListPage.ratingView}>
-                                        {rating.renderRating(3)}
+                                        {rating.renderRating(chef.rating)}
                                 </View>
                                 <Text style={styleChefListPage.reviewNumberText}>10 Reviews</Text>
                           </View>
