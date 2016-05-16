@@ -1,10 +1,11 @@
+'use strict'
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var ImageCamera = require('./imageCamera');
 var MapPage = require('./mapPage');
-var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var backIcon = require('./icons/icon-back.png');
 var defaultAvatar = require('./TestImages/Obama.jpg');
 var uploadPhotoIcon = require('./icons/ic_add_a_photo_48pt_3x.png');
 var houseIcon = require('./icons/Icon-house.png');
@@ -83,8 +84,8 @@ class EaterPage extends Component {
              return (
                <View style={styles.container}>
                  <View style={styles.headerBannerView}>
-                         <View style={styles.backButtonView}>
-                         <TouchableHighlight onPress = {() => {this.setState({ edit: false })}}>
+                         <View style={styles.headerLeftView}>
+                         <TouchableHighlight style={styles.backButtonView} onPress = {() => {this.setState({ edit: false })}}>
                              <Image source={backIcon} style={styles.backButtonIcon}/>
                          </TouchableHighlight> 
                          </View>
@@ -92,7 +93,7 @@ class EaterPage extends Component {
                              <Text style={styles.titleText}>Edit Profile</Text>
                          </View>
                          <View style={styles.headerRightView}>
-                         <TouchableHighlight onPress = {this.submit.bind(this)}>                             
+                         <TouchableHighlight style={styles.headerRightTextButtonView} onPress = {this.submit.bind(this)}>                             
                                <Text style={styles.headerRightTextButtonText}>Save</Text>
                          </TouchableHighlight>
                          </View>
@@ -226,8 +227,8 @@ class EaterPage extends Component {
              return (
                 <View style={styles.container}>
                    <View style={styles.headerBannerView}>                  
-                         <View style={styles.backButtonView}>
-                         <TouchableHighlight onPress={() => this.navigateBackToChefList() }>
+                         <View style={styles.headerLeftView}>
+                         <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToChefList() }>
                              <Image source={backIcon} style={styles.backButtonIcon}/>
                          </TouchableHighlight> 
                          </View>
@@ -236,7 +237,7 @@ class EaterPage extends Component {
                              <Text style={styles.titleText}></Text>
                          </View>
                          <View style={styles.headerRightView}>
-                         <TouchableHighlight onPress={() => { this.setState({ edit: true, 
+                         <TouchableHighlight style={styles.headerRightTextButtonView} onPress={() => { this.setState({ edit: true, 
                                      firstname: this.state.eater.firstname, 
                                      lastname: this.state.eater.lastname, 
                                      eaterAlias: this.state.eater.eaterAlias,

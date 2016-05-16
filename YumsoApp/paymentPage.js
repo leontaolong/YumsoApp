@@ -2,7 +2,7 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
-var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var backIcon = require('./icons/icon-back.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -47,8 +47,8 @@ class PaymentPage extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.headerBannerView}>
-                         <View style={styles.backButtonView}>
-                         <TouchableHighlight  onPress={()=>this.navigateBackToShoppingCartPage()}>
+                         <View style={styles.headerLeftView}>
+                         <TouchableHighlight style={styles.backButtonView} onPress={()=>this.navigateBackToShoppingCartPage()}>
                              <Image source={backIcon} style={styles.backButtonIcon}/>
                          </TouchableHighlight> 
                          </View>

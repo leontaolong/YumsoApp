@@ -1,3 +1,4 @@
+'use strict'
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
@@ -5,10 +6,9 @@ var AuthService = require('./authService');
 var MapView = require('react-native-maps');
 var RCTUIManager = require('NativeModules').UIManager;
 var ballonIcon = require('./icons/ic_location_on_48pt_3x.png');
-var labelIcon = require('./icons/2000px-Tag_font_awesome.svg.png');
 var searchIcon = require('./icons/ic_search_48pt_3x.png');
 var houseIconOrange = require('./icons/Icon-home-orange.png');
-var backIcon = require('./icons/ic_keyboard_arrow_left_48pt_3x.png');
+var backIcon = require('./icons/icon-back.png');
 var locatorIcon = require('./icons/Icon-location.png');
 var houseIcon = require('./icons/Icon-house.png');
 var cancelIcon = require('./icons/Icon-cancel.png');
@@ -82,8 +82,8 @@ class MapPage extends Component {
             return (
                  <View style={styles.container}>
                      <View style={styles.headerBannerView}>
-                         <View style={styles.backButtonView}>
-                             <TouchableHighlight onPress={() => this.navigateBack() }>
+                         <View style={styles.headerLeftView}>
+                             <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBack() }>
                                  <Image source={backIcon} style={styles.backButtonIcon}/>
                              </TouchableHighlight>
                          </View>
