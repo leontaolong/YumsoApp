@@ -36,10 +36,10 @@ class ShoppingCartPage extends Component {
         var routeStack = this.props.navigator.state.routeStack;
         let shoppingCart = routeStack[routeStack.length-1].passProps.shoppingCart;        
         let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;        
+        this.deliverTimestamp = routeStack[routeStack.length-1].passProps.deliverTimestamp;        
         let chefId = routeStack[routeStack.length-1].passProps.chefId;        
         let eater = routeStack[routeStack.length-1].passProps.eater;        
         let defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;//!=undefined? routeStack[routeStack.length-1].passProps.defaultDeliveryAddress:'';        
-        console.log(defaultDeliveryAddress);
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(shoppingCart)),
@@ -280,7 +280,7 @@ class ShoppingCartPage extends Component {
         }
         var order = {
             chefId: this.state.chefId,
-            orderDeliverTime: Date.parse(this.state.selectedTime),//Sun Apr 03 2016 12:00:00
+            orderDeliverTime: this.deliverTimestamp,
             eaterId: eater.eaterId,
             orderList: orderList,
             shippingAddress: this.state.deliveryAddress,
