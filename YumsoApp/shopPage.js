@@ -105,24 +105,31 @@ class ShopPage extends Component {
             scheduleMapping['All Schedules']= allDishSet;
             timeData.push({ key: index++, label: 'All Schedules' })
         }   
+        console.log(schedules);
+        console.log(dishes);
         for(var schedule of schedules){
             var time = new Date(schedule.deliverTimestamp).toString();   
             if(!scheduleMapping[time]){
-                scheduleMapping[time]= {[schedule.dishId]:schedule.quantity};
+                scheduleMapping[time] = {
+                    [schedule.dishId]: {
+                        leftQuantity: schedule.leftQuantity,
+                        quantity: schedule.quantity
+                    }
+                };
                 timeData.push({ key: index++, label: time });
             }else{
-                scheduleMapping[time][schedule.dishId] = schedule.quantity;
+                scheduleMapping[time][schedule.dishId] = {
+                        leftQuantity: schedule.leftQuantity,
+                        quantity: schedule.quantity
+                    };
             }
         }
         
-        let scheduleTime = Object.keys(scheduleMapping);
         this.setState({
                 dishes:dishes, 
                 dataSource:this.state.dataSource.cloneWithRows(dishes), 
                 showProgress:false, 
-                schedules:schedules,
                 scheduleMapping:scheduleMapping, 
-                scheduleTime:scheduleTime, 
                 timeData:timeData
                 });
     }
@@ -152,9 +159,9 @@ class ShopPage extends Component {
                                 <Text style={styleShopPage.shopNameText}>{this.state.chef.shopname}</Text>
                                 <View style={styleShopPage.shopRatingDollarSignView}>
                                     <View style={styleShopPage.ratingView}>{rating.renderRating(this.state.chef.rating)}</View>
-                                    <View style={styleShopPage.dollarSignView}><Text style={{ color: '#A9A9A9' }}>10 reviews | $$</Text></View>
+                                    <View style={styleShopPage.dollarSignView}><Text style={{ color: '#A9A9A9' }}>{this.state.chef.reviewCount} reviews | $$</Text></View>
                                 </View>
-                                <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, Kirkland</Text>
+                                <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, {this.state.chef.pickupAddress.state}</Text>
                             </View>
                         </View>),
                        (<View key={'chefDiscriptionView'} style={styleShopPage.chefDiscriptionView}>
@@ -219,7 +226,7 @@ class ShopPage extends Component {
                <View style={styleShopPage.priceView}>
                   <View style={styleShopPage.priceTextView}>
                     <Text style={styleShopPage.priceText}>${dish.price}</Text>
-                    <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' ? '' : '3 orders left'} 
+                    <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' orders left'} 
                       {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''} 
                     </Text>
                   </View>
@@ -315,7 +322,6 @@ class ShopPage extends Component {
             return;       
         }
         this.state.selectedTime = selectedTime;
-        let scheduleTime = this.state.scheduleTime;
         var displayDishes = [];
         var selectedTimeDishSchedules = this.state.scheduleMapping[selectedTime];
         for (var dish of this.state.dishes) {
@@ -333,6 +339,11 @@ class ShopPage extends Component {
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;  
         }
+        if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity===0){
+            Alert.alert( 'Warning', 'No more available',[ { text: 'OK' }]);
+            return;          
+        }
+        this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity-=1;
         if(!this.state.shoppingCart[this.state.selectedTime]){
             this.state.shoppingCart[this.state.selectedTime] = {};
         }
@@ -354,6 +365,7 @@ class ShopPage extends Component {
         }   
         if(this.state.shoppingCart[this.state.selectedTime][dish.dishId] && this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity>0){
             this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity-=1;
+           this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+=1;
             if(this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity===0){
                 delete this.state.shoppingCart[this.state.selectedTime][dish.dishId];
                 if(Object.keys(this.state.shoppingCart[this.state.selectedTime])===0){
@@ -412,12 +424,13 @@ class ShopPage extends Component {
         if(this.state.selectedTime =='All Schedules'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;
-        }
+        }     
         this.props.navigator.push({
             name: 'ShoppingCartPage', 
             passProps:{
                 shoppingCart:this.state.shoppingCart[this.state.selectedTime],
                 selectedTime:this.state.selectedTime,
+                deliverTimestamp:Date.parse(this.state.selectedTime),
                 defaultDeliveryAddress: this.defaultDeliveryAddress,
                 chefId:this.state.chefId,
                 eater:this.state.eater,
