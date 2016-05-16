@@ -5,6 +5,7 @@ var styles = require('./style');
 var FBLogin = require('react-native-facebook-login');
 var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/Icon-Large.png');
+var backgroundImage = require('./resourceImages/signInBackground.jpg');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -44,35 +45,35 @@ class LoginPage extends Component {
         var _this = this;
         return (
             <View style={styles.container}>
-                <View style={styleLoginPage.headerBannerView}>    
-                   <View style={styles.headerLeftView}>
-                       <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBack()}>
-                            <Image source={backIcon} style={styleLoginPage.backButtonIcon}/>
-                       </TouchableHighlight>
-                   </View>    
-                   <View style={styleLoginPage.titleView}>
-                       <Text style={styleLoginPage.titleText}>Sign In</Text>
-                   </View>
-                   <View style={{flex:0.1/3,width:windowWidth/3}}>
-                   </View>
+              <View style={styleLoginPage.headerBannerView}>    
+                 <View style={styles.headerLeftView}>
+                    <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
+                      <Image source={backIcon} style={styleLoginPage.backButtonIcon}/>
+                    </TouchableHighlight>
+                 </View>    
+                 <View style={styleLoginPage.titleView}>
+                    <Text style={styleLoginPage.titleText}>Sign In</Text>
+                 </View>
+                 <View style={{flex:0.1/3,width:windowWidth/3}}>
+                 </View>
+             </View>
+             <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                <View style={{height:windowHeight*0.184,width:windowWidth,}}>
                 </View>
-                
-                <View style={styleLoginPage.logoView}>
-                    <Image source={logoIcon} style={styleLoginPage.logoIcon}/>
-                </View>
-                
-                <TextInput placeholder="Email" style={styleLoginPage.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
+                <View style={styleLoginPage.loginInputView}>
+                  <TextInput placeholder="Email" style={styleLoginPage.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
                        onChangeText = {(text) => this.setState({ email: text }) }/>
-
-                
-                <TextInput placeholder="Password" style={styleLoginPage.loginInput} returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
+                </View>
+                <View style={styleLoginPage.loginInputView}>
+                  <TextInput placeholder="Password" style={styleLoginPage.loginInput} placeholderTextColor='#fff' returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
                         onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
+                </View>
                 
                 <View style={styleLoginPage.forgotPasswordView}>
                       <Text style={styleLoginPage.forgotPasswordText}>Forgot password? </Text>
                 </View>
                
-                <TouchableHighlight onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
+                <TouchableHighlight underlayColor={'#C0C0C0'} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
                        <Text style={styleLoginPage.signInButtonText}>Log in</Text>
                 </TouchableHighlight>
                        
@@ -80,11 +81,12 @@ class LoginPage extends Component {
                     <Text style={styleLoginPage.askToSignUpText}>No Yumso account?</Text>
                 </View>
                 
-                <TouchableHighlight onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpButtonView}>
+                <TouchableHighlight underlayColor={'#C0C0C0'} onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpButtonView}>
                     <Text style={styleLoginPage.signUpButtonText}>Sign up</Text>  
                 </TouchableHighlight> 
-
-                <View style={styleLoginPage.fbSignInButtonView}>
+                <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader} />
+              </Image>
+              <View style={styleLoginPage.fbSignInButtonView}>
                     <FBLogin style={styleLoginPage.fbSignInButton}
                         permissions={facebookPermissions}
                         onLogin={function(data) {
@@ -116,7 +118,6 @@ class LoginPage extends Component {
                             console.log(data);
                         } }/>
                 </View> 
-                <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader} />
             </View>
         );
     }
@@ -194,15 +195,6 @@ var styleLoginPage = StyleSheet.create({
       width:30,
       height:30,
     },
-    logoView:{
-      alignItems:'center',
-      paddingTop:windowHeight/15.4,
-      paddingBottom:windowHeight/20,
-    },
-    logoIcon:{
-      width:windowWidth/4.14,
-      height:windowWidth/4.14,
-    },
     titleView:{
       flex:0.1/3, 
       width:windowWidth/3,
@@ -213,18 +205,24 @@ var styleLoginPage = StyleSheet.create({
       fontSize:14,
       fontWeight:'600',  
     },
+    loginInputView:{
+      width:windowWidth*0.634,
+      flexDirection:'row',
+      justifyContent:'center',
+      borderBottomWidth:1,
+      borderColor:'#D7D7D7',
+      alignSelf:'center'
+    },
     loginInput:{
+      width:windowWidth*0.634,
       height:windowHeight/12.6,
       fontSize:windowHeight/33.4,
-      color: '#696969',
-      borderWidth:1,
-      borderColor: '#D7D7D7',
+      color: '#fff',
+      borderBottomWidth:1,
+      borderColor:'#fff',
       paddingVertical:5,
       paddingHorizontal:windowHeight/49.0,
-      marginHorizontal:windowWidth/24.6,
-      marginTop:windowWidth/49.2,
-      marginBottom:windowWidth/49.2,
-      textAlign:'center',
+      textAlign:'left',
     },
     signInButtonView:{
       height:windowHeight/13.38,
@@ -246,6 +244,7 @@ var styleLoginPage = StyleSheet.create({
       fontSize:12,
       color:'#696969',
       alignSelf:'center',
+      backgroundColor:'transparent',
     },
     signUpButtonView:{
       height:windowHeight/13.38,
@@ -270,6 +269,7 @@ var styleLoginPage = StyleSheet.create({
     forgotPasswordText:{
       fontSize:12,
       color:'#A9A9A9',
+      backgroundColor:'transparent',
     },
     fbSignInButtonView:{
       justifyContent:'center',

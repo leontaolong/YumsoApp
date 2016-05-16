@@ -78,11 +78,9 @@ module.exports = StyleSheet.create({
         marginRight:10,
     },
     menuButtonView:{
-      flex:0.1/3,
-      width:windowWidth/3,
-      alignItems:'flex-start',
-      paddingLeft:windowWidth/27.6,
-      paddingTop:windowHeight/73.6,
+      justifyContent:'center',
+      flexDirection:'column',
+      marginLeft:10,
     },
     menuIcon:{
       width:windowHeight/29.4,
@@ -115,6 +113,10 @@ module.exports = StyleSheet.create({
       alignItems:'flex-end',
       paddingRight:windowWidth/41.4,
       paddingTop:windowHeight/105.14,     
+    },
+    pageBackgroundImage:{
+      width:windowWidth,
+      height:windowHeight,
     },
 
 

@@ -75,7 +75,7 @@ class EaterPage extends Component {
                             {this.state.addressList[i].formatted_address}
                           </Text>
                        </View>
-                       <TouchableHighlight style={styleEaterPage.addressEditView}  onPress = {()=>this.removeAddress(this.state.addressList[i])}>
+                       <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.removeAddress(this.state.addressList[i])}>
                           <Text style={styleEaterPage.addressEditText}>Remove</Text>
                        </TouchableHighlight>
                      </View> 
@@ -85,7 +85,7 @@ class EaterPage extends Component {
                <View style={styles.container}>
                  <View style={styles.headerBannerView}>
                          <View style={styles.headerLeftView}>
-                         <TouchableHighlight style={styles.backButtonView} onPress = {() => {this.setState({ edit: false })}}>
+                         <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress = {() => {this.setState({ edit: false })}}>
                              <Image source={backIcon} style={styles.backButtonIcon}/>
                          </TouchableHighlight> 
                          </View>
@@ -93,7 +93,7 @@ class EaterPage extends Component {
                              <Text style={styles.titleText}>Edit Profile</Text>
                          </View>
                          <View style={styles.headerRightView}>
-                         <TouchableHighlight style={styles.headerRightTextButtonView} onPress = {this.submit.bind(this)}>                             
+                         <TouchableHighlight style={styles.headerRightTextButtonView} underlayColor={'transparent'} onPress = {this.submit.bind(this)}>                             
                                <Text style={styles.headerRightTextButtonText}>Save</Text>
                          </TouchableHighlight>
                          </View>
@@ -132,13 +132,13 @@ class EaterPage extends Component {
                      </View>
 
                      <View style={styleEaterPage.genderSelectView}>
-                        <TouchableHighlight onPress = {()=>this.toggleGender('Male')} style={styleEaterPage.oneGenderSelectView}>
+                        <TouchableHighlight underlayColor={'transparent'} onPress = {()=>this.toggleGender('Male')} style={styleEaterPage.oneGenderSelectView}>
                            <Text style={{fontSize:15,color:this.renderGenderTextColor('Male'),alignSelf:'center'}}>Male</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight onPress = {()=>this.toggleGender('Female')} style={styleEaterPage.oneGenderSelectMiddleView}>
+                        <TouchableHighlight underlayColor={'transparent'} onPress = {()=>this.toggleGender('Female')} style={styleEaterPage.oneGenderSelectMiddleView}>
                            <Text style={{fontSize:15,color:this.renderGenderTextColor('Female'),alignSelf:'center'}}>Female</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight onPress = {()=>this.toggleGender('Not to tell')} style={styleEaterPage.oneGenderSelectView}>
+                        <TouchableHighlight underlayColor={'transparent'} onPress = {()=>this.toggleGender('Not to tell')} style={styleEaterPage.oneGenderSelectView}>
                            <Text style={{fontSize:15,color:this.renderGenderTextColor('Not to tell'),alignSelf:'center'}}>Not to tell</Text>
                         </TouchableHighlight>
                      </View>
@@ -177,7 +177,7 @@ class EaterPage extends Component {
                             {this.state.homeAddress!=null?this.state.homeAddress.formatted_address:''}
                           </Text>
                        </View>
-                       <TouchableHighlight style={styleEaterPage.addressEditView}  onPress = {()=>this.setState({editHomeAddress:true})}>
+                       <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.setState({editHomeAddress:true})}>
                           <Text style={styleEaterPage.addressEditText}>Edit</Text>
                        </TouchableHighlight>
                      </View> 
@@ -192,7 +192,7 @@ class EaterPage extends Component {
                             {this.state.workAddress!=null?this.state.workAddress.formatted_address:''}
                           </Text>
                        </View>
-                       <TouchableHighlight style={styleEaterPage.addressEditView}  onPress = {()=>this.setState({editWorkAddress:true})}>
+                       <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.setState({editWorkAddress:true})}>
                           <Text style={styleEaterPage.addressEditText}>Edit</Text>
                        </TouchableHighlight>
                      </View>                                
@@ -228,16 +228,16 @@ class EaterPage extends Component {
                 <View style={styles.container}>
                    <View style={styles.headerBannerView}>                  
                          <View style={styles.headerLeftView}>
-                         <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToChefList() }>
+                         <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList() }>
                              <Image source={backIcon} style={styles.backButtonIcon}/>
                          </TouchableHighlight> 
                          </View>
                          
                          <View style={styles.titleView}>
-                             <Text style={styles.titleText}></Text>
+                             <Text style={styles.titleText}>My Profile</Text>
                          </View>
                          <View style={styles.headerRightView}>
-                         <TouchableHighlight style={styles.headerRightTextButtonView} onPress={() => { this.setState({ edit: true, 
+                         <TouchableHighlight style={styles.headerRightTextButtonView} underlayColor={'transparent'} onPress={() => { this.setState({ edit: true, 
                                      firstname: this.state.eater.firstname, 
                                      lastname: this.state.eater.lastname, 
                                      eaterAlias: this.state.eater.eaterAlias,
@@ -275,7 +275,7 @@ class EaterPage extends Component {
                      </View>
                      <View style={styleEaterPage.eaterPageRowView}>                        
                          <View style={styleEaterPage.addNewAddressClickableView}>
-                             <TouchableHighlight onPress={this.selectPayment.bind(this)}>
+                             <TouchableHighlight underlayColor={'transparent'} onPress={this.selectPayment.bind(this)}>
                                 <Text style={styleEaterPage.addNewAddressClickableText}>Payment Options</Text>
                              </TouchableHighlight>
                          </View>

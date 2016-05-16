@@ -88,7 +88,7 @@ class PaymentOptionPage extends Component {
                </View>
                <View style={{flex:0.4}}>
                </View>
-               <TouchableHighlight style={stylePaymentOptionPage.addCardIconView} onPress={()=>this.addAPayment()}>
+               <TouchableHighlight style={stylePaymentOptionPage.addCardIconView} underlayColor={'transparent'} onPress={()=>this.addAPayment()}>
                   <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
                </TouchableHighlight>
              </View>) ;
@@ -105,7 +105,7 @@ class PaymentOptionPage extends Component {
             <View style={styles.container}>
                <View style={styles.headerBannerView}>
                          <View style={styles.headerLeftView}>
-                         <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBack()}>
+                         <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBack()}>
                              <Image source={backIcon} style={styles.backButtonIcon}/>
                          </TouchableHighlight> 
                          </View>
