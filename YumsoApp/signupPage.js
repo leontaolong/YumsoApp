@@ -4,7 +4,7 @@ var AuthService = require('./authService');
 var styles = require('./style');
 var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/Icon-Large.png');
-
+var backgroundImage = require('./resourceImages/signInBackground.jpg');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -36,7 +36,7 @@ class SignUpPage extends Component {
                 <View style={styles.container}>
                     <View style={styles.headerBannerView}>    
                         <View style={styles.headerLeftView}>
-                          <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBack()}>
+                          <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
                               <Image source={backIcon} style={styles.backButtonIcon}/>
                           </TouchableHighlight>
                         </View>    
@@ -46,39 +46,39 @@ class SignUpPage extends Component {
                         <View style={{flex:0.1/3,width:windowWidth/3}}>
                         </View>
                     </View>
-                    
-                    <View style={styleSignUpPage.logoView}>
-                        <Image source={logoIcon} style={styleSignUpPage.logoIcon}/>
-                    </View>
-                    
-                    <View style={styles.loginInputView}>
-                        <TextInput placeholder="First Name" style={styles.loginInput} autoCorrect={false}
-                                onChangeText = {(text)=>this.setState({firstname: text})}/>
-                    </View> 
-                    <View style={styles.loginInputView}>
-                        <TextInput placeholder="Last Name" style={styles.loginInput} autoCorrect={false}
-                                onChangeText = {(text)=>this.setState({lastname: text})}/> 
-                    </View>
-                    <View style={styles.loginInputView}>                      
-                        <TextInput placeholder="Email" style={styles.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} autoCorrect={false}
-                                onChangeText = {(text)=>this.setState({email: text})}/>
-                    </View>
-                    <View style={styles.loginInputView}>
-                        <TextInput placeholder="Password" style={styles.loginInput}
-                                onChangeText = {(text)=>this.setState({password: text})}
-                                secureTextEntry={true}/>
-                    </View>
-                    <View style={styles.loginInputView}>
-                        <TextInput placeholder="Confirm Password" style={styles.loginInput} onSubmitEditing={this.onSignUpPressed.bind(this)} returnKeyType = {'go'}
-                                onChangeText = {(text)=>this.setState({password_re: text})}
-                                secureTextEntry={true}/>
-                    </View>
-                    
-                    <View style={styleSignUpPage.legalView}>
-                         <Text style={styleSignUpPage.legalText}>By clicking Sign up, you agree with the terms and condictions</Text>
-                    </View>
-                    
-                    <TouchableHighlight style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
+                    <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                        <View style={styleSignUpPage.logoView}>
+                            <Image source={logoIcon} style={styleSignUpPage.logoIcon}/>
+                        </View>
+                        
+                        <View style={styles.loginInputView}>
+                            <TextInput placeholder="First Name" style={styles.loginInput} autoCorrect={false}
+                                    onChangeText = {(text)=>this.setState({firstname: text})}/>
+                        </View> 
+                        <View style={styles.loginInputView}>
+                            <TextInput placeholder="Last Name" style={styles.loginInput} autoCorrect={false}
+                                    onChangeText = {(text)=>this.setState({lastname: text})}/> 
+                        </View>
+                        <View style={styles.loginInputView}>                      
+                            <TextInput placeholder="Email" style={styles.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} autoCorrect={false}
+                                    onChangeText = {(text)=>this.setState({email: text})}/>
+                        </View>
+                        <View style={styles.loginInputView}>
+                            <TextInput placeholder="Password" style={styles.loginInput}
+                                    onChangeText = {(text)=>this.setState({password: text})}
+                                    secureTextEntry={true}/>
+                        </View>
+                        <View style={styles.loginInputView}>
+                            <TextInput placeholder="Confirm Password" style={styles.loginInput} onSubmitEditing={this.onSignUpPressed.bind(this)} returnKeyType = {'go'}
+                                    onChangeText = {(text)=>this.setState({password_re: text})}
+                                    secureTextEntry={true}/>
+                        </View>
+                        
+                        <View style={styleSignUpPage.legalView}>
+                            <Text style={styleSignUpPage.legalText}>By clicking Sign up, you agree with the terms and condictions</Text>
+                        </View>
+                    </Image> 
+                    <TouchableHighlight underlayColor={'#C0C0C0'} style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
                         <Text style={styleSignUpPage.signUpButtonText}>Sign up</Text>
                     </TouchableHighlight>
 

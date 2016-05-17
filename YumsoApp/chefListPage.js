@@ -134,7 +134,7 @@ class ChefListPage extends Component {
                     </Swiper>
                 </View>
                 <View style={styleChefListPage.shopInfoView}>
-                    <TouchableHighlight style={styleChefListPage.chefPhotoView} onPress={() => this.navigateToShopPage(chef.chefId) }>
+                    <TouchableHighlight style={styleChefListPage.chefPhotoView} underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef.chefId) }>
                        <Image source={{ uri: chef.chefProfilePic }} style={styleChefListPage.chefPhoto}/>
                     </TouchableHighlight>
                     
@@ -207,29 +207,29 @@ class ChefListPage extends Component {
                 <View style={styles.container}>                    
                     <View style={styleChefListPage.headerBannerView}>
                         <View style={styles.headerLeftView}>
-                          <TouchableHighlight style={styles.menuButtonView} onPress={() => this.setState({ isMenuOpen: true }) }>
+                          <TouchableHighlight style={styles.menuButtonView} underlayColor={'transparent'}  onPress={() => this.setState({ isMenuOpen: true }) }>
                             <Image source={menuIcon} style={styles.menuIcon}/>
                           </TouchableHighlight>
                         </View>
-                        <TouchableHighlight onPress={() => this.setState({showLocSearch:true}) }>
+                        <TouchableHighlight underlayColor={'transparent'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.titleView}>
                             <Text style={styles.titleText}>{this.state.city}</Text>
                         </View>
                         </TouchableHighlight>
                         <View style={styles.headerRightView}>
-                          <TouchableHighlight style={styles.headerRightTextButtonView} onPress={() => this.setState({showChefSearch:true}) }>
+                          <TouchableHighlight style={styles.headerRightTextButtonView} underlayColor={'transparent'} onPress={() => this.setState({showChefSearch:true}) }>
                               <Text style={styles.headerRightTextButtonText}>Filter</Text>
                           </TouchableHighlight>
                         </View>
                     </View>
                     <View style={styleChefListPage.orangeTopBannerView}>
                         <View style={styleChefListPage.orangeTopBannerButtonView}>
-                          <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} onPress={() => this.setState({showLocSearch:true}) }>
+                          <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} underlayColor={'transparent'}  onPress={() => this.setState({showLocSearch:true}) }>
                              <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={ballonIcon}/>
                           </TouchableHighlight>
                         </View>
                         <View style={styleChefListPage.orangeTopBannerButtonView}>
-                           <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} onPress={() => this.setState({showLocSearch:true}) }>
+                           <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} underlayColor={'transparent'}  onPress={() => this.setState({showLocSearch:true}) }>
                              <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={favoriteIcon}/>
                            </TouchableHighlight>
                         </View>
@@ -360,9 +360,9 @@ var Menu = React.createClass({
             <View style={sideMenuStyle.sidemenu}>
                 {profile}
                 <View style={{height:windowHeight*0.09}}></View>
-                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>Notification</Text>
+                <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
                 <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>Orders History</Text>
-                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
+                <Text onPress={()=>this.goToEaterPage()} style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>

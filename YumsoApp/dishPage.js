@@ -1,3 +1,4 @@
+'use strict'
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
@@ -5,8 +6,8 @@ var AuthService = require('./authService');
 var Swiper = require('react-native-swiper')
 var shareIcon = require('./icons/icon-share.png');
 var backIcon = require('./icons/icon-back.png');
-var notlikedIcon = require('./icons/icon-unliked.png')
-var likedIcon = require('./icons/icon-liked.png');
+var notlikedIcon = require('./icons/icon-unliked-onheader.png')
+var likedIcon = require('./icons/icon-liked-onheader.png');
 var bowlIcon = require('./icons/icon_bowl.png');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
@@ -53,15 +54,15 @@ class DishPage extends Component {
     
     render() {
         if(this.state.like){
-          let likeIcon = likedIcon;
+          var likeIcon = likedIcon;
         }else{
-          let likeIcon = notlikedIcon;
+          var likeIcon = notlikedIcon;
         }
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
                         <View style={styles.headerLeftView}>
-                             <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToShop()}>
+                             <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToShop()}>
                                  <Image source={backIcon} style={styles.backButtonIcon}/>
                              </TouchableHighlight>
                          </View>    
@@ -70,10 +71,10 @@ class DishPage extends Component {
                          </View>
                          <View style={styles.headerRightView}>
                              <View style={styles.likeShareButtonView}>
-                                <TouchableHighlight onPress={()=>{this.addToFavorite()}}>
+                                <TouchableHighlight underlayColor={'transparent'} onPress={()=>{this.addToFavorite()}}>
                                    <Image source={likeIcon} style={styles.likeButtonIcon}/>
                                 </TouchableHighlight>
-                                <TouchableHighlight>
+                                <TouchableHighlight underlayColor={'transparent'}>
                                    <Image source={shareIcon} style={styles.shareButtonIcon}/>
                                </TouchableHighlight>
                             </View>
@@ -104,13 +105,13 @@ class DishPage extends Component {
                   </View>
                   <View style={styleShopPage.chooseQuantityView}>
                     <View style={styleShopPage.plusIconView}>
-                      <TouchableHighlight onPress={() => this.addToShoppingCart(this.state.dish) }>
+                      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.addToShoppingCart(this.state.dish) }>
                         <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
                      
                     <View style={styleShopPage.minusIconView}>
-                      <TouchableHighlight onPress={() => this.removeFromShoppingCart(this.state.dish) }>
+                      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.removeFromShoppingCart(this.state.dish) }>
                          <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>

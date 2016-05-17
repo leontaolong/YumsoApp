@@ -48,7 +48,7 @@ class PaymentPage extends Component {
             <View style={styles.container}>
                 <View style={styles.headerBannerView}>
                          <View style={styles.headerLeftView}>
-                         <TouchableHighlight style={styles.backButtonView} onPress={()=>this.navigateBackToShoppingCartPage()}>
+                         <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={()=>this.navigateBackToShoppingCartPage()}>
                              <Image source={backIcon} style={styles.backButtonIcon}/>
                          </TouchableHighlight> 
                          </View>

@@ -219,7 +219,7 @@ class ShopPage extends Component {
                     <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
                     <Text style={styleShopPage.oneDishDiscriptionText}>{dish.description}</Text>
                   </View>
-                  <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)} style={styleShopPage.forwardIconView}>
+                  <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)} underlayColor={'transparent'} style={styleShopPage.forwardIconView}>
                        <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                   </TouchableHighlight>
                </View>
@@ -232,13 +232,13 @@ class ShopPage extends Component {
                   </View>
                   <View style={styleShopPage.chooseQuantityView}>
                     <View style={styleShopPage.plusIconView}>
-                      <TouchableHighlight onPress={() => this.addToShoppingCart(dish) }>
+                      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.addToShoppingCart(dish) }>
                         <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
                      
                     <View style={styleShopPage.minusIconView}>
-                      <TouchableHighlight onPress={() => this.removeFromShoppingCart(dish) }>
+                      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.removeFromShoppingCart(dish) }>
                         <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
                       </TouchableHighlight>
                     </View>
@@ -269,7 +269,7 @@ class ShopPage extends Component {
                 <View style={styles.container}>
                         <View style={styles.headerBannerView}>    
                             <View style={styles.headerLeftView}>
-                                <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToChefList()}>
+                                <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
                                     <Image source={backIcon} style={styles.backButtonIcon}/>
                                 </TouchableHighlight>
                             </View>    
@@ -278,10 +278,10 @@ class ShopPage extends Component {
                             </View>
                             <View style={styles.headerRightView}>
                                 <View style={styles.likeShareButtonView}>
-                                  <TouchableHighlight onPress={()=>{this.addToFavorite()}}>
+                                  <TouchableHighlight underlayColor={'transparent'} onPress={()=>{this.addToFavorite()}}>
                                      <Image source={likeIcon} style={styles.likeButtonIcon}/>
                                   </TouchableHighlight>
-                                  <TouchableHighlight onPress={()=>{}}>
+                                  <TouchableHighlight underlayColor={'transparent'} onPress={()=>{}}>
                                      <Image source={shareIcon} style={styles.shareButtonIcon}/>
                                   </TouchableHighlight>
                                 </View>

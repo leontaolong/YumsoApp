@@ -95,12 +95,12 @@ class ShoppingCartPage extends Component {
                     
                     <View style={styleShoppingCartPage.quantityTotalPriceView}>
                       <View style={styleShoppingCartPage.quantityView}>
-                        <TouchableHighlight style={styleShoppingCartPage.plusIconView}
+                        <TouchableHighlight style={styleShoppingCartPage.plusIconView} underlayColor={'transparent'}
                             onPress={()=>this.addToShoppingCart(dish)}>
                             <Image source={plusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
                         </TouchableHighlight> 
                         <Text style={styleShoppingCartPage.quantityText}>{this.state.shoppingCart[dish.dishId]?this.state.shoppingCart[dish.dishId].quantity:'  '}</Text>          
-                        <TouchableHighlight style={styleShoppingCartPage.minusIconView}
+                        <TouchableHighlight style={styleShoppingCartPage.minusIconView} underlayColor={'transparent'}
                             onPress={()=>this.removeFromShoppingCart(dish)}>                
                             <Image source={minusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
                         </TouchableHighlight>
@@ -140,7 +140,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.postal:''}</Text>
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>
-                     <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                     <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
                         <Text style={styleShoppingCartPage.addressChangeButtonText}>Change Address</Text>
                      </TouchableHighlight>
                   </View>
