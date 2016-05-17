@@ -161,7 +161,7 @@ class ShopPage extends Component {
                                     <View style={styleShopPage.ratingView}>{rating.renderRating(this.state.chef.rating)}</View>
                                     <View style={styleShopPage.dollarSignView}><Text style={{ color: '#A9A9A9' }}>{this.state.chef.reviewCount} reviews | $$</Text></View>
                                 </View>
-                                <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, {this.state.chef.pickupAddress.state}</Text>
+                                <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, {this.state.chef.pickupAddressDetail.state}</Text>
                             </View>
                         </View>),
                        (<View key={'chefDiscriptionView'} style={styleShopPage.chefDiscriptionView}>
@@ -425,6 +425,10 @@ class ShopPage extends Component {
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;
         }     
+        if(this.state.shoppingCart && Object.keys(this.state.shoppingCart).length===0){
+            Alert.alert( 'Warning', 'You do not have any item in shopping cart',[ { text: 'OK' }]);
+            return;  
+        }
         this.props.navigator.push({
             name: 'ShoppingCartPage', 
             passProps:{
