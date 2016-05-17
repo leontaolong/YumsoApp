@@ -248,11 +248,11 @@ class ChefListPage extends Component {
              Alert.alert( '', 'Your delivery location is set to '+address.formatted_address,[ { text: 'OK' }]); 
              //todo: get chef use location info;                 
          }
-         this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state});
+         this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, isMenuOpen: false});
     }
     
     onCancelMap(){
-         this.setState({showLocSearch:false});
+         this.setState({showLocSearch:false, isMenuOpen: false});
     }
     
     searchChef(){
