@@ -71,7 +71,10 @@ class ShopPage extends Component {
                 this.setState({like:eater.favoriteChefs.indexOf(this.state.chefId) !== -1});
             }
         })
-        return Promise.all([task1, task2, task3]);   
+        Promise.all([task1, task2, task3])
+            .then(() => {
+                this.setState({ showProgress: false });
+            }); 
     }
     
     fetchChefProfile(){
@@ -105,8 +108,6 @@ class ShopPage extends Component {
             scheduleMapping['All Schedules']= allDishSet;
             timeData.push({ key: index++, label: 'All Schedules' })
         }   
-        console.log(schedules);
-        console.log(dishes);
         for(var schedule of schedules){
             var time = new Date(schedule.deliverTimestamp).toString();   
             if(!scheduleMapping[time]){
@@ -128,7 +129,6 @@ class ShopPage extends Component {
         this.setState({
                 dishes:dishes, 
                 dataSource:this.state.dataSource.cloneWithRows(dishes), 
-                showProgress:false, 
                 scheduleMapping:scheduleMapping, 
                 timeData:timeData
                 });

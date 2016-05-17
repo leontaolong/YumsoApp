@@ -57,7 +57,7 @@ class ChefListPage extends Component {
     }
 
     async componentDidMount() {
-        //this.getLocation();//todo: render croods may be undefined if it's too slow
+        await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
         if(config.autoLogin){//this is for debugging so to auto login
            await AuthService.loginWithEmail(config.email, config.password);
         }
@@ -75,7 +75,14 @@ class ChefListPage extends Component {
     }
 
     async fetchChefDishes() {
-        let response = await this.client.getWithoutAuth(config.chefListEndpoint);
+        var query='';
+        if(this.state.GPSproxAddress){
+            query = '?lat='+this.state.GPSproxAddress.lat+'&lng='+this.state.GPSproxAddress.lng;
+        }
+        if(this.state.pickedAddress){
+            query = '?lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng; 
+        }
+        let response = await this.client.getWithoutAuth(config.chefListEndpoint+query);
         var chefs = response.data.chefs;
         var chefView = {};
         for (var chef of chefs) {
@@ -86,34 +93,36 @@ class ChefListPage extends Component {
     
     getLocation(){
         var self = this;
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                this.state.position = position;
-                return self.googleClient.getWithoutAuth(config.reverseGeoCoding + position.coords.latitude + ',' + position.coords.longitude)
-                    .then((res) => {
-                        var city = 'unknown';
-                        var state = 'unknown';
-                        if (res.statusCode === 200 && res.data.status === 'OK' && res.data.results.length > 0) {
-                            var results = res.data.results;
-                            var address = results[0].formatted_address;
-                            for (var component of results[0].address_components) {
-                                for (var type of component.types) {
-                                    if (type === 'locality') {
-                                        city = component.long_name;
-                                    }
-                                    if (type === 'administrative_area_level_1') {
-                                        state = component.short_name;
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    this.state.position = position;
+                    return self.googleClient.getWithoutAuth(config.reverseGeoCoding + position.coords.latitude + ',' + position.coords.longitude)
+                        .then((res) => {
+                            var city = 'unknown';
+                            var state = 'unknown';
+                            if (res.statusCode === 200 && res.data.status === 'OK' && res.data.results.length > 0) {
+                                var results = res.data.results;
+                                var address = results[0].formatted_address;
+                                for (var component of results[0].address_components) {
+                                    for (var type of component.types) {
+                                        if (type === 'locality') {
+                                            city = component.long_name;
+                                        }
+                                        if (type === 'administrative_area_level_1') {
+                                            state = component.short_name;
+                                        }
                                     }
                                 }
+                                self.setState({ GPSproxAddress: { formatted_address: address, lat: position.coords.latitude, lng: position.coords.longitude, state: state, city: city }, city: city, state: state });
                             }
-                            self.setState({GPSproxAddress: {formatted_address: address, lat: position.coords.latitude, lng:position.coords.longitude}});
-                        }
-                        self.setState({ city: city, state: state });
-                    });       
-            },
-            (error) => alert(error.message),
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-        );   
+                            resolve();
+                        });
+                },
+                (err) => reject(err),
+                { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+            );
+        });
     }
 
     renderRow(chef) {
@@ -153,10 +162,10 @@ class ChefListPage extends Component {
                              <View style={{flexDirection:'row',alignSelf:'center'}}>
                              {rating.renderRating(chef.rating)}
                              </View>
-                             <Text style={styleChefListPage.reviewNumberText}>10 Reviews</Text>
+                             <Text style={styleChefListPage.reviewNumberText}>{chef.reviewCount} reviews</Text>
                           </View>
                           <View style={styleChefListPage.distanceDollarSignView}>
-                             <Text style={styleChefListPage.distanceDollarSignText}>1.5 miles | {dollarSign.renderLevel(3)}</Text>
+                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?chef.distance+' miles |':''}   {dollarSign.renderLevel(3)}</Text>
                           </View>   
                        </View>
                        
@@ -248,7 +257,8 @@ class ChefListPage extends Component {
              Alert.alert( '', 'Your delivery location is set to '+address.formatted_address,[ { text: 'OK' }]); 
              //todo: get chef use location info;                 
          }
-         this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, isMenuOpen: false});
+         this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, isMenuOpen: false, showProgress: true});
+         this.componentDidMount(); //todo: we refresh it like this?
     }
     
     onCancelMap(){
