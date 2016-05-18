@@ -16,7 +16,6 @@ var searchIcon = require('./icons/ic_search_48pt_3x.png');
 var menuIcon = require('./icons/icon-menu.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
-var likeIcon = likedIcon;
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -50,7 +49,9 @@ class ChefListPage extends Component {
             showProgress: true,
             showChefSearch:false,
             showLocSearch:false,
+            showFavoriteChefsOnly:false,
             chefView: {},
+            chefsDictionary: {},
             city:'Seattle',
             state:'WA',
         };
@@ -85,10 +86,12 @@ class ChefListPage extends Component {
         let response = await this.client.getWithoutAuth(config.chefListEndpoint+query);
         var chefs = response.data.chefs;
         var chefView = {};
+        var chefsDictionary = {};
         for (var chef of chefs) {
             chefView[chef.chefId] = chef.starDishPictures;
+            chefsDictionary[chef.chefId] = chef;
         }
-        this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, chefView: chefView });
+        this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, chefView: chefView, chefsDictionary: chefsDictionary });
     }
     
     getLocation(){
@@ -126,6 +129,15 @@ class ChefListPage extends Component {
     }
 
     renderRow(chef) {
+        var like = false;
+        if (this.state.eater) {
+            like = this.state.eater.favoriteChefs.indexOf(chef.chefId) !== -1;
+        }
+        if (like==true) {
+            var likeIcon = likedIcon;
+        } else {
+            var likeIcon = notlikedIcon;
+        }
         return (
             <View style={styleChefListPage.oneShopListView}>
                 <View style={styleChefListPage.oneShopPhotoView}>
@@ -165,7 +177,7 @@ class ChefListPage extends Component {
                              <Text style={styleChefListPage.reviewNumberText}>{chef.reviewCount} reviews</Text>
                           </View>
                           <View style={styleChefListPage.distanceDollarSignView}>
-                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?chef.distance+' miles |':''}   {dollarSign.renderLevel(3)}</Text>
+                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?chef.distance+' miles |':''}   {dollarSign.renderLevel(chef.priceLevel)}</Text>
                           </View>   
                        </View>
                        
@@ -238,8 +250,8 @@ class ChefListPage extends Component {
                           </TouchableHighlight>
                         </View>
                         <View style={styleChefListPage.orangeTopBannerButtonView}>
-                           <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} underlayColor={'transparent'}  onPress={() => this.setState({showLocSearch:true}) }>
-                             <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={favoriteIcon}/>
+                           <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} underlayColor={'transparent'}  onPress={() => this.showFavoriteChefs() }>
+                             <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={this.state.showFavoriteChefsOnly===true?likedIcon:favoriteIcon}/>
                            </TouchableHighlight>
                         </View>
                     </View> 
@@ -250,6 +262,24 @@ class ChefListPage extends Component {
                 </View>
             </SideMenu>
         );
+    }
+    
+    showFavoriteChefs(){
+        if(!this.state.eater) return; //todo: redirect to login page.
+        this.state.showFavoriteChefsOnly = !this.state.showFavoriteChefsOnly;
+        let displayChefs = [];
+        if(this.state.showFavoriteChefsOnly==true){
+            for(let likedChefId of this.state.eater.favoriteChefs){
+                if(this.state.chefsDictionary[likedChefId]){
+                    displayChefs.push(this.state.chefsDictionary[likedChefId]);
+                }
+            }
+        }else{
+            for(let chefId in this.state.chefsDictionary){
+                displayChefs.push(this.state.chefsDictionary[chefId]);
+            }
+        }
+        this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs)});
     }
     
     mapDone(address){
