@@ -149,7 +149,7 @@ class HistoryOrderPage extends Component {
            }
            
            if(order.comment.chefComment){
-              hasChefComment = (<View key={'chefCommentSection'} style={styleHistoryOrderPage.chefCommentView}>
+             var hasChefComment = (<View key={'chefCommentSection'} style={styleHistoryOrderPage.chefCommentView}>
                                   <View style={styleHistoryOrderPage.chefPhotoView}>
                                        <Image source={imageSrc} style={styleHistoryOrderPage.chefPhoto}/>
                                   </View>
