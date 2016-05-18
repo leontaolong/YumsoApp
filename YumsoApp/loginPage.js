@@ -60,12 +60,12 @@ class LoginPage extends Component {
              <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                 <View style={{height:windowHeight*0.184,width:windowWidth,}}>
                 </View>
-                <View style={styleLoginPage.loginInputView}>
-                  <TextInput placeholder="email" style={styleLoginPage.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
+                <View style={styles.loginInputView}>
+                  <TextInput placeholder="email" style={styles.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
                        onChangeText = {(text) => this.setState({ email: text }) }/>
                 </View>
-                <View style={styleLoginPage.loginInputView}>
-                  <TextInput placeholder="password" style={styleLoginPage.loginInput} placeholderTextColor='#fff' returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
+                <View style={styles.loginInputView}>
+                  <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
                         onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
                 </View>
                 
@@ -202,25 +202,6 @@ var styleLoginPage = StyleSheet.create({
       marginTop:12,
       fontSize:14,
       fontWeight:'600',  
-    },
-    loginInputView:{
-      width:windowWidth*0.634,
-      flexDirection:'row',
-      justifyContent:'center',
-      borderBottomWidth:2,
-      borderColor:'#D7D7D7',
-      alignSelf:'center'
-    },
-    loginInput:{
-      width:windowWidth*0.634,
-      height:windowHeight*0.08,
-      fontSize:windowHeight/33.4,
-      fontWeight:'bold',
-      color: '#fff',
-      borderBottomWidth:1,
-      borderColor:'#fff',
-      paddingVertical:5,
-      textAlign:'left',
     },
     signInButtonView:{
       height:windowHeight*0.08,

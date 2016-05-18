@@ -118,8 +118,27 @@ module.exports = StyleSheet.create({
       width:windowWidth,
       height:windowHeight,
       alignItems:'center',
+      opacity:0.8,
     },
-
+    loginInputView:{
+      width:windowWidth*0.634,
+      flexDirection:'row',
+      justifyContent:'center',
+      borderBottomWidth:2,
+      borderColor:'#D7D7D7',
+      alignSelf:'center'
+    },
+    loginInput:{
+      width:windowWidth*0.634,
+      height:windowHeight*0.08,
+      fontSize:16,
+      fontWeight:'bold',
+      color: '#fff',
+      borderBottomWidth:1,
+      borderColor:'#fff',
+      paddingVertical:5,
+      textAlign:'left',
+    },
 
     logo:{
       width:66,
@@ -129,18 +148,6 @@ module.exports = StyleSheet.create({
       fontSize:30,
       margin:10,
       marginBottom:20
-    },
-    loginInput:{
-      height:windowHeight/14.72,
-      fontSize:windowHeight/36.8,
-      color: '#A9A9A9',
-    },
-    loginInputView:{
-      borderBottomWidth:0.8,
-      borderColor: '#D7D7D7',
-      justifyContent: 'center',
-      paddingVertical:5,
-      paddingHorizontal:windowHeight/49.0,
     },
     button:{
       height: 50,

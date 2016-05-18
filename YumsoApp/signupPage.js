@@ -52,30 +52,29 @@ class SignUpPage extends Component {
                         </View>
                         
                         <View style={styles.loginInputView}>
-                            <TextInput placeholder="First Name" style={styles.loginInput} autoCorrect={false}
+                            <TextInput placeholder="first name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff'
                                     onChangeText = {(text)=>this.setState({firstname: text})}/>
                         </View> 
                         <View style={styles.loginInputView}>
-                            <TextInput placeholder="Last Name" style={styles.loginInput} autoCorrect={false}
+                            <TextInput placeholder="last name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff'
                                     onChangeText = {(text)=>this.setState({lastname: text})}/> 
                         </View>
                         <View style={styles.loginInputView}>                      
-                            <TextInput placeholder="Email" style={styles.loginInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} autoCorrect={false}
-                                    onChangeText = {(text)=>this.setState({email: text})}/>
+                            <TextInput placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff'
+                                    clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
                         </View>
                         <View style={styles.loginInputView}>
-                            <TextInput placeholder="Password" style={styles.loginInput}
-                                    onChangeText = {(text)=>this.setState({password: text})}
-                                    secureTextEntry={true}/>
+                            <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff'
+                                    onChangeText = {(text)=>this.setState({password: text})} secureTextEntry={true}/>
                         </View>
                         <View style={styles.loginInputView}>
-                            <TextInput placeholder="Confirm Password" style={styles.loginInput} onSubmitEditing={this.onSignUpPressed.bind(this)} returnKeyType = {'go'}
-                                    onChangeText = {(text)=>this.setState({password_re: text})}
-                                    secureTextEntry={true}/>
+                            <TextInput placeholder="confirm password" style={styles.loginInput} onSubmitEditing={this.onSignUpPressed.bind(this)} placeholderTextColor='#fff'
+                                    returnKeyType = {'go'} onChangeText = {(text)=>this.setState({password_re: text})} secureTextEntry={true}/>
                         </View>
                         
                         <View style={styleSignUpPage.legalView}>
-                            <Text style={styleSignUpPage.legalText}>By clicking Sign up, you agree with the terms and condictions</Text>
+                            <Text style={styleSignUpPage.legalText}>By signing up, I agree with the </Text>
+                            <Text style={styleSignUpPage.legalTextClickable}>Terms & Conditions</Text>
                         </View>
                     </Image> 
                     <TouchableHighlight underlayColor={'#C0C0C0'} style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
@@ -141,24 +140,28 @@ var styleLogin = StyleSheet.create({
 
 var styleSignUpPage = StyleSheet.create({
     logoView:{
+      height:windowHeight*0.288,
       alignItems:'center',
-      paddingTop:windowHeight/18.4,
-      paddingBottom:windowHeight/9.2,
-      borderBottomWidth:0.8,
-      borderColor: '#D7D7D7',
+      paddingTop:windowHeight*0.109,
     },
     logoIcon:{
-      width:windowWidth/4.14,
-      height:windowWidth/4.14,
+      width:windowWidth*0.208,
+      height:windowWidth*0.208,
     },
     legalView:{
       flex:1,
-      paddingHorizontal:windowHeight/49.0,
+      flexDirection:'row',
       justifyContent: 'center',
+      backgroundColor:'transparent',
+      paddingTop:windowHeight*0.08,
     },
     legalText:{
-      fontSize:windowHeight/56.6,
-      color:'#A9A9A9',
+      fontSize:14,
+      color:'#fff',
+    },
+    legalTextClickable:{
+      fontSize:14,
+      color:'#FFCC33',
     },
     signUpButtonView:{
       position:'absolute',
@@ -166,13 +169,13 @@ var styleSignUpPage = StyleSheet.create({
       right: 0,
       top:windowHeight-windowHeight/13.38,
       height:windowHeight/13.38,
-      backgroundColor:'#ff9933',
+      backgroundColor:'#FFCC33',
       justifyContent: 'center',
     },
     signUpButtonText:{
       color:'#fff',
       fontSize:windowHeight/30.6,
-      fontWeight:'300',
+      fontWeight:'bold',
       alignSelf:'center',
     },
 });
