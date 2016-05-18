@@ -117,6 +117,7 @@ module.exports = StyleSheet.create({
     pageBackgroundImage:{
       width:windowWidth,
       height:windowHeight,
+      alignItems:'center',
     },
 
 
