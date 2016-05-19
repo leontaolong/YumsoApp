@@ -53,13 +53,13 @@ class EaterPage extends Component {
     
      render() {
          if(this.state.addMoreAddress){
-             return(<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this)} onCancel={this.onCancelMap.bind(this)}/>);        
+             return(<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this)} onCancel={this.onCancelMap.bind(this)} specificAddressMode={true}/>);        
          }
          if(this.state.editHomeAddress){
-             return(<MapPage onSelectAddress={this.mapDoneForHomeAddress.bind(this)} onCancel={this.onCancelMap.bind(this)}/>);   
+             return(<MapPage onSelectAddress={this.mapDoneForHomeAddress.bind(this)} onCancel={this.onCancelMap.bind(this)} specificAddressMode={true}/>);   
          }
          if(this.state.editWorkAddress){
-             return(<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this)} onCancel={this.onCancelMap.bind(this)}/>);            
+             return(<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this)} onCancel={this.onCancelMap.bind(this)} specificAddressMode={true}/>);            
          }
          if (this.state.edit) {
              var otherAddressListRendered = [];

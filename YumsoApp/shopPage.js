@@ -16,6 +16,8 @@ var forwardIcon = require('./icons/ic_keyboard_arrow_right_48pt_3x.png');
 var radioIcon = require('./icons/ic_radio_48pt_3x.png');
 var mapIcon = require('./icons/ic_map_48pt_3x-2.png');
 var shoppingCartIcon = require('./icons/ic_shopping_cart_36pt_3x.png');
+var dollarSign = require('./commonModules/dollarIconRender');
+
 import Dimensions from 'Dimensions';
 import ModalPicker from 'react-native-modal-picker'
 
@@ -159,7 +161,7 @@ class ShopPage extends Component {
                                 <Text style={styleShopPage.shopNameText}>{this.state.chef.shopname}</Text>
                                 <View style={styleShopPage.shopRatingDollarSignView}>
                                     <View style={styleShopPage.ratingView}>{rating.renderRating(this.state.chef.rating)}</View>
-                                    <View style={styleShopPage.dollarSignView}><Text style={{ color: '#A9A9A9' }}>{this.state.chef.reviewCount} reviews | $$</Text></View>
+                                    <View style={styleShopPage.dollarSignView}><Text style={{ color: '#A9A9A9' }}>{this.state.chef.reviewCount} reviews | {dollarSign.renderLevel(this.state.chef.priceLevel)}</Text></View>
                                 </View>
                                 <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, {this.state.chef.pickupAddressDetail.state}</Text>
                             </View>
@@ -425,20 +427,21 @@ class ShopPage extends Component {
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;
         }     
-        if(this.state.shoppingCart && Object.keys(this.state.shoppingCart).length===0){
+        if(this.state.shoppingCart && Object.keys(this.state.shoppingCart).length===0 || Object.keys(this.state.shoppingCart[this.state.selectedTime]).length===0){
             Alert.alert( 'Warning', 'You do not have any item in shopping cart',[ { text: 'OK' }]);
             return;  
         }
         this.props.navigator.push({
             name: 'ShoppingCartPage', 
             passProps:{
-                shoppingCart:this.state.shoppingCart[this.state.selectedTime],
+                shoppingCart:this.state.shoppingCart,
                 selectedTime:this.state.selectedTime,
                 deliverTimestamp:Date.parse(this.state.selectedTime),
                 defaultDeliveryAddress: this.defaultDeliveryAddress,
                 chefId:this.state.chefId,
                 eater:this.state.eater,
-                shopName:this.state.chef.shopname
+                shopName:this.state.chef.shopname,
+                scheduleMapping: this.state.scheduleMapping,
             }
         });    
     }
@@ -459,6 +462,8 @@ class ShopPage extends Component {
                 dish:dish,
                 shoppingCart:this.state.shoppingCart,
                 selectedTime:this.state.selectedTime,
+                scheduleMapping:this.state.scheduleMapping,
+                totalPrice: this.state.totalPrice
             }
         });      
     }

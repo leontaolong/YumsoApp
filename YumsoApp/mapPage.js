@@ -50,19 +50,34 @@ class MapPage extends Component {
         if(this.props.eater && this.props.eater!=null){
             eater = this.props.eater;
         }
+        if (this.props.specificAddressMode) {
+            this.isSpecific = true;
+        }
+        
         this.state = {
             showProgress:true,
             showMapView:true,
             showAddNewAddressInputView:false,
             markers:[],
-            eater:eater
+            eater:eater,
+            showApartmentNumber:false
         };
         this.client = new HttpsClient(config.baseUrl, true);
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
         this.getLocation();
     }
    
-    render() {           
+    render() {  
+            let aptView = <View></View> 
+            if(this.state.showApartmentNumber){
+                aptView =  (  
+                    <View>
+                        <Text style={styles.locationText}>Apt #: </Text>
+                        <TextInput style={{ length: 20 }}  clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                            onChangeText = {(text) => this.setState({ apartmentNumber: text }) }/>
+                    </View>);
+            }   
+            
             this.state.savedAddressesView = this.renderSavedAddresses(); //todo: also include home and work addresses for selection.
             let addressSelectionView=[];
             if(!this.state.showMapView){
@@ -137,9 +152,10 @@ class MapPage extends Component {
                                 onDragEnd={(e) => this.onDragEnd(e.nativeEvent.coordinate)}
                                 />
                         ))}
-                    </MapView>                  
+                    </MapView>   
+                    {aptView}
                     <TouchableHighlight style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress() }>
-                        <Text style={styleMapPage.confirmAddressButtonText}>Use this Address</Text>
+                        <Text style={styleMapPage.confirmAddressButtonText}>{this.isSpecific && this.state.showApartmentNumber==false? 'Next': 'Use this Address'}</Text>
                     </TouchableHighlight>
                     {searchAddressResultViewWrapper}
                     {addressSelectionView}   
@@ -285,9 +301,7 @@ class MapPage extends Component {
         }
         return this.googleClient.getWithoutAuth(config.reverseGeoCoding + address.lat + ',' + address.lng)
             .then((res) => {
-                var city;
-                var state;
-                var postal;
+                let city; let state; let postal; let streetNumber; let streetName;
                 if (res.statusCode === 200 && res.data.status === 'OK' && res.data.results.length > 0) {
                     let results = res.data.results;
                     let formatAddress = results[0].formatted_address;
@@ -302,18 +316,42 @@ class MapPage extends Component {
                             if (type === 'postal_code') {
                                 postal = component.short_name;
                             }
+                            if (type === 'street_number') {
+                                streetNumber = component.short_name;
+                            }
+                            if (type === 'route') {
+                                streetName = component.short_name;
+                            }
                         }
                     }
                     address.formatted_address = formatAddress;
                     address.city = city;
                     address.state = state;
                     address.postal = postal;
+                    address.streetNumber = streetNumber;
+                    address.streetName = streetName;
                     this.useAddress(address);
                }
+            }).then(()=>{
+                this.setState({ showApartmentNumber: false });
             }); 
     } 
 
     doneSelectAddress() {
+        if (this.isSpecific) {
+            if(!this.state.selectedAddress){
+                return;
+            }
+            if(!this.state.selectedAddress.streetNumber){ //todo: more validation on this.
+                Alert.alert( 'Warning', 'the street is not valid since it is not specific',[ { text: 'OK' }]); 
+                return;   
+            }
+            if (this.state.apartmentNumber === undefined) {
+                this.setState({showApartmentNumber: true});
+                return;
+            }  
+            this.state.selectedAddress.apartmentNumber = this.state.apartmentNumber;      
+        }
         if (this.state.selectedAddress) {
             if (this.state.eater) {
                 if (this.onSelectAddress) {
@@ -352,7 +390,6 @@ class MapPage extends Component {
             title: addressName,
            // description: 'testDescription'
         }]; 
-        console.log(region);    
         this.setState({markers: markers, region: region, selectedAddress: address, showMapView: true,searchAddressResultView:''}); 
         this.refs.m1.showCallout();
     }
@@ -379,8 +416,9 @@ class MapPage extends Component {
            .then((res)=>{
                 if(res.statusCode===200 && res.data.status==='OK'){
                     var addresses = [];
+                    let showWarningForSpecific = false;
                     for(var possibleAddress of res.data.results){
-                        let city; let state; let postal;
+                        let city; let state; let postal; let streetNumber; let streetName; 
                         for (var component of possibleAddress.address_components) {
                             for (var type of component.types) {
                                 if (type === 'locality') {
@@ -392,7 +430,17 @@ class MapPage extends Component {
                                 if (type === 'postal_code') {
                                     postal = component.short_name;
                                 }
+                                if (type === 'street_number') {
+                                    streetNumber = component.short_name;
+                                }
+                                if (type === 'route') {
+                                    streetName = component.short_name;
+                                }                
                             }
+                        }
+                        if(streetNumber==undefined && this.isSpecific){
+                            showWarningForSpecific = true;
+                            continue; //todo: we don't need the result that does not have street number.
                         }
                         var onePossibility = {
                             formatted_address: possibleAddress.formatted_address,
@@ -400,11 +448,15 @@ class MapPage extends Component {
                             lng: possibleAddress.geometry.location.lng,
                             city: city,
                             state: state,
-                            postal:postal
+                            postal: postal,
+                            streetNumber: streetNumber,
+                            streetName: streetName,
                         };
                         addresses.push(onePossibility);
                     }
-
+                    if(addresses.length==0 && showWarningForSpecific){
+                        Alert.alert( 'Warning', 'Please be more specific',[ { text: 'OK' }]);
+                    }
                     let view = this.renderSearchResult(addresses);
                     //If only one possible address returned, locate it on the map
                     if(addresses.length==1){
@@ -516,6 +568,7 @@ var styleMapPage = StyleSheet.create({
     mapView:{
         flex:1, 
         width: windowWidth, 
+        height:windowHeight/5
     },
     selectedAddressView:{
         flexDirection:'column',        
