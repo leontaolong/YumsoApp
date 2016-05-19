@@ -34,15 +34,19 @@ var windowWidth = Dimensions.get('window').width;
 class DishPage extends Component {
     constructor(props){
         super(props);
-        var routeStack = this.props.navigator.state.routeStack;
-        var dish = routeStack[routeStack.length-1].passProps.dish;
-        var shoppingCart = routeStack[routeStack.length-1].passProps.shoppingCart;
-        var selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;
+        let routeStack = this.props.navigator.state.routeStack;
+        let dish = routeStack[routeStack.length-1].passProps.dish;
+        let shoppingCart = routeStack[routeStack.length-1].passProps.shoppingCart;
+        let scheduleMapping = routeStack[routeStack.length-1].passProps.scheduleMapping;
+        let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;
+        let totalPrice = routeStack[routeStack.length-1].passProps.totalPrice;
         this.state = {
             showProgress:true,
             dish: dish,
             shoppingCart: shoppingCart,
             selectedTime: selectedTime,
+            scheduleMapping:scheduleMapping,
+            totalPrice: totalPrice
         };
     }
 
@@ -94,12 +98,13 @@ class DishPage extends Component {
                   <View style={styleShopPage.oneDishNameDiscriptionTextView}>
                      <Text style={styleShopPage.oneDishNameText}>{this.state.dish.dishName}</Text>
                      <Text style={styleShopPage.oneDishDiscriptionText}>{this.state.dish.description}</Text>
+                     <Text style={styleShopPage.oneDishDiscriptionText}>{this.state.dish.ingredients}</Text>
                   </View>
                </View>
                <View style={styleShopPage.priceView}>
                   <View style={styleShopPage.priceTextView}>
                     <Text style={styleShopPage.priceText}>${this.state.dish.price}</Text>
-                    <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' ? '' : '3 orders left'} 
+                    <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' ? '' : (this.state.scheduleMapping[this.state.selectedTime][this.state.dish.dishId].leftQuantity)+' orders left'} 
                       {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity + ' ordered ' : ''} 
                     </Text>
                   </View>
@@ -131,11 +136,16 @@ class DishPage extends Component {
         this.setState({shoppingCart:this.state.shoppingCart, totalPrice:total});
     }  
     
-    addToShoppingCart(dish){
+   addToShoppingCart(dish){
         if(this.state.selectedTime==='All Schedules'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;  
         }
+        if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity===0){
+            Alert.alert( 'Warning', 'No more available',[ { text: 'OK' }]);
+            return;          
+        }
+        this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity-=1;
         if(!this.state.shoppingCart[this.state.selectedTime]){
             this.state.shoppingCart[this.state.selectedTime] = {};
         }
@@ -157,6 +167,7 @@ class DishPage extends Component {
         }   
         if(this.state.shoppingCart[this.state.selectedTime][dish.dishId] && this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity>0){
             this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity-=1;
+           this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+=1;
             if(this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity===0){
                 delete this.state.shoppingCart[this.state.selectedTime][dish.dishId];
                 if(Object.keys(this.state.shoppingCart[this.state.selectedTime])===0){

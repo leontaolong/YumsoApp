@@ -40,11 +40,13 @@ class ShoppingCartPage extends Component {
         this.deliverTimestamp = routeStack[routeStack.length-1].passProps.deliverTimestamp;        
         let chefId = routeStack[routeStack.length-1].passProps.chefId;        
         let eater = routeStack[routeStack.length-1].passProps.eater;        
+        let scheduleMapping = routeStack[routeStack.length-1].passProps.scheduleMapping;        
         let defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;//!=undefined? routeStack[routeStack.length-1].passProps.defaultDeliveryAddress:'';        
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
         this.state = {
-            dataSource: ds.cloneWithRows(Object.values(shoppingCart)),
+            dataSource: ds.cloneWithRows(Object.values(shoppingCart[selectedTime])),
             showProgress:false,
+            scheduleMapping: scheduleMapping,           
             shoppingCart:shoppingCart,
             selectedTime:selectedTime,
             deliveryAddress: defaultDeliveryAddress,
@@ -91,6 +93,7 @@ class ShoppingCartPage extends Component {
                     </View> 
                      
                     <View style={styleShoppingCartPage.dishDescriptionView}>
+                     <Text>{dish.ingredients}</Text>
                     </View>
                     
                     <View style={styleShoppingCartPage.quantityTotalPriceView}>
@@ -99,7 +102,7 @@ class ShoppingCartPage extends Component {
                             onPress={()=>this.addToShoppingCart(dish)}>
                             <Image source={plusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
                         </TouchableHighlight> 
-                        <Text style={styleShoppingCartPage.quantityText}>{this.state.shoppingCart[dish.dishId]?this.state.shoppingCart[dish.dishId].quantity:'  '}</Text>          
+                        <Text style={styleShoppingCartPage.quantityText}>{this.state.shoppingCart[this.state.selectedTime][dish.dishId]?this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity:'  '}</Text>          
                         <TouchableHighlight style={styleShoppingCartPage.minusIconView} underlayColor={'transparent'}
                             onPress={()=>this.removeFromShoppingCart(dish)}>                
                             <Image source={minusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
@@ -107,9 +110,11 @@ class ShoppingCartPage extends Component {
                       </View>
                       <View style={styleShoppingCartPage.totalPriceView}>
                           <Text style={styleShoppingCartPage.totalPriceText}>${dish.price*quantity}</Text>
-                      </View>                               
+                      </View>                              
                     </View>  
-                                             
+                    <Text style={styleShoppingCartPage.quantityText}>{this.state.selectedTime === 'All Schedules' ? '' : (this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity) + ' orders left'}
+                            {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''}
+                    </Text>                        
                 </View>
             </View>
         );
@@ -218,38 +223,61 @@ class ShoppingCartPage extends Component {
          this.setState({selectDeliveryAddress:false, deliveryAddress:address});
     }
     
-   onCancelMap(){
+    onCancelMap(){
          this.setState({selectDeliveryAddress:false});
     }
     
     addToShoppingCart(dish){
-        var total = 0;;
-        if(this.state.shoppingCart[dish.dishId]){
-            this.state.shoppingCart[dish.dishId].quantity+=1;
+        if(this.state.selectedTime==='All Schedules'){
+            Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
+            return;  
+        }
+        if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity===0){
+            Alert.alert( 'Warning', 'No more available',[ { text: 'OK' }]);
+            return;          
+        }
+        this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity-=1;
+        if(!this.state.shoppingCart[this.state.selectedTime]){
+            this.state.shoppingCart[this.state.selectedTime] = {};
+        }
+        if(this.state.shoppingCart[this.state.selectedTime][dish.dishId]){
+            this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity+=1;
         }else{
-            this.state.shoppingCart[dish.dishId] = {dish:dish, quantity:1};
+            this.state.shoppingCart[this.state.selectedTime][dish.dishId] = {dish:dish, quantity:1};
         }
         this.getTotalPrice();
     }
     
     removeFromShoppingCart(dish){
-        if(this.state.shoppingCart[dish.dishId] && this.state.shoppingCart[dish.dishId].quantity>0){
-            this.state.shoppingCart[dish.dishId].quantity-=1;
-            if(this.state.shoppingCart[dish.dishId].quantity===0){
-                delete this.state.shoppingCart[dish.dishId];
+        if(this.state.selectedTime==='All Schedules'){
+            Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
+            return;  
+        }
+        if(!this.state.shoppingCart[this.state.selectedTime]){
+            return;
+        }   
+        if(this.state.shoppingCart[this.state.selectedTime][dish.dishId] && this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity>0){
+            this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity-=1;
+           this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+=1;
+            if(this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity===0){
+                delete this.state.shoppingCart[this.state.selectedTime][dish.dishId];
+                if(Object.keys(this.state.shoppingCart[this.state.selectedTime])===0){
+                    delete this.state.shoppingCart[this.state.selectedTime];
+                }
             }
-        }    
+        } 
         this.getTotalPrice();
     }
     
     getTotalPrice(){
         var total = 0;
-        for(var cartItemId in this.state.shoppingCart){
-            var cartItem = this.state.shoppingCart[cartItemId];
+        var deliverTime = this.state.selectedTime;
+        for(var cartItemId in this.state.shoppingCart[deliverTime]){
+            var cartItem = this.state.shoppingCart[deliverTime][cartItemId];
             total+=cartItem.dish.price * cartItem.quantity;
         }
-        let dishes = JSON.parse(JSON.stringify(Object.values(this.state.shoppingCart)));
-        this.setState({dataSource:this.state.dataSource.cloneWithRows(dishes),totalPrice:total});
+        let newShoppingCart = JSON.parse(JSON.stringify(this.state.shoppingCart));
+        this.setState({shoppingCart:this.state.shoppingCart, totalPrice:total, dataSource:this.state.dataSource.cloneWithRows(newShoppingCart[this.state.selectedTime])});
     }    
     
     changeDeliveryAddress(){
@@ -275,8 +303,8 @@ class ShoppingCartPage extends Component {
         }
         //todo: Best practise is not to get eater here but cache it somewhere, but have to ensure the cached user is indeed not expired.              
         var orderList ={};
-        for(var cartItemKey in this.state.shoppingCart){
-            var dishItem=this.state.shoppingCart[cartItemKey];
+        for(var cartItemKey in this.state.shoppingCart[this.state.selectedTime]){
+            var dishItem=this.state.shoppingCart[this.state.selectedTime][cartItemKey];
             orderList[cartItemKey]={quantity:dishItem.quantity, price:dishItem.dish.price};
         }
         var order = {
