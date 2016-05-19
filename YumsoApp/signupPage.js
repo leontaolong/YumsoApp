@@ -43,7 +43,7 @@ class SignUpPage extends Component {
                         <View style={styles.titleView}>
                             <Text style={styles.titleText}>Sign Up</Text>
                         </View>
-                        <View style={{flex:0.1/3,width:windowWidth/3}}>
+                        <View style={styles.headerRightView}>
                         </View>
                     </View>
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>

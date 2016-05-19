@@ -51,10 +51,10 @@ class LoginPage extends Component {
                       <Image source={backIcon} style={styleLoginPage.backButtonIcon}/>
                     </TouchableHighlight>
                  </View>    
-                 <View style={styleLoginPage.titleView}>
-                    <Text style={styleLoginPage.titleText}>Sign In</Text>
+                 <View style={styles.titleView}>
+                    <Text style={styles.titleText}>Sign In</Text>
                  </View>
-                 <View style={{flex:0.1/3,width:windowWidth/3}}>
+                 <View style={styles.headerRightView}>
                  </View>
              </View>
              <Image style={styles.pageBackgroundImage} source={backgroundImage}>
@@ -192,16 +192,6 @@ var styleLoginPage = StyleSheet.create({
     backButtonIcon:{
       width:30,
       height:30,
-    },
-    titleView:{
-      flex:0.1/3, 
-      width:windowWidth/3,
-      alignItems:'center',     
-    },
-    titleText:{
-      marginTop:12,
-      fontSize:14,
-      fontWeight:'600',  
     },
     signInButtonView:{
       height:windowHeight*0.08,

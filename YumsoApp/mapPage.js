@@ -70,12 +70,11 @@ class MapPage extends Component {
     render() {  
             let aptView = <View></View> 
             if(this.state.showApartmentNumber){
-                aptView =  (  
-                    <View>
-                        <Text style={styles.locationText}>Apt #: </Text>
-                        <TextInput style={{ length: 20 }}  clearButtonMode={'while-editing'} returnKeyType = {'done'}
+               aptView = (<View>
+                           <Text style={styles.locationText}>Apt #: </Text>
+                           <TextInput style={{ length: 20 }}  clearButtonMode={'while-editing'} returnKeyType = {'done'}
                             onChangeText = {(text) => this.setState({ apartmentNumber: text }) }/>
-                    </View>);
+                         </View>);
             }   
             
             this.state.savedAddressesView = this.renderSavedAddresses(); //todo: also include home and work addresses for selection.
@@ -102,11 +101,10 @@ class MapPage extends Component {
                                  <Image source={backIcon} style={styles.backButtonIcon}/>
                              </TouchableHighlight>
                          </View>
-                         <View style={styles.locationView}>
-                             <View style={{marginTop:3,marginLeft:2,}}><Image source={ballonIcon} style={styles.locationIcon}/></View>
-                             <Text style={styles.locationText}>{this.state.city}</Text>
+                         <View style={styles.titleView}>
+                             <Text style={styles.titleText}>{this.state.city}</Text>
                          </View>
-                         <View style={styleMapPage.houseIconOrangeView}>
+                         <View style={styles.headerRightView}>
                              <TouchableHighlight onPress={() =>{this.setState({showMapView: false})}}>
                                  <Image source={houseIconOrange} style={styleMapPage.houseIconOrange}/>
                              </TouchableHighlight>
@@ -635,11 +633,6 @@ var styleMapPage = StyleSheet.create({
     houseIconOrange:{
         width:windowHeight/16.675,
         height:windowHeight/16.675,
-    },
-    houseIconOrangeView:{
-        flex:0.1/3, 
-        width:windowWidth/3,
-        alignItems:'flex-end',
     },
     oneAddressTitleText:{
         marginTop:windowHeight/66.7,
