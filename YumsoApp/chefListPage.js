@@ -177,16 +177,16 @@ class ChefListPage extends Component {
                              <Text style={styleChefListPage.reviewNumberText}>{chef.reviewCount} reviews</Text>
                           </View>
                           <View style={styleChefListPage.distanceDollarSignView}>
-                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?chef.distance+' miles |':''}   {dollarSign.renderLevel(chef.priceLevel)}</Text>
+                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?(chef.distance>20?'>20':chef.distance)+' miles |':''}   {dollarSign.renderLevel(chef.priceLevel)}</Text>
                           </View>   
                        </View>
                        
                        <View style={styleChefListPage.shopInfoRow3}>
                           <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>spicy</Text>
+                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{chef.styleTag}</Text>
                           </View>
                           <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>Japanese</Text>
+                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{chef.foodTag}</Text>
                           </View>
                        </View>                       
                     </View>
@@ -279,7 +279,7 @@ class ChefListPage extends Component {
                 displayChefs.push(this.state.chefsDictionary[chefId]);
             }
         }
-        this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs)});
+        this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
     }
     
     mapDone(address){
@@ -304,7 +304,7 @@ class ChefListPage extends Component {
                 var chefs = res.data.chefs;
                 this.setState({dataSource: this.state.dataSource.cloneWithRows(chefs)})
             }
-            this.setState({showChefSearch:false, showProgress:false});
+            this.setState({showChefSearch:false, showProgress:false, isMenuOpen:false});
         });
     }
  
