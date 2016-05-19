@@ -129,7 +129,7 @@ class ChefListPage extends Component {
         return (
             <View style={styleChefListPage.oneShopListView}>
                 <View style={styleChefListPage.oneShopPhotoView}>
-                    <Swiper showsButtons={false} height={windowHeight*0.388} horizontal={true} autoplay={true}
+                    <Swiper showsButtons={false} height={windowHeight*0.388} horizontal={true} autoplay={false}
                         dot={<View style={{ backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />}
                         activeDot={<View style={{ backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />} >
                         {this.state.chefView[chef.chefId].map((picture) => {
@@ -165,7 +165,7 @@ class ChefListPage extends Component {
                              <Text style={styleChefListPage.reviewNumberText}>{chef.reviewCount} reviews</Text>
                           </View>
                           <View style={styleChefListPage.distanceDollarSignView}>
-                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?chef.distance+' miles |':''}   {dollarSign.renderLevel(3)}</Text>
+                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?chef.distance+' miles |':''} {dollarSign.renderLevel(3)}</Text>
                           </View>   
                        </View>
                        
@@ -494,7 +494,7 @@ var styleChefListPage = StyleSheet.create({
        alignItems:'flex-start', 
     }, 
     oneShopNameText:{
-       fontSize:18,
+       fontSize:windowHeight/37.06,
        fontWeight:'bold',
        color:'#4A4A4A',
     },
@@ -511,7 +511,7 @@ var styleChefListPage = StyleSheet.create({
         flexDirection:'row',
     },
     shopRatingView:{
-        flex:0.72,
+        flex:0.6,
         flexDirection:'row',
         alignItems:'flex-start',
     },
@@ -522,14 +522,14 @@ var styleChefListPage = StyleSheet.create({
         alignSelf:'center',
     },
     distanceDollarSignView:{
-        flex:0.28,
+        flex:0.4,
         flexDirection:'row',
         alignItems:'flex-end',
     },
     distanceDollarSignText:{
         fontSize:11,
         color:'#4A4A4A',
-        alignSelf:'center',
+        textAlign:'left',
     },
     shopInfoRow3:{
         flexDirection:'row',

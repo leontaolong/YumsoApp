@@ -3,19 +3,22 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var rating = require('./rating');
+var dollarSign = require('./commonModules/dollarIconRender');
 var dateRender = require('./commonModules/dateRender');
 var AuthService = require('./authService');
 var shareIcon = require('./icons/icon-share.png');
 var backIcon = require('./icons/icon-back.png');
-var notlikedIcon = require('./icons/icon-unliked-onheader.png')
-var likedIcon = require('./icons/icon-liked-onheader.png');
-var bowlIcon = require('./icons/icon_bowl.png');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
-var forwardIcon = require('./icons/ic_keyboard_arrow_right_48pt_3x.png');
-var radioIcon = require('./icons/ic_radio_48pt_3x.png');
-var mapIcon = require('./icons/ic_map_48pt_3x-2.png');
+var forwardIcon = require('./icons/icon-forward.png');
+var mapIcon = require('./icons/icon-map.png');
+var chefPageIcon = require('./icons/icon-chefpage.png');
+var reviewIcon = require('./icons/icon-reviews.png');
+var labelIcon = require('./icons/icon-label.png');
 var shoppingCartIcon = require('./icons/ic_shopping_cart_36pt_3x.png');
+var notlikedIcon = require('./icons/icon-unliked.png')
+var likedIcon = require('./icons/icon-liked.png');
+
 import Dimensions from 'Dimensions';
 import ModalPicker from 'react-native-modal-picker'
 
@@ -144,51 +147,79 @@ class ShopPage extends Component {
                      deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
                    }
                }
-
+                                          
+               if(this.state.like){
+                  var  likeIcon = likedIcon;
+               }else{
+                  var  likeIcon = notlikedIcon;
+               }
+            
                return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
                             <Image source={{ uri: this.state.chef.shopPictures[0] }} style={styleShopPage.shopPicture}
                                 onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }>
                             </Image>
-                        </View>),
-                       (<View key={'chefNameRow'} style={styleShopPage.chefNameRow}>
-                            <View style={styleShopPage.chefProfilePicView}>
-                                <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShopPage.chefProfilePic}
-                                    onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }/>
-                            </View>
-                            <View style={styleShopPage.shopChefNameRatingView}>
-                                <Text style={styleShopPage.shopNameText}>{this.state.chef.shopname}</Text>
-                                <View style={styleShopPage.shopRatingDollarSignView}>
-                                    <View style={styleShopPage.ratingView}>{rating.renderRating(this.state.chef.rating)}</View>
-                                    <View style={styleShopPage.dollarSignView}><Text style={{ color: '#A9A9A9' }}>{this.state.chef.reviewCount} reviews | $$</Text></View>
+                        </View>),                        
+                       (<View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
+                          <TouchableHighlight style={styleShopPage.chefPhotoView} underlayColor={'transparent'}>
+                            <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShopPage.chefPhoto}/>
+                          </TouchableHighlight>
+                            
+                          <View style={styleShopPage.shopInfoSection}>
+                            <View style={styleShopPage.shopInfoRow1}>
+                                <View style={styleShopPage.shopNameView}>
+                                    <Text style={styleShopPage.oneShopNameText}>{this.state.chef.shopname}</Text>
                                 </View>
-                                <Text style={styleShopPage.chefNameAreaText}>{this.state.chef.firstname} {this.state.chef.lastname}, {this.state.chef.pickupAddressDetail.state}</Text>
-                            </View>
-                        </View>),
-                       (<View key={'chefDiscriptionView'} style={styleShopPage.chefDiscriptionView}>
-                            <Text style={styleShopPage.myStoryTitleText}>My Story</Text>
-                            <Text style={styleShopPage.chefDiscriptionText}>{this.state.chef.storeDescription}{this.state.chef.storeDescription}</Text>
-                        </View>),
-                       (<View key={'shopRadioView'} style={styleShopPage.shopRadioView}>
-                            <Image source={radioIcon} style={styleShopPage.radioIcon}/>
-                            <View style={styleShopPage.shopDiscriptionTextView}>
-                                <Text style={styleShopPage.shopRadioText}>{this.state.chef.storeDescription}</Text>
-                            </View>
-                            <View style={styleShopPage.forwardIconView}>
-                                <TouchableHighlight>
-                                  <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+                                <TouchableHighlight style={styleShopPage.likeIconView} underlayColor={'transparent'} onPress={()=>{this.addToFavorite()}}>
+                                    <Image source={likeIcon} style={styleShopPage.likeIcon}></Image>
                                 </TouchableHighlight>
                             </View>
-                        </View>),
-                       (<View key={'pickupAddressView'} style={styleShopPage.pickupAddressView}>
-                            <Image source={mapIcon} style={styleShopPage.pickupAddressIcon}/>
-                            <View style={styleShopPage.pickupAddressTextView}>
-                                <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddress}</Text>
+                            
+                            <View style={styleShopPage.shopInfoRow2}>
+                                <View style={styleShopPage.shopRatingView}>
+                                    <View style={{flexDirection:'row',alignSelf:'center'}}>
+                                    {rating.renderRating(this.state.chef.rating)}
+                                    </View>
+                                    <Text style={styleShopPage.reviewNumberText}>{dollarSign.renderLevel(3)}</Text>
+                                </View>
                             </View>
+                            
+                            <View style={styleShopPage.shopInfoRow3}>
+                                <View style={styleShopPage.labelView}>
+                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>spicy</Text>
+                                </View>
+                                <View style={styleShopPage.labelView}>
+                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>Japanese</Text>
+                                </View>
+                            </View>                       
+                          </View>
                         </View>),
-                       (<TouchableHighlight key={'gotochefcommentsbutton'} style={styles.button}
-                                onPress={() => this.navigateToChefCommentsPage() }>
-                                <Text style={styles.buttonText}>Go to chef comments</Text>
-                        </TouchableHighlight>),                     
+                       (<View key={'chefLivingAreaView'} style={styleShopPage.chefDetailView}>
+                            <Image source={mapIcon} style={styleShopPage.pickupAddressIcon}/>
+                            <View style={styleShopPage.chefDetailTextView}>
+                                <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddress.city+", "+this.state.chef.pickupAddress.state}</Text>
+                            </View>
+                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
+                               <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+                            </TouchableHighlight>
+                        </View>), 
+                        (<View key={'chefPageClickableView'} style={styleShopPage.chefDetailView}>
+                            <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
+                            <View style={styleShopPage.chefDetailTextView}>
+                                <Text style={styleShopPage.pickupAddressText}>Chef page</Text>
+                            </View>
+                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
+                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+                            </TouchableHighlight>
+                         </View>), 
+                        (<View key={'chefReviewsClickable'} style={styleShopPage.chefDetailView}>
+                            <Image source={reviewIcon} style={styleShopPage.pickupAddressIcon}/>
+                            <View style={styleShopPage.chefDetailTextView}>
+                                <Text style={styleShopPage.pickupAddressText}>10 reviews</Text>
+                            </View>
+                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
+                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+                            </TouchableHighlight>
+                        </View>),                                      
                        (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
                                 <ModalPicker
                                  data={deliveryTimeRendered}
@@ -213,21 +244,17 @@ class ShopPage extends Component {
                <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)}>
                   <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
                </TouchableHighlight>
-               <View style={styleShopPage.oneDishNameDiscriptionView}>
-                  <Image source={bowlIcon} style={styleShopPage.bowlIcon}/>
+               <View style={styleShopPage.oneDishNameDiscriptionView}>                  
                   <View style={styleShopPage.oneDishNameDiscriptionTextView}>
                     <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
                     <Text style={styleShopPage.oneDishDiscriptionText}>{dish.description}</Text>
                   </View>
-                  <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)} underlayColor={'transparent'} style={styleShopPage.forwardIconView}>
-                       <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                  </TouchableHighlight>
                </View>
                <View style={styleShopPage.priceView}>
                   <View style={styleShopPage.priceTextView}>
                     <Text style={styleShopPage.priceText}>${dish.price}</Text>
                     <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' orders left'} 
-                      {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''} 
+                       {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''} 
                     </Text>
                   </View>
                   <View style={styleShopPage.chooseQuantityView}>
@@ -258,13 +285,7 @@ class ShopPage extends Component {
                         style={styles.loader}/>
                 </View>);
         } else {
-            
-            if(this.state.like){
-              var  likeIcon = likedIcon;
-            }else{
-              var  likeIcon = notlikedIcon;
-            }
-            
+
             return (
                 <View style={styles.container}>
                         <View style={styles.headerBannerView}>    
@@ -278,12 +299,9 @@ class ShopPage extends Component {
                             </View>
                             <View style={styles.headerRightView}>
                                 <View style={styles.likeShareButtonView}>
-                                  <TouchableHighlight underlayColor={'transparent'} onPress={()=>{this.addToFavorite()}}>
-                                     <Image source={likeIcon} style={styles.likeButtonIcon}/>
-                                  </TouchableHighlight>
-                                  <TouchableHighlight underlayColor={'transparent'} onPress={()=>{}}>
-                                     <Image source={shareIcon} style={styles.shareButtonIcon}/>
-                                  </TouchableHighlight>
+                                   <TouchableHighlight underlayColor={'transparent'} onPress={()=>{}}>
+                                      <Image source={shareIcon} style={styles.shareButtonIcon}/>
+                                   </TouchableHighlight>
                                 </View>
                             </View>
                         </View>
@@ -485,117 +503,94 @@ var styleShopPage = StyleSheet.create({
         width: windowWidth,
         height: windowHeight/2.63,
     },
-    shopPageTopButtonsView:{ 
-        flex: 1, 
-        flexDirection: 'row', 
+    shopInfoView:{
+        flexDirection:'row',
+        height:windowHeight*0.14,
+        paddingTop:windowHeight*0.0225,
+        paddingBottom:windowHeight*0.02698,
+        paddingHorizontal:windowWidth*0.032,
     },
-    backButtonView:{ 
-        position:'absolute', 
-        top: 10, 
-        left:0,
+    chefPhotoView:{
+        marginRight:windowWidth*0.04, 
     },
-    likeButtonIcon:{ 
-        width: 30, 
-        height: 30,
-    },
-    shareButtonView:{
-        position:'absolute', 
-        top: 10, 
-        right:10,
-    },
-    shareButtonIcon:{
-        width:  30, 
-        height: 30,
-    },
-    chefNameRow:{
-        flexDirection: 'row',
-        padding: windowHeight/49,
-        alignItems: 'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#f5f5f5',
-    },
-    chefProfilePicView:{
+    chefPhoto:{
+        height:windowWidth*0.16,
+        width:windowWidth*0.16,
         borderRadius: 12, 
         borderWidth: 0, 
-        overflow: 'hidden', 
+        overflow: 'hidden',
     },
-    chefProfilePic:{
-        width:windowHeight/10.8,
-        height:windowHeight/10.8,
+    shopInfoSection:{
+        flex:1,
+        flexDirection:'column',
+        justifyContent:'space-between',
+        height:windowWidth*0.165,        
     },
-    shopChefNameRatingView:{ 
-        paddingLeft: windowWidth/20.7, 
+    shopInfoRow1:{
+        flexDirection:'row',
     },
-    shopNameText:{ 
-        fontSize: windowHeight/36.8, 
-        marginBottom: windowHeight/61.3, 
+    shopNameView:{
+       flex:0.93,
+       flexDirection:'row',
+       alignItems:'flex-start', 
+    }, 
+    oneShopNameText:{
+       fontSize:18,
+       fontWeight:'bold',
+       color:'#4A4A4A',
     },
-    chefDiscriptionView:{
-        paddingHorizontal: windowWidth/27.6,
-        paddingVertical: windowHeight/73.6,
-        justifyContent:'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#fff'
+    likeIconView:{
+       flex:0.07,
+       flexDirection:'row',
+       alignItems:'flex-end', 
+    }, 
+    likeIcon:{
+        width:windowWidth*0.05,
+        height:windowWidth*0.05,
     },
-    chefDiscriptionText:{ 
-        fontSize: windowHeight/52.6,
+    shopInfoRow2:{
+        flexDirection:'row',
     },
-    shopRatingDollarSignView:{ 
-        flex: 1, 
-        flexDirection: 'row', 
-        marginBottom: windowHeight/245.3,
+    shopRatingView:{
+        flex:0.72,
+        flexDirection:'row',
+        alignItems:'flex-start',
     },
-    ratingView:{ 
-        flex: 0.5, 
+    reviewNumberText:{
+        fontSize:11,
+        color:'#4A4A4A',
+        marginLeft:windowWidth*0.0187,
+        alignSelf:'center',
+    },
+    shopInfoRow3:{
+        flexDirection:'row',
+    },
+    labelView:{
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        marginRight:windowWidth*0.04,
+    },   
+    labelIcon:{
+        width:15, 
+        height:15,
+        alignSelf:'center',
+    },
+    labelText:{
+        fontSize:12,
+        color:'#FFCC33',
+        marginLeft:windowWidth/82.8,
+        alignSelf:'center',
+    },    
+    chefDetailView:{
         flexDirection: 'row',
-    },
-    dollarSignView:{ 
-        flex: 0.5, 
-        flexDirection: 'row', 
-        marginLeft: windowWidth/27.6
-    },
-    chefNameAreaText:{ 
-        fontSize: 16, 
-        color: '#696969', 
-    },
-    shopRadioView:{
-        flexDirection: 'row',
-        paddingHorizontal: windowWidth/27.6,
-        paddingVertical: windowHeight/73.6,
+        height:windowHeight*0.065,
+        paddingLeft: windowWidth/27.6,
         alignItems:'center',
         borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#fff'
+        borderTopWidth: 1,
+        backgroundColor: '#fff'        
     },
-    radioIcon:{ 
-        width: windowHeight/36.8, 
-        height: windowHeight/36.8,
-    },
-    myStoryTitleText:{ 
-        fontSize: windowHeight/46.0, 
-        paddingBottom: windowHeight/73.6, 
-    },
-    shopDiscriptionTextView:{
-        flex: 1,
-        paddingLeft:windowWidth/27.6,
-        justifyContent:'center',
-    },
-    shopRadioText:{ 
-        fontSize: windowHeight/52.6, 
-        color: '#A9A9A9',
-    },
-    pickupAddressView:{
-        flexDirection: 'row',
-        paddingHorizontal: windowWidth/27.6,
-        paddingVertical: windowHeight/73.6,
-        alignItems:'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#fff'
-    },
-    pickupAddressTextView:{
+    chefDetailTextView:{
         flex: 1,
         paddingLeft:windowWidth/27.6,
         justifyContent:'center',
@@ -608,10 +603,21 @@ var styleShopPage = StyleSheet.create({
         width: windowHeight/36.8, 
         height: windowHeight/36.8,
     },
+    forwardIcon:{
+        width: windowHeight*0.06, 
+        height: windowHeight*0.06,
+    },
     timeSelectorView:{
         flex:1, 
-        justifyContent:'space-around', 
-        padding:50,
+        flexDirection:'row',
+        justifyContent:'center', 
+        borderColor:'#D7D7D7',
+        borderTopWidth:4,
+        height:windowHeight*0.10,
+        paddingVertical:windowHeight*0.015,
+    },
+    openHoursText:{
+
     },
     footerView:{ 
         flexDirection:'row', 
@@ -640,7 +646,6 @@ var styleShopPage = StyleSheet.create({
         color:'#fff',
         fontSize:windowHeight/37.8,
         marginTop:windowHeight/80,
-        fontSize:windowHeight/30.6,
         fontWeight:'300',
     },
     oneDishInListView:{
@@ -661,22 +666,10 @@ var styleShopPage = StyleSheet.create({
         borderBottomWidth: 1,
         backgroundColor: '#fff'
     },
-    bowlIcon:{
-        width: windowHeight/36.8, 
-        height: windowHeight/36.8,
-    },
     oneDishNameDiscriptionTextView:{
         flex: 1,
         paddingLeft:windowWidth/27.6,
         justifyContent:'center',
-    },
-    forwardIconView:{
-        paddingLeft:0,
-        paddingVertical:15,
-    },
-    forwardIcon:{
-        width: 20,
-        height: 20,
     },
     oneDishNameText:{
         fontSize:14,

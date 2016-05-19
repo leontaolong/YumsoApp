@@ -156,11 +156,11 @@ var styleSignUpPage = StyleSheet.create({
       paddingTop:windowHeight*0.08,
     },
     legalText:{
-      fontSize:14,
+      fontSize:windowHeight/47.64,
       color:'#fff',
     },
     legalTextClickable:{
-      fontSize:14,
+      fontSize:windowHeight/47.64,
       color:'#FFCC33',
     },
     signUpButtonView:{
