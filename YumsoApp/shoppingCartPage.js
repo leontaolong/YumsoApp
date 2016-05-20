@@ -53,7 +53,8 @@ class ShoppingCartPage extends Component {
             chefId:chefId,
             selectDeliveryAddress:false,
             shopName:shopName,
-            eater:eater
+            eater:eater,
+            priceIsConfirmed:false
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
@@ -121,21 +122,14 @@ class ShoppingCartPage extends Component {
     }
     
     renderFooter(){
-      
-       return [(<View style={styleShoppingCartPage.subtotalView}>
+      if(!this.state.priceIsConfirmed){
+          return [(
+               <View style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
                   </View>
                   <View style={styleShoppingCartPage.priceNumberView}>
                       <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice}</Text>
-                  </View>
-               </View>),
-               (<View style={styleShoppingCartPage.deliveryFeeView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>$10</Text>
                   </View>
                </View>),
                (<View style={styleShoppingCartPage.addressView}>
@@ -146,16 +140,47 @@ class ShoppingCartPage extends Component {
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>
                      <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
-                        <Text style={styleShoppingCartPage.addressChangeButtonText}>Change Address</Text>
+                        <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add delivery address': 'Change Address'}</Text>
                      </TouchableHighlight>
                   </View>
+               </View>)];
+      }
+       return [(<View style={styleShoppingCartPage.subtotalView}>
+                  <View style={styleShoppingCartPage.priceTitleView}>
+                      <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
+                  </View>
+                  <View style={styleShoppingCartPage.priceNumberView}>
+                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.subTotal}</Text>
+                  </View>
+               </View>),
+               (<View style={styleShoppingCartPage.deliveryFeeView}>
+                  <View style={styleShoppingCartPage.priceTitleView}>
+                      <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
+                  </View>
+                  <View style={styleShoppingCartPage.priceNumberView}>
+                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.deliveryFee}</Text>
+                  </View>
+               </View>),
+               (<View style={styleShoppingCartPage.addressView}>
+                  <View style={styleShoppingCartPage.addressTextView}>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.postal:''}</Text>
+                  </View>
+                  <View style={styleShoppingCartPage.addressChangeButtonView}>
+                     <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                        <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add delivery address': 'Change Address'}</Text>
+                     </TouchableHighlight>
+                  </View>
+                  <TextInput style={styleShoppingCartPage.priceNumberView} default={this.eater!=undefined? 'phone number:'+this.eater.phoneNumber:''} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                      onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>  
                </View>),
                (<View style={styleShoppingCartPage.taxView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
                   </View>
                   <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice*0.095}</Text>
+                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.tax}</Text>
                   </View>
                </View>),
                (<View style={styleShoppingCartPage.promotionCodeView}>
@@ -171,7 +196,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
                   </View>
                   <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.totalPrice+this.state.totalPrice*0.095+10}</Text>
+                      <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.quotedOrder.price.grandTotal}</Text>
                   </View>
                </View>)];
     }
@@ -206,12 +231,18 @@ class ShoppingCartPage extends Component {
                     renderHeader={this.renderHeader.bind(this)}
                     renderRow={this.renderRow.bind(this) } 
                     renderFooter={this.renderFooter.bind(this)}/>
-                    
-               <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
                <View style={styleShoppingCartPage.checkOutButtonView}>
-                   <Text style={styleShoppingCartPage.checkOutButtonText}>Check Out Now !</Text>
+                    <TouchableHighlight onPress={() => this.getPrice() }>
+                        <View>
+                            <Text style={styleShoppingCartPage.checkOutButtonText}>Get Price</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
+                        <View style={styleShoppingCartPage.checkOutButtonView}>
+                            <Text style={styleShoppingCartPage.checkOutButtonText}>Check Out Now !</Text>
+                        </View>
+                    </TouchableHighlight>
                </View>
-               </TouchableHighlight>
             </View>
         );
     }
@@ -219,6 +250,9 @@ class ShoppingCartPage extends Component {
     mapDone(address){
          if(address){
              Alert.alert( '', 'Your delivery location is set to '+address.formatted_address,[ { text: 'OK' }]); 
+         }
+         if(this.state.deliveryAddress && this.state.deliveryAddress.formatted_address!==address.formatted_address){
+             this.setState({priceIsConfirmed:false});
          }
          this.setState({selectDeliveryAddress:false, deliveryAddress:address});
     }
@@ -235,7 +269,7 @@ class ShoppingCartPage extends Component {
         if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity===0){
             Alert.alert( 'Warning', 'No more available',[ { text: 'OK' }]);
             return;          
-        }
+        }    
         this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity-=1;
         if(!this.state.shoppingCart[this.state.selectedTime]){
             this.state.shoppingCart[this.state.selectedTime] = {};
@@ -277,7 +311,7 @@ class ShoppingCartPage extends Component {
             total+=cartItem.dish.price * cartItem.quantity;
         }
         let newShoppingCart = JSON.parse(JSON.stringify(this.state.shoppingCart));
-        this.setState({shoppingCart:this.state.shoppingCart, totalPrice:total, dataSource:this.state.dataSource.cloneWithRows(newShoppingCart[this.state.selectedTime])});
+        this.setState({shoppingCart:this.state.shoppingCart, totalPrice:total, priceIsConfirmed:false, dataSource:this.state.dataSource.cloneWithRows(newShoppingCart[this.state.selectedTime])});
     }    
     
     changeDeliveryAddress(){
@@ -285,15 +319,55 @@ class ShoppingCartPage extends Component {
         //todo: shall we have a sepreate component for displaying saved addresses?
     }
     
-    async navigateToPaymentPage(){
+    getPrice(){
         if(!this.state.deliveryAddress){
             Alert.alert('Warning','You do not have a delivery address',[{ text: 'OK' }]);
+            return;         
+        }
+        if(!this.state.shoppingCart  || !this.state.shoppingCart[this.state.selectedTime] || Object.keys(this.state.shoppingCart[this.state.selectedTime]).length===0){
+            Alert.alert('Warning','You do not have any items',[{ text: 'OK' }]);         
+            return; 
+        }
+        this.setState({showProgress:true});
+        var orderList = {};
+        for (var cartItemKey in this.state.shoppingCart[this.state.selectedTime]) {
+            var dishItem = this.state.shoppingCart[this.state.selectedTime][cartItemKey];
+            orderList[cartItemKey] = { quantity: dishItem.quantity, price: dishItem.dish.price };
+        }
+        var orderQuote = {
+            chefId: this.state.chefId,
+            orderDeliverTime: this.deliverTimestamp,
+            orderList: orderList,
+            shippingAddress: this.state.deliveryAddress,
+        }; 
+        return this.client.postWithoutAuth(config.priceQuoteEndpoint, {orderDetail:orderQuote})
+        .then((response)=>{
+            if(response.statusCode==200){
+                console.log(response.data.orderQuote)
+                this.setState({quotedOrder:response.data.orderQuote, priceIsConfirmed:true});
+            }else{
+                console.log(response.data);
+                Alert.alert('Warning', 'Price quote failed. Please make sure delivery location is reachable.', [{ text: 'OK' }]);
+                //todo: more specific
+                this.setState({priceIsConfirmed:false});
+            }
+            this.setState({showProgress:false});        
+        });
+
+    }
+    
+    async navigateToPaymentPage(){
+        if(!this.state.priceIsConfirmed){
             return;
         }
-        if(!this.state.shoppingCart || Object.keys(this.state.shoppingCart).length==0){
-            Alert.alert('Warning','You do not have any item in your shopping cart',[{ text: 'OK' }]);
-            return;
-        }
+        // if(!this.state.deliveryAddress){
+        //     Alert.alert('Warning','You do not have a delivery address',[{ text: 'OK' }]);
+        //     return;
+        // }
+        // if(!this.state.shoppingCart || Object.keys(this.state.shoppingCart).length==0){
+        //     Alert.alert('Warning','You do not have any item in your shopping cart',[{ text: 'OK' }]);
+        //     return;
+        // }
         let eater = await AuthService.getEater(); //todo: get eater and 401 jump after call.
         if(!eater){
             this.props.navigator.push({
@@ -301,33 +375,27 @@ class ShoppingCartPage extends Component {
             });  
             return;
         }
+         this.setState({phoneNumber:eater.phoneNumber});
         //todo: Best practise is not to get eater here but cache it somewhere, but have to ensure the cached user is indeed not expired.              
+        if(!this.state.phoneNumber){
+            Alert.alert('Warning','Please add a phone number',[{ text: 'OK' }]);
+            return;
+        }
         var orderList ={};
         for(var cartItemKey in this.state.shoppingCart[this.state.selectedTime]){
             var dishItem=this.state.shoppingCart[this.state.selectedTime][cartItemKey];
             orderList[cartItemKey]={quantity:dishItem.quantity, price:dishItem.dish.price};
         }
-        var order = {
-            chefId: this.state.chefId,
-            orderDeliverTime: this.deliverTimestamp,
-            eaterId: eater.eaterId,
-            orderList: orderList,
-            shippingAddress: this.state.deliveryAddress,
-            subtotal: -1,
-            shippingFee: -1,
-            totalb4Tax: -1,
-            estimateTax: -1,
-            rewardPoints: -1,
-            grandTotal: this.state.totalPrice,
-            paymentMethod: 'American Express',
-            notesToChef: 'Please put less salt',
-            refundDll: 1459596400618,
-        };   
+        var order = this.state.quotedOrder;
+        order.quotedGrandTotal = this.state.quotedOrder.price.grandTotal;
+        order.eaterId = eater.eaterId;
+        order.paymentMethod = 'American Express';
+        order.notesToChef = 'Please put less salt';
+        order.refundDll = 1459596400618; //todo: no need these probably.        
         console.log(order);
         this.props.navigator.push({
             name: 'PaymentPage', 
             passProps:{
-                totalPrice: this.state.totalPrice,
                 orderDetail: order
             }
         });    
