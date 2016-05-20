@@ -33,5 +33,6 @@ module.exports={
     chefSchedulesEndpoint:'/api/v1/public/getSchedules/',
     chefListEndpoint: '/api/v1/public/chefs',
     chefCommentsEndpoint:'/api/v1/public/chefComments/',
+    priceQuoteEndpoint:'/api/v1/public/quoteOrderPrice/',
     getOneChefEndpoint:'/api/v1/public/chef/',
 }

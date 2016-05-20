@@ -48,6 +48,7 @@ class DateRender {
         } else {
             return this.renderDate1(dateInMilliseconds) + ' ' + this.formatTime2String(dateString);
         }
+        return dateString;
     }
 }
 
