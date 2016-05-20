@@ -26,11 +26,9 @@ class PaymentPage extends Component {
     constructor(props){
         super(props);
         let routeStack = props.navigator.state.routeStack;
-        let totalPrice = routeStack[routeStack.length-1].passProps.totalPrice;
         let orderDetail = routeStack[routeStack.length-1].passProps.orderDetail;
         this.state = {
             showProgress:false,
-            totalPrice:totalPrice,
             orderDetail:orderDetail
         };
         console.log(orderDetail);
@@ -59,7 +57,7 @@ class PaymentPage extends Component {
                          </View>
                </View>
                <View style={stylePaymentPage.totalAmountView}>
-                  <Text style={stylePaymentPage.totalAmountText}>You total amount: ${this.state.totalPrice}</Text>   
+                  <Text style={stylePaymentPage.totalAmountText}>You total amount: ${this.state.orderDetail.price.grandTotal}</Text>   
                </View>
                <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
                  <TouchableHighlight style={stylePaymentPage.selectPaymentbutton}
@@ -81,7 +79,7 @@ class PaymentPage extends Component {
     confirm(){
         Alert.alert(
             'Order placement',
-            'Ready to place the order? Your total is $'+this.state.totalPrice,
+            'Ready to place the order? Your total is $'+this.state.orderDetail.price.grandTotal,
             [
                 { text: 'Pay', onPress: () => this.createAnOrder() },              
                 { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }             

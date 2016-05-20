@@ -85,7 +85,7 @@ class HistoryOrderPage extends Component {
                       <Text style={styleHistoryOrderPage.orderTimeText}>{dateRender.renderDate1(order.orderCreatedTime)}</Text>
                    </View>
                    <View style={styleHistoryOrderPage.orderPriceView}>
-                      <Text style={styleHistoryOrderPage.orderPriceText}>${order.grandTotal}</Text>
+                      <Text style={styleHistoryOrderPage.orderPriceText}>${order.price.grandTotal}</Text>
                    </View>
                 </View>
                 {this.displayCommentOrBox(order)}

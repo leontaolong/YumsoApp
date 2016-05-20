@@ -92,7 +92,7 @@ class ShopPage extends Component {
 
     async fetchDishesAndSchedules(chefId) {
         const start = 'start='+new Date().getTime();
-        const end = 'end='+new Date().setDate(new Date().getDate()+2);
+        const end = 'end='+new Date().setDate(new Date().getDate()+6);
         let getDishesTask = this.client.getWithoutAuth(config.chefDishesEndpoint+chefId);
         let getScheduleTask = this.client.getWithoutAuth(config.chefSchedulesEndpoint+chefId+'?'+start+'&'+end);
         let responseDish = await getDishesTask;
