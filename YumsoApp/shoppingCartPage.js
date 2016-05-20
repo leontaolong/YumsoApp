@@ -93,8 +93,8 @@ class ShoppingCartPage extends Component {
                       </View>
                     </View> 
                      
-                    <View style={styleShoppingCartPage.dishDescriptionView}>
-                     <Text>{dish.ingredients}</Text>
+                    <View style={styleShoppingCartPage.dishIngredientView}>
+                       <Text style={styleShoppingCartPage.dishIngredientText}>{dish.ingredients}</Text>
                     </View>
                     
                     <View style={styleShoppingCartPage.quantityTotalPriceView}>
@@ -215,14 +215,14 @@ class ShoppingCartPage extends Component {
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
                     <View style={styles.headerLeftView}>
-                       <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToDishList()}>
+                       <TouchableHighlight style={styles.backButtonView} underlayColor={'#ECECEC'} onPress={() => this.navigateBackToDishList()}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
                        </TouchableHighlight>
                     </View>    
                     <View style={styles.titleView}>
                        <Text style={styles.titleText}>Shopping Cart</Text>
                     </View>
-                    <View style={{flex:0.1/3,width:windowWidth/3}}>
+                    <View style={styles.headerRightView}>
                     </View>
                </View>
 
@@ -231,15 +231,16 @@ class ShoppingCartPage extends Component {
                     renderHeader={this.renderHeader.bind(this)}
                     renderRow={this.renderRow.bind(this) } 
                     renderFooter={this.renderFooter.bind(this)}/>
-               <View style={styleShoppingCartPage.checkOutButtonView}>
+               <View style={styleShoppingCartPage.bottomButtonView}>
                     <TouchableHighlight onPress={() => this.getPrice() }>
-                        <View>
-                            <Text style={styleShoppingCartPage.checkOutButtonText}>Get Price</Text>
+                        <View style={styleShoppingCartPage.getPriceButtonView}>
+                            <Text style={styleShoppingCartPage.bottomButtonText}>Get Price</Text>
                         </View>
                     </TouchableHighlight>
+
                     <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
                         <View style={styleShoppingCartPage.checkOutButtonView}>
-                            <Text style={styleShoppingCartPage.checkOutButtonText}>Check Out Now !</Text>
+                            <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
                         </View>
                     </TouchableHighlight>
                </View>
@@ -561,7 +562,7 @@ var styleShoppingCartPage = StyleSheet.create({
         paddingVertical:windowHeight/73.6,
     },
     dishNamePriceView:{
-        flex:1,
+        height:20,
         flexDirection:'row', 
     },
     dishNameView:{
@@ -581,8 +582,13 @@ var styleShoppingCartPage = StyleSheet.create({
         fontWeight:'600',
         color:'#808080',
     },
-    dishDescriptionView:{
-        height:windowHeight/10,  
+    dishIngredientView:{
+        flex:1,
+        height:50,  
+    },
+    dishIngredientText:{
+        fontSize:12,
+        color:'#9B9B9B',
     },
     quantityTotalPriceView:{
         flex:1,
@@ -621,13 +627,30 @@ var styleShoppingCartPage = StyleSheet.create({
         width: windowHeight/36.8, 
         height: windowHeight/36.8,
     },
-    checkOutButtonView:{
-        height:windowHeight/13.38,
+    bottomButtonView:{
+        height:windowHeight*0.074,
+        flexDirection:'row',        
+        backgroundColor:'#FFCC33',
+        position:'absolute',
+        left: 0, 
+        right: 0,
+        top:windowHeight-windowHeight*0.074,
+    }, 
+    getPriceButtonView:{
+        width:windowWidth*0.5,
+        flex:1,
         flexDirection:'row',        
         justifyContent: 'center',
         backgroundColor:'#ff9933',
+    },
+    checkOutButtonView:{
+        width:windowWidth*0.5,
+        flex:1,
+        flexDirection:'row',        
+        justifyContent: 'center',
+        backgroundColor:'#FFCC33',
     }, 
-    checkOutButtonText:{
+    bottomButtonText:{
         fontSize:windowHeight/30.6,
         fontWeight:'300',
         color:'#fff',

@@ -15,7 +15,6 @@ var mapIcon = require('./icons/icon-map.png');
 var chefPageIcon = require('./icons/icon-chefpage.png');
 var reviewIcon = require('./icons/icon-reviews.png');
 var labelIcon = require('./icons/icon-label.png');
-var shoppingCartIcon = require('./icons/ic_shopping_cart_36pt_3x.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
 var dollarSign = require('./commonModules/dollarIconRender');
@@ -223,9 +222,11 @@ class ShopPage extends Component {
                             </TouchableHighlight>
                         </View>),                                      
                        (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
+                                <Text style={styleShopPage.openHourTitle}>Open Hours</Text>
                                 <ModalPicker
+                                 style={styleShopPage.modalPicker}
                                  data={deliveryTimeRendered}
-                                 initValue={'Open Hours'}
+                                 initValue={'Select a Delivery Time'}
                                  onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
                         </View>)];
     }
@@ -248,30 +249,36 @@ class ShopPage extends Component {
                </TouchableHighlight>
                
                <View style={styleShopPage.oneDishNameDiscriptionView}>                  
-                  <View style={styleShopPage.oneDishNameDiscriptionTextView}>
                     <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
                     <Text style={styleShopPage.oneDishDiscriptionText}>Ingredient 1, Ingredient 2, Ingredient 3, Ingredient 4, Ingredient 5 </Text>
-                  </View>
                </View>
                
                <View style={styleShopPage.priceView}>
                     <View style={styleShopPage.priceTextView}>
                         <Text style={styleShopPage.priceText}>${dish.price}</Text>
-                        <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' orders left'} 
-                        {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''} 
+                        <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' orders left'} 
+                        </Text>
+                        <Text style={styleShopPage.orderStatusText}>
+                        {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''} 
                         </Text>
                     </View>
                     <View style={styleShopPage.chooseQuantityView}>
-                        <View style={styleShopPage.plusIconView}>
-                            <TouchableHighlight underlayColor={'transparent'} onPress={() => this.addToShoppingCart(dish) }>
-                                <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
-                            </TouchableHighlight>
-                        </View>                     
+                                             
                         <View style={styleShopPage.minusIconView}>
-                            <TouchableHighlight underlayColor={'transparent'} onPress={() => this.removeFromShoppingCart(dish) }>
+                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.removeFromShoppingCart(dish) }>
                                 <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
                             </TouchableHighlight>
                         </View>
+                        <View style={styleShopPage.quantityTextView}>
+                            <Text style={styleShopPage.quantityText}>
+                            {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity: ' '}
+                            </Text>
+                        </View>
+                        <View style={styleShopPage.plusIconView}>
+                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.addToShoppingCart(dish) }>
+                                <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
+                            </TouchableHighlight>
+                        </View>                        
                     </View>
                 </View>
             </View>
@@ -315,11 +322,13 @@ class ShopPage extends Component {
                                 renderHeader={this.renderHeader.bind(this)}/>           
 
                         <View style={styleShopPage.footerView}>          
-                          <TouchableHighlight style={styleShopPage.shoppingCartIconView} onPress={() => this.navigateToShoppingCart() }>
-                               <Image source={shoppingCartIcon} style={styleShopPage.shoppingCartIcon}/>    
-                          </TouchableHighlight>
                           <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Open Hours':'$'+this.state.totalPrice+' for '+dateRender.renderDate2(this.state.selectedTime)}</Text>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'':'$'+this.state.totalPrice+' for '+dateRender.renderDate2(this.state.selectedTime)}</Text>
+                          </View>
+                          <View style={styleShopPage.checkoutButtonView}> 
+                             <TouchableHighlight underlayColor={'#ECECEC'} style={styleShopPage.checkoutButtonWrapper} onPress={() => this.navigateToShoppingCart() }>
+                                <Text style={styleShopPage.checkoutButton}>CHECK OUT</Text>
+                             </TouchableHighlight>
                           </View>
                        </View>
                 </View>      
@@ -614,45 +623,62 @@ var styleShopPage = StyleSheet.create({
         height: windowHeight*0.06,
     },
     timeSelectorView:{
-        flex:1, 
         flexDirection:'row',
         justifyContent:'center', 
         borderColor:'#D7D7D7',
-        borderTopWidth:4,
+        borderTopWidth:windowHeight*0.007,
         height:windowHeight*0.10,
-        paddingVertical:windowHeight*0.015,
+    },
+    openHourTitle:{
+        alignSelf:'center',
+        fontSize:16,
+        color:'#4A4A4A',
+        marginRight:5,
+    },
+    modalPicker:{
+        alignSelf:'center',
+        borderColor:'#FFCC33',
     },
     openHoursText:{
 
     },
     footerView:{ 
         flexDirection:'row', 
-        height:windowHeight/13.38, 
-        backgroundColor:'#ff9933',
-        paddingTop:windowHeight/245.30,
+        height:windowHeight*0.075, 
+        backgroundColor:'#FFCC33',
     },
-    shoppingCartIconView:{ 
-        height: windowHeight/19.37, 
-        width: windowWidth/8.28, 
-        paddingLeft: windowWidth/20.7, 
-        paddingTop: windowHeight/92.0, 
-        marginVertical: windowHeight/147.2, 
-        backgroundColor: '#fff', 
+    checkoutButtonView:{
+        width:windowWidth*0.3,
         flexDirection:'row',
+        alignItems:'flex-end',
     },
-    shoppingCartIcon:{ 
-        width: windowHeight/29.44, 
-        height: windowHeight/29.44,
+    checkoutButtonWrapper:{ 
+        height: 25, 
+        width: windowWidth*0.27, 
+        flexDirection:'row',
+        alignSelf:'center',
+        borderRadius:6,
+        borderWidth:1.5,
+        borderColor:'#fff',
+        justifyContent:'center',
+    },
+    checkoutButton:{
+        color:'#fff',
+        fontSize:12,
+        fontWeight:'600',
+        alignSelf:'center',
     },
     shoppingCartTimeView:{
+        width:windowWidth*0.7,
         alignItems:'flex-start',
-        marginLeft:20,
+        flexDirection:'row',
+        alignSelf:'center',
     },
     shoppingCartTimePriceText:{
         color:'#fff',
         fontSize:windowHeight/37.8,
-        marginTop:windowHeight/80,
-        fontWeight:'300',
+        fontWeight:'400',
+        justifyContent:'center',
     },
     oneDishInListView:{
         marginBottom:0,
@@ -663,14 +689,10 @@ var styleShopPage = StyleSheet.create({
     },
     oneDishNameDiscriptionView:{
         flex: 1,
-        flexDirection: 'row',
-        paddingHorizontal: windowWidth/27.6,
-        paddingTop: windowHeight/73.6,
-        paddingBottom:windowHeight/105.1,
-        alignItems:'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#fff'
+        flexDirection: 'column',
+        paddingHorizontal: windowWidth*0.07,
+        paddingTop: windowHeight*0.03,
+        paddingBottom:windowHeight*0.005,
     },
     oneDishNameDiscriptionTextView:{
         flex: 1,
@@ -678,21 +700,22 @@ var styleShopPage = StyleSheet.create({
         justifyContent:'center',
     },
     oneDishNameText:{
-        fontSize:14,
-        fontWeight:'600',
+        fontSize:16,
+        fontWeight:'bold',
+        color:'#4A4A4A',
     },
     oneDishDiscriptionText:{
-        fontSize:12,
-        color:'#A9A9A9',
+        fontSize:14,
+        color:'#9B9B9B',
         marginTop:5,
     },
     priceView:{
         flex: 1,
         flexDirection: 'row',
         borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
+        borderBottomWidth: 5,
         backgroundColor: '#fff',
-        paddingHorizontal: 50,
+        paddingHorizontal:windowWidth*0.07,
         paddingVertical:20,
     },
     priceTextView:{
@@ -709,20 +732,31 @@ var styleShopPage = StyleSheet.create({
         height: windowHeight/27.6,
     },
     plusIconView:{
-        marginRight:15,
     },
     minusIconView:{
-        marginLeft:15,
     },
-    priceText:{
+    quantityTextView:{
+        width:47,
+        justifyContent:'center',
+        flexDirection:'row',
+    },
+    quantityText:{
         fontSize:17,
         fontWeight:'bold',
-        color:'#ff9933',
+        color:'#FFCC33',
+        alignSelf:'center',
+        marginTop:windowHeight*0.0025,
+    },
+    priceText:{
+        fontSize:18,
+        fontWeight:'bold',
+        color:'#F8C84E',
+        marginBottom:8,
     },
     orderStatusText:{
-        fontSize:12,
-        color:'#A9A9A9',
-        marginTop:15,
+        fontSize:14,
+        color:'#9B9B9B',
+        marginTop:2,
     },
 });
 
