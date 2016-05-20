@@ -23,8 +23,8 @@ module.exports = StyleSheet.create({
       height:windowHeight*0.066,
     },
     headerLeftView:{
-      flex:0.1/3.0,
-      width:windowWidth/3.0,
+      flex:0.1/6.0,
+      width:windowWidth/6.0,
       flexDirection:'row',
       justifyContent:'flex-start',
     },
@@ -45,19 +45,19 @@ module.exports = StyleSheet.create({
       height:windowWidth/12.5,
     },
     titleView:{
-      flex:0.1/3, 
-      width:windowWidth/3.0,
+      flex:0.4/6, 
+      width:windowWidth*4/6.0,
       justifyContent:'center',     
     },
     titleText:{
-      fontSize:18,
+      fontSize:windowHeight/37.06,
       color:'#4A4A4A',
       fontWeight:'500',
       alignSelf:'center',
     },
     headerRightView:{
-      flex:0.1/3.0,
-      width:windowWidth/3.0,
+      flex:0.1/6.0,
+      width:windowWidth/6.0,
       justifyContent:'flex-end',
       flexDirection:'row',
     },
@@ -117,8 +117,28 @@ module.exports = StyleSheet.create({
     pageBackgroundImage:{
       width:windowWidth,
       height:windowHeight,
+      alignItems:'center',
+      opacity:0.8,
     },
-
+    loginInputView:{
+      width:windowWidth*0.634,
+      flexDirection:'row',
+      justifyContent:'center',
+      borderBottomWidth:2,
+      borderColor:'#D7D7D7',
+      alignSelf:'center'
+    },
+    loginInput:{
+      width:windowWidth*0.634,
+      height:windowHeight*0.08,
+      fontSize:16,
+      fontWeight:'bold',
+      color: '#fff',
+      borderBottomWidth:1,
+      borderColor:'#fff',
+      paddingVertical:5,
+      textAlign:'left',
+    },
 
     logo:{
       width:66,
@@ -128,18 +148,6 @@ module.exports = StyleSheet.create({
       fontSize:30,
       margin:10,
       marginBottom:20
-    },
-    loginInput:{
-      height:windowHeight/14.72,
-      fontSize:windowHeight/36.8,
-      color: '#A9A9A9',
-    },
-    loginInputView:{
-      borderBottomWidth:0.8,
-      borderColor: '#D7D7D7',
-      justifyContent: 'center',
-      paddingVertical:5,
-      paddingHorizontal:windowHeight/49.0,
     },
     button:{
       height: 50,
