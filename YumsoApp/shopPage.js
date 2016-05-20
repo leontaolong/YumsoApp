@@ -225,7 +225,7 @@ class ShopPage extends Component {
                        (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
                                 <ModalPicker
                                  data={deliveryTimeRendered}
-                                 initValue={'Select a delivery time'}
+                                 initValue={'Open Hours'}
                                  onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
                         </View>)];
     }
@@ -246,32 +246,33 @@ class ShopPage extends Component {
                <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)}>
                   <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
                </TouchableHighlight>
+               
                <View style={styleShopPage.oneDishNameDiscriptionView}>                  
                   <View style={styleShopPage.oneDishNameDiscriptionTextView}>
                     <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
-                    <Text style={styleShopPage.oneDishDiscriptionText}>{dish.description}</Text>
+                    <Text style={styleShopPage.oneDishDiscriptionText}>Ingredient 1, Ingredient 2, Ingredient 3, Ingredient 4, Ingredient 5 </Text>
                   </View>
                </View>
+               
                <View style={styleShopPage.priceView}>
-                  <View style={styleShopPage.priceTextView}>
-                    <Text style={styleShopPage.priceText}>${dish.price}</Text>
-                    <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' orders left'} 
-                       {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''} 
-                    </Text>
-                  </View>
-                  <View style={styleShopPage.chooseQuantityView}>
-                    <View style={styleShopPage.plusIconView}>
-                      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.addToShoppingCart(dish) }>
-                        <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
-                      </TouchableHighlight>
+                    <View style={styleShopPage.priceTextView}>
+                        <Text style={styleShopPage.priceText}>${dish.price}</Text>
+                        <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' orders left'} 
+                        {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''} 
+                        </Text>
                     </View>
-                     
-                    <View style={styleShopPage.minusIconView}>
-                      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.removeFromShoppingCart(dish) }>
-                        <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
-                      </TouchableHighlight>
+                    <View style={styleShopPage.chooseQuantityView}>
+                        <View style={styleShopPage.plusIconView}>
+                            <TouchableHighlight underlayColor={'transparent'} onPress={() => this.addToShoppingCart(dish) }>
+                                <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
+                            </TouchableHighlight>
+                        </View>                     
+                        <View style={styleShopPage.minusIconView}>
+                            <TouchableHighlight underlayColor={'transparent'} onPress={() => this.removeFromShoppingCart(dish) }>
+                                <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
+                            </TouchableHighlight>
+                        </View>
                     </View>
-                  </View>
                 </View>
             </View>
         );
@@ -318,7 +319,7 @@ class ShopPage extends Component {
                                <Image source={shoppingCartIcon} style={styleShopPage.shoppingCartIcon}/>    
                           </TouchableHighlight>
                           <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Select a delivery time':'$'+this.state.totalPrice+' for '+dateRender.renderDate2(this.state.selectedTime)}</Text>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'Open Hours':'$'+this.state.totalPrice+' for '+dateRender.renderDate2(this.state.selectedTime)}</Text>
                           </View>
                        </View>
                 </View>      
@@ -540,7 +541,7 @@ var styleShopPage = StyleSheet.create({
        alignItems:'flex-start', 
     }, 
     oneShopNameText:{
-       fontSize:18,
+       fontSize:windowHeight/37.06,
        fontWeight:'bold',
        color:'#4A4A4A',
     },

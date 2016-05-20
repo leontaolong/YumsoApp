@@ -60,7 +60,7 @@ class MapPage extends Component {
             showAddNewAddressInputView:false,
             markers:[],
             eater:eater,
-            showApartmentNumber:false
+            showApartmentNumber:false,
         };
         this.client = new HttpsClient(config.baseUrl, true);
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
@@ -70,11 +70,11 @@ class MapPage extends Component {
     render() {  
             let aptView = <View></View> 
             if(this.state.showApartmentNumber){
-               aptView = (<View>
-                           <Text style={styles.locationText}>Apt #: </Text>
-                           <TextInput style={{ length: 20 }}  clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                            onChangeText = {(text) => this.setState({ apartmentNumber: text }) }/>
-                         </View>);
+               aptView = (<View style={styleMapPage.aptNumberView}>
+                            <Text style={styleMapPage.aptNumberViewTitle}>Apt #/Suite #: </Text>
+                            <TextInput style={styleMapPage.aptNumberViewInput}  clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                                onChangeText = {(text) => this.setState({ apartmentNumber: text }) }/>
+                          </View>);
             }   
             
             this.state.savedAddressesView = this.renderSavedAddresses(); //todo: also include home and work addresses for selection.
@@ -92,7 +92,7 @@ class MapPage extends Component {
                                                  {this.state.searchAddressResultView}
                                                </View>);  
             }
-                                            
+                                                
             return (
                  <View style={styles.container}>
                      <View style={styles.headerBannerView}>
@@ -151,12 +151,13 @@ class MapPage extends Component {
                                 />
                         ))}
                     </MapView>   
-                    {aptView}
-                    <TouchableHighlight style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress() }>
-                        <Text style={styleMapPage.confirmAddressButtonText}>{this.isSpecific && this.state.showApartmentNumber==false? 'Next': 'Use this Address'}</Text>
+                    
+                    <TouchableHighlight ref='BottomButtonView' style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress() }>
+                        <Text style={styleMapPage.confirmAddressButtonText}>{this.isSpecific && !this.state.showApartmentNumber ? 'Next': 'Use this Address'}</Text>
                     </TouchableHighlight>
                     {searchAddressResultViewWrapper}
-                    {addressSelectionView}   
+                    {addressSelectionView}
+                    {aptView}   
                 </View>
             );                      
     }
@@ -580,10 +581,10 @@ var styleMapPage = StyleSheet.create({
         alignSelf:'center',
     },
     confirmAddressButtonView:{
-        height:windowHeight/13.38,
+        height:windowHeight*0.074,
         flexDirection:'row',        
         justifyContent: 'center',
-        backgroundColor:'#ff9933',
+        backgroundColor:'#FFCC33',
         position:'absolute',
         left: 0, 
         right: 0,
@@ -645,7 +646,29 @@ var styleMapPage = StyleSheet.create({
         marginTop:windowHeight/55.583,
         fontSize:windowHeight/39.24,
     },
-
+    aptNumberView:{
+        backgroundColor:'#fff', 
+        position:'absolute', 
+        flexDirection:'row',
+        justifyContent:'center',
+        top: windowHeight-windowHeight*0.074*2,
+        left:0,
+        right:0, 
+        height:windowHeight*0.074
+    },
+    aptNumberViewTitle:{
+        alignSelf:'center',
+    },
+    aptNumberViewInput:{
+        borderWidth:1,
+        width:100,
+        height:30,
+        alignSelf:'center',
+        paddingHorizontal:5,
+        fontSize:14,
+        borderRadius:6,
+        borderColor:'#D7D7D7',
+    },
 })    
 
 module.exports = MapPage;
