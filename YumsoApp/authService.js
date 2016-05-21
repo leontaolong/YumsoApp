@@ -35,6 +35,12 @@ class AuthService {
         await AsyncStorage.multiSet([[eaterKey, JSON.stringify(eater)]]);
     }
     
+    async saveEater(eater){
+        let response = await this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:eater});
+        console.log(response);
+        this.updateCacheEater(eater);
+    }
+    
     async registerWithEmail(firstname, lastname, email, password, password_re){
         let response = await this.client.postWithoutAuth(config.registerEndpointEmail, {
             entity:{

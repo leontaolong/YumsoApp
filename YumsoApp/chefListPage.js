@@ -50,6 +50,14 @@ class ChefListPage extends Component {
             showChefSearch:false,
             showLocSearch:false,
             showFavoriteChefsOnly:false,
+            priceRankFilter:{
+                1:false,
+                2:false,
+                3:false,
+                4:false,
+                5:false
+            }, 
+            withBestRatedSort:false,
             chefView: {},
             chefsDictionary: {},
             city:'Seattle',
@@ -70,13 +78,32 @@ class ChefListPage extends Component {
             principal = await  AuthService.getPrincipalInfo();
         }
         //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
-        //todo: clear the token and cache.      
+        //todo: clear the token and cache. 
+        if(eater){
+            if(!eater.chefFilterSettings){ //todo: remove this part;
+                eater.chefFilterSettings = {};
+                eater.chefFilterSettings['priceRankFilter'] = {
+                    1: false,
+                    2: false,
+                    3: false,
+                    4: false,
+                };
+                eater.chefFilterSettings['withBestRatedSort'] = false;
+            }
+            //console.log(eater.chefFilterSettings);
+            //console.log(JSON.stringify(eater.chefFilterSettings.priceRankFilter));
+            this.setState({ 
+                priceRankFilter:eater.chefFilterSettings.priceRankFilter, 
+                withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
+                priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
+                withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort});
+        }   
         this.setState({ principal: principal, eater:eater });
         this.fetchChefDishes();
     }
 
     async fetchChefDishes() {
-        var query='';
+        var query=''; //todo: should include seattle if no lat lng provided
         if(this.state.GPSproxAddress){
             query = '?lat='+this.state.GPSproxAddress.lat+'&lng='+this.state.GPSproxAddress.lng;
         }
@@ -157,8 +184,7 @@ class ChefListPage extends Component {
                 <View style={styleChefListPage.shopInfoView}>
                     <TouchableHighlight style={styleChefListPage.chefPhotoView} underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef.chefId) }>
                        <Image source={{ uri: chef.chefProfilePic }} style={styleChefListPage.chefPhoto}/>
-                    </TouchableHighlight>
-                    
+                    </TouchableHighlight>                   
                     <View style={styleChefListPage.shopInfoSection}>
                        <View style={styleChefListPage.shopInfoRow1}>
                          <View style={styleChefListPage.shopNameView}>
@@ -209,16 +235,40 @@ class ChefListPage extends Component {
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
         }else if(this.state.showChefSearch){
             return <View style={styles.container}>
-                <TouchableHighlight style={styles.button} onPress={() => this.setState({ showChefSearch: false, isMenuOpen: false }) }>
-                    <Text style={styles.buttonText}> Cancel</Text>
+                <Text style={styles.titleText}> Settings</Text>
+                <TouchableHighlight style={styles.button} onPress={() => this.setState({
+                    showChefSearch: false,
+                    isMenuOpen: false,
+                    priceRankFilter: JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
+                    withBestRatedSort: this.state.withBestRatedSortOrigin,
+                }) }>
+                    <Text style={styles.titleText}> Go Back</Text>
                 </TouchableHighlight>
+                <Text style={styles.titleText}> Order chef by</Text>
+                <TouchableHighlight style={styles.button} onPress={() => this.searchChef() }>
+                    <Text style={styles.buttonText}> Apply</Text>
+                </TouchableHighlight>    
                 <View style={{ alignSelf: 'stretch', alignItems: 'center' }}>
-                    <TextInput placeholder="eg. chef name, dish, etc." style={styles.loginInput}
-                        onChangeText = {(text) => this.setState({ searchFilter: text }) }/>
-                    <TouchableHighlight style={styles.button} onPress={() => this.searchChef() }>
-                        <Text style={styles.buttonText}> Search</Text>
+                    <TouchableHighlight style={styles.button} onPress={() => this.clickDollarSign(1) }>
+                        <Text style={styles.buttonText}> Price dollar LEVEL 1</Text>
+                    </TouchableHighlight> 
+                    <Text style={styles.titleText}> {this.state.priceRankFilter[1]==true?'on':'off'}</Text>
+                    <TouchableHighlight style={styles.button} onPress={() => this.clickDollarSign(2) }>
+                        <Text style={styles.buttonText}> Price dollar LEVEL 2</Text>
                     </TouchableHighlight>
-                    <Text>Next delivery in ... hours $ $$ $$$</Text>             
+                    <Text style={styles.titleText}> {this.state.priceRankFilter[2]==true?'on':'off'}</Text>     
+                    <TouchableHighlight style={styles.button} onPress={() => this.clickDollarSign(3) }>
+                        <Text style={styles.buttonText}> Price dollar LEVEL 3</Text>
+                    </TouchableHighlight> 
+                    <Text style={styles.titleText}> {this.state.priceRankFilter[3]==true?'on':'off'}</Text>                
+                    <TouchableHighlight style={styles.button} onPress={() => this.clickDollarSign(4) }>
+                        <Text style={styles.buttonText}> Price dollar LEVEL 4</Text>
+                    </TouchableHighlight>    
+                    <Text style={styles.titleText}> {this.state.priceRankFilter[4]==true?'on':'off'}</Text>                                       
+                    <TouchableHighlight style={styles.button} onPress={() => {this.setState({withBestRatedSort:!this.state.withBestRatedSort})} }>
+                        <Text style={styles.buttonText}> BestRated</Text>
+                    </TouchableHighlight> 
+                    <Text style={styles.titleText}> {this.state.withBestRatedSort==true?'on':'off'}</Text>              
                 </View>
             </View>                    
         }
@@ -264,6 +314,11 @@ class ChefListPage extends Component {
         );
     }
     
+    clickDollarSign(priceLevel){
+        this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];   
+        this.setState({priceRankFilter:this.state.priceRankFilter});  
+    }
+    
     showFavoriteChefs(){
         if(!this.state.eater) return; //todo: redirect to login page.
         this.state.showFavoriteChefsOnly = !this.state.showFavoriteChefsOnly;
@@ -296,18 +351,70 @@ class ChefListPage extends Component {
     }
     
     searchChef(){
-        var filter = this.state.searchFilter;
-        this.setState({showProgress:true});
-        this.client.getWithoutAuth(config.chefListEndpoint)
-        .then((res)=>{
-            if(res.statusCode===200){
-                var chefs = res.data.chefs;
-                this.setState({dataSource: this.state.dataSource.cloneWithRows(chefs)})
-            }
-            this.setState({showChefSearch:false, showProgress:false, isMenuOpen:false});
-        });
+        this.setState({ showProgress: true });
+        return this.applySearchSettings()
+            .then((settings) => {//todo: add these filter, make sure not logged in able to get as well.
+                let url = config.chefListEndpoint+'?'
+                let queryLoc='';
+                if (this.state.GPSproxAddress) {
+                    queryLoc = 'lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
+                }
+                if (this.state.pickedAddress) {
+                    queryLoc = 'lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng;
+                }
+                url+=queryLoc+'&';
+                if(settings){
+                    url+='withBestRatedSort='+settings.withBestRatedSort+'&';
+                    url+='priceRankFilter='
+                    for(let level in settings.priceRankFilter){
+                        if(settings.priceRankFilter[level]==true){
+                            url+=level+',';
+                        }
+                    }
+                    if(url.charAt(url.length-1)===','){
+                        url = url.substr(0, url.length-1);
+                    }
+                }else{
+                    if(url.charAt(url.length-1)==='&'){
+                        url = url.substr(0, url.length-1);                   
+                    }
+                }
+                return this.client.getWithoutAuth(url)
+                    .then((res) => {
+                        if (res.statusCode === 200) {
+                            var chefs = res.data.chefs;
+                            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs) })
+                        } else {
+                            //todo: handle failure.
+                        }
+                        this.setState({ showChefSearch: false, showProgress: false, isMenuOpen: false });
+                    });
+            });
     }
  
+    applySearchSettings(){
+        if(this.state.eater){
+            if(!this.state.eater.chefFilterSettings){//todo: remove this since the object should be exist when creating
+                this.state.eater.chefFilterSettings = {};
+            }
+            this.state.eater.chefFilterSettings['priceRankFilter'] = this.state.priceRankFilter;
+            this.state.eater.chefFilterSettings['withBestRatedSort'] = this.state.withBestRatedSort;
+            return AuthService.saveEater(this.state.eater) //todo: work on save eater reliability.
+            .then(()=>{
+                //todo: if success do this.
+                this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
+                this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;
+                return this.state.eater.chefFilterSettings;
+            });                      
+        }
+        this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
+        this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;      
+        return Promise.resolve({
+            priceRankFilter: this.state.priceRankFilter,
+            withBestRatedSort: this.state.withBestRatedSort
+        });
+    }
+    
     navigateToShopPage(chefId){
         this.setState({ isMenuOpen: false });
         this.props.navigator.push({
@@ -402,7 +509,7 @@ var Menu = React.createClass({
                 <View style={{height:windowHeight*0.09}}></View>
                 <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
                 <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>Orders History</Text>
-                <Text onPress={()=>this.goToEaterPage()} style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
+                <Text onPress={()=>{if(isAuthenticated){this.goToEaterPage();}}} style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
