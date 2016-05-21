@@ -195,7 +195,7 @@ class HistoryOrderPage extends Component {
                    </TouchableHighlight>
                    </View>    
                    <View style={styles.titleView}>
-                     <Text style={styles.titleText}>History Order</Text>
+                     <Text style={styles.titleText}>History Orders</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>
@@ -240,6 +240,18 @@ class HistoryOrderPage extends Component {
 
     navigateBackToChefList() {
         this.props.navigator.pop();
+    }
+
+    navigateToOrderDetailPage(order){
+        this.setState({ isMenuOpen: false });
+        this.props.navigator.push({
+            name: 'OrderDetailPage', 
+            passProps:{
+                eater:this.state.eater,
+                order:order,
+                callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
+            }
+        });    
     }
 }
 

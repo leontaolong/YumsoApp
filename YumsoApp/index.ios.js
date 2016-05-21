@@ -12,6 +12,7 @@ var MapPage = require('./mapPage');
 var AuthService = require('./authService');
 var LoginPage = require('./loginPage');
 var SignUpPage = require('./signupPage');
+var OrderDetailPage = require('./orderDetailPage');
 var styles = require('./style');
 var AuthService = require('./authService');
 
@@ -64,6 +65,8 @@ class YumsoApp extends Component {
             return <MapPage navigator={navigator}/>
         }else if (route.name==='PaymentOptionPage'){
             return <PaymentOptionPage navigator={navigator}/>
+        }else if (route.name==='OrderDetailPage'){
+            return <OrderDetailPage navigator={navigator}/>
         }      
     } 
 }
