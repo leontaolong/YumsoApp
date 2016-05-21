@@ -188,16 +188,16 @@ class HistoryOrderPage extends Component {
         }
         return (
             <View style={styles.container}>
-               <View style={styleHistoryOrderPage.headerBannerView}>    
+               <View style={styles.headerBannerView}>    
                    <View style={styles.headerLeftView}>
-                   <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBackToChefList()}>
-                     <Image source={backIcon} style={styleHistoryOrderPage.backButtonIcon}/>
+                   <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBackToChefList()}>
+                     <Image source={backIcon} style={styles.backButtonIcon}/>
                    </TouchableHighlight>
                    </View>    
-                   <View style={styleHistoryOrderPage.historyOrderTitleView}>
-                     <Text style={styleHistoryOrderPage.historyOrderTitleText}>History Order</Text>
+                   <View style={styles.titleView}>
+                     <Text style={styles.titleText}>History Order</Text>
                    </View>
-                   <View style={{flex:0.1/3,width:windowWidth/3}}>
+                   <View style={styles.headerRightView}>
                    </View>
                </View>
                <ListView style={styleHistoryOrderPage.commentListView}
@@ -244,29 +244,6 @@ class HistoryOrderPage extends Component {
 }
 
 var styleHistoryOrderPage = StyleSheet.create({
-    headerBannerView:{
-        flex:0.1,
-        flexDirection:'row',
-        borderBottomWidth:1,
-        borderColor:'#D7D7D7',
-    },
-    backButtonView:{
-        flex:0.1/3,
-        width:windowWidth/3,
-        paddingTop:6,
-    },
-    backButtonIcon:{
-        width:30,
-        height:30,
-    },
-    historyOrderTitleView:{
-        flex:0.1/3, 
-        width:windowWidth/3,
-        alignItems:'center',     
-    },
-    historyOrderTitleText:{
-        marginTop:12,
-    },
     commentListView:{
         alignSelf:'stretch',
         flexDirection:'column',
