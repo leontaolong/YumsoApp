@@ -33,7 +33,6 @@ import React, {
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
-var mapViewYposition = 0;
 
 class MapPage extends Component {
     constructor(props){
@@ -61,6 +60,7 @@ class MapPage extends Component {
             markers:[],
             eater:eater,
             showApartmentNumber:false,
+            aptNumberViewYposition:windowHeight-windowHeight*0.074*2,
         };
         this.client = new HttpsClient(config.baseUrl, true);
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
@@ -70,20 +70,20 @@ class MapPage extends Component {
     render() {  
             let aptView = <View></View> 
             if(this.state.showApartmentNumber){
-               aptView = (<View style={styleMapPage.aptNumberView}>
-                            <Text style={styleMapPage.aptNumberViewTitle}>Apt #/Suite #: </Text>
-                            <TextInput style={styleMapPage.aptNumberViewInput}  clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                onChangeText = {(text) => this.setState({ apartmentNumber: text }) }/>
+               aptView = (<View style={{backgroundColor:'#fff', position:'absolute', flexDirection:'row', justifyContent:'center', 
+                                top: this.state.aptNumberViewYposition, left:0, right:0, height:windowHeight*0.074,}}>
+                              <Text style={styleMapPage.aptNumberViewTitle}>Apt.#/Suite# </Text>
+                              <TextInput style={styleMapPage.aptNumberViewInput} onFocus = {()=>this.slideUpAptNumberView()} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                                   keyboardType={'numbers-and-punctuation'} onSubmitEditing = {()=>this.slideDownAptNumberView()} onChangeText = {(text) => this.setState({ apartmentNumber: text })}/>
                           </View>);
             }   
             
             this.state.savedAddressesView = this.renderSavedAddresses(); //todo: also include home and work addresses for selection.
             let addressSelectionView=[];
             if(!this.state.showMapView){
-               addressSelectionView.push(
-                    <View style={styleMapPage.addressSelectionView}>
-                        {this.state.savedAddressesView}               
-                    </View>);  
+               addressSelectionView.push(<View style={styleMapPage.addressSelectionView}>
+                                          {this.state.savedAddressesView}               
+                                         </View>);  
             }                       
 
             var searchAddressResultViewWrapper;
@@ -152,7 +152,7 @@ class MapPage extends Component {
                         ))}
                     </MapView>   
                     
-                    <TouchableHighlight ref='BottomButtonView' style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress() }>
+                    <TouchableHighlight style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress() }>
                         <Text style={styleMapPage.confirmAddressButtonText}>{this.isSpecific && !this.state.showApartmentNumber ? 'Next': 'Use this Address'}</Text>
                     </TouchableHighlight>
                     {searchAddressResultViewWrapper}
@@ -483,6 +483,20 @@ class MapPage extends Component {
         }
         this.props.navigator.pop();
     }
+    
+    slideUpAptNumberView(){
+        var view = this.refs['MapView'];
+        var handle = React.findNodeHandle(view); 
+        RCTUIManager.measure(handle, (x, y, width, height, pageX, pageY) => {
+               this.setState({mapViewYposition: y});
+               this.setState({aptNumberViewYposition: y});
+        })
+        
+    }
+    
+    slideDownAptNumberView(){
+        this.setState({aptNumberViewYposition: windowHeight-windowHeight*0.074*2});
+    }
 }
 
 var styleMapPage = StyleSheet.create({
@@ -588,7 +602,7 @@ var styleMapPage = StyleSheet.create({
         position:'absolute',
         left: 0, 
         right: 0,
-        top:windowHeight-windowHeight/13.38,
+        top:windowHeight-windowHeight*0.074,
     }, 
     confirmAddressButtonText:{
         fontSize:windowHeight/30.6,
@@ -654,18 +668,20 @@ var styleMapPage = StyleSheet.create({
         top: windowHeight-windowHeight*0.074*2,
         left:0,
         right:0, 
-        height:windowHeight*0.074
+        height:windowHeight*0.074,
     },
     aptNumberViewTitle:{
         alignSelf:'center',
+        fontSize:windowHeight/41.69,
+        color:'#4A4A4A',
     },
     aptNumberViewInput:{
         borderWidth:1,
-        width:100,
-        height:30,
+        width:windowWidth*0.27,
+        height:windowHeight*0.044,
         alignSelf:'center',
-        paddingHorizontal:5,
-        fontSize:14,
+        paddingHorizontal:7,
+        fontSize:windowHeight/47.64,
         borderRadius:6,
         borderColor:'#D7D7D7',
     },
