@@ -72,7 +72,7 @@ class MapPage extends Component {
             if(this.state.showApartmentNumber){
                aptView = (<View style={{backgroundColor:'#fff', position:'absolute', flexDirection:'row', justifyContent:'center', 
                                 top: this.state.aptNumberViewYposition, left:0, right:0, height:windowHeight*0.074,}}>
-                              <Text style={styleMapPage.aptNumberViewTitle}>Apt.#/Suite# </Text>
+                              <Text style={styleMapPage.aptNumberViewTitle}>Apt/Suite# </Text>
                               <TextInput style={styleMapPage.aptNumberViewInput} onFocus = {()=>this.slideUpAptNumberView()} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                                    keyboardType={'numbers-and-punctuation'} onSubmitEditing = {()=>this.slideDownAptNumberView()} onChangeText = {(text) => this.setState({ apartmentNumber: text })}/>
                           </View>);
@@ -166,10 +166,8 @@ class MapPage extends Component {
         if(!this.state.eater){
             return undefined;
         }
-        //let workAddress = this.state.eater.workAddress;
-        let workAddress = this.state.GPSproxAddress;
-        //let homeAddress = this.state.eater.homeAddress;
-        let homeAddress = this.state.GPSproxAddress;
+        let workAddress = this.state.eater.workAddress;
+        let homeAddress = this.state.eater.homeAddress;
         let otherAddresses = this.state.eater.addressList;
         var addressesView = []
         if(homeAddress){
@@ -182,7 +180,7 @@ class MapPage extends Component {
                     </View>
                     <View style={styleMapPage.oneAddressTextView}>
                         <Text style={styleMapPage.oneAddressText}>
-                            {homeAddress.formatted_address}
+                            {homeAddress.formatted_address} {homeAddress.apartmentNumber? 'Apt/Suite# '+homeAddress.apartmentNumber:''}
                         </Text>
                     </View>
                 </View>
@@ -199,7 +197,7 @@ class MapPage extends Component {
                     </View>
                     <View style={styleMapPage.oneAddressTextView}>
                         <Text style={styleMapPage.oneAddressText}>
-                            {workAddress.formatted_address}
+                            {workAddress.formatted_address} {workAddress.apartmentNumber? 'Apt/Suite# '+workAddress.apartmentNumber:''}
                         </Text>
                     </View>
                 </View>

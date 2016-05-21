@@ -34,7 +34,7 @@ class ShoppingCartPage extends Component {
         let order = routeStack[routeStack.length-1].passProps.order;        
         
         this.state = {
-            dataSource: ds.cloneWithRows(Object.values(orderItem)),
+            dataSource: ds.cloneWithRows(Object.values(order.orderList)),
             showProgress:false,
             order:order,
         };
@@ -56,70 +56,71 @@ class ShoppingCartPage extends Component {
     
     renderRow(orderItem){
         let imageSrc =require('./ok.jpeg') ;
-        // if(orderItem.pictures && dish.pictures!=null && dish.pictures.length!=0){
-        //     imageSrc={uri:dish.pictures[0]};   
-        // } 
+        if(orderItem.dishDetail && orderItem.dishDetail.pictures && orderItem.dishDetail.pictures.length!=0){
+            imageSrc={uri:orderItem.dishDetail.pictures[0]};   
+        } 
         return (
-            <View style={styleShoppingCartPage.oneListingView}>
+            <View key={orderItem.dishDetail.dishId} style={styleShoppingCartPage.oneListingView}>
                 <Image source={imageSrc} style={styleShoppingCartPage.dishPhoto}/>
                 <View style={styleShoppingCartPage.shoppingCartInfoView}>
                     <View style={styleShoppingCartPage.dishNamePriceView}>
                       <View style={styleShoppingCartPage.dishNameView}>
                         <Text style={styleShoppingCartPage.dishNameText}>{orderItem.dishName}</Text>
-                      </View>
-                      <View style={styleShoppingCartPage.dishPriceView}>
-                        <Text style={styleShoppingCartPage.dishPriceText}>${orderItem.price}</Text>   
-                      </View>
+                      </View>                      
                     </View> 
-                     
+                                                             
                     <View style={styleShoppingCartPage.dishIngredientView}>
-                       <Text style={styleShoppingCartPage.dishIngredientText}>orderItem.ingredients</Text>
-                    </View>                                          
+                       <Text style={styleShoppingCartPage.dishIngredientText}>{orderItem.dishDetail.ingredients}</Text>
+                    </View>
+                    
+                    <Text style={styleShoppingCartPage.dishPriceText}>${orderItem.price}</Text>                                          
+                    <Text style={styleShoppingCartPage.dishIngredientText}>Quantity: {orderItem.quantity}</Text>                                        
                 </View>
             </View>
         );
     }
     
     renderFooter(){
-       return [(<View style={styleShoppingCartPage.subtotalView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.subTotal}</Text>
-                  </View>
-               </View>),
-               (<View style={styleShoppingCartPage.deliveryFeeView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.deliveryFee}</Text>
-                  </View>
-               </View>),
-               (<View style={styleShoppingCartPage.addressView}>
-                  <View style={styleShoppingCartPage.addressTextView}>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.postal:''}</Text>
-                  </View> 
-               </View>),
-               (<View style={styleShoppingCartPage.taxView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.tax}</Text>
-                  </View>
-               </View>),
-               (<View style={styleShoppingCartPage.totalView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.quotedOrder.price.grandTotal}</Text>
-                  </View>
-               </View>)];
+        return [];
+    //    return [(<View style={styleShoppingCartPage.subtotalView}>
+    //               <View style={styleShoppingCartPage.priceTitleView}>
+    //                   <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
+    //               </View>
+    //               <View style={styleShoppingCartPage.priceNumberView}>
+    //                   <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.subTotal}</Text>
+    //               </View>
+    //            </View>),
+    //            (<View style={styleShoppingCartPage.deliveryFeeView}>
+    //               <View style={styleShoppingCartPage.priceTitleView}>
+    //                   <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
+    //               </View>
+    //               <View style={styleShoppingCartPage.priceNumberView}>
+    //                   <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.deliveryFee}</Text>
+    //               </View>
+    //            </View>),
+    //            (<View style={styleShoppingCartPage.addressView}>
+    //               <View style={styleShoppingCartPage.addressTextView}>
+    //                   <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+    //                   <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+    //                   <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.postal:''}</Text>
+    //               </View> 
+    //            </View>),
+    //            (<View style={styleShoppingCartPage.taxView}>
+    //               <View style={styleShoppingCartPage.priceTitleView}>
+    //                   <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
+    //               </View>
+    //               <View style={styleShoppingCartPage.priceNumberView}>
+    //                   <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.tax}</Text>
+    //               </View>
+    //            </View>),
+    //            (<View style={styleShoppingCartPage.totalView}>
+    //               <View style={styleShoppingCartPage.priceTitleView}>
+    //                   <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
+    //               </View>
+    //               <View style={styleShoppingCartPage.priceNumberView}>
+    //                   <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.quotedOrder.price.grandTotal}</Text>
+    //               </View>
+    //            </View>)];
     }
     
     render() {

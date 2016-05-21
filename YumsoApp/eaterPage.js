@@ -7,7 +7,7 @@ var ImageCamera = require('./imageCamera');
 var MapPage = require('./mapPage');
 var backIcon = require('./icons/icon-back.png');
 var defaultAvatar = require('./TestImages/Obama.jpg');
-var uploadPhotoIcon = require('./icons/ic_add_a_photo_48pt_3x.png');
+var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/Icon-house.png');
 var paypalIcon = require('./icons/Icon-paypal.png');
 var visaIcon = require('./icons/Icon-visa.png');
@@ -74,13 +74,27 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.addressText}>
                             {this.state.addressList[i].formatted_address}
                           </Text>
+                          <Text style={styleEaterPage.addressText}>
+                            Apt/Suite#: {this.state.addressList[i].apartmentNumber?this.state.addressList[i].apartmentNumber : 'N/A'}
+                          </Text>
                        </View>
                        <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.removeAddress(this.state.addressList[i])}>
-                          <Text style={styleEaterPage.addressEditText}>Remove</Text>
+                          <Text style={styleEaterPage.addressEditText}>Delete</Text>
                        </TouchableHighlight>
                      </View> 
                  );
              }
+
+             var aptNumberHome = 'N/A';
+             if(this.state.homeAddress!=null && this.state.homeAddress.apartmentNumber && this.state.homeAddress.apartmentNumber.trim()){
+                var aptNumberHome = this.state.homeAddress.apartmentNumber;
+             }
+
+             var aptNumberWork = 'N/A';
+             if(this.state.workAddress!=null && this.state.workAddress.apartmentNumber && this.state.workAddress.apartmentNumber.trim()){
+                var aptNumberWork = this.state.workAddress.apartmentNumber;
+             }
+                                       
              return (
                <View style={styles.container}>
                  <View style={styles.headerBannerView}>
@@ -174,7 +188,10 @@ class EaterPage extends Component {
                        </View>
                        <View style={styleEaterPage.addressTextView}>
                           <Text style={styleEaterPage.addressText}>
-                            {this.state.homeAddress!=null?this.state.homeAddress.formatted_address:''}
+                            {this.state.homeAddress!=null? this.state.homeAddress.formatted_address:''}
+                          </Text>
+                          <Text style={styleEaterPage.addressText}>
+                            Apt/Suite#: {aptNumberHome}
                           </Text>
                        </View>
                        <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.setState({editHomeAddress:true})}>
@@ -189,7 +206,10 @@ class EaterPage extends Component {
                        </View>
                        <View style={styleEaterPage.addressTextView}>
                           <Text style={styleEaterPage.addressText}>
-                            {this.state.workAddress!=null?this.state.workAddress.formatted_address:''}
+                            {this.state.workAddress!=null? this.state.workAddress.formatted_address:''}
+                          </Text>
+                          <Text style={styleEaterPage.addressText}>
+                            Apt/Suite#: {aptNumberWork}
                           </Text>
                        </View>
                        <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.setState({editWorkAddress:true})}>
@@ -220,7 +240,10 @@ class EaterPage extends Component {
              var addressListRendered = [];
              for (let i = 0; i < this.state.eater.addressList.length; i++) {
                  addressListRendered.push(
-                     <Text key={i} style={styleEaterPage.eaterPageGreyText}>{this.state.eater.addressList[i].formatted_address}</Text>
+                     <Text key={i} style={styleEaterPage.eaterPageGreyText}>{this.state.eater.addressList[i].formatted_address}</Text>                     
+                 );
+                 addressListRendered.push(
+                     <Text key={i+'otherAddress'} style={styleEaterPage.eaterPageGreyText}>Apt/Suite#: {this.state.eater.addressList[i].apartmentNumber}</Text>
                  );
              }
              var chefProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic }
@@ -254,11 +277,9 @@ class EaterPage extends Component {
                    </View>
                    <ScrollView>
                      <Image source={chefProfile} style={styleEaterPage.eaterProfilePic}>
-                         <View style={styleEaterPage.uploadPhotoButtonView}>
-                             <TouchableHighlight onPress={() => this.uploadPic() }>
-                                 <Image source={uploadPhotoIcon} style={styleEaterPage.uploadPhotoIcon}/>
-                             </TouchableHighlight>
-                         </View>
+                           <TouchableHighlight style={styleEaterPage.uploadPhotoButtonView} underlayColor={'transparent'} onPress={() => this.uploadPic() }>
+                                <Image source={uploadPhotoIcon} style={styleEaterPage.uploadPhotoIcon}/>
+                           </TouchableHighlight>
                      </Image>
                      <View style={styleEaterPage.eaterPageRowView}>
                          <Text style={styleEaterPage.eaterNameText}>{this.state.eater.firstname} {this.state.eater.lastname} ({this.state.eater.eaterAlias}) </Text>
@@ -267,10 +288,12 @@ class EaterPage extends Component {
                      <View style={styleEaterPage.eaterPageRowView}>
                          <Text style={styleEaterPage.eaterPageGreyText}>Address: </Text>
                          <Text style={styleEaterPage.eaterPageGreyText}>+ HOME</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.homeAddress!=null?this.state.eater.homeAddress.formatted_address:''}</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.homeAddress!=null? this.state.eater.homeAddress.formatted_address:''}</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.homeAddress!=null && this.state.eater.homeAddress.apartmentNumber!=null? 'Apt/Suite#: '+this.state.eater.homeAddress.apartmentNumber:''}</Text>
                          <Text style={styleEaterPage.eaterPageGreyText}>+ WORK</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.workAddress!=null?this.state.eater.workAddress.formatted_address:''}</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>+ Other Address: </Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.workAddress!=null? this.state.eater.workAddress.formatted_address:''}</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.workAddress!=null && this.state.eater.workAddress.apartmentNumber!=null? 'Apt/Suite#: '+this.state.eater.workAddress.apartmentNumber:''}</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>+ OTHER</Text>
                          {addressListRendered}
                      </View>
                      <View style={styleEaterPage.eaterPageRowView}>                        
@@ -436,12 +459,12 @@ class EaterPage extends Component {
 var styleEaterPage = StyleSheet.create({
     uploadPhotoButtonView:{
         position:'absolute',
-        right:12,
-        top:windowHeight/2.63-47,
+        right:windowWidth *0.0157,
+        top:windowHeight*0.313,
     },
     uploadPhotoIcon:{
-        width:40,
-        height:40,
+        width:windowHeight*0.06,
+        height:windowHeight*0.06,
     },
     eaterProfilePic:{
         width: windowWidth,
@@ -468,21 +491,21 @@ var styleEaterPage = StyleSheet.create({
     sectionTitleView:{
         flexDirection:'row',
         justifyContent:'center',
-        height:70,
+        height:windowHeight*0.105,
         backgroundColor:'#ECECEC',
         borderColor:'#D7D7D7',
         borderBottomWidth: 1,
     },
     sectionTitleText:{
         alignSelf:'center',
-        fontSize:18,
+        fontSize:windowHeight/37.05,
         color:'#696969',
         fontWeight:'400',
     },
     nameInputView:{
         flex:1,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         borderColor:'#D7D7D7',
         borderBottomWidth: 1,
     },
@@ -490,27 +513,27 @@ var styleEaterPage = StyleSheet.create({
         flex:0.25,
         flexDirection:'row',
         justifyContent:'flex-start',
-        marginLeft:15,
+        marginLeft:windowWidth*0.04,
     },
     nameInputTitleText:{
         alignSelf:'center',
-        fontSize:16,
+        fontSize:windowHeight/41.6875,
         color:'#808080',
     },
     nameInputTextView:{
         flex:0.75,
         flexDirection:'row',
-        marginRight:15,
+        marginRight:windowWidth*0.022,
     },
     nameInputText:{
         flex:1,
         textAlign:'right',
-        fontSize:16,
+        fontSize:windowHeight/41.6875,
     },
     genderSelectView:{
         flex:1,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         borderColor:'#D7D7D7',
         borderBottomWidth: 1,
     },
@@ -528,13 +551,13 @@ var styleEaterPage = StyleSheet.create({
         borderColor:'#D7D7D7',
     },
     oneGenderSelectText:{
-        fontSize:15,
+        fontSize:windowHeight/44.467,
         color:'#808080',
         alignSelf:'center',
     },
     houseIcon:{
-        width: 30,
-        height:30,
+        width: windowHeight*0.0375,
+        height:windowHeight*0.0375,
         alignSelf:'center',
     },
     addressView:{
@@ -546,52 +569,52 @@ var styleEaterPage = StyleSheet.create({
     addressTitleView:{
         flex:0.25,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         justifyContent:'flex-start',
-        marginLeft:15,
+        marginLeft:windowWidth*0.04,
     },
     addressTitleText:{
         alignSelf:'center',
-        fontSize:16,
+        fontSize:windowHeight/41.6875,
         color:'#808080',
     },
     addressTextView:{
-        marginLeft:30,
+        marginLeft:windowWidth*0.05,
         flex:0.5,
         justifyContent:'flex-end',
+        paddingVertical:windowWidth*0.0427,
     },
     addressText:{
-        fontSize:15,
-        marginVertical:16,
+        fontSize:windowHeight/44.467,
     },
     addressEditView:{
         flex:0.15,
         flexDirection:'row',
-        marginRight:15,
+        marginRight:windowWidth*0.04,
         justifyContent:'flex-end',
-        height:50,
+        height:windowHeight*0.075,
     },
     addressEditText:{
-        fontSize:15,
+        fontSize:windowHeight/44.467,
         color:'#ff9933',
         alignSelf:'center',
     },
     addNewAddressClickableView:{
-        height:50,
+        height:windowHeight*0.075,
         flexDirection:'row',
         backgroundColor:'#ECECEC',
         justifyContent:'flex-start',
-        paddingLeft:15,
+        paddingLeft:windowWidth*0.04,
     },
     addNewAddressClickableText:{
-        fontSize:15,
+        fontSize:windowHeight/44.467,
         color:'#ff9933',
         alignSelf:'center',
     },
     paymentMethodView:{
         flex:1,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
     },
     paymentMethodIconView:{
         flex:0.75,
@@ -607,20 +630,20 @@ var styleEaterPage = StyleSheet.create({
     paymentMethodTitleView:{
         flex:0.25,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         justifyContent:'flex-start',
     },
     paymentMethodIcon:{
-        width:40,
-        height:25,
+        width:windowWidth*0.107,
+        height:windowWidth*0.067,
         alignSelf:'center',
     },
     creditCardView:{
-        marginVertical:17,
-        padding:15,
+        marginVertical:windowHeight*0.0255,
+        padding:windowWidth*0.04,
         width:windowWidth*0.45,
         flexDirection:'column',
-        marginRight:15,
+        marginRight:windowWidth*0.04,
         borderColor:'#D7D7D7',
         borderBottomWidth: 0.6,
         borderWidth:1,

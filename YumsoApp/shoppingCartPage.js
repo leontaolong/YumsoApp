@@ -122,9 +122,8 @@ class ShoppingCartPage extends Component {
     }
     
     renderFooter(){
-      if(!this.state.priceIsConfirmed){
-          return [(
-               <View style={styleShoppingCartPage.subtotalView}>
+       if(!this.state.priceIsConfirmed){
+       return [(<View style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
                   </View>
@@ -137,6 +136,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.postal:''}</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>
                      <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
@@ -144,7 +144,7 @@ class ShoppingCartPage extends Component {
                      </TouchableHighlight>
                   </View>
                </View>)];
-      }
+       }
        return [(<View style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>

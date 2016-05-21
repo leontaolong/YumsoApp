@@ -81,7 +81,7 @@ class HistoryOrderPage extends Component {
             <View style={styleHistoryOrderPage.oneCommentView}>
                 <View style={styleHistoryOrderPage.shopNameTimePriceView}>
                    <View style={styleHistoryOrderPage.shopNameOrderTimeView}>
-                      <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>
+                      <Text onPress={()=>this.navigateToOrderDetailPage(order)} style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>
                       <Text style={styleHistoryOrderPage.orderTimeText}>{dateRender.renderDate1(order.orderCreatedTime)}</Text>
                    </View>
                    <View style={styleHistoryOrderPage.orderPriceView}>
