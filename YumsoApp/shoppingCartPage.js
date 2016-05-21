@@ -209,7 +209,7 @@ class ShoppingCartPage extends Component {
                 style={styles.loader}/> 
         }  
         if(this.state.selectDeliveryAddress){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true}/>);   
         }       
         return (
             <View style={styles.container}>

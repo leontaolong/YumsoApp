@@ -180,16 +180,16 @@ class ShopPage extends Component {
                                     <View style={{flexDirection:'row',alignSelf:'center'}}>
                                     {rating.renderRating(this.state.chef.rating)}
                                     </View>
-                                    <Text style={styleShopPage.reviewNumberText}>{dollarSign.renderLevel(3)}</Text>
+                                    <Text style={styleShopPage.reviewNumberText}>{dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
                                 </View>
                             </View>
                             
                             <View style={styleShopPage.shopInfoRow3}>
                                 <View style={styleShopPage.labelView}>
-                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>spicy</Text>
+                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}</Text>
                                 </View>
                                 <View style={styleShopPage.labelView}>
-                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>Japanese</Text>
+                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.foodTag}</Text>
                                 </View>
                             </View>                       
                           </View>
@@ -197,7 +197,7 @@ class ShopPage extends Component {
                        (<View key={'chefLivingAreaView'} style={styleShopPage.chefDetailView}>
                             <Image source={mapIcon} style={styleShopPage.pickupAddressIcon}/>
                             <View style={styleShopPage.chefDetailTextView}>
-                                <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddress.city+", "+this.state.chef.pickupAddress.state}</Text>
+                                <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
                             </View>
                             <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
@@ -215,7 +215,7 @@ class ShopPage extends Component {
                         (<View key={'chefReviewsClickable'} style={styleShopPage.chefDetailView}>
                             <Image source={reviewIcon} style={styleShopPage.pickupAddressIcon}/>
                             <View style={styleShopPage.chefDetailTextView}>
-                                <Text style={styleShopPage.pickupAddressText}>10 reviews</Text>
+                                <Text style={styleShopPage.pickupAddressText}>{this.state.chef.reviewCount} reviews</Text>
                             </View>
                             <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
@@ -250,7 +250,7 @@ class ShopPage extends Component {
                
                <View style={styleShopPage.oneDishNameDiscriptionView}>                  
                     <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
-                    <Text style={styleShopPage.oneDishDiscriptionText}>Ingredient 1, Ingredient 2, Ingredient 3, Ingredient 4, Ingredient 5 </Text>
+                    <Text style={styleShopPage.oneDishDiscriptionText}>{dish.ingredients}</Text>
                </View>
                
                <View style={styleShopPage.priceView}>
