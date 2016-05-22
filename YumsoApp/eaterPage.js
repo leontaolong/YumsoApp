@@ -75,7 +75,7 @@ class EaterPage extends Component {
                             {this.state.addressList[i].formatted_address}
                           </Text>
                           <Text style={styleEaterPage.addressText}>
-                            Apt/Suite#: {this.state.addressList[i].apartmentNumber?this.state.addressList[i].apartmentNumber : 'N/A'}
+                            {this.state.addressList[i].apartmentNumber?'Apt/Suite#: '+this.state.addressList[i].apartmentNumber : ''}
                           </Text>
                        </View>
                        <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.removeAddress(this.state.addressList[i])}>
@@ -84,15 +84,15 @@ class EaterPage extends Component {
                      </View> 
                  );
              }
-
-             var aptNumberHome = 'N/A';
+             
+             var aptNumberHomeView = null;
              if(this.state.homeAddress!=null && this.state.homeAddress.apartmentNumber && this.state.homeAddress.apartmentNumber.trim()){
-                var aptNumberHome = this.state.homeAddress.apartmentNumber;
+                var aptNumberHomeView = <Text style={styleEaterPage.addressText}>{'Apt/Suite#: '+ this.state.homeAddress.apartmentNumber}</Text>
              }
-
-             var aptNumberWork = 'N/A';
+             
+             var aptNumberWorkView = null;
              if(this.state.workAddress!=null && this.state.workAddress.apartmentNumber && this.state.workAddress.apartmentNumber.trim()){
-                var aptNumberWork = this.state.workAddress.apartmentNumber;
+                var aptNumberWorkView = <Text style={styleEaterPage.addressText}>{'Apt/Suite#: '+ this.state.workAddress.apartmentNumber}</Text>;
              }
                                        
              return (
@@ -190,9 +190,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.addressText}>
                             {this.state.homeAddress!=null? this.state.homeAddress.formatted_address:''}
                           </Text>
-                          <Text style={styleEaterPage.addressText}>
-                            Apt/Suite#: {aptNumberHome}
-                          </Text>
+                          {aptNumberHomeView}                         
                        </View>
                        <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.setState({editHomeAddress:true})}>
                           <Text style={styleEaterPage.addressEditText}>Edit</Text>
@@ -208,9 +206,7 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.addressText}>
                             {this.state.workAddress!=null? this.state.workAddress.formatted_address:''}
                           </Text>
-                          <Text style={styleEaterPage.addressText}>
-                            Apt/Suite#: {aptNumberWork}
-                          </Text>
+                          {aptNumberWorkView}
                        </View>
                        <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.setState({editWorkAddress:true})}>
                           <Text style={styleEaterPage.addressEditText}>Edit</Text>
@@ -229,15 +225,15 @@ class EaterPage extends Component {
                 </View>);
          }
          if (this.state.showProgress) {
-             return (
-                 <View>
-                     <ActivityIndicatorIOS
-                         animating={this.state.showProgress}
-                         size="large"
-                         style={styles.loader}/>
-                 </View>);
+             return (<View>
+                         <ActivityIndicatorIOS animating={this.state.showProgress} size="large"  Dstyle={styles.loader}/>
+                     </View>);
          } else {
              var addressListRendered = [];
+             if(this.state.eater.addressList.length>0){
+                addressListRendered.push(<Text style={styleEaterPage.eaterPageGreyText}>+ OTHER</Text>);
+             }
+                          
              for (let i = 0; i < this.state.eater.addressList.length; i++) {
                  addressListRendered.push(
                      <Text key={i} style={styleEaterPage.eaterPageGreyText}>{this.state.eater.addressList[i].formatted_address}</Text>                     
@@ -246,7 +242,17 @@ class EaterPage extends Component {
                      <Text key={i+'otherAddress'} style={styleEaterPage.eaterPageGreyText}>Apt/Suite#: {this.state.eater.addressList[i].apartmentNumber}</Text>
                  );
              }
-             var chefProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic }
+             var chefProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
+             
+             var emailView=null;
+             if(this.state.eater.email && this.state.principal.identityProvider !== 'Yumso'){
+                emailView = <Text style={styleEaterPage.eaterPageGreyText}>{'Email: '+this.state.eater.email}</Text>;
+             }
+             var photoNumberView=null;
+             if(this.state.eater.phoneNumber){
+                photoNumberView = <Text style={styleEaterPage.eaterPageGreyText}>{'Phone: '+this.state.eater.phoneNumber}</Text>;
+             }
+             
              return (
                 <View style={styles.container}>
                    <View style={styles.headerBannerView}>                  
@@ -283,25 +289,40 @@ class EaterPage extends Component {
                      </Image>
                      <View style={styleEaterPage.eaterPageRowView}>
                          <Text style={styleEaterPage.eaterNameText}>{this.state.eater.firstname} {this.state.eater.lastname} ({this.state.eater.eaterAlias}) </Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.principal.identityProvider === 'Yumso' ? `Email:${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.principal.identityProvider === 'Yumso' ? `Email: ${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
+                         {emailView}
+                         {photoNumberView}
                      </View>
                      <View style={styleEaterPage.eaterPageRowView}>
                          <Text style={styleEaterPage.eaterPageGreyText}>Address: </Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>+ HOME</Text>
+                         <Text style={styleEaterPage.eaterPageClickableText} onPress={() => { this.setState({ edit: true, 
+                                     firstname: this.state.eater.firstname, 
+                                     lastname: this.state.eater.lastname, 
+                                     eaterAlias: this.state.eater.eaterAlias,
+                                     gender: this.state.eater.gender,
+                                     phoneNumber: this.state.eater.phoneNumber,
+                                     homeAddress: this.state.eater.homeAddress,
+                                     workAddress: this.state.eater.workAddress,
+                                     addressList: this.state.eater.addressList
+                                    })}}>+ HOME</Text>
                          <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.homeAddress!=null? this.state.eater.homeAddress.formatted_address:''}</Text>
                          <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.homeAddress!=null && this.state.eater.homeAddress.apartmentNumber!=null? 'Apt/Suite#: '+this.state.eater.homeAddress.apartmentNumber:''}</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>+ WORK</Text>
+                         <Text style={styleEaterPage.eaterPageClickableText} onPress={() => { this.setState({ edit: true, 
+                                     firstname: this.state.eater.firstname, 
+                                     lastname: this.state.eater.lastname, 
+                                     eaterAlias: this.state.eater.eaterAlias,
+                                     gender: this.state.eater.gender,
+                                     phoneNumber: this.state.eater.phoneNumber,
+                                     homeAddress: this.state.eater.homeAddress,
+                                     workAddress: this.state.eater.workAddress,
+                                     addressList: this.state.eater.addressList
+                                    })}}>+ WORK</Text>
                          <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.workAddress!=null? this.state.eater.workAddress.formatted_address:''}</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.workAddress!=null && this.state.eater.workAddress.apartmentNumber!=null? 'Apt/Suite#: '+this.state.eater.workAddress.apartmentNumber:''}</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>+ OTHER</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.workAddress!=null && this.state.eater.workAddress.apartmentNumber!=null? 'Apt/Suite#: '+this.state.eater.workAddress.apartmentNumber:''}</Text>                         
                          {addressListRendered}
                      </View>
                      <View style={styleEaterPage.eaterPageRowView}>                        
-                         <View style={styleEaterPage.addNewAddressClickableView}>
-                             <TouchableHighlight underlayColor={'transparent'} onPress={this.selectPayment.bind(this)}>
-                                <Text style={styleEaterPage.addNewAddressClickableText}>Payment Options</Text>
-                             </TouchableHighlight>
-                         </View>
+                          <Text style={styleEaterPage.eaterPageClickableText} onPress={this.selectPayment.bind(this)}>Payment Options</Text>
                     </View>
                   </ScrollView>
                 </View>);
@@ -486,7 +507,12 @@ var styleEaterPage = StyleSheet.create({
     eaterPageGreyText:{
         fontSize: windowHeight/46.0,
         marginBottom: windowWidth/41.4,
-        color:'#696969',
+        color:'#4A4A4A',
+    },
+    eaterPageClickableText:{
+        fontSize: windowHeight/46.0,
+        marginBottom: windowWidth/41.4,
+        color:'#FFCC33',
     },
     sectionTitleView:{
         flexDirection:'row',
@@ -567,7 +593,7 @@ var styleEaterPage = StyleSheet.create({
         borderBottomWidth: 1,
     },
     addressTitleView:{
-        flex:0.25,
+        flex:0.24,
         flexDirection:'row',
         height:windowHeight*0.075,
         justifyContent:'flex-start',
@@ -579,8 +605,8 @@ var styleEaterPage = StyleSheet.create({
         color:'#808080',
     },
     addressTextView:{
-        marginLeft:windowWidth*0.05,
-        flex:0.5,
+        marginLeft:windowWidth*0.025,
+        flex:0.51,
         justifyContent:'flex-end',
         paddingVertical:windowWidth*0.0427,
     },
