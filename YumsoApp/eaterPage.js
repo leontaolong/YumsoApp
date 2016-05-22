@@ -7,7 +7,7 @@ var ImageCamera = require('./imageCamera');
 var MapPage = require('./mapPage');
 var backIcon = require('./icons/icon-back.png');
 var defaultAvatar = require('./TestImages/Obama.jpg');
-var uploadPhotoIcon = require('./icons/ic_add_a_photo_48pt_3x.png');
+var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/Icon-house.png');
 var paypalIcon = require('./icons/Icon-paypal.png');
 var visaIcon = require('./icons/Icon-visa.png');
@@ -74,13 +74,27 @@ class EaterPage extends Component {
                           <Text style={styleEaterPage.addressText}>
                             {this.state.addressList[i].formatted_address}
                           </Text>
+                          <Text style={styleEaterPage.addressText}>
+                            {this.state.addressList[i].apartmentNumber?'Apt/Suite#: '+this.state.addressList[i].apartmentNumber : ''}
+                          </Text>
                        </View>
                        <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.removeAddress(this.state.addressList[i])}>
-                          <Text style={styleEaterPage.addressEditText}>Remove</Text>
+                          <Text style={styleEaterPage.addressEditText}>Delete</Text>
                        </TouchableHighlight>
                      </View> 
                  );
              }
+             
+             var aptNumberHomeView = null;
+             if(this.state.homeAddress!=null && this.state.homeAddress.apartmentNumber && this.state.homeAddress.apartmentNumber.trim()){
+                var aptNumberHomeView = <Text style={styleEaterPage.addressText}>{'Apt/Suite#: '+ this.state.homeAddress.apartmentNumber}</Text>
+             }
+             
+             var aptNumberWorkView = null;
+             if(this.state.workAddress!=null && this.state.workAddress.apartmentNumber && this.state.workAddress.apartmentNumber.trim()){
+                var aptNumberWorkView = <Text style={styleEaterPage.addressText}>{'Apt/Suite#: '+ this.state.workAddress.apartmentNumber}</Text>;
+             }
+                                       
              return (
                <View style={styles.container}>
                  <View style={styles.headerBannerView}>
@@ -174,8 +188,9 @@ class EaterPage extends Component {
                        </View>
                        <View style={styleEaterPage.addressTextView}>
                           <Text style={styleEaterPage.addressText}>
-                            {this.state.homeAddress!=null?this.state.homeAddress.formatted_address:''}
+                            {this.state.homeAddress!=null? this.state.homeAddress.formatted_address:''}
                           </Text>
+                          {aptNumberHomeView}                         
                        </View>
                        <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.setState({editHomeAddress:true})}>
                           <Text style={styleEaterPage.addressEditText}>Edit</Text>
@@ -189,8 +204,9 @@ class EaterPage extends Component {
                        </View>
                        <View style={styleEaterPage.addressTextView}>
                           <Text style={styleEaterPage.addressText}>
-                            {this.state.workAddress!=null?this.state.workAddress.formatted_address:''}
+                            {this.state.workAddress!=null? this.state.workAddress.formatted_address:''}
                           </Text>
+                          {aptNumberWorkView}
                        </View>
                        <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {()=>this.setState({editWorkAddress:true})}>
                           <Text style={styleEaterPage.addressEditText}>Edit</Text>
@@ -209,21 +225,34 @@ class EaterPage extends Component {
                 </View>);
          }
          if (this.state.showProgress) {
-             return (
-                 <View>
-                     <ActivityIndicatorIOS
-                         animating={this.state.showProgress}
-                         size="large"
-                         style={styles.loader}/>
-                 </View>);
+             return (<View>
+                         <ActivityIndicatorIOS animating={this.state.showProgress} size="large"  Dstyle={styles.loader}/>
+                     </View>);
          } else {
              var addressListRendered = [];
+             if(this.state.eater.addressList.length>0){
+                addressListRendered.push(<Text style={styleEaterPage.eaterPageGreyText}>+ OTHER</Text>);
+             }
+                          
              for (let i = 0; i < this.state.eater.addressList.length; i++) {
                  addressListRendered.push(
-                     <Text key={i} style={styleEaterPage.eaterPageGreyText}>{this.state.eater.addressList[i].formatted_address}</Text>
+                     <Text key={i} style={styleEaterPage.eaterPageGreyText}>{this.state.eater.addressList[i].formatted_address}</Text>                     
+                 );
+                 addressListRendered.push(
+                     <Text key={i+'otherAddress'} style={styleEaterPage.eaterPageGreyText}>Apt/Suite#: {this.state.eater.addressList[i].apartmentNumber}</Text>
                  );
              }
-             var chefProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic }
+             var chefProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
+             
+             var emailView=null;
+             if(this.state.eater.email && this.state.principal.identityProvider !== 'Yumso'){
+                emailView = <Text style={styleEaterPage.eaterPageGreyText}>{'Email: '+this.state.eater.email}</Text>;
+             }
+             var photoNumberView=null;
+             if(this.state.eater.phoneNumber){
+                photoNumberView = <Text style={styleEaterPage.eaterPageGreyText}>{'Phone: '+this.state.eater.phoneNumber}</Text>;
+             }
+             
              return (
                 <View style={styles.container}>
                    <View style={styles.headerBannerView}>                  
@@ -254,31 +283,46 @@ class EaterPage extends Component {
                    </View>
                    <ScrollView>
                      <Image source={chefProfile} style={styleEaterPage.eaterProfilePic}>
-                         <View style={styleEaterPage.uploadPhotoButtonView}>
-                             <TouchableHighlight onPress={() => this.uploadPic() }>
-                                 <Image source={uploadPhotoIcon} style={styleEaterPage.uploadPhotoIcon}/>
-                             </TouchableHighlight>
-                         </View>
+                           <TouchableHighlight style={styleEaterPage.uploadPhotoButtonView} underlayColor={'transparent'} onPress={() => this.uploadPic() }>
+                                <Image source={uploadPhotoIcon} style={styleEaterPage.uploadPhotoIcon}/>
+                           </TouchableHighlight>
                      </Image>
                      <View style={styleEaterPage.eaterPageRowView}>
                          <Text style={styleEaterPage.eaterNameText}>{this.state.eater.firstname} {this.state.eater.lastname} ({this.state.eater.eaterAlias}) </Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.principal.identityProvider === 'Yumso' ? `Email:${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.principal.identityProvider === 'Yumso' ? `Email: ${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
+                         {emailView}
+                         {photoNumberView}
                      </View>
                      <View style={styleEaterPage.eaterPageRowView}>
                          <Text style={styleEaterPage.eaterPageGreyText}>Address: </Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>+ HOME</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.homeAddress!=null?this.state.eater.homeAddress.formatted_address:''}</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>+ WORK</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.workAddress!=null?this.state.eater.workAddress.formatted_address:''}</Text>
-                         <Text style={styleEaterPage.eaterPageGreyText}>+ Other Address: </Text>
+                         <Text style={styleEaterPage.eaterPageClickableText} onPress={() => { this.setState({ edit: true, 
+                                     firstname: this.state.eater.firstname, 
+                                     lastname: this.state.eater.lastname, 
+                                     eaterAlias: this.state.eater.eaterAlias,
+                                     gender: this.state.eater.gender,
+                                     phoneNumber: this.state.eater.phoneNumber,
+                                     homeAddress: this.state.eater.homeAddress,
+                                     workAddress: this.state.eater.workAddress,
+                                     addressList: this.state.eater.addressList
+                                    })}}>+ HOME</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.homeAddress!=null? this.state.eater.homeAddress.formatted_address:''}</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.homeAddress!=null && this.state.eater.homeAddress.apartmentNumber!=null? 'Apt/Suite#: '+this.state.eater.homeAddress.apartmentNumber:''}</Text>
+                         <Text style={styleEaterPage.eaterPageClickableText} onPress={() => { this.setState({ edit: true, 
+                                     firstname: this.state.eater.firstname, 
+                                     lastname: this.state.eater.lastname, 
+                                     eaterAlias: this.state.eater.eaterAlias,
+                                     gender: this.state.eater.gender,
+                                     phoneNumber: this.state.eater.phoneNumber,
+                                     homeAddress: this.state.eater.homeAddress,
+                                     workAddress: this.state.eater.workAddress,
+                                     addressList: this.state.eater.addressList
+                                    })}}>+ WORK</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.workAddress!=null? this.state.eater.workAddress.formatted_address:''}</Text>
+                         <Text style={styleEaterPage.eaterPageGreyText}>{this.state.eater.workAddress!=null && this.state.eater.workAddress.apartmentNumber!=null? 'Apt/Suite#: '+this.state.eater.workAddress.apartmentNumber:''}</Text>                         
                          {addressListRendered}
                      </View>
                      <View style={styleEaterPage.eaterPageRowView}>                        
-                         <View style={styleEaterPage.addNewAddressClickableView}>
-                             <TouchableHighlight underlayColor={'transparent'} onPress={this.selectPayment.bind(this)}>
-                                <Text style={styleEaterPage.addNewAddressClickableText}>Payment Options</Text>
-                             </TouchableHighlight>
-                         </View>
+                          <Text style={styleEaterPage.eaterPageClickableText} onPress={this.selectPayment.bind(this)}>Payment Options</Text>
                     </View>
                   </ScrollView>
                 </View>);
@@ -436,12 +480,12 @@ class EaterPage extends Component {
 var styleEaterPage = StyleSheet.create({
     uploadPhotoButtonView:{
         position:'absolute',
-        right:12,
-        top:windowHeight/2.63-47,
+        right:windowWidth *0.0157,
+        top:windowHeight*0.313,
     },
     uploadPhotoIcon:{
-        width:40,
-        height:40,
+        width:windowHeight*0.06,
+        height:windowHeight*0.06,
     },
     eaterProfilePic:{
         width: windowWidth,
@@ -463,26 +507,31 @@ var styleEaterPage = StyleSheet.create({
     eaterPageGreyText:{
         fontSize: windowHeight/46.0,
         marginBottom: windowWidth/41.4,
-        color:'#696969',
+        color:'#4A4A4A',
+    },
+    eaterPageClickableText:{
+        fontSize: windowHeight/46.0,
+        marginBottom: windowWidth/41.4,
+        color:'#FFCC33',
     },
     sectionTitleView:{
         flexDirection:'row',
         justifyContent:'center',
-        height:70,
+        height:windowHeight*0.105,
         backgroundColor:'#ECECEC',
         borderColor:'#D7D7D7',
         borderBottomWidth: 1,
     },
     sectionTitleText:{
         alignSelf:'center',
-        fontSize:18,
+        fontSize:windowHeight/37.05,
         color:'#696969',
         fontWeight:'400',
     },
     nameInputView:{
         flex:1,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         borderColor:'#D7D7D7',
         borderBottomWidth: 1,
     },
@@ -490,27 +539,27 @@ var styleEaterPage = StyleSheet.create({
         flex:0.25,
         flexDirection:'row',
         justifyContent:'flex-start',
-        marginLeft:15,
+        marginLeft:windowWidth*0.04,
     },
     nameInputTitleText:{
         alignSelf:'center',
-        fontSize:16,
+        fontSize:windowHeight/41.6875,
         color:'#808080',
     },
     nameInputTextView:{
         flex:0.75,
         flexDirection:'row',
-        marginRight:15,
+        marginRight:windowWidth*0.022,
     },
     nameInputText:{
         flex:1,
         textAlign:'right',
-        fontSize:16,
+        fontSize:windowHeight/41.6875,
     },
     genderSelectView:{
         flex:1,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         borderColor:'#D7D7D7',
         borderBottomWidth: 1,
     },
@@ -528,13 +577,13 @@ var styleEaterPage = StyleSheet.create({
         borderColor:'#D7D7D7',
     },
     oneGenderSelectText:{
-        fontSize:15,
+        fontSize:windowHeight/44.467,
         color:'#808080',
         alignSelf:'center',
     },
     houseIcon:{
-        width: 30,
-        height:30,
+        width: windowHeight*0.0375,
+        height:windowHeight*0.0375,
         alignSelf:'center',
     },
     addressView:{
@@ -544,54 +593,54 @@ var styleEaterPage = StyleSheet.create({
         borderBottomWidth: 1,
     },
     addressTitleView:{
-        flex:0.25,
+        flex:0.24,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         justifyContent:'flex-start',
-        marginLeft:15,
+        marginLeft:windowWidth*0.04,
     },
     addressTitleText:{
         alignSelf:'center',
-        fontSize:16,
+        fontSize:windowHeight/41.6875,
         color:'#808080',
     },
     addressTextView:{
-        marginLeft:30,
-        flex:0.5,
+        marginLeft:windowWidth*0.025,
+        flex:0.51,
         justifyContent:'flex-end',
+        paddingVertical:windowWidth*0.0427,
     },
     addressText:{
-        fontSize:15,
-        marginVertical:16,
+        fontSize:windowHeight/44.467,
     },
     addressEditView:{
         flex:0.15,
         flexDirection:'row',
-        marginRight:15,
+        marginRight:windowWidth*0.04,
         justifyContent:'flex-end',
-        height:50,
+        height:windowHeight*0.075,
     },
     addressEditText:{
-        fontSize:15,
+        fontSize:windowHeight/44.467,
         color:'#ff9933',
         alignSelf:'center',
     },
     addNewAddressClickableView:{
-        height:50,
+        height:windowHeight*0.075,
         flexDirection:'row',
         backgroundColor:'#ECECEC',
         justifyContent:'flex-start',
-        paddingLeft:15,
+        paddingLeft:windowWidth*0.04,
     },
     addNewAddressClickableText:{
-        fontSize:15,
+        fontSize:windowHeight/44.467,
         color:'#ff9933',
         alignSelf:'center',
     },
     paymentMethodView:{
         flex:1,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
     },
     paymentMethodIconView:{
         flex:0.75,
@@ -607,20 +656,20 @@ var styleEaterPage = StyleSheet.create({
     paymentMethodTitleView:{
         flex:0.25,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         justifyContent:'flex-start',
     },
     paymentMethodIcon:{
-        width:40,
-        height:25,
+        width:windowWidth*0.107,
+        height:windowWidth*0.067,
         alignSelf:'center',
     },
     creditCardView:{
-        marginVertical:17,
-        padding:15,
+        marginVertical:windowHeight*0.0255,
+        padding:windowWidth*0.04,
         width:windowWidth*0.45,
         flexDirection:'column',
-        marginRight:15,
+        marginRight:windowWidth*0.04,
         borderColor:'#D7D7D7',
         borderBottomWidth: 0.6,
         borderWidth:1,
