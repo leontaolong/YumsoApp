@@ -8,7 +8,7 @@ var Swiper = require('react-native-swiper');
 var MapPage = require('./mapPage');
 var rating = require('./rating');
 var dollarSign = require('./commonModules/dollarIconRender');
-var profileImg = require('./icons/defaultAvatar.jpg');
+var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
 var ballonIcon = require('./icons/icon-location-white.png');
 var favoriteIcon = require('./icons/icon-liked-white.png');
 var labelIcon = require('./icons/icon-label.png');
@@ -67,16 +67,11 @@ class ChefListPage extends Component {
 
     async componentDidMount() {
         await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
-        if(config.autoLogin){//this is for debugging so to auto login
-           await AuthService.loginWithEmail(config.email, config.password);
-        }
-        let status = await AuthService.getLoginStatus();
-        let eater = undefined;
-        let principal = undefined;
-        if(status===true){
-            eater = await AuthService.getEater();
-            principal = await  AuthService.getPrincipalInfo();
-        }
+        // if(config.autoLogin){//this is for debugging so to auto login
+        //    await AuthService.loginWithEmail(config.email, config.password);
+        // }
+        let eater = await AuthService.getEater();
+        let principal = await  AuthService.getPrincipalInfo();
         //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
         //todo: clear the token and cache. 
         if(eater){
@@ -173,7 +168,7 @@ class ChefListPage extends Component {
                         activeDot={<View style={{ backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />} >
                         {this.state.chefView[chef.chefId].map((picture) => {
                             return (
-                                <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef.chefId)} underlayColor='#C0C0C0'>
+                                <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef)} underlayColor='#C0C0C0'>
                                     <Image source={{ uri: picture }} style={styleChefListPage.chefListViewChefShopPic}
                                         onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}/>
                                 </TouchableHighlight>
@@ -415,14 +410,14 @@ class ChefListPage extends Component {
         });
     }
     
-    navigateToShopPage(chefId){
+    navigateToShopPage(chef){
         this.setState({ isMenuOpen: false });
         this.props.navigator.push({
             name: 'ShopPage', 
             passProps:{
-                chefId:chefId,
+                chef:chef,
                 eater:this.state.eater,
-                defaultDeliveryAddress: this.state.pickedAddress,
+                defaultDeliveryAddress: this.state.pickedAddress,//todo: this is not really the pickaddress
                 callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
             }
         });    
@@ -452,6 +447,7 @@ var Menu = React.createClass({
     logOut: function(){
         return AuthService.logOut()
         .then(()=>{
+            this.props.caller.setState({eater:undefined});
             Alert.alert( '', 'You have successfully logged out',[ { text: 'OK' }]); 
             this.props.caller.setState({ isMenuOpen: false });
             this.props.navigator.push({
@@ -490,10 +486,11 @@ var Menu = React.createClass({
     
     render: function() {
         let isAuthenticated = this.props.eater!=undefined;
-        var displayName = isAuthenticated? (this.props.eater.firstname + ' '+ this.props.eater.lastname): '';
-        
-        if(this.props.eater && this.props.eater.eaterProfilePic){
+        var profileImg = profileImgNoSignIn;
+        if(isAuthenticated && this.props.eater.eaterProfilePic){
             profileImg = {uri:this.props.eater.eaterProfilePic};
+        }else{
+            
         }
         var profile;
         if(!isAuthenticated){
