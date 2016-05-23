@@ -84,7 +84,7 @@ class DishPage extends Component {
                             </View>
                          </View>
                </View>
-               <Swiper showsButtons={false} height={windowHeight/2.63} horizontal={true} autoplay={true}
+               <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={true}
                         dot={<View style={{ backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />}
                         activeDot={<View style={{ backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />} >
                         {this.state.dish.pictures.map((picture) => {
@@ -93,34 +93,42 @@ class DishPage extends Component {
                             );
                         }) }
                </Swiper>
-               <View style={styleShopPage.oneDishNameDiscriptionView}>
-                  <Image source={bowlIcon} style={styleShopPage.bowlIcon}/>
-                  <View style={styleShopPage.oneDishNameDiscriptionTextView}>
-                     <Text style={styleShopPage.oneDishNameText}>{this.state.dish.dishName}</Text>
-                     <Text style={styleShopPage.oneDishDiscriptionText}>{this.state.dish.description}</Text>
-                     <Text style={styleShopPage.oneDishDiscriptionText}>{this.state.dish.ingredients}</Text>
-                  </View>
+               
+               <View style={styleShopPage.oneDishNameDiscriptionView}>                  
+                    <Text style={styleShopPage.oneDishNameText}>{this.state.dish.dishName}</Text>
+                    <Text style={styleShopPage.oneDishIngredientText}>{this.state.dish.ingredients}</Text>
+                    <Text style={styleShopPage.oneDishDiscriptionText}>{this.state.dish.description}</Text>
                </View>
-               <View style={styleShopPage.priceView}>
-                  <View style={styleShopPage.priceTextView}>
-                    <Text style={styleShopPage.priceText}>${this.state.dish.price}</Text>
-                    <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' ? '' : (this.state.scheduleMapping[this.state.selectedTime][this.state.dish.dishId].leftQuantity)+' orders left'} 
-                      {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity + ' ordered ' : ''} 
-                    </Text>
-                  </View>
-                  <View style={styleShopPage.chooseQuantityView}>
-                    <View style={styleShopPage.plusIconView}>
-                      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.addToShoppingCart(this.state.dish) }>
-                        <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
-                      </TouchableHighlight>
+               
+                
+                <View style={styleShopPage.priceView}>
+                    <View style={styleShopPage.priceTextView}>
+                        <Text style={styleShopPage.priceText}>${this.state.dish.price}</Text>
+                        <Text style={styleShopPage.orderStatusText}>
+                        {this.state.selectedTime === 'All Schedules' ? '' : (this.state.scheduleMapping[this.state.selectedTime][this.state.dish.dishId].leftQuantity)+' orders left'} 
+                        </Text>
+                        <Text style={styleShopPage.orderStatusText}>
+                        {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity + ' ordered ' : ''} 
+                        </Text>
                     </View>
-                     
-                    <View style={styleShopPage.minusIconView}>
-                      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.removeFromShoppingCart(this.state.dish) }>
-                         <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
-                      </TouchableHighlight>
+                    <View style={styleShopPage.chooseQuantityView}>
+                                             
+                        <View style={styleShopPage.minusIconView}>
+                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.removeFromShoppingCart(this.state.dish) }>
+                                <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
+                            </TouchableHighlight>
+                        </View>
+                        <View style={styleShopPage.quantityTextView}>
+                            <Text style={styleShopPage.quantityText}>
+                            {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity: ' '}
+                            </Text>
+                        </View>
+                        <View style={styleShopPage.plusIconView}>
+                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.addToShoppingCart(this.state.dish) }>
+                                <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
+                            </TouchableHighlight>
+                        </View>                        
                     </View>
-                  </View>
                 </View>
             </View>
         );
@@ -229,220 +237,216 @@ class DishPage extends Component {
 
 var styleShopPage = StyleSheet.create({
     shopPictureView:{
-        height: windowHeight/2.63,
+        height: windowHeight*0.4419,
     },
     shopPicture:{
         width: windowWidth,
-        height: windowHeight/2.63,
+        height: windowHeight*0.4419,
     },
-    shopPageTopButtonsView:{ 
-        flex: 1, 
-        flexDirection: 'row', 
+    shopInfoView:{
+        flexDirection:'row',
+        height:windowHeight*0.14,
+        paddingTop:windowHeight*0.0225,
+        paddingBottom:windowHeight*0.02698,
+        paddingHorizontal:windowWidth*0.032,
     },
-    backButtonView:{ 
-        position:'absolute', 
-        top: 10, 
-        left:0,
+    chefPhotoView:{
+        marginRight:windowWidth*0.04, 
     },
-    likeButtonIcon:{ 
-        width: 30, 
-        height: 30,
-    },
-    shareButtonView:{
-        position:'absolute', 
-        top: 10, 
-        right:10,
-    },
-    shareButtonIcon:{
-        width:  30, 
-        height: 30,
-    },
-    chefNameRow:{
-        flexDirection: 'row',
-        padding: windowHeight/49,
-        alignItems: 'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#f5f5f5',
-    },
-    chefProfilePicView:{
+    chefPhoto:{
+        height:windowWidth*0.16,
+        width:windowWidth*0.16,
         borderRadius: 12, 
         borderWidth: 0, 
-        overflow: 'hidden', 
+        overflow: 'hidden',
     },
-    chefProfilePic:{
-        width:windowHeight/10.8,
-        height:windowHeight/10.8,
+    shopInfoSection:{
+        flex:1,
+        flexDirection:'column',
+        justifyContent:'space-between',
+        height:windowWidth*0.165,        
     },
-    shopChefNameRatingView:{ 
-        paddingLeft: windowWidth/20.7, 
+    shopInfoRow1:{
+        flexDirection:'row',
     },
-    shopNameText:{ 
-        fontSize: windowHeight/36.8, 
-        marginBottom: windowHeight/61.3, 
+    shopNameView:{
+       flex:0.93,
+       flexDirection:'row',
+       alignItems:'flex-start', 
+    }, 
+    oneShopNameText:{
+       fontSize:windowHeight/37.06,
+       fontWeight:'bold',
+       color:'#4A4A4A',
     },
-    chefDiscriptionView:{
-        paddingHorizontal: windowWidth/27.6,
-        paddingVertical: windowHeight/73.6,
-        justifyContent:'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#fff'
+    likeIconView:{
+       flex:0.07,
+       flexDirection:'row',
+       alignItems:'flex-end', 
+    }, 
+    likeIcon:{
+        width:windowWidth*0.05,
+        height:windowWidth*0.05,
     },
-    chefDiscriptionText:{ 
-        fontSize: windowHeight/52.6,
+    shopInfoRow2:{
+        flexDirection:'row',
     },
-    shopRatingDollarSignView:{ 
-        flex: 1, 
-        flexDirection: 'row', 
-        marginBottom: windowHeight/245.3,
+    shopRatingView:{
+        flex:0.72,
+        flexDirection:'row',
+        alignItems:'flex-start',
     },
-    ratingView:{ 
-        flex: 0.5, 
+    reviewNumberText:{
+        fontSize:windowHeight/51.636,
+        color:'#4A4A4A',
+        marginLeft:windowWidth*0.0187,
+        alignSelf:'center',
+    },
+    shopInfoRow3:{
+        flexDirection:'row',
+    },
+    labelView:{
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        marginRight:windowWidth*0.04,
+    },   
+    labelIcon:{
+        width:windowHeight*0.0264, 
+        height:windowHeight*0.0264,
+        alignSelf:'center',
+    },
+    labelText:{
+        fontSize:windowHeight/47.33,
+        color:'#FFCC33',
+        marginLeft:windowWidth/82.8,
+        alignSelf:'center',
+    },    
+    chefDetailView:{
         flexDirection: 'row',
-    },
-    dollarSignView:{ 
-        flex: 0.5, 
-        flexDirection: 'row', 
-        marginLeft: windowWidth/27.6
-    },
-    chefNameAreaText:{ 
-        fontSize: 16, 
-        color: '#696969', 
-    },
-    shopRadioView:{
-        flexDirection: 'row',
-        paddingHorizontal: windowWidth/27.6,
-        paddingVertical: windowHeight/73.6,
+        height:windowHeight*0.065,
+        paddingLeft: windowWidth/27.6,
         alignItems:'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#fff'
+        borderColor: '#F5F5F5',
+        borderTopWidth: 1,
+        backgroundColor: '#fff'        
     },
-    radioIcon:{ 
-        width: windowHeight/36.8, 
-        height: windowHeight/36.8,
-    },
-    myStoryTitleText:{ 
-        fontSize: windowHeight/46.0, 
-        paddingBottom: windowHeight/73.6, 
-    },
-    shopDiscriptionTextView:{
-        flex: 1,
-        paddingLeft:windowWidth/27.6,
-        justifyContent:'center',
-    },
-    shopRadioText:{ 
-        fontSize: windowHeight/52.6, 
-        color: '#A9A9A9',
-    },
-    pickupAddressView:{
-        flexDirection: 'row',
-        paddingHorizontal: windowWidth/27.6,
-        paddingVertical: windowHeight/73.6,
-        alignItems:'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#fff'
-    },
-    pickupAddressTextView:{
+    chefDetailTextView:{
         flex: 1,
         paddingLeft:windowWidth/27.6,
         justifyContent:'center',
     },
     pickupAddressText:{ 
-        fontSize: windowHeight/52.6, 
+        fontSize: windowHeight/47.33, 
         color: '#A9A9A9'
     },
     pickupAddressIcon:{ 
         width: windowHeight/36.8, 
         height: windowHeight/36.8,
     },
+    forwardIcon:{
+        width: windowHeight*0.06, 
+        height: windowHeight*0.06,
+    },
     timeSelectorView:{
-        flex:1, 
-        justifyContent:'space-around', 
-        padding:50,
+        flexDirection:'row',
+        justifyContent:'center', 
+        borderColor:'#D7D7D7',
+        borderTopWidth:windowHeight*0.007,
+        height:windowHeight*0.10,
+    },
+    openHourTitle:{
+        alignSelf:'center',
+        fontSize:windowHeight/35.5,
+        color:'#4A4A4A',
+        marginRight:windowWidth*0.015625,
+    },
+    modalPicker:{
+        alignSelf:'center',
+        borderColor:'#FFCC33',
+    },
+    openHoursText:{
+
     },
     footerView:{ 
         flexDirection:'row', 
-        height:windowHeight/13.4, 
-        backgroundColor:'#ff9933',
-        paddingTop:windowHeight/245.30,
+        height:windowHeight*0.075, 
+        backgroundColor:'#FFCC33',
     },
-    shoppingCartIconView:{ 
-        height: windowHeight/19.37, 
-        width: windowWidth/8.28, 
-        paddingLeft: windowWidth/20.7, 
-        paddingTop: windowHeight/92.0, 
-        marginVertical: windowHeight/147.2, 
-        backgroundColor: '#fff', 
+    checkoutButtonView:{
+        width:windowWidth*0.3,
         flexDirection:'row',
+        alignItems:'flex-end',
     },
-    shoppingCartIcon:{ 
-        width: 25, 
-        height: 25,
+    checkoutButtonWrapper:{ 
+        height: windowHeight*0.044, 
+        width: windowWidth*0.27, 
+        flexDirection:'row',
+        alignSelf:'center',
+        borderRadius:6,
+        borderWidth:1.5,
+        borderColor:'#fff',
+        justifyContent:'center',
+    },
+    checkoutButton:{
+        color:'#fff',
+        fontSize:windowHeight/47.33,
+        fontWeight:'600',
+        alignSelf:'center',
+    },
+    shoppingCartTimeView:{
+        width:windowWidth*0.7,
+        alignItems:'flex-start',
+        flexDirection:'row',
+        alignSelf:'center',
     },
     shoppingCartTimePriceText:{
         color:'#fff',
-        marginTop:15,
-        marginLeft:13,
-        fontSize:15,
+        fontSize:windowHeight/37.8,
+        fontWeight:'400',
+        justifyContent:'center',
     },
     oneDishInListView:{
         marginBottom:0,
-        // alignSelf:'stretch',
-        // flexDirection:'row',
-        // flex:1 ,
     },
     oneDishPicture:{
         width: windowWidth,
-        height: windowHeight/2.63,
+        height: windowHeight*0.4419,
     },
     oneDishNameDiscriptionView:{
         flex: 1,
-        flexDirection: 'row',
-        paddingHorizontal: windowWidth/27.6,
-        paddingTop: windowHeight/73.6,
-        paddingBottom:windowHeight/105.1,
-        alignItems:'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#fff'
-    },
-    bowlIcon:{
-        width: windowHeight/36.8, 
-        height: windowHeight/36.8,
+        flexDirection: 'column',
+        paddingHorizontal: windowWidth*0.07,
+        paddingTop: windowHeight*0.03,
+        paddingBottom:windowHeight*0.005,
     },
     oneDishNameDiscriptionTextView:{
         flex: 1,
         paddingLeft:windowWidth/27.6,
         justifyContent:'center',
     },
-    forwardIconView:{
-        paddingLeft:0,
-        paddingVertical:15,
-    },
-    forwardIcon:{
-        width: 20,
-        height: 20,
-    },
     oneDishNameText:{
-        fontSize:14,
-        fontWeight:'600',
+        fontSize:windowHeight/35.5,
+        fontWeight:'bold',
+        color:'#4A4A4A',
+    },
+    oneDishIngredientText:{
+        fontSize:windowHeight/40.57,
+        color:'#9B9B9B',
+        marginTop:windowHeight*0.0088,
     },
     oneDishDiscriptionText:{
-        fontSize:12,
-        color:'#A9A9A9',
-        marginTop:5,
-    },
+        fontSize:windowHeight/47.33,
+        color:'#9B9B9B',
+        marginTop:windowHeight*0.0088,
+    },   
     priceView:{
         flex: 1,
         flexDirection: 'row',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
+        borderColor: '#F5F5F5',
+        borderBottomWidth: windowHeight*0.0088,
         backgroundColor: '#fff',
-        paddingHorizontal: 50,
-        paddingVertical:20,
+        paddingHorizontal:windowWidth*0.07,
+        paddingVertical:windowHeight*0.0352,
     },
     priceTextView:{
         flex: 0.66,
@@ -458,20 +462,31 @@ var styleShopPage = StyleSheet.create({
         height: windowHeight/27.6,
     },
     plusIconView:{
-        marginRight:15,
     },
     minusIconView:{
-        marginLeft:15,
+    },
+    quantityTextView:{
+        width:windowHeight*0.0827,
+        justifyContent:'flex-start',
+        flexDirection:'column',
+    },
+    quantityText:{
+        fontSize:windowHeight/33.41,
+        fontWeight:'bold',
+        color:'#FFCC33',
+        alignSelf:'center',
+        marginTop:1,
     },
     priceText:{
-        fontSize:17,
+        fontSize:windowHeight/31.55,
         fontWeight:'bold',
-        color:'#ff9933',
+        color:'#F8C84E',
+        marginBottom:8,
     },
     orderStatusText:{
-        fontSize:12,
-        color:'#A9A9A9',
-        marginTop:15,
+        fontSize:windowHeight/40.57,
+        color:'#9B9B9B',
+        marginTop:windowHeight*0.0035,
     },
 });
 

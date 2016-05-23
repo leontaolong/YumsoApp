@@ -250,7 +250,7 @@ class ShopPage extends Component {
                
                <View style={styleShopPage.oneDishNameDiscriptionView}>                  
                     <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
-                    <Text style={styleShopPage.oneDishDiscriptionText}>{dish.ingredients}</Text>
+                    <Text style={styleShopPage.oneDishIngredientText}>{dish.ingredients}</Text>
                </View>
                
                <View style={styleShopPage.priceView}>
@@ -512,11 +512,11 @@ class ShopPage extends Component {
 
 var styleShopPage = StyleSheet.create({
     shopPictureView:{
-        height: windowHeight/2.63,
+        height: windowHeight*0.4419,
     },
     shopPicture:{
         width: windowWidth,
-        height: windowHeight/2.63,
+        height: windowHeight*0.4419,
     },
     shopInfoView:{
         flexDirection:'row',
@@ -572,7 +572,7 @@ var styleShopPage = StyleSheet.create({
         alignItems:'flex-start',
     },
     reviewNumberText:{
-        fontSize:11,
+        fontSize:windowHeight/51.636,
         color:'#4A4A4A',
         marginLeft:windowWidth*0.0187,
         alignSelf:'center',
@@ -586,12 +586,12 @@ var styleShopPage = StyleSheet.create({
         marginRight:windowWidth*0.04,
     },   
     labelIcon:{
-        width:15, 
-        height:15,
+        width:windowHeight*0.0264, 
+        height:windowHeight*0.0264,
         alignSelf:'center',
     },
     labelText:{
-        fontSize:12,
+        fontSize:windowHeight/47.33,
         color:'#FFCC33',
         marginLeft:windowWidth/82.8,
         alignSelf:'center',
@@ -601,7 +601,7 @@ var styleShopPage = StyleSheet.create({
         height:windowHeight*0.065,
         paddingLeft: windowWidth/27.6,
         alignItems:'center',
-        borderColor: '#D7D7D7',
+        borderColor: '#F5F5F5',
         borderTopWidth: 1,
         backgroundColor: '#fff'        
     },
@@ -611,7 +611,7 @@ var styleShopPage = StyleSheet.create({
         justifyContent:'center',
     },
     pickupAddressText:{ 
-        fontSize: windowHeight/52.6, 
+        fontSize: windowHeight/47.33, 
         color: '#A9A9A9'
     },
     pickupAddressIcon:{ 
@@ -631,9 +631,9 @@ var styleShopPage = StyleSheet.create({
     },
     openHourTitle:{
         alignSelf:'center',
-        fontSize:16,
+        fontSize:windowHeight/35.5,
         color:'#4A4A4A',
-        marginRight:5,
+        marginRight:windowWidth*0.015625,
     },
     modalPicker:{
         alignSelf:'center',
@@ -653,7 +653,7 @@ var styleShopPage = StyleSheet.create({
         alignItems:'flex-end',
     },
     checkoutButtonWrapper:{ 
-        height: 25, 
+        height: windowHeight*0.044, 
         width: windowWidth*0.27, 
         flexDirection:'row',
         alignSelf:'center',
@@ -664,7 +664,7 @@ var styleShopPage = StyleSheet.create({
     },
     checkoutButton:{
         color:'#fff',
-        fontSize:12,
+        fontSize:windowHeight/47.33,
         fontWeight:'600',
         alignSelf:'center',
     },
@@ -685,7 +685,7 @@ var styleShopPage = StyleSheet.create({
     },
     oneDishPicture:{
         width: windowWidth,
-        height: windowHeight/2.63,
+        height: windowHeight*0.4419,
     },
     oneDishNameDiscriptionView:{
         flex: 1,
@@ -700,23 +700,23 @@ var styleShopPage = StyleSheet.create({
         justifyContent:'center',
     },
     oneDishNameText:{
-        fontSize:16,
+        fontSize:windowHeight/35.5,
         fontWeight:'bold',
         color:'#4A4A4A',
     },
-    oneDishDiscriptionText:{
-        fontSize:14,
+    oneDishIngredientText:{
+        fontSize:windowHeight/40.57,
         color:'#9B9B9B',
-        marginTop:5,
+        marginTop:windowHeight*0.0088,
     },
     priceView:{
         flex: 1,
         flexDirection: 'row',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 5,
+        borderColor: '#F5F5F5',
+        borderBottomWidth: windowHeight*0.0088,
         backgroundColor: '#fff',
         paddingHorizontal:windowWidth*0.07,
-        paddingVertical:20,
+        paddingVertical:windowHeight*0.0352,
     },
     priceTextView:{
         flex: 0.66,
@@ -736,27 +736,27 @@ var styleShopPage = StyleSheet.create({
     minusIconView:{
     },
     quantityTextView:{
-        width:47,
-        justifyContent:'center',
-        flexDirection:'row',
+        width:windowHeight*0.0827,
+        justifyContent:'flex-start',
+        flexDirection:'column',
     },
     quantityText:{
-        fontSize:17,
+        fontSize:windowHeight/33.41,
         fontWeight:'bold',
         color:'#FFCC33',
         alignSelf:'center',
         marginTop:windowHeight*0.0025,
     },
     priceText:{
-        fontSize:18,
+        fontSize:windowHeight/31.55,
         fontWeight:'bold',
         color:'#F8C84E',
         marginBottom:8,
     },
     orderStatusText:{
-        fontSize:14,
+        fontSize:windowHeight/40.57,
         color:'#9B9B9B',
-        marginTop:2,
+        marginTop:windowHeight*0.0035,
     },
 });
 
