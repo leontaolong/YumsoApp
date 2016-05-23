@@ -89,8 +89,7 @@ class PaymentPage extends Component {
     
     createAnOrder(){
         if(!this.state.paymentOption){
-            Alert.alert('Warning','Please select a payment option.',[{ text: 'OK' }]);
-            
+            Alert.alert('Warning','Please select a payment option.',[{ text: 'OK' }]);      
             return; 
         }
          return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail, paymentOption: this.state.paymentOption})
@@ -117,7 +116,13 @@ class PaymentPage extends Component {
     }
 
     async selectPayment() {
-        let principal = await AuthService.getPrincipalInfo()
+        let principal = await AuthService.getPrincipalInfo();//todo: not use authservice.
+        if (principal === undefined) {
+            this.props.navigator.push({
+                name: 'LoginPage',//todo: fb cached will signin and redirect back right away.
+            });
+            return; //todo: require pass in callback to verify eater is same as loged in user.
+        }
         this.props.navigator.push({
             name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
             passProps:{

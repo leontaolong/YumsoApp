@@ -37,8 +37,12 @@ class AuthService {
     
     async saveEater(eater){
         let response = await this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:eater});
-        console.log(response);
-        this.updateCacheEater(eater);
+        if(response.statusCode===200){
+            await this.updateCacheEater(eater);
+        }else{
+            return response.data; //todo: return reason. err
+        }
+       
     }
     
     async registerWithEmail(firstname, lastname, email, password, password_re){
@@ -67,7 +71,7 @@ class AuthService {
         });
         if(response.statusCode!=200){
             Alert.alert( 'Warning', response.data,[ { text: 'OK' }]); 
-            return false;
+            return undefined;
         }
         await AsyncStorage.multiSet([
             [principalKey, JSON.stringify(response.data.principal)],
@@ -76,12 +80,13 @@ class AuthService {
         let res = await this.client.getWithAuth(config.eaterEndpoint);
         if(res.statusCode!==200){
             Alert.alert( 'Warning', 'Failed login and get your profile',[ { text: 'OK' }]); 
-            return false;          
+            return undefined;          
         }
         await AsyncStorage.multiSet([
             [eaterKey, JSON.stringify(res.data.eater)]
         ]); 
-        return true;
+        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
+        return res.data.eater;
     }
     
     async loginWithFbToken(token){
@@ -90,7 +95,7 @@ class AuthService {
         });
         if(response.statusCode!==200){
             Alert.alert( 'Warning', 'Failed login to facebook with its token',[ { text: 'OK' }]); 
-            return false;
+            return undefined;
         }
         await AsyncStorage.multiSet([
             [principalKey, JSON.stringify(response.data.principal)],
@@ -99,12 +104,13 @@ class AuthService {
         let res = await this.client.getWithAuth(config.eaterEndpoint);
         if(res.statusCode!==200){
             Alert.alert( 'Warning', 'Failed login and get your profile',[ { text: 'OK' }]); 
-            return false;          
+            return undefined;          
         }
         await AsyncStorage.multiSet([
             [eaterKey, JSON.stringify(res.data.eater)]
         ]); 
-        return true;   
+        Alert.alert( '', 'Successfully logged in through Facebook',[ { text: 'OK' }]);      
+        return res.data.eater;   
     }
     
     async logOut(){
