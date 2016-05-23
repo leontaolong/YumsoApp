@@ -5,7 +5,11 @@ var config = require('./config');
 var dateRender = require('./commonModules/dateRender');
 var AuthService = require('./authService');
 var backIcon = require('./icons/icon-back.png');
+var ratingIconGrey = require('./icons/icon-rating-grey.png');
+var ratingIconOrange = require('./icons/icon-rating-orange.png');
+var deleteBannerIcon = require('./icons/icon-x.png')
 import Dimensions from 'Dimensions';
+import {KeyboardAwareListView} from 'react-native-keyboard-aware-scroll-view';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
@@ -24,6 +28,7 @@ import React, {
   Alert
 } from 'react-native';
 
+
 class ShoppingCartPage extends Component {
     constructor(props){
         super(props);
@@ -37,6 +42,16 @@ class ShoppingCartPage extends Component {
             dataSource: ds.cloneWithRows(Object.values(order.orderList)),
             showProgress:false,
             order:order,
+            starRating:order.comment? order.comment.starRating : '',
+            comment:order.comment? order.comment.eaterComment : '',            
+            commentTime:order.comment? order.comment.eaterCommentTime : '',
+            showDeliverTimeView:true,
+            ratingSucceed:false,
+            ratingIcon1:order.comment? (order.comment.starRating && order.comment.starRating>=1 ? ratingIconOrange :ratingIconGrey):ratingIconGrey,
+            ratingIcon2:order.comment? (order.comment.starRating && order.comment.starRating>=2 ? ratingIconOrange :ratingIconGrey):ratingIconGrey,
+            ratingIcon3:order.comment? (order.comment.starRating && order.comment.starRating>=3 ? ratingIconOrange :ratingIconGrey):ratingIconGrey,
+            ratingIcon4:order.comment? (order.comment.starRating && order.comment.starRating>=4 ? ratingIconOrange :ratingIconGrey):ratingIconGrey,
+            ratingIcon5:order.comment? (order.comment.starRating && order.comment.starRating>=5 ? ratingIconOrange :ratingIconGrey):ratingIconGrey,
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
@@ -44,16 +59,7 @@ class ShoppingCartPage extends Component {
     componentDidMount(){
         
     }
-    
-    renderHeader(){
-        return[(<View style={styleShoppingCartPage.chefShopNameView}>
-                    <Text style={styleShoppingCartPage.chefShopNameText}>{this.state.order.shopName}</Text>
-                </View>),
-               (<View style={styleShoppingCartPage.deliverTimeView}>
-                    <Text style={styleShoppingCartPage.deliverTimeText}>Delivered at {dateRender.renderDate2(this.state.order.orderDeliverTime)}</Text>
-                </View>)]
-    }
-    
+        
     renderRow(orderItem){
         let imageSrc =require('./ok.jpeg') ;
         if(orderItem.dishDetail && orderItem.dishDetail.pictures && orderItem.dishDetail.pictures.length!=0){
@@ -81,7 +87,55 @@ class ShoppingCartPage extends Component {
     }
     
     renderFooter(){
-        return [];
+        if(this.state.order.comment && this.state.order.comment.starRating){
+           var commentBoxView = <View style={styleShoppingCartPage.commentBox}>
+                                  <View style={styleShoppingCartPage.ratingView}>
+                                      <Image source={this.state.ratingIcon1} style={styleShoppingCartPage.ratingIcon}/>
+                                      <Image source={this.state.ratingIcon2} style={styleShoppingCartPage.ratingIcon}/>                                    
+                                      <Image source={this.state.ratingIcon3} style={styleShoppingCartPage.ratingIcon}/>
+                                      <Image source={this.state.ratingIcon4} style={styleShoppingCartPage.ratingIcon}/>
+                                      <Image source={this.state.ratingIcon5} style={styleShoppingCartPage.ratingIcon}/>
+                                  </View>
+                                  <Text style={styleShoppingCartPage.commentText}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
+                               </View>
+        }else if(this.state.ratingSucceed){
+          var commentBoxView = <View style={styleShoppingCartPage.commentBox}>
+                                  <View style={styleShoppingCartPage.ratingView}>
+                                      <Image source={this.state.ratingIcon1} style={styleShoppingCartPage.ratingIcon}/>
+                                      <Image source={this.state.ratingIcon2} style={styleShoppingCartPage.ratingIcon}/>                                    
+                                      <Image source={this.state.ratingIcon3} style={styleShoppingCartPage.ratingIcon}/>
+                                      <Image source={this.state.ratingIcon4} style={styleShoppingCartPage.ratingIcon}/>
+                                      <Image source={this.state.ratingIcon5} style={styleShoppingCartPage.ratingIcon}/>
+                                  </View>
+                                  <Text style={styleShoppingCartPage.commentText}>{this.state.comment.trim() ? this.state.comment :'No comment'}</Text>
+                               </View>
+        }else{
+           var commentBoxView = <View style={styleShoppingCartPage.commentBox}>
+                                  <View style={styleShoppingCartPage.ratingView}>
+                                     <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(1)}>
+                                      <Image source={this.state.ratingIcon1} style={styleShoppingCartPage.ratingIcon}/>
+                                     </TouchableHighlight>
+                                     <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(2)}>
+                                      <Image source={this.state.ratingIcon2} style={styleShoppingCartPage.ratingIcon}/>
+                                     </TouchableHighlight>
+                                     <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(3)}>
+                                      <Image source={this.state.ratingIcon3} style={styleShoppingCartPage.ratingIcon}/>
+                                     </TouchableHighlight>
+                                     <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(4)}>
+                                      <Image source={this.state.ratingIcon4} style={styleShoppingCartPage.ratingIcon}/>
+                                     </TouchableHighlight>
+                                     <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(5)}>
+                                      <Image source={this.state.ratingIcon5} style={styleShoppingCartPage.ratingIcon}/>
+                                     </TouchableHighlight>
+                                  </View>
+                                  <TextInput placeholder="Leave your comment here" style={styleShoppingCartPage.commentInput} multiline={true} returnKeyType = {'done'} autoCorrect={false} onChangeText = {(text) => this.setState({ comment: text }) }/>                                     
+                                  <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.submitCommentButton} onPress={()=>this.submitComment()}>
+                                        <Text style={styleShoppingCartPage.submitCommentButtonText}>Submit</Text>    
+                                  </TouchableHighlight>
+                               </View>
+        }
+                
+        return commentBoxView;                                                 
     //    return [(<View style={styleShoppingCartPage.subtotalView}>
     //               <View style={styleShoppingCartPage.priceTitleView}>
     //                   <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
@@ -129,7 +183,17 @@ class ShoppingCartPage extends Component {
                 animating={this.state.showProgress}
                 size="large"
                 style={styles.loader}/> 
-        }      
+        } 
+
+        if(this.state.showDeliverTimeView){
+          var deliverTimeView = (<View style={styleShoppingCartPage.deliverTimeView}>
+                                    <Text style={styleShoppingCartPage.deliverTimeText}>Your order is delivered at {dateRender.renderDate2(this.state.order.orderDeliverTime)}</Text>
+                                    <TouchableHighlight style={styleShoppingCartPage.deleteBannerIconView} underlayColor={'transparent'} onPress={()=>this.setState({showDeliverTimeView:false})}>
+                                       <Image source={deleteBannerIcon} style={styleShoppingCartPage.deleteBannerIcon} />
+                                    </TouchableHighlight>
+                                 </View>);
+        }
+
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -144,18 +208,78 @@ class ShoppingCartPage extends Component {
                     <View style={styles.headerRightView}>
                     </View>
                </View>
-
-               <ListView style={styleShoppingCartPage.dishListView}
+               {deliverTimeView}
+               <KeyboardAwareListView style={styleShoppingCartPage.dishListView}
+                    ref={'scroll'}        
                     dataSource = {this.state.dataSource}
-                    renderHeader={this.renderHeader.bind(this)}
                     renderRow={this.renderRow.bind(this) } 
                     renderFooter={this.renderFooter.bind(this)}/>
             </View>
         );
     }
-         
+    
+    submitComment(){
+        var self = this;
+        if (!this.state.starRating) {
+            Alert.alert('','Please rate the order',[{ text: 'OK' }]);
+            return;
+        }
+        var data = {
+            chefId: this.state.order.chefId,
+            orderId: this.state.order.orderId,
+            eaterId: this.state.order.eaterId,
+            commentText: this.state.comment,
+            starRating: Number(this.state.starRating)
+        };
+        return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
+        .then((res)=>{
+            if(res.statusCode===200){
+               Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
+            }  
+            self.setState({ratingSucceed:true, starRating:data.starRating, comment:data.commentText, eaterCommentTime:new Date().getTime()});     
+        });
+    }
+    
+    pressedRatingIcon(rating){
+       if(rating>=1){
+          this.setState({ratingIcon1:ratingIconOrange});
+       }else{
+          this.setState({ratingIcon1:ratingIconGrey});
+       }
+
+       if(rating>=2){
+          this.setState({ratingIcon2:ratingIconOrange});
+       }else{
+          this.setState({ratingIcon2:ratingIconGrey});
+       }
+
+       if(rating>=3){
+          this.setState({ratingIcon3:ratingIconOrange});
+       }else{
+          this.setState({ratingIcon3:ratingIconGrey});
+       }
+
+       if(rating>=4){
+          this.setState({ratingIcon4:ratingIconOrange});
+       }else{
+          this.setState({ratingIcon4:ratingIconGrey});
+       }
+
+       if(rating>=5){
+          this.setState({ratingIcon5:ratingIconOrange});
+       }else{
+          this.setState({ratingIcon5:ratingIconGrey});
+       }
+
+       this.setState({ starRating: rating})
+    }   
+      
     navigateBackToDishList(){
         this.props.navigator.pop();
+    }
+    
+    _scrollToInput (event, reactNode) {
+        this.refs.scroll.scrollToFocusedInput(event, reactNode);
     }
 }
 
@@ -175,13 +299,24 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     deliverTimeView:{
         flexDirection:'row',
-        justifyContent:'center',
-        height:windowHeight/18.4,
+        justifyContent:'space-around',
+        height:windowHeight*0.0974,
+        borderColor:'#F5F5F5',
+        borderBottomWidth:windowHeight*0.007,
+        backgroundColor:'#FFCC33'
     },
     deliverTimeText:{
-        color:'#696969',
+        color:'#FFFFFF',
+        fontWeight:'bold',
         fontSize:windowHeight/49.06,
-        marginTop:windowHeight/73.6,
+        alignSelf:'center',
+    },
+    deleteBannerIcon:{
+       width:windowHeight*0.0528,
+       height:windowHeight*0.0528,
+    },
+    deleteBannerIconView:{
+       alignSelf:'center',
     },
     dishListView:{
         flex:1,
@@ -300,14 +435,16 @@ var styleShoppingCartPage = StyleSheet.create({
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
         flex:1,
+        borderColor:'#F5F5F5',
+        borderBottomWidth:windowHeight*0.007,
     },
     dishPhoto:{
-        width:windowWidth/2.76,
-        height:windowWidth/2.76,
+        width:windowWidth*0.344,
+        height:windowWidth*0.344,
     },
     shoppingCartInfoView:{
         flex:1,
-        height:windowWidth/2.76,
+        height:windowWidth*0.344,
         flexDirection:'column',
         paddingLeft:windowWidth/20.7,
         paddingRight:windowWidth/27.6,
@@ -332,7 +469,7 @@ var styleShoppingCartPage = StyleSheet.create({
     dishPriceText:{
         fontSize:windowHeight/40.89,
         fontWeight:'600',
-        color:'#808080',
+        color:'#F8C84E',
     },
     dishIngredientView:{
         flex:1,
@@ -364,6 +501,47 @@ var styleShoppingCartPage = StyleSheet.create({
         fontSize:windowHeight/46.0,
         fontWeight:'500',
         color:'#ff9933',
+    },
+    commentBox:{
+        alignSelf:'center',
+        backgroundColor:'#F5F5F5',
+        width:windowWidth*0.93,
+        marginTop:24,
+    },
+    submitCommentButton:{
+        backgroundColor:'#FFCC33',
+        height:windowHeight*0.058,
+        justifyContent:'center',
+    },
+    submitCommentButtonText:{
+        color:'#FFF',
+        fontWeight:'bold',
+        alignSelf:'center',
+    },
+    ratingView:{
+        height:40,
+        justifyContent:'flex-start',
+        flexDirection:'row',
+        borderBottomWidth:1,
+        borderColor:'#D7D7D7',
+        marginHorizontal:10,
+    },
+    commentInput:{
+        height:90, 
+        padding:15,
+        fontSize:14,       
+    },
+    commentText:{
+        padding:15,
+        fontSize:14,
+        color:'#A7A7A7',
+    },
+    ratingIconWrapper:{
+        alignSelf:'center',
+    },
+    ratingIcon:{
+        width:35,
+        height:35,        
     },
 });
 
