@@ -16,6 +16,17 @@ var searchIcon = require('./icons/ic_search_48pt_3x.png');
 var menuIcon = require('./icons/icon-menu.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
+var backIcon = require('./icons/icon-back.png');
+var dollarSign1_Grey = require('./icons/icon-dollar1-grey.png');
+var dollarSign2_Grey = require('./icons/icon-dollar2-grey.png');
+var dollarSign3_Grey = require('./icons/icon-dollar3-grey.png');
+var dollarSign4_Grey = require('./icons/icon-dollar4-grey.png');
+var dollarSign1_Orange = require('./icons/icon-dollar1-orange.png');
+var dollarSign2_Orange = require('./icons/icon-dollar2-orange.png');
+var dollarSign3_Orange = require('./icons/icon-dollar3-orange.png');
+var dollarSign4_Orange = require('./icons/icon-dollar4-orange.png');
+var sortCriteriaIconGery = require('./icons/icon-rating-grey.png');
+var sortCriteriaIconOrange = require('./icons/icon-rating-orange.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -62,6 +73,11 @@ class ChefListPage extends Component {
             chefsDictionary: {},
             city:'Seattle',
             state:'WA',
+            dollarSign1:dollarSign1_Grey,
+            dollarSign2:dollarSign2_Grey,
+            dollarSign3:dollarSign3_Grey,
+            dollarSign4:dollarSign4_Grey,
+            sortCriteriaIcon:sortCriteriaIconGery,
         };
     }
 
@@ -235,42 +251,57 @@ class ChefListPage extends Component {
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
         }else if(this.state.showChefSearch){
             return <View style={styles.container}>
-                <Text style={styles.titleText}> Settings</Text>
-                <TouchableHighlight style={styles.button} onPress={() => this.setState({
-                    showChefSearch: false,
-                    isMenuOpen: false,
-                    priceRankFilter: JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
-                    withBestRatedSort: this.state.withBestRatedSortOrigin,
-                }) }>
-                    <Text style={styles.titleText}> Go Back</Text>
-                </TouchableHighlight>
-                <Text style={styles.titleText}> Order chef by</Text>
-                <TouchableHighlight style={styles.button} onPress={() => this.searchChef() }>
-                    <Text style={styles.buttonText}> Apply</Text>
-                </TouchableHighlight>    
-                <View style={{ alignSelf: 'stretch', alignItems: 'center' }}>
-                    <TouchableHighlight style={styles.button} onPress={() => this.clickDollarSign(1) }>
-                        <Text style={styles.buttonText}> Price dollar LEVEL 1</Text>
-                    </TouchableHighlight> 
-                    <Text style={styles.titleText}> {this.state.priceRankFilter[1]==true?'on':'off'}</Text>
-                    <TouchableHighlight style={styles.button} onPress={() => this.clickDollarSign(2) }>
-                        <Text style={styles.buttonText}> Price dollar LEVEL 2</Text>
-                    </TouchableHighlight>
-                    <Text style={styles.titleText}> {this.state.priceRankFilter[2]==true?'on':'off'}</Text>     
-                    <TouchableHighlight style={styles.button} onPress={() => this.clickDollarSign(3) }>
-                        <Text style={styles.buttonText}> Price dollar LEVEL 3</Text>
-                    </TouchableHighlight> 
-                    <Text style={styles.titleText}> {this.state.priceRankFilter[3]==true?'on':'off'}</Text>                
-                    <TouchableHighlight style={styles.button} onPress={() => this.clickDollarSign(4) }>
-                        <Text style={styles.buttonText}> Price dollar LEVEL 4</Text>
-                    </TouchableHighlight>    
-                    <Text style={styles.titleText}> {this.state.priceRankFilter[4]==true?'on':'off'}</Text>                                       
-                    <TouchableHighlight style={styles.button} onPress={() => {this.setState({withBestRatedSort:!this.state.withBestRatedSort})} }>
-                        <Text style={styles.buttonText}> BestRated</Text>
-                    </TouchableHighlight> 
-                    <Text style={styles.titleText}> {this.state.withBestRatedSort==true?'on':'off'}</Text>              
-                </View>
-            </View>                    
+                       <View style={styles.headerBannerView}>    
+                            <View style={styles.headerLeftView}>
+                                <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} 
+                                 onPress={() => this.setState({
+                                                                showChefSearch: false,
+                                                                isMenuOpen: false,
+                                                                priceRankFilter: JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
+                                                                withBestRatedSort: this.state.withBestRatedSortOrigin,
+                                                             })}>
+                                    <Image source={backIcon} style={styles.backButtonIcon}/>
+                                </TouchableHighlight>
+                            </View>    
+                            <View style={styles.titleView}>
+                                <Text style={styles.titleText}>Filter</Text>
+                            </View>
+                            <View style={styles.headerRightView}>
+                            </View>
+                        </View>     
+                        <View style={styleFilterPage.dollarSignSelectionView}>
+                           <View style={styleFilterPage.dollarSignSelectionView}>
+                              <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(1)}>
+                                  <Image source={this.state.dollarSign1} style={styleFilterPage.dollarSign}/>
+                              </TouchableHighlight>
+                              <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(2)}>
+                                  <Image source={this.state.dollarSign2} style={styleFilterPage.dollarSign}/>
+                              </TouchableHighlight>
+                              <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(3)}>
+                                  <Image source={this.state.dollarSign3} style={styleFilterPage.dollarSign}/>
+                              </TouchableHighlight>
+                              <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(4)}>
+                                  <Image source={this.state.dollarSign4} style={styleFilterPage.dollarSign}/>
+                              </TouchableHighlight>
+                           </View>
+                        </View> 
+                    <View style={styleFilterPage.sortCriteriaSectionTitleView}>          
+                      <Text style={styles.titleText}> Sort by</Text>
+                    </View>
+                    <View style={styleFilterPage.sortCriteriaView}>
+                       <View style={styleFilterPage.sortCriteriaTitleView}>
+                          <Text style={styleFilterPage.sortCriteriaTitleText}>Best Rated</Text>
+                       </View>
+                       <View style={styleFilterPage.sortCriteriaIconView}>
+                          <TouchableHighlight style={styleFilterPage.sortCriteriaIconWrapper} underlayColor={'transparent'} onPress={() => {this.setState({withBestRatedSort:!this.state.withBestRatedSort})}}>
+                              <Image source={this.state.sortCriteriaIcon} style={styleFilterPage.sortCriteriaIcon}/>
+                          </TouchableHighlight>
+                       </View>
+                    </View>
+                    <TouchableHighlight underlayColor={'#C0C0C0'} style={styleFilterPage.applySearchButtonView} onPress={() => this.searchChef()}>
+                        <Text style={styleFilterPage.applySearchButtonText}>Apply and Search</Text>
+                    </TouchableHighlight>                 
+               </View>                    
         }
         
         return (
@@ -315,8 +346,23 @@ class ChefListPage extends Component {
     }
     
     clickDollarSign(priceLevel){
-        this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];   
-        this.setState({priceRankFilter:this.state.priceRankFilter});  
+        this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];
+        switch(priceLevel){
+            case 1:
+               this.setState({dollarSign1:this.state.dollarSign1==dollarSign1_Grey? dollarSign1_Orange:dollarSign1_Grey}); 
+               break;
+            case 2:
+               this.setState({dollarSign2:this.state.dollarSign2==dollarSign2_Grey? dollarSign2_Orange:dollarSign2_Grey}); 
+               break;
+            case 3:
+               this.setState({dollarSign3:this.state.dollarSign3==dollarSign3_Grey? dollarSign3_Orange:dollarSign3_Grey}); 
+               break;
+            case 4:
+               this.setState({dollarSign4:this.state.dollarSign4==dollarSign4_Grey? dollarSign4_Orange:dollarSign4_Grey}); 
+               break;
+        }
+          
+        this.setState({priceRankFilter:this.state.priceRankFilter});
     }
     
     showFavoriteChefs(){
@@ -689,4 +735,76 @@ var styleChefListPage = StyleSheet.create({
     },    
 });
 
+var styleFilterPage = StyleSheet.create({
+    dollarSignSelectionView:{
+        flexDirection:'row',
+        height:50,
+        borderColor:'#D7D7D7',
+        borderBottomWidth:0.5,
+        alignItems:'center',
+    },
+    dollarSignView:{
+        flexDirection:'row',
+        width:windowWidth/4,
+        justifyContent:'center',
+    },
+    dollarSign:{
+        width:40,
+        height:40,
+        alignSelf:'center',
+    },
+    applySearchButtonView:{
+        position:'absolute',
+        left: 0, 
+        right: 0,
+        top:windowHeight-windowHeight/13.38,
+        height:windowHeight/13.38,
+        backgroundColor:'#FFCC33',
+        justifyContent: 'center',
+    },
+    applySearchButtonText:{
+      color:'#fff',
+      fontSize:windowHeight/30.6,
+      fontWeight:'400',
+      alignSelf:'center',
+    },
+    sortCriteriaSectionTitleView:{
+        height:70,
+        width:windowWidth,
+        backgroundColor:'#F5F5F5',
+        justifyContent:'flex-end',
+    },
+    sortCriteriaView:{
+        width:windowWidth,
+        height:50,
+        flexDirection:'row', 
+        borderColor:'#D7D7D7',
+        borderBottomWidth:1,    
+    },
+    sortCriteriaTitleView:{
+        width:windowWidth*0.85,
+        height:50,
+        flexDirection:'row',
+        alignItems:'flex-start',        
+    },
+    sortCriteriaTitleText:{
+        alignSelf:'center',
+        color:'#4A4A4A',
+        fontSize:14,
+        marginLeft:10,
+    },
+    sortCriteriaIconView:{
+        width:windowWidth*0.15,
+        height:50,
+        flexDirection:'row',
+        alignItems:'flex-end',
+    },
+    sortCriteriaIconWrapper:{
+        alignSelf:'center',
+    },
+    sortCriteriaIcon:{
+        width:40,
+        height:40,
+    }
+});
 module.exports = ChefListPage;
