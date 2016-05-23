@@ -208,7 +208,7 @@ class ShopPage extends Component {
                             <View style={styleShopPage.chefDetailTextView}>
                                 <Text style={styleShopPage.pickupAddressText}>Chef page</Text>
                             </View>
-                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
+                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                             </TouchableHighlight>
                          </View>), 
@@ -305,7 +305,7 @@ class ShopPage extends Component {
                                 </TouchableHighlight>
                             </View>    
                             <View style={styles.titleView}>
-                                <Text style={styles.titleText}></Text>
+                                <Text style={styles.titleText}>{this.state.chef.shopname}</Text>
                             </View>
                             <View style={styles.headerRightView}>
                                 <View style={styles.likeShareButtonView}>
@@ -491,7 +491,7 @@ class ShopPage extends Component {
                 shoppingCart:this.state.shoppingCart,
                 selectedTime:this.state.selectedTime,
                 scheduleMapping:this.state.scheduleMapping,
-                totalPrice: this.state.totalPrice
+                totalPrice: this.state.totalPrice,
             }
         });      
     }
@@ -507,6 +507,15 @@ class ShopPage extends Component {
             }
             this.props.navigator.pop();
         }
+    }
+
+    navigateToChefPage(){
+        this.props.navigator.push({
+            name: 'ChefPage', 
+            passProps:{
+                chef:this.state.chef,
+            }
+        });      
     }
 }
 

@@ -12,7 +12,6 @@ var profileImg = require('./icons/defaultAvatar.jpg');
 var ballonIcon = require('./icons/icon-location-white.png');
 var favoriteIcon = require('./icons/icon-liked-white.png');
 var labelIcon = require('./icons/icon-label.png');
-var searchIcon = require('./icons/ic_search_48pt_3x.png');
 var menuIcon = require('./icons/icon-menu.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
