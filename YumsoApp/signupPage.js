@@ -125,18 +125,6 @@ class SignUpPage extends Component {
     }
 }
 
-var styleLogin = StyleSheet.create({
-  loginContainer: {
-    marginTop: 150,
-
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bottomBump: {
-    marginBottom: 15,
-  },
-});
 
 var styleSignUpPage = StyleSheet.create({
     logoView:{
