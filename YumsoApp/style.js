@@ -83,8 +83,8 @@ module.exports = StyleSheet.create({
       marginLeft:10,
     },
     menuIcon:{
-      width:windowHeight/29.4,
-      height:windowHeight/29.4,
+      width:windowHeight*0.0352,
+      height:windowHeight*0.0264,
     },
     searchIcon:{
       width:windowHeight/24.5,

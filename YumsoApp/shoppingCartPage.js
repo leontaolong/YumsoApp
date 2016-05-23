@@ -140,7 +140,7 @@ class ShoppingCartPage extends Component {
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>
                      <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
-                        <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add delivery address': 'Change Address'}</Text>
+                        <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add Address': 'Change Address'}</Text>
                      </TouchableHighlight>
                   </View>
                </View>)];
