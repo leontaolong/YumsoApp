@@ -22,6 +22,8 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		5821B6D11CD1F5F00073AD2C /* RNBraintree.m in Sources */ = {isa = PBXBuildFile; fileRef = 5821B6D01CD1F5F00073AD2C /* RNBraintree.m */; };
+		586A2A471CF1B9A5004B0E07 /* libActivityView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 586A2A461CF1B99E004B0E07 /* libActivityView.a */; };
+		586A2A501CF265C6004B0E07 /* signInBackground.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 586A2A4F1CF265C5004B0E07 /* signInBackground.jpg */; };
 		58F91AD91CC4B73100F73877 /* libRCTFBLogin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58F91ACF1CC4B63900F73877 /* libRCTFBLogin.a */; };
 		58F91AE31CC60AB200F73877 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58F91AE01CC60AB200F73877 /* FBSDKCoreKit.framework */; };
 		58F91AE41CC60AB200F73877 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58F91AE11CC60AB200F73877 /* FBSDKLoginKit.framework */; };
@@ -96,6 +98,20 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
+		586A2A451CF1B99E004B0E07 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 586A2A411CF1B99D004B0E07 /* ActivityView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = ActivityView;
+		};
+		586A2A4C1CF25441004B0E07 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 586A2A481CF25441004B0E07 /* RCTWeChat.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 86D238421BD0BB9E00C75D01;
+			remoteInfo = RCTWeChat;
+		};
 		58F91ACE1CC4B63900F73877 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 58F91AC91CC4B63800F73877 /* RCTFBLogin.xcodeproj */;
@@ -155,6 +171,9 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		5821B6CF1CD1F5F00073AD2C /* RNBraintree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNBraintree.h; path = YumsoApp/RNBraintree.h; sourceTree = "<group>"; };
 		5821B6D01CD1F5F00073AD2C /* RNBraintree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNBraintree.m; path = YumsoApp/RNBraintree.m; sourceTree = "<group>"; };
+		586A2A411CF1B99D004B0E07 /* ActivityView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ActivityView.xcodeproj; path = "../node_modules/react-native-activity-view/ActivityView.xcodeproj"; sourceTree = "<group>"; };
+		586A2A481CF25441004B0E07 /* RCTWeChat.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWeChat.xcodeproj; path = "../node_modules/react-native-wechat/ios/RCTWeChat.xcodeproj"; sourceTree = "<group>"; };
+		586A2A4F1CF265C5004B0E07 /* signInBackground.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = signInBackground.jpg; path = ../resourceImages/signInBackground.jpg; sourceTree = "<group>"; };
 		58F91AC91CC4B63800F73877 /* RCTFBLogin.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTFBLogin.xcodeproj; path = "../node_modules/react-native-facebook-login/RCTFBLogin.xcodeproj"; sourceTree = "<group>"; };
 		58F91AE01CC60AB200F73877 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "../node_modules/react-native-facebook-login/FacebookSDK/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		58F91AE11CC60AB200F73877 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "../node_modules/react-native-facebook-login/FacebookSDK/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
@@ -180,6 +199,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				586A2A471CF1B9A5004B0E07 /* libActivityView.a in Frameworks */,
 				58F91AFD1CCD50EF00F73877 /* libAirMaps.a in Frameworks */,
 				58F91AEC1CCB603300F73877 /* libRNImagePicker.a in Frameworks */,
 				58F91AD91CC4B73100F73877 /* libRCTFBLogin.a in Frameworks */,
@@ -288,6 +308,7 @@
 				5821B6CF1CD1F5F00073AD2C /* RNBraintree.h */,
 				5821B6D01CD1F5F00073AD2C /* RNBraintree.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				586A2A4F1CF265C5004B0E07 /* signInBackground.jpg */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -318,6 +339,22 @@
 				8015C0E573A2855AF8FD9A8A /* libPods.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		586A2A421CF1B99D004B0E07 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				586A2A461CF1B99E004B0E07 /* libActivityView.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		586A2A491CF25441004B0E07 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				586A2A4D1CF25441004B0E07 /* libRCTWeChat.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		58F91ACA1CC4B63800F73877 /* Products */ = {
@@ -355,6 +392,8 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				586A2A481CF25441004B0E07 /* RCTWeChat.xcodeproj */,
+				586A2A411CF1B99D004B0E07 /* ActivityView.xcodeproj */,
 				58F91AF71CCD50D800F73877 /* AirMaps.xcodeproj */,
 				58F91AE61CCB5F8000F73877 /* RNImagePicker.xcodeproj */,
 				58F91AC91CC4B63800F73877 /* RCTFBLogin.xcodeproj */,
@@ -476,6 +515,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 586A2A421CF1B99D004B0E07 /* Products */;
+					ProjectRef = 586A2A411CF1B99D004B0E07 /* ActivityView.xcodeproj */;
+				},
+				{
 					ProductGroup = 58F91AF81CCD50D800F73877 /* Products */;
 					ProjectRef = 58F91AF71CCD50D800F73877 /* AirMaps.xcodeproj */;
 				},
@@ -518,6 +561,10 @@
 				{
 					ProductGroup = 139FDEE71B06529A00C62182 /* Products */;
 					ProjectRef = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
+				},
+				{
+					ProductGroup = 586A2A491CF25441004B0E07 /* Products */;
+					ProjectRef = 586A2A481CF25441004B0E07 /* RCTWeChat.xcodeproj */;
 				},
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
@@ -593,6 +640,20 @@
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		586A2A461CF1B99E004B0E07 /* libActivityView.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libActivityView.a;
+			remoteRef = 586A2A451CF1B99E004B0E07 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		586A2A4D1CF25441004B0E07 /* libRCTWeChat.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTWeChat.a;
+			remoteRef = 586A2A4C1CF25441004B0E07 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		58F91ACF1CC4B63900F73877 /* libRCTFBLogin.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -644,6 +705,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				586A2A501CF265C6004B0E07 /* signInBackground.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

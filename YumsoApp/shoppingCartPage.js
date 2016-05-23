@@ -41,7 +41,7 @@ class ShoppingCartPage extends Component {
         let chefId = routeStack[routeStack.length-1].passProps.chefId;        
         let eater = routeStack[routeStack.length-1].passProps.eater;        
         let scheduleMapping = routeStack[routeStack.length-1].passProps.scheduleMapping;        
-        let defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;//!=undefined? routeStack[routeStack.length-1].passProps.defaultDeliveryAddress:'';        
+        this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(shoppingCart[selectedTime])),
@@ -49,7 +49,7 @@ class ShoppingCartPage extends Component {
             scheduleMapping: scheduleMapping,           
             shoppingCart:shoppingCart,
             selectedTime:selectedTime,
-            deliveryAddress: defaultDeliveryAddress,
+            deliveryAddress: Object.keys(this.defaultDeliveryAddress).length===0?undefined:this.defaultDeliveryAddress,
             chefId:chefId,
             selectDeliveryAddress:false,
             shopName:shopName,
@@ -369,10 +369,13 @@ class ShoppingCartPage extends Component {
         //     Alert.alert('Warning','You do not have any item in your shopping cart',[{ text: 'OK' }]);
         //     return;
         // }
-        let eater = await AuthService.getEater(); //todo: get eater and 401 jump after call.
+        let eater = this.state.eater;
+        if(!eater){
+            eater = await AuthService.getEater(); //todo: get eater and 401 jump after call.
+        }
         if(!eater){
             this.props.navigator.push({
-                name: 'LoginPage'
+                name: 'LoginPage' //todo: call back to set eater.
             });  
             return;
         }
@@ -390,9 +393,7 @@ class ShoppingCartPage extends Component {
         var order = this.state.quotedOrder;
         order.quotedGrandTotal = this.state.quotedOrder.price.grandTotal;
         order.eaterId = eater.eaterId;
-        order.paymentMethod = 'American Express';
         order.notesToChef = 'Please put less salt';
-        order.refundDll = 1459596400618; //todo: no need these probably.        
         console.log(order);
         this.props.navigator.push({
             name: 'PaymentPage', 
@@ -403,6 +404,11 @@ class ShoppingCartPage extends Component {
     }
     
     navigateBackToDishList(){
+        if(this.state.deliveryAddress){
+            for(var key in this.state.deliveryAddress){
+                this.defaultDeliveryAddress[key] = this.state.deliveryAddress[key];
+            }
+        }
         this.props.navigator.pop();
     }
 }

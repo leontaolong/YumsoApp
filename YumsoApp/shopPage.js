@@ -18,7 +18,9 @@ var labelIcon = require('./icons/icon-label.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
 var dollarSign = require('./commonModules/dollarIconRender');
-
+var ActivityView = require('react-native-activity-view');
+// import * as WeChat from 'react-native-wechat';
+// var result = await  WeChat.shareToTimeline({type: 'text', description: 'I\'m Wechat, :)'});
 
 import Dimensions from 'Dimensions';
 import ModalPicker from 'react-native-modal-picker'
@@ -49,14 +51,15 @@ class ShopPage extends Component {
            rowHasChanged: (r1, r2) => r1!=r2 
         });
         var routeStack = this.props.navigator.state.routeStack;
-        let chefId = routeStack[routeStack.length-1].passProps.chefId;      
-        this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;      
+        let chef = routeStack[routeStack.length-1].passProps.chef;      
+        this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress==undefined?{}:routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;      
         this.callback = routeStack[routeStack.length-1].passProps.callback;      
         let eater = routeStack[routeStack.length-1].passProps.eater;      
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:true,
-            chefId: chefId,
+            chefId: chef.chefId,
+            chef:chef,
             timeData:[],
             shoppingCart:{},  
             selectedTime:'All Schedules',
@@ -65,32 +68,15 @@ class ShopPage extends Component {
         };            
     }
     
-    componentDidMount(){   
-        this.client = new HttpsClient(config.baseUrl, true);
-        let task1 = this.fetchChefProfile(); 
-        let task2 = this.fetchDishesAndSchedules(this.state.chefId);   
-        let task3 = AuthService.getEater().then((eater)=>{
-            if(eater){
-                if (!eater.favoriteChefs) eater.favoriteChefs = []; //todo: remove this.
-                this.setState({like:eater.favoriteChefs.indexOf(this.state.chefId) !== -1});
-            }
-        })
-        Promise.all([task1, task2, task3])
-            .then(() => {
-                this.setState({ showProgress: false });
-            }); 
-    }
-    
-    fetchChefProfile(){
-        var self = this;
-        var chefId = this.state.chefId;
-        return this.client.getWithoutAuth(config.getOneChefEndpoint+chefId).then(function(res){
-            if(res.statusCode===200){
-               var chef=res.data.chef;
-               self.setState({chef:chef});
-            }
-        });
-    }
+     async componentDidMount() {
+         this.client = new HttpsClient(config.baseUrl, true);
+         await this.fetchDishesAndSchedules(this.state.chefId);
+         if (this.state.eater) {
+             if (!this.state.eater.favoriteChefs) this.state.eater.favoriteChefs = []; //todo: remove this.
+             this.setState({ like: this.state.eater.favoriteChefs.indexOf(this.state.chefId) !== -1 });
+         }
+         this.setState({ showProgress: false });
+     }
 
     async fetchDishesAndSchedules(chefId) {
         const start = 'start='+new Date().getTime();
@@ -309,7 +295,7 @@ class ShopPage extends Component {
                             </View>
                             <View style={styles.headerRightView}>
                                 <View style={styles.likeShareButtonView}>
-                                   <TouchableHighlight underlayColor={'transparent'} onPress={()=>{}}>
+                                   <TouchableHighlight underlayColor={'transparent'} onPress={()=>this.share()}>
                                       <Image source={shareIcon} style={styles.shareButtonIcon}/>
                                    </TouchableHighlight>
                                 </View>
@@ -406,47 +392,57 @@ class ShopPage extends Component {
         this.getTotalPrice();
     }
     
-    addToFavorite(){
-        var _this = this;
-        return AuthService.getEater()
-        .then((eater)=>{
-            if(eater){
-                if (!eater.favoriteChefs) eater.favoriteChefs = []; //todo: remove this.
-                let isAdd = eater.favoriteChefs.indexOf(_this.state.chefId) === -1
-                console.log(isAdd);
-                _this.client.postWithAuth(isAdd?config.addFavoriteEndpoint:config.removeFavoriteEndpoint, {
-                    info:{ chefId: _this.state.chefId, eaterId: eater.eaterId}
-                }).then((res)=>{
-                    if(res.statusCode===200){
-                        isAdd?eater.favoriteChefs.push(_this.state.chefId):eater.favoriteChefs.splice(eater.favoriteChefs.indexOf(_this.state.chefId), 1);
-                        return AuthService.updateCacheEater(eater)
-                            .then(()=>{ 
-                                _this.setState({like:isAdd});
-                                Alert.alert('Success', isAdd?'Added to favorite list':'Removed from favorite list', [{ text: 'OK' }]);                          
-                            });
-                    }else if(res.statusCode===401){
-                        _this.props.navigator.push({
-                            name: 'LoginPage',
-                            passProps:{
-                                callback:(eater)=>{
-                                _this.setState({like:eater.favoriteChefs.indexOf(_this.state.chefId) !== -1});                  
-                                }  
-                            }                
+    addToFavorite() {
+        let _this = this;
+        let eater = this.state.eater;
+        if (eater) {
+            if (!eater.favoriteChefs) eater.favoriteChefs = []; //todo: remove this.
+            let isAdd = eater.favoriteChefs.indexOf(_this.state.chefId) === -1
+            _this.client.postWithAuth(isAdd ? config.addFavoriteEndpoint : config.removeFavoriteEndpoint, {
+                info: { chefId: _this.state.chefId, eaterId: eater.eaterId }
+            }).then((res) => {
+                if (res.statusCode === 200) {
+                    isAdd ? eater.favoriteChefs.push(_this.state.chefId) : eater.favoriteChefs.splice(eater.favoriteChefs.indexOf(_this.state.chefId), 1);
+                    return AuthService.updateCacheEater(eater)
+                        .then(() => {
+                            _this.setState({ like: isAdd });
+                            Alert.alert('Success', isAdd ? 'Added to favorite list' : 'Removed from favorite list', [{ text: 'OK' }]);
                         });
-                    }else{
-                        Alert.alert( 'Failed', 'Failed. Please try again later',[ { text: 'OK' }]);   
-                    }
-                });         
-            }else{
-                _this.props.navigator.push({
-                    name: 'LoginPage',
-                    passProps:{
-                        callback:(eater)=>{
-                           _this.setState({like:eater.favoriteChefs.indexOf(_this.state.chefId) !== -1});                  
+                } else if (res.statusCode === 401) {
+                    _this.props.navigator.push({
+                        name: 'LoginPage',
+                        passProps: {
+                            callback: (eater) => {
+                                _this.setState({ like: eater.favoriteChefs.indexOf(_this.state.chefId) !== -1 });
+                            }
                         }
+                    });
+                } else {
+                    Alert.alert('Failed', 'Failed. Please try again later', [{ text: 'OK' }]);
+                }
+            });
+        } else {
+            _this.props.navigator.push({
+                name: 'LoginPage',
+                passProps: {
+                    callback: (eater) => {
+                        _this.setState({ like: eater.favoriteChefs.indexOf(_this.state.chefId) !== -1 });
                     }
-                });
-            }
+                }
+            });
+        }
+    }
+
+    share() {
+        ActivityView.show({
+            text: "Yumso, bring you home.  -- Chef shop "+this.state.chef.shopname+' welcome you to order' ,
+            url: "https://www.yumso.com",
+            imageUrl: this.state.chef.chefProfilePic,
+            //imageBase64: "Raw base64 encoded image data",
+            //image: 'signInBackground.jpg',
+            //file: "Path to file you want to share",
+            //exclude: ['postToFlickr'],
+            //anchor: React.findNodeHandle(this.refs.share), // Where you want the share popup to point to on iPad
         });
     }
     

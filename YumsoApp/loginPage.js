@@ -126,40 +126,34 @@ class LoginPage extends Component {
             return;
         }
         this.setState({showProgress:true});
-        let result = await AuthService.loginWithEmail(this.state.email, this.state.password);
-        if(!result){
+        let eater = await AuthService.loginWithEmail(this.state.email, this.state.password);
+        this.setState({ showProgress: false });        
+        if(!eater){
             return;
         }
-        this.setState({ success: true });
-        this.setState({ showProgress: false });
-        let user = await AuthService.getEater();
-        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
         this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();
         }
         if(this.state.callback){
-            this.state.callback(user);
+            this.state.callback(eater);
         }
     }
     
     async onGettingFbToken(credentials){
         let token  = credentials.token;
         this.setState({showProgress:true});
-        let result = await AuthService.loginWithFbToken(token);
-        if(!result){
+        let eater = await AuthService.loginWithFbToken(token);
+        this.setState({ showProgress: false });   
+        if(!eater){
             return;
         }
-        this.setState({ success: true });
-        this.setState({ showProgress: false });   
-        let user = await AuthService.getEater();
-        Alert.alert( '', 'Successfully logged in through Facebook',[ { text: 'OK' }]);
         this.props.navigator.pop();  
         if(this.props.onLogin){
             this.props.onLogin();
         }
         if(this.state.callback){
-            this.state.callback(user);
+            this.state.callback(eater);
         }
     }
     
