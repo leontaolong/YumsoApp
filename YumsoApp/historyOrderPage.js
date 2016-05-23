@@ -173,10 +173,8 @@ class HistoryOrderPage extends Component {
                 <View style={styles.container}> 
                     <TextInput placeholder="comments" style={styles.loginInput}
                         onChangeText = {(text) => this.setState({ comment: text }) }/>
-                    <TextInput placeholder="Star Rating integer" style={styles.loginInput}
-                        onChangeText = {(text) => this.setState({ starRating: text }) }/>                    
-                    <TouchableHighlight style={styles.button}
-                        onPress={()=>this.submitComment()}>
+                    <TextInput placeholder="Star Rating integer" style={styles.loginInput} onChangeText = {(text) => this.setState({ starRating: text }) }/>                    
+                    <TouchableHighlight style={styles.button} onPress={()=>this.submitComment()}>
                         <Text style={styles.buttonText}>Submit</Text>    
                     </TouchableHighlight>                                                
                     <TouchableHighlight style={styles.button}
