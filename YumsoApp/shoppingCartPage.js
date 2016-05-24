@@ -54,7 +54,8 @@ class ShoppingCartPage extends Component {
             selectDeliveryAddress:false,
             shopName:shopName,
             eater:eater,
-            priceIsConfirmed:false
+            priceIsConfirmed:false,
+            showPromotionCodeInput:false,
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
@@ -145,6 +146,17 @@ class ShoppingCartPage extends Component {
                   </View>
                </View>)];
        }
+       
+       if(this.state.showPromotionCodeInput){
+          var promotionCodeInputView = <TextInput style={styleShoppingCartPage.phoneNumberInput} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                         onChangeText = {(text) => this.setState({ promotionCode: text }) }/>;
+       }else{
+          var promotionCodeInputView =  <TouchableHighlight style={styleShoppingCartPage.priceNumberView} onPress={()=>this.setState({showPromotionCodeInput:true})}>
+                                           <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
+                                        </TouchableHighlight>;
+       }
+       
+        
        return [(<View style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
@@ -166,14 +178,18 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.postal:''}</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
+                      <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
+                      <View style={styleShoppingCartPage.phoneNumberInputView}>                       
+                        <TextInput style={styleShoppingCartPage.phoneNumberInput} default={this.eater!=undefined? this.eater.phoneNumber:''} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                        keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text }) }/> 
+                      </View>
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>
                      <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
                         <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add delivery address': 'Change Address'}</Text>
                      </TouchableHighlight>
-                  </View>
-                  <TextInput style={styleShoppingCartPage.priceNumberView} default={this.eater!=undefined? 'phone number:'+this.eater.phoneNumber:''} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                      onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>  
+                  </View>                      
                </View>),
                (<View style={styleShoppingCartPage.taxView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
@@ -187,9 +203,7 @@ class ShoppingCartPage extends Component {
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
                   </View>
-                  <TouchableHighlight style={styleShoppingCartPage.priceNumberView}>
-                      <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
-                  </TouchableHighlight>
+                 {promotionCodeInputView}
                </View>),
                (<View style={styleShoppingCartPage.totalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
@@ -422,7 +436,7 @@ var styleShoppingCartPage = StyleSheet.create({
         borderColor:'#D7D7D7',
     },
     chefShopNameText:{
-        color:'#ff9933',
+        color:'#FFCC33',
         fontSize:windowHeight/36.8,
         fontWeight:'500',
         marginTop:windowHeight/73.6,
@@ -470,11 +484,22 @@ var styleShoppingCartPage = StyleSheet.create({
     addressView:{
         marginLeft:windowWidth/9,
         flexDirection:'row',
-        height:windowHeight/7.36,
-        paddingTop:windowHeight/56.6,
-        borderTopWidth:1,
-        borderColor:'#D7D7D7',
+        height:windowHeight/4.6,
+        paddingTop:10,
         justifyContent:'flex-end'
+    },
+    phoneNumberInputView:{
+        height:25,
+        flexDirection:'row',
+        borderColor:'#D7D7D7',
+        borderWidth:1,
+        borderRadius:5,
+        marginTop:windowHeight/147.2,
+    },
+    phoneNumberInput:{
+        fontSize:14,
+        color:'#4A4A4A',
+        width:windowWidth*0.25,       
     },
     promotionCodeView:{
         flexDirection:'row',
@@ -504,7 +529,7 @@ var styleShoppingCartPage = StyleSheet.create({
         fontWeight:'500',
     },
     addressTextView:{
-        flex:0.6,
+        flex:0.57,
         flexDirection:'column',
     },
     addressLine:{
@@ -513,26 +538,26 @@ var styleShoppingCartPage = StyleSheet.create({
         marginTop:windowHeight/147.2,
     },
     addressChangeButtonWrapper:{
-        width:windowWidth/3.18,
-        height:windowWidth/3.18*3.0/13.0,
-        borderColor:'#ff9933',
+        width:windowWidth*0.34375,
+        height:windowWidth*0.34375*3.0/13.0,
+        borderColor:'#ffcc33',
         borderWidth:1,
         borderRadius:6, 
         overflow: 'hidden', 
-        marginBottom:windowHeight/24.53,
+        alignSelf:'flex-start',
+        justifyContent:'center',
+        marginRight:windowWidth*0.003,
     },
     addressChangeButtonText:{
         fontSize:windowHeight/49.06,
-        color:'#ff9933',
-        fontWeight:'400',
-        marginTop:windowHeight/147.2,
-        alignSelf:'center',
+        color:'#ffcc33',
+        fontWeight:'500',
+        alignSelf:'center',  
     },
     addressChangeButtonView:{
-        flex:0.4,
+        flex:0.43,
         flexDirection:'row',
-        alignItems:'flex-end',
-        marginLeft:3,
+        alignItems:'flex-end',     
     },
     priceTitleView:{
         flex:1/2.0,
@@ -601,7 +626,7 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row', 
     },
     quantityView:{
-        flex:0.6,
+        flex:0.2,
         flexDirection:'row', 
         alignItems:'flex-start',
     },
@@ -627,7 +652,7 @@ var styleShoppingCartPage = StyleSheet.create({
         marginTop:windowHeight/147.2,
         fontSize:windowHeight/46.0,
         fontWeight:'500',
-        color:'#ff9933',
+        color:'#ffcc33',
     },
     addPromoCodeIcon:{
         width: windowHeight/36.8, 
