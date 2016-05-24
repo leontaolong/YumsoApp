@@ -67,7 +67,7 @@ class PaymentOptionPage extends Component {
     renderRow(card){  
         return (
              <View style={stylePaymentOptionPage.paymentMethodView}>
-                <TouchableHighlight style={stylePaymentOptionPage.paymentMethodIconView} onPress={()=>this.onCardClick(card)}>
+                <TouchableHighlight underlayColor={'transparent'} style={stylePaymentOptionPage.paymentMethodIconView} onPress={()=>this.onCardClick(card)}>
                    {this.renderPaymentMethodType(card)}
                 </TouchableHighlight>
                 <View style={stylePaymentOptionPage.paymentMethodInfoView}>

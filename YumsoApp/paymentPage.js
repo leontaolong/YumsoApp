@@ -60,13 +60,13 @@ class PaymentPage extends Component {
                   <Text style={stylePaymentPage.totalAmountText}>You total amount: ${this.state.orderDetail.price.grandTotal}</Text>   
                </View>
                <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                 <TouchableHighlight style={stylePaymentPage.selectPaymentbutton}
+                 <TouchableHighlight underlayColor={'transparent'} style={stylePaymentPage.selectPaymentbutton}
                       onPress={()=>this.selectPayment()}>
                       <Text style={stylePaymentPage.buttonText}>Select Payment</Text>
                  </TouchableHighlight> 
                </View>
                <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                  <TouchableHighlight style={stylePaymentPage.placeOrderButton}
+                  <TouchableHighlight underlayColor={'transparent'} style={stylePaymentPage.placeOrderButton}
                       onPress={()=>this.confirm()}>
                       <Text style={stylePaymentPage.buttonText}>Place the order</Text>
                   </TouchableHighlight> 

@@ -703,7 +703,7 @@ var styleChefListPage = StyleSheet.create({
        alignSelf:'center',
     },
     distanceDollarSignView:{
-        flex:0.4,
+        flex:0.25,
         flexDirection:'row',
         alignItems:'flex-end',
     },

@@ -148,16 +148,27 @@ class ShoppingCartPage extends Component {
        }
        
        if(this.state.showPromotionCodeInput){
-          var promotionCodeInputView = <View style={styleShoppingCartPage.phoneNumberInputView}>   
-                                         <TextInput style={styleShoppingCartPage.phoneNumberInput} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+          var promotionCodeInputView = <View style={styleShoppingCartPage.promoCodeInputView}>   
+                                         <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                          onChangeText = {(text) => this.setState({ promotionCode: text }) }/>
                                        </View>;
        }else{
-          var promotionCodeInputView =  <TouchableHighlight style={styleShoppingCartPage.priceNumberView} onPress={()=>this.setState({showPromotionCodeInput:true})}>
+          var promotionCodeInputView =  <TouchableHighlight style={styleShoppingCartPage.priceNumberView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
                                         </TouchableHighlight>;
        }
        
+       var promotionDeductionView=null;
+       if(this.state.quotedOrder.price.couponValue){
+           promotionDeductionView=(<View style={styleShoppingCartPage.promotionDeductionView}>
+                                        <View style={styleShoppingCartPage.priceTitleView}>
+                                            <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
+                                        </View>
+                                        <View style={styleShoppingCartPage.priceNumberView}>
+                                            <Text style={styleShoppingCartPage.priceNumberText}>-${this.state.quotedOrder.price.couponValue}</Text>
+                                        </View>
+                                   </View>);
+       }
         
        return [(<View style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
@@ -167,6 +178,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.subTotal}</Text>
                   </View>
                </View>),
+               promotionDeductionView,
                (<View style={styleShoppingCartPage.deliveryFeeView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
@@ -356,6 +368,7 @@ class ShoppingCartPage extends Component {
             orderDeliverTime: this.deliverTimestamp,
             orderList: orderList,
             shippingAddress: this.state.deliveryAddress,
+            couponCode:this.state.promotionCode,
         }; 
         return this.client.postWithoutAuth(config.priceQuoteEndpoint, {orderDetail:orderQuote})
         .then((response)=>{
@@ -449,7 +462,7 @@ var styleShoppingCartPage = StyleSheet.create({
         height:windowHeight/18.4,
     },
     deliverTimeText:{
-        color:'#696969',
+        color:'#4A4A4A',
         fontSize:windowHeight/49.06,
         marginTop:windowHeight/73.6,
     },
@@ -462,7 +475,6 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row',
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
-        paddingTop:windowHeight/56.6,
         borderWidth:1,
         borderColor:'#D7D7D7',
         justifyContent:'center'
@@ -471,23 +483,29 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row',
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
-        paddingTop:windowHeight/56.6,
         borderTopWidth:1,
         borderColor:'#D7D7D7',
-        justifyContent:'center'
+        justifyContent:'center',
+    },
+    promotionDeductionView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        borderBottomWidth:1,
+        borderColor:'#D7D7D7',
+        justifyContent:'center',
     },
     deliveryFeeView:{
         flexDirection:'row',
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
-        paddingTop:windowHeight/56.6,
         justifyContent:'center'
     },
     addressView:{
         marginLeft:windowWidth/9,
         flexDirection:'row',
-        height:windowHeight/4.2,
-        paddingTop:10,
+        flex:1,
+        paddingVertical:10,
         justifyContent:'flex-end'
     },
     phoneNumberInputView:{
@@ -497,17 +515,33 @@ var styleShoppingCartPage = StyleSheet.create({
         borderWidth:1,
         borderRadius:5,
         marginTop:windowHeight/147.2,
+        width:windowWidth*0.4,
     },
     phoneNumberInput:{
+        paddingLeft:7,
         fontSize:14,
         color:'#4A4A4A',
-        width:windowWidth*0.25,       
+        width:windowWidth*0.4,  
+    },
+    promoCodeInputView:{
+        height:25,
+        flexDirection:'row',
+        borderColor:'#D7D7D7',
+        borderWidth:1,
+        borderRadius:5,
+        width:windowWidth*0.55,
+        alignSelf:'center',
+    },
+    promoCodeInput:{
+        paddingLeft:7,
+        fontSize:14,
+        color:'#4A4A4A', 
+        width:windowWidth*0.55,     
     },
     promotionCodeView:{
         flexDirection:'row',
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
-        paddingTop:windowHeight/56.6,
         borderTopWidth:1,
         borderBottomWidth:1,
         borderColor:'#D7D7D7',
@@ -525,10 +559,12 @@ var styleShoppingCartPage = StyleSheet.create({
     totalPriceTitleText:{ 
         fontSize:windowHeight/36.8,
         fontWeight:'500',
+        color:'#4A4A4A',
     },
     totalPriceNumberText:{
         fontSize:windowHeight/36.66,
         fontWeight:'500',
+        color:'#4A4A4A',
     },
     addressTextView:{
         flex:0.57,
@@ -564,18 +600,22 @@ var styleShoppingCartPage = StyleSheet.create({
     priceTitleView:{
         flex:1/2.0,
         alignItems:'flex-start',
+        alignSelf:'center',
     },
     priceTitleText:{ 
         fontSize:windowHeight/40.89,
         fontWeight:'500',
+        color:'#4A4A4A',
     },
     priceNumberView:{
         flex:1/2.0,
         alignItems:'flex-end',
+        alignSelf:'center',
     },
     priceNumberText:{
         fontSize:windowHeight/33.45,
         fontWeight:'500',
+        color:'#4A4A4A',
     },
     oneListingView:{
         backgroundColor:'#FFFFFF',  
