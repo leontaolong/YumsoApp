@@ -148,8 +148,10 @@ class ShoppingCartPage extends Component {
        }
        
        if(this.state.showPromotionCodeInput){
-          var promotionCodeInputView = <TextInput style={styleShoppingCartPage.phoneNumberInput} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                         onChangeText = {(text) => this.setState({ promotionCode: text }) }/>;
+          var promotionCodeInputView = <View style={styleShoppingCartPage.phoneNumberInputView}>   
+                                         <TextInput style={styleShoppingCartPage.phoneNumberInput} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                         onChangeText = {(text) => this.setState({ promotionCode: text }) }/>
+                                       </View>;
        }else{
           var promotionCodeInputView =  <TouchableHighlight style={styleShoppingCartPage.priceNumberView} onPress={()=>this.setState({showPromotionCodeInput:true})}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
@@ -484,7 +486,7 @@ var styleShoppingCartPage = StyleSheet.create({
     addressView:{
         marginLeft:windowWidth/9,
         flexDirection:'row',
-        height:windowHeight/4.6,
+        height:windowHeight/4.2,
         paddingTop:10,
         justifyContent:'flex-end'
     },
