@@ -17,6 +17,7 @@
     "react-native-maps": "^0.3.2",
     "react-native-modal-picker": "0.0.13",
     "react-native-side-menu": "^0.18.0",
+    "react-native-swipeout": "^2.0.12",
     "react-native-swiper": "^1.4.3",
     "react-native-wechat": "^1.4.1"
   }

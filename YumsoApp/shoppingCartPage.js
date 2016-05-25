@@ -65,10 +65,10 @@ class ShoppingCartPage extends Component {
     }
     
     renderHeader(){
-        return[(<View style={styleShoppingCartPage.chefShopNameView}>
+        return[(<View key={'chefShopNameView'} style={styleShoppingCartPage.chefShopNameView}>
                     <Text style={styleShoppingCartPage.chefShopNameText}>{this.state.shopName}</Text>
                 </View>),
-               (<View style={styleShoppingCartPage.deliverTimeView}>
+               (<View key={'deliverTimeView'} style={styleShoppingCartPage.deliverTimeView}>
                     <Text style={styleShoppingCartPage.deliverTimeText}>To be delivered at {dateRender.renderDate2(this.state.selectedTime)}</Text>
                 </View>)
               ]
@@ -124,7 +124,7 @@ class ShoppingCartPage extends Component {
     
     renderFooter(){
        if(!this.state.priceIsConfirmed){
-       return [(<View style={styleShoppingCartPage.subtotalView}>
+       return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
                   </View>
@@ -132,7 +132,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice}</Text>
                   </View>
                </View>),
-               (<View style={styleShoppingCartPage.addressView}>
+               (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
                   <View style={styleShoppingCartPage.addressTextView}>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
@@ -148,19 +148,19 @@ class ShoppingCartPage extends Component {
        }
        
        if(this.state.showPromotionCodeInput){
-          var promotionCodeInputView = <View style={styleShoppingCartPage.promoCodeInputView}>   
+          var promotionCodeInputView = <View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}>   
                                          <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                         onChangeText = {(text) => this.setState({ promotionCode: text }) }/>
+                                         onChangeText = {(text) => this.setState({ promotionCode: text }) }/>
                                        </View>;
        }else{
-          var promotionCodeInputView =  <TouchableHighlight style={styleShoppingCartPage.priceNumberView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
+          var promotionCodeInputView =  <TouchableHighlight key={'promotionCodeInputView'} style={styleShoppingCartPage.priceNumberView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
                                         </TouchableHighlight>;
        }
        
        var promotionDeductionView=null;
        if(this.state.quotedOrder.price.couponValue){
-           promotionDeductionView=(<View style={styleShoppingCartPage.promotionDeductionView}>
+           promotionDeductionView=(<View key={'promotionDeductionView'} style={styleShoppingCartPage.promotionDeductionView}>
                                         <View style={styleShoppingCartPage.priceTitleView}>
                                             <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
                                         </View>
@@ -170,7 +170,7 @@ class ShoppingCartPage extends Component {
                                    </View>);
        }
         
-       return [(<View style={styleShoppingCartPage.subtotalView}>
+       return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
                   </View>
@@ -179,7 +179,7 @@ class ShoppingCartPage extends Component {
                   </View>
                </View>),
                promotionDeductionView,
-               (<View style={styleShoppingCartPage.deliveryFeeView}>
+               (<View key={'deliveryFeeView'} style={styleShoppingCartPage.deliveryFeeView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
                   </View>
@@ -187,7 +187,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.deliveryFee}</Text>
                   </View>
                </View>),
-               (<View style={styleShoppingCartPage.addressView}>
+               (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
                   <View style={styleShoppingCartPage.addressTextView}>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined?this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
@@ -205,7 +205,7 @@ class ShoppingCartPage extends Component {
                      </TouchableHighlight>
                   </View>                      
                </View>),
-               (<View style={styleShoppingCartPage.taxView}>
+               (<View key={'taxView'} style={styleShoppingCartPage.taxView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
                   </View>
@@ -213,13 +213,13 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.tax}</Text>
                   </View>
                </View>),
-               (<View style={styleShoppingCartPage.promotionCodeView}>
+               (<View key={'promotionCodeView'} style={styleShoppingCartPage.promotionCodeView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
                   </View>
                  {promotionCodeInputView}
                </View>),
-               (<View style={styleShoppingCartPage.totalView}>
+               (<View key={'totalView'} style={styleShoppingCartPage.totalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
                       <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
                   </View>
@@ -657,10 +657,10 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     dishIngredientView:{
         flex:1,
-        height:50,  
+        height:windowHeight*0.0792,  
     },
     dishIngredientText:{
-        fontSize:12,
+        fontSize:windowHeight/47.33,
         color:'#9B9B9B',
     },
     quantityTotalPriceView:{

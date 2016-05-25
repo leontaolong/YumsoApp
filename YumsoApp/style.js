@@ -16,11 +16,18 @@ module.exports = StyleSheet.create({
       flexDirection:'column',
       backgroundColor:'#fff',
     },
+    geryContainer:{
+        paddingTop:15,
+        flex:1,
+        flexDirection:'column',
+        backgroundColor:'#F5F5F5',
+    },
     headerBannerView:{
       flexDirection:'row',
       borderBottomWidth:1,
       borderColor:'#D7D7D7',
       height:windowHeight*0.066,
+      backgroundColor:'#FFFFFF',
     },
     headerLeftView:{
       flex:0.1/6.0,
