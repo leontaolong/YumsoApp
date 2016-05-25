@@ -12,7 +12,6 @@ var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
 var ballonIcon = require('./icons/icon-location-white.png');
 var favoriteIcon = require('./icons/icon-liked-white.png');
 var labelIcon = require('./icons/icon-label.png');
-var searchIcon = require('./icons/ic_search_48pt_3x.png');
 var menuIcon = require('./icons/icon-menu.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
@@ -245,14 +244,14 @@ class ChefListPage extends Component {
         }else if(this.state.showLocSearch){
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
         }else if(this.state.showChefSearch){
-            return <View style={styles.container}>
+            return <View style={styleFilterPage.container}>
                        <View style={styles.headerBannerView}>    
                             <View style={styles.headerLeftView}>
                                 <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} 
                                  onPress={() => this.setState({
                                                                 showChefSearch: false,
                                                                 isMenuOpen: false,
-                                                                priceRankFilter: JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
+                                                                priceRankFilter: JSON.stringify(this.state.priceRankFilterOrigin)==undefined ? null : JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
                                                                 withBestRatedSort: this.state.withBestRatedSortOrigin,
                                                              })}>
                                     <Image source={backIcon} style={styles.backButtonIcon}/>
@@ -281,21 +280,23 @@ class ChefListPage extends Component {
                            </View>
                         </View> 
                     <View style={styleFilterPage.sortCriteriaSectionTitleView}>          
-                      <Text style={styles.titleText}> Sort by</Text>
+                       <Text style={styleFilterPage.sortCriteriaSectionTitleText}>Sort by</Text>
                     </View>
                     <View style={styleFilterPage.sortCriteriaView}>
                        <View style={styleFilterPage.sortCriteriaTitleView}>
                           <Text style={styleFilterPage.sortCriteriaTitleText}>Best Rated</Text>
                        </View>
                        <View style={styleFilterPage.sortCriteriaIconView}>
-                          <TouchableHighlight style={styleFilterPage.sortCriteriaIconWrapper} underlayColor={'transparent'} onPress={() => {this.setState({withBestRatedSort:!this.state.withBestRatedSort})}}>
+                          <TouchableHighlight style={styleFilterPage.sortCriteriaIconWrapper} underlayColor={'transparent'} 
+                               onPress={() => {this.setState({withBestRatedSort:!this.state.withBestRatedSort,
+                               sortCriteriaIcon:this.state.sortCriteriaIcon==sortCriteriaIconGery? sortCriteriaIconOrange :sortCriteriaIconGery})}}>
                               <Image source={this.state.sortCriteriaIcon} style={styleFilterPage.sortCriteriaIcon}/>
                           </TouchableHighlight>
                        </View>
                     </View>
                     <TouchableHighlight underlayColor={'#C0C0C0'} style={styleFilterPage.applySearchButtonView} onPress={() => this.searchChef()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply and Search</Text>
-                    </TouchableHighlight>                 
+                    </TouchableHighlight>                
                </View>                    
         }
         
@@ -702,7 +703,7 @@ var styleChefListPage = StyleSheet.create({
        alignSelf:'center',
     },
     distanceDollarSignView:{
-        flex:0.4,
+        flex:0.25,
         flexDirection:'row',
         alignItems:'flex-end',
     },
@@ -733,21 +734,28 @@ var styleChefListPage = StyleSheet.create({
 });
 
 var styleFilterPage = StyleSheet.create({
+    container:{
+        paddingTop:15,
+        flex:1,
+        flexDirection:'column',
+        backgroundColor:'#F5F5F5',
+    },
     dollarSignSelectionView:{
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.0792,
         borderColor:'#D7D7D7',
         borderBottomWidth:0.5,
         alignItems:'center',
+        backgroundColor:'#FFFFFF',
     },
     dollarSignView:{
         flexDirection:'row',
-        width:windowWidth/4,
+        width:windowWidth*0.25,
         justifyContent:'center',
     },
     dollarSign:{
-        width:40,
-        height:40,
+        width:windowHeight*0.07,
+        height:windowHeight*0.07,
         alignSelf:'center',
     },
     applySearchButtonView:{
@@ -766,33 +774,42 @@ var styleFilterPage = StyleSheet.create({
       alignSelf:'center',
     },
     sortCriteriaSectionTitleView:{
-        height:70,
+        height:windowHeight*0.0528,
         width:windowWidth,
+        marginTop:windowHeight*0.0616,
         backgroundColor:'#F5F5F5',
-        justifyContent:'flex-end',
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        paddingLeft:windowWidth*0.0406,
+    },
+    sortCriteriaSectionTitleText:{
+        alignSelf:'center',
+        fontSize:windowHeight/40.572,
+        color:'#4A4A4A',
     },
     sortCriteriaView:{
         width:windowWidth,
-        height:50,
+        height:windowHeight*0.088,
         flexDirection:'row', 
         borderColor:'#D7D7D7',
         borderBottomWidth:1,    
+        backgroundColor:'#FFFFFF',
     },
     sortCriteriaTitleView:{
         width:windowWidth*0.85,
-        height:50,
+        height:windowHeight*0.088,
         flexDirection:'row',
         alignItems:'flex-start',        
     },
     sortCriteriaTitleText:{
         alignSelf:'center',
         color:'#4A4A4A',
-        fontSize:14,
-        marginLeft:10,
+        fontSize:windowHeight/40.572,
+        marginLeft:windowWidth*0.0406,
     },
     sortCriteriaIconView:{
         width:windowWidth*0.15,
-        height:50,
+        height:windowHeight*0.088,
         flexDirection:'row',
         alignItems:'flex-end',
     },
@@ -800,8 +817,8 @@ var styleFilterPage = StyleSheet.create({
         alignSelf:'center',
     },
     sortCriteriaIcon:{
-        width:40,
-        height:40,
-    }
+        width:windowHeight*0.0704,
+        height:windowHeight*0.0704,
+    },
 });
 module.exports = ChefListPage;

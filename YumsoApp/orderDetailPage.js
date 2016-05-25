@@ -55,11 +55,7 @@ class ShoppingCartPage extends Component {
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
-    
-    componentDidMount(){
-        
-    }
-        
+            
     renderRow(orderItem){
         let imageSrc =require('./ok.jpeg') ;
         if(orderItem.dishDetail && orderItem.dishDetail.pictures && orderItem.dishDetail.pictures.length!=0){
@@ -451,7 +447,7 @@ var styleShoppingCartPage = StyleSheet.create({
         paddingVertical:windowHeight/73.6,
     },
     dishNamePriceView:{
-        height:20,
+        height:windowHeight*0.03522,
         flexDirection:'row', 
     },
     dishNameView:{

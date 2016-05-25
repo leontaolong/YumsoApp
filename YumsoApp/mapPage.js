@@ -5,8 +5,8 @@ var config = require('./config');
 var AuthService = require('./authService');
 var MapView = require('react-native-maps');
 var RCTUIManager = require('NativeModules').UIManager;
-var ballonIcon = require('./icons/ic_location_on_48pt_3x.png');
-var searchIcon = require('./icons/ic_search_48pt_3x.png');
+var ballonIcon = null;
+var searchIcon = require('./icons/icon-search.png');
 var houseIconOrange = require('./icons/Icon-home-orange.png');
 var backIcon = require('./icons/icon-back.png');
 var locatorIcon = require('./icons/Icon-location.png');
@@ -97,7 +97,7 @@ class MapPage extends Component {
                  <View style={styles.container}>
                      <View style={styles.headerBannerView}>
                          <View style={styles.headerLeftView}>
-                             <TouchableHighlight style={styles.backButtonView} onPress={() => this.navigateBack() }>
+                             <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBack() }>
                                  <Image source={backIcon} style={styles.backButtonIcon}/>
                              </TouchableHighlight>
                          </View>
@@ -105,7 +105,7 @@ class MapPage extends Component {
                              <Text style={styles.titleText}>{this.state.city}</Text>
                          </View>
                          <View style={styles.headerRightView}>
-                             <TouchableHighlight onPress={() =>{this.setState({showMapView: false})}}>
+                             <TouchableHighlight underlayColor={'transparent'} onPress={() =>{this.setState({showMapView: false})}}>
                                  <Image source={houseIconOrange} style={styleMapPage.houseIconOrange}/>
                              </TouchableHighlight>
                          </View>
@@ -114,18 +114,18 @@ class MapPage extends Component {
                     <View style={{alignSelf:'stretch', alignItems:'center'}}>
                        <View  style={styleMapPage.locationSearchInputCancelView}>
                             <View style={styleMapPage.locationSearchInputView}>
-                                <TouchableHighlight style={styleMapPage.locationSearchIconView} onPress={() => this.searchAddress() }>
+                                <TouchableHighlight style={styleMapPage.locationSearchIconView} underlayColor={'transparent'} onPress={() => this.searchAddress() }>
                                     <Image source={searchIcon} style={styleMapPage.searchIcon}/>
                                 </TouchableHighlight>  
                                 <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}  onSubmitEditing = {()=> this.searchAddress()} returnKeyType = {'search'}
                                     onChangeText = {(text)=>this.setState({searchAddress: text,selectedAddress:''})} value={this.state.selectedAddress?this.state.selectedAddress.formatted_address:this.state.searchAddress}/>
                             </View>
-                            <TouchableHighlight style={styleMapPage.cancelIconView} onPress={() => {this.setState({showMapView:true,selectedAddress:'',searchAddressResultView:'',searchAddress:''})}}>
+                            <TouchableHighlight style={styleMapPage.cancelIconView} underlayColor={'transparent'} onPress={() => {this.setState({showMapView:true,selectedAddress:'',searchAddressResultView:'',searchAddress:''})}}>
                                 <Image source={cancelIcon} style={styleMapPage.cancelIcon}/>
                             </TouchableHighlight>
                        </View>
                        <View style={styleMapPage.currentLocationClickableView}>
-                            <TouchableHighlight onPress={()=>this.locateToCurrentAddress()}>
+                            <TouchableHighlight onPress={()=>this.locateToCurrentAddress()} underlayColor={'transparent'}>
                                 <View style={styleMapPage.currentLocationClickableView}>
                                         <Image source={locatorIcon} style={styleMapPage.currentLocationClickableIcon}/>
                                         <Text style={styleMapPage.currentLocationClickableText}>Current Location</Text>
@@ -152,7 +152,7 @@ class MapPage extends Component {
                         ))}
                     </MapView>   
                     
-                    <TouchableHighlight style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress() }>
+                    <TouchableHighlight style={styleMapPage.confirmAddressButtonView} underlayColor={'transparent'} onPress={() => this.doneSelectAddress() }>
                         <Text style={styleMapPage.confirmAddressButtonText}>{this.isSpecific && !this.state.showApartmentNumber ? 'Next': 'Use this Address'}</Text>
                     </TouchableHighlight>
                     {searchAddressResultViewWrapper}
@@ -515,14 +515,12 @@ var styleMapPage = StyleSheet.create({
         borderColor:'#D7D7D7',
     },
     locationSearchIconView:{
-        alignSelf:'flex-end',
-        marginLeft:windowHeight/147.2,
+        alignSelf:'center',
         marginRight:windowWidth/103.5,
-        marginBottom:windowHeight/736.0,
     },
     searchIcon:{
-        width:windowHeight/27.26,
-        height:windowHeight/27.26,
+        width:30,
+        height:30,
     },
     cancelIconView:{
         width:windowWidth*0.1,

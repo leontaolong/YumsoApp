@@ -1,6 +1,7 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
+import Dimensions from 'Dimensions';
 
 import React, {
   Component,
@@ -16,6 +17,9 @@ import React, {
   Alert
 } from 'react-native';
 
+var windowHeight = Dimensions.get('window').height;
+var windowWidth = Dimensions.get('window').width;
+
 class OrderConfirmation extends Component {
     constructor(props){
         super(props);
@@ -26,10 +30,12 @@ class OrderConfirmation extends Component {
     render() {  
         //todo: in design there is back button, where that supposed to go?? why we even need it?    
         return (
-            <View style={styles.container}>
-                <TouchableHighlight style={styles.button}  onPress={()=>this.navigateBackToChefList()}>
-                    <Text style={styles.buttonText}>Order More</Text>
-                </TouchableHighlight>      
+            <View style={styleConfirmationPage.container}>
+              <View style={styleConfirmationPage.buttonView}>
+                <TouchableHighlight style={styleConfirmationPage.orderMoreMutton} underlayColor={'transparent'} onPress={()=>this.navigateBackToChefList()}>
+                    <Text style={styleConfirmationPage.orderMoreMuttonText}>Order More</Text>
+                </TouchableHighlight>
+              </View>      
             </View>
         );
     }
@@ -43,5 +49,33 @@ class OrderConfirmation extends Component {
     }
 }
 
+var styleConfirmationPage = StyleSheet.create({
+    container:{
+        paddingTop:15,
+        flex:1,
+        flexDirection:'column',
+        backgroundColor:'#F5F5F5',
+    },
+    buttonView:{
+        height:windowHeight*0.6,
+        width:windowWidth,
+        justifyContent:'center',
+    },
+    orderMoreMutton:{
+        width:windowWidth*0.75,
+        height:50,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignSelf:'center',
+        backgroundColor:'#FFCC33',
+    },
+    orderMoreMuttonText:{
+        fontSize:16,
+        fontWeight:'600',
+        color:'#fff',
+        alignSelf:'center',
+    }, 
+});
+    
 module.exports = OrderConfirmation;
 

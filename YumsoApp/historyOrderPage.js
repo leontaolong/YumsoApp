@@ -77,100 +77,23 @@ class HistoryOrderPage extends Component {
                 size="large"
                 style={styles.loader}/> 
         }   
-        return (
-            <View style={styleHistoryOrderPage.oneCommentView}>
-                <View style={styleHistoryOrderPage.shopNameTimePriceView}>
-                   <View style={styleHistoryOrderPage.shopNameOrderTimeView}>
-                      <Text onPress={()=>this.navigateToOrderDetailPage(order)} style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>
-                      <Text style={styleHistoryOrderPage.orderTimeText}>{dateRender.renderDate1(order.orderCreatedTime)}</Text>
-                   </View>
-                   <View style={styleHistoryOrderPage.orderPriceView}>
-                      <Text style={styleHistoryOrderPage.orderPriceText}>${order.price.grandTotal}</Text>
-                   </View>
-                </View>
-                {this.displayCommentOrBox(order)}
-            </View>
-        );
+        return (<View key={order.orderId} style={styleShoppingCartPage.oneListingView}>
+                    <Image source={{uri:order.chefProfilePic}} style={styleShoppingCartPage.dishPhoto}/>
+                    <View style={styleShoppingCartPage.shoppingCartInfoView}>
+                        <Text style={styleShoppingCartPage.dishNameText}>{order.shopname}</Text>                                                          
+                        <Text style={styleShoppingCartPage.dishIngredientText}>Delivered at {dateRender.renderDate2(order.orderDeliverTime)}</Text>            
+                        <Text style={styleShoppingCartPage.dishPriceText}>Total: ${order.price.grandTotal}</Text>
+                        <View style={styleShoppingCartPage.orderDetailsClickableView}>
+                        <Text onPress={()=>this.navigateToOrderDetailPage(order)} style={styleShoppingCartPage.orderDetailsClickable}>Order Details  ></Text>                                                                               
+                        </View>
+                    </View>
+                </View>);
     }
-    
-    displayCommentOrBox(order) {
-        console.log(order);
-        var imageSrc;
         
-        if(order.chefProfilePic){
-            imageSrc={uri:order.chefProfilePic};   
-        }
-        
-        var todayInMillisec = new Date().getTime()
-        
-        if(!order.comment){
-          if(todayInMillisec-order.orderCreatedTime < 604800000){//Only order with 7 days from now can be rated and commented
-             return (<View style={styleHistoryOrderPage.eaterNoCommentView}>
-                           <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }>
-                                <Text style={styleHistoryOrderPage.addCommentTextClickable}>Rate and Comment</Text>
-                           </TouchableHighlight>
-                    </View>);
-          }else{
-            return (<View style={styleHistoryOrderPage.eaterNoCommentView}>
-                        <Text style={styleHistoryOrderPage.commentText}>No Rate or Comment</Text>
-                    </View>);
-          }                            
-        }else{
-           var commentSectionRender = [];
-           var hasRating = (<View key={'ratingSection'} style={styleHistoryOrderPage.orderRatingView}>
-                                {rating.renderRating(order.comment.starRating)}
-                            </View>);
-           commentSectionRender.push(hasRating);
-                        
-           if(order.comment.starRating && order.comment.eaterComment){
-              var hasEaterComment = (<View key={'eaterCommentSection'} style={styleHistoryOrderPage.eaterCommentView}>
-                                         <Text style={styleHistoryOrderPage.commentText}>{order.comment.eaterComment}</Text>
-                                         <View style={styleHistoryOrderPage.commentTimeView}>
-                                            <Text style={styleHistoryOrderPage.commentTimeText}>{dateRender.renderDate1(order.comment.eaterCommentTime)}</Text>
-                                         </View>
-                                     </View>);
-              commentSectionRender.push(hasEaterComment);
-           }else if(order.comment.starRating && !order.comment.eaterComment){
-              if(todayInMillisec-order.orderCreatedTime < 604800000){//Only order with 7 days from now can be rated and commented
-                 var noEaterComment = (<View key={'eaterCommentSection'} style={styleHistoryOrderPage.eaterNoCommentView}>
-                                         <TouchableHighlight onPress={() => this.setState({ showCommentBox: true, orderTheCommentIsFor: order }) }> 
-                                           <Text style={styleHistoryOrderPage.addCommentTextClickable}>Add Comment</Text>
-                                         </TouchableHighlight>
-                                       <View style={styleHistoryOrderPage.commentTimeView}>
-                                           <Text style={styleHistoryOrderPage.commentTimeText}>{dateRender.renderDate1(order.comment.eaterCommentTime)}</Text>
-                                       </View>
-                                       </View>);
-            }else{
-                 var noEaterComment = (<View style={styleHistoryOrderPage.eaterNoCommentView}>
-                                           <Text style={styleHistoryOrderPage.commentText}>No Comment</Text>
-                                       </View>); 
-            }
-            commentSectionRender.push(noEaterComment);
-           }
-           
-           if(order.comment.chefComment){
-             var hasChefComment = (<View key={'chefCommentSection'} style={styleHistoryOrderPage.chefCommentView}>
-                                  <View style={styleHistoryOrderPage.chefPhotoView}>
-                                       <Image source={imageSrc} style={styleHistoryOrderPage.chefPhoto}/>
-                                  </View>
-                                  <View style={styleHistoryOrderPage.chefCommentTextView}>
-                                      <Text style={styleHistoryOrderPage.commentText}>{order.comment.chefComment}</Text>                                  
-                                      <View style={styleHistoryOrderPage.commentTimeView}>
-                                         <Text style={styleHistoryOrderPage.commentTimeText}>{dateRender.renderDate1(order.comment.chefCommentTime)}</Text>
-                                      </View>
-                                  </View>                           
-                                </View>);
-              commentSectionRender.push(hasChefComment);
-           }  
-           
-           return commentSectionRender;
-        }
-    }
-    
     render() {
         if(this.state.showCommentBox == true){
            return (
-                <View style={styles.container}> 
+                <View style={styleHistoryOrderPage.container}> 
                     <TextInput placeholder="comments" style={styles.loginInput}
                         onChangeText = {(text) => this.setState({ comment: text }) }/>
                     <TextInput placeholder="Star Rating integer" style={styles.loginInput} onChangeText = {(text) => this.setState({ starRating: text }) }/>                    
@@ -254,6 +177,12 @@ class HistoryOrderPage extends Component {
 }
 
 var styleHistoryOrderPage = StyleSheet.create({
+    container:{
+        paddingTop:15,
+        flex:1,
+        flexDirection:'column',
+        backgroundColor:'#F5F5F5',
+    },
     commentListView:{
         alignSelf:'stretch',
         flexDirection:'column',
@@ -365,5 +294,54 @@ var styleHistoryOrderPage = StyleSheet.create({
         fontSize:13,
     }
 });    
+
+var styleShoppingCartPage = StyleSheet.create({
+    oneListingView:{
+        backgroundColor:'#FFFFFF',  
+        flexDirection:'row',
+        flex:1,
+        borderColor:'#F5F5F5',
+        borderBottomWidth:windowHeight*0.007,
+    },
+    dishPhoto:{
+        width:windowWidth*0.344,
+        height:windowWidth*0.344,
+    },
+    shoppingCartInfoView:{
+        flex:1,
+        height:windowWidth*0.344,
+        flexDirection:'column',
+        paddingLeft:windowWidth/20.7,
+        paddingRight:windowWidth/27.6,
+        paddingVertical:windowHeight/73.6,
+    },
+    dishNameText:{
+        fontSize:windowHeight/35.5,
+        fontWeight:'bold',
+        color:'#4A4A4A',
+    },
+    dishPriceText:{
+        fontSize:windowHeight/47.33,
+        fontWeight:'bold',
+        color:'#4A4A4A',
+    },
+    dishIngredientText:{
+        fontSize:windowHeight/51.636,
+        color:'#4A4A4A',
+        marginTop:windowHeight*0.0141,
+        marginBottom:windowHeight*0.0071,
+    },
+    orderDetailsClickableView:{
+        flexDirection:'row',
+        justifyContent:'flex-end',
+        flex:1,    
+    },
+    orderDetailsClickable:{
+        fontSize:windowHeight/47.33,
+        fontWeight:'bold',
+        color:'#F8C84E',
+        alignSelf:'flex-end',
+    },
+});
 
 module.exports = HistoryOrderPage;
