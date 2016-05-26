@@ -77,14 +77,14 @@ class HistoryOrderPage extends Component {
                 size="large"
                 style={styles.loader}/> 
         }   
-        return (<View key={order.orderId} style={styleShoppingCartPage.oneListingView}>
-                    <Image source={{uri:order.chefProfilePic}} style={styleShoppingCartPage.dishPhoto}/>
-                    <View style={styleShoppingCartPage.shoppingCartInfoView}>
-                        <Text style={styleShoppingCartPage.dishNameText}>{order.shopname}</Text>                                                          
-                        <Text style={styleShoppingCartPage.dishIngredientText}>Delivered at {dateRender.renderDate2(order.orderDeliverTime)}</Text>            
-                        <Text style={styleShoppingCartPage.dishPriceText}>Total: ${order.price.grandTotal}</Text>
-                        <View style={styleShoppingCartPage.orderDetailsClickableView}>
-                        <Text onPress={()=>this.navigateToOrderDetailPage(order)} style={styleShoppingCartPage.orderDetailsClickable}>Order Details  ></Text>                                                                               
+        return (<View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
+                    <Image source={{uri:order.chefProfilePic}} style={styleHistoryOrderPage.shopPhoto}/>
+                    <View style={styleHistoryOrderPage.orderInfoView}>
+                        <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
+                        <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderDeliverTime)}</Text>            
+                        <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
+                        <View style={styleHistoryOrderPage.orderDetailsClickableView}>
+                        <Text onPress={()=>this.navigateToOrderDetailPage(order)} style={styleHistoryOrderPage.orderDetailsClickable}>Order Details  ></Text>                                                                               
                         </View>
                     </View>
                 </View>);
@@ -93,7 +93,7 @@ class HistoryOrderPage extends Component {
     render() {
         if(this.state.showCommentBox == true){
            return (
-                <View style={styleHistoryOrderPage.container}> 
+                <View style={styles.geryContainer}> 
                     <TextInput placeholder="comments" style={styles.loginInput}
                         onChangeText = {(text) => this.setState({ comment: text }) }/>
                     <TextInput placeholder="Star Rating integer" style={styles.loginInput} onChangeText = {(text) => this.setState({ starRating: text }) }/>                    
@@ -121,7 +121,7 @@ class HistoryOrderPage extends Component {
                    <View style={styles.headerRightView}>
                    </View>
                </View>
-               <ListView style={styleHistoryOrderPage.commentListView}
+               <ListView
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) }/>                    
             </View>
@@ -177,125 +177,6 @@ class HistoryOrderPage extends Component {
 }
 
 var styleHistoryOrderPage = StyleSheet.create({
-    container:{
-        paddingTop:15,
-        flex:1,
-        flexDirection:'column',
-        backgroundColor:'#F5F5F5',
-    },
-    commentListView:{
-        alignSelf:'stretch',
-        flexDirection:'column',
-        height: windowHeight*9/10
-    },
-    oneCommentView:{
-       flex:1,
-       flexDirection:'column',
-       paddingHorizontal:10,
-       paddingVertical:20,
-       borderBottomWidth:1,
-       borderColor: '#f5f5f5',
-    },
-    shopNameTimePriceView:{
-        flex:1,
-        flexDirection:'row',
-        marginBottom:7,
-    },
-    shopNameOrderTimeView:{
-        flex:0.8,
-        flexDirection:'row',
-    },
-    shopNameText:{
-        fontSize:15,
-        fontWeight:'600',
-    },
-    orderTimeText:{
-        marginTop:3,
-        marginLeft:12,
-        fontSize:12,
-        color:'#A9A9A9',
-    },
-    orderPriceView:{
-        flex:0.2,
-        flexDirection:'row',
-        justifyContent:'flex-end',
-    },
-    orderPriceText:{     
-        fontSize:14,
-        color:'#696969',
-        marginTop:2,
-    },
-    orderRatingView:{
-        flex:1,
-        flexDirection:'row',
-        marginBottom:10,
-    },
-    eaterCommentView:{
-        flex:1,
-        paddingHorizontal:10,
-        paddingVertical:6,
-        borderRadius: 6, 
-        borderWidth: 0, 
-        backgroundColor: '#f5f5f5',
-        overflow: 'hidden', 
-        marginBottom:10,
-    },
-    chefCommentView:{
-        flex:1,
-        flexDirection:'row',
-        marginBottom:10,
-    },
-    chefPhotoView:{
-        borderRadius: 8, 
-        borderWidth: 0, 
-        overflow: 'hidden', 
-    },
-    chefPhoto:{
-        width:windowHeight/13.8,
-        height:windowHeight/13.8,
-    },
-    chefCommentTextView:{
-        flex:1,
-        flexDirection:'column',
-        backgroundColor: '#DCDCDC',
-        paddingHorizontal:12,
-        paddingVertical:6,
-        marginLeft:10,
-        borderRadius: 8, 
-        borderWidth: 0, 
-        overflow: 'hidden', 
-    },
-    commentText:{
-        fontSize:12,
-        color:'#696969',
-        marginBottom:5,
-    },
-    commentTimeView:{
-        flex:1,
-        flexDirection:'row',
-        justifyContent:'flex-end',
-    },
-    commentTimeText:{
-        fontSize:12,
-        color:'#696969',
-    },
-    eaterNoCommentView:{
-        flex:1,
-        flexDirection:'row',
-        paddingHorizontal:10,
-        paddingVertical:6,
-        borderRadius: 6, 
-        borderWidth: 0, 
-        backgroundColor: '#f5f5f5',
-        overflow: 'hidden', 
-    },
-    addCommentTextClickable:{
-        color:'#ff9933',
-        fontSize:13,
-    }
-});    
-
-var styleShoppingCartPage = StyleSheet.create({
     oneListingView:{
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
@@ -303,33 +184,34 @@ var styleShoppingCartPage = StyleSheet.create({
         borderColor:'#F5F5F5',
         borderBottomWidth:windowHeight*0.007,
     },
-    dishPhoto:{
+    shopPhoto:{
         width:windowWidth*0.344,
         height:windowWidth*0.344,
     },
-    shoppingCartInfoView:{
+    orderInfoView:{
         flex:1,
         height:windowWidth*0.344,
         flexDirection:'column',
-        paddingLeft:windowWidth/20.7,
-        paddingRight:windowWidth/27.6,
-        paddingVertical:windowHeight/73.6,
+        paddingLeft:windowWidth*0.04,
+        paddingRight:windowWidth*0.048,
+        paddingTop:windowWidth*0.024,
+        paddingBottom:windowWidth*0.024,
     },
-    dishNameText:{
+    shopNameText:{
         fontSize:windowHeight/35.5,
         fontWeight:'bold',
         color:'#4A4A4A',
     },
-    dishPriceText:{
+    grandTotalText:{
         fontSize:windowHeight/47.33,
         fontWeight:'bold',
         color:'#4A4A4A',
+        marginTop:windowHeight*0.009,
     },
-    dishIngredientText:{
+    completeTimeText:{
         fontSize:windowHeight/51.636,
         color:'#4A4A4A',
-        marginTop:windowHeight*0.0141,
-        marginBottom:windowHeight*0.0071,
+        marginTop:windowHeight*0.0150,
     },
     orderDetailsClickableView:{
         flexDirection:'row',
@@ -337,11 +219,12 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1,    
     },
     orderDetailsClickable:{
-        fontSize:windowHeight/47.33,
+        fontSize:windowHeight/51.636,
         fontWeight:'bold',
         color:'#F8C84E',
         alignSelf:'flex-end',
     },
-});
+
+});    
 
 module.exports = HistoryOrderPage;

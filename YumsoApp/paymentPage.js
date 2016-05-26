@@ -41,39 +41,53 @@ class PaymentPage extends Component {
                 animating={this.state.showProgress}
                 size="large"
                 style={styles.loader}/> 
-        }         
-        return (
-            <View style={styles.container}>
-                <View style={styles.headerBannerView}>
-                         <View style={styles.headerLeftView}>
-                         <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={()=>this.navigateBackToShoppingCartPage()}>
-                             <Image source={backIcon} style={styles.backButtonIcon}/>
-                         </TouchableHighlight> 
-                         </View>
-                         <View style={styles.titleView}>
-                             <Text style={styles.titleText}>Check out</Text>
-                         </View>
-                         <View style={styles.headerRightView}>
-                         </View>
-               </View>
-               <View style={stylePaymentPage.totalAmountView}>
-                  <Text style={stylePaymentPage.totalAmountText}>You total amount: ${this.state.orderDetail.price.grandTotal}</Text>   
-               </View>
-               <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                 <TouchableHighlight underlayColor={'transparent'} style={stylePaymentPage.selectPaymentbutton}
-                      onPress={()=>this.selectPayment()}>
-                      <Text style={stylePaymentPage.buttonText}>Select Payment</Text>
-                 </TouchableHighlight> 
-               </View>
-               <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                  <TouchableHighlight underlayColor={'transparent'} style={stylePaymentPage.placeOrderButton}
-                      onPress={()=>this.confirm()}>
-                      <Text style={stylePaymentPage.buttonText}>Place the order</Text>
-                  </TouchableHighlight> 
-                </View>
+        } 
+        
+        if(this.state.paymentOption){
+          var selectPaymentMethodView=[(<View key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonView}>
+                                            <TouchableHighlight onPress={()=>this.selectPayment()}>
+                                            <View style={stylePaymentPage.selectPaymentbutton}>
+                                                <Text style={stylePaymentPage.selectPaymentbuttonText}>Change Payment Method</Text>
+                                            </View>
+                                            </TouchableHighlight> 
+                                        </View>),
+                                       (<View key={'selectedPaymentTextView'} style={stylePaymentPage.selectedPaymentTextView}>
+                                            <Text style={stylePaymentPage.selectedPaymentText}>({this.state.paymentOption.cardType}*****{this.state.paymentOption.last4} has been chosen for this payment)</Text>
+                                        </View>)];
+        }else{
+           var selectPaymentMethodView=[(<View key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonView}>
+                                            <TouchableHighlight onPress={()=>this.selectPayment()}>
+                                            <View style={stylePaymentPage.selectPaymentbutton}>
+                                                <Text style={stylePaymentPage.selectPaymentbuttonText}>Select Payment Method</Text>
+                                            </View>
+                                            </TouchableHighlight> 
+                                        </View>)];
+        }
                 
-            </View>
-        );
+        return (<View style={styles.geryContainer}>
+                  <View style={styles.headerBannerView}>
+                    <View style={styles.headerLeftView}>
+                        <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={()=>this.navigateBackToShoppingCartPage()}>
+                        <Image source={backIcon} style={styles.backButtonIcon}/>
+                        </TouchableHighlight> 
+                    </View>
+                    <View style={styles.titleView}>
+                        <Text style={styles.titleText}>Check Out</Text>
+                    </View>
+                    <View style={styles.headerRightView}>
+                    </View>
+                 </View>
+                 <View style={stylePaymentPage.totalAmountView}>
+                    <Text style={stylePaymentPage.totalAmountTitle}>You total amount is:</Text>
+                    <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>   
+                 </View>
+                 {selectPaymentMethodView}
+                 <TouchableHighlight style={stylePaymentPage.placeOrderButtonWrapper} onPress={()=>this.confirm()}>
+                    <View style={stylePaymentPage.placeOrderButton}>
+                        <Text style={stylePaymentPage.placeOrderButtontText}>Place Order</Text>
+                    </View>
+                 </TouchableHighlight>                 
+              </View>);
     }
       
     confirm(){
@@ -137,35 +151,70 @@ class PaymentPage extends Component {
 
 var stylePaymentPage = StyleSheet.create({
     totalAmountView:{
-      height:windowHeight/3.0,
+      height:windowHeight*0.38,
       justifyContent:'center',
+      flexDirection:'column',
+    },
+    totalAmountTitle:{
+      fontSize:windowHeight/37.056,
+      fontWeight:'300',
+      alignSelf:'center',
     },
     totalAmountText:{
-      fontSize:22,
-      fontWeight:'300',
+      fontSize:windowHeight/10.42,
+      fontWeight:'bold',
       alignSelf:'center',
+      color:'#404040',
+    },
+    selectPaymentbuttonView:{
+      height:windowHeight*0.075,
+      width:windowWidth,
+      alignItems:'center',
     },
     selectPaymentbutton:{
-      marginVertical:20,
-      height:windowHeight/13.38,
-      width:windowWidth*0.9,
-      backgroundColor:'#ffcc33',
+      height:windowHeight*0.075,
+      width:windowWidth*0.62,
+      backgroundColor:'#55ACEE',
       justifyContent: 'center',
+    },
+    selectPaymentbuttonText:{
+      color:'#fff',
+      fontSize:windowHeight/47.64,
+      fontWeight:'bold',
+      alignSelf:'center',
+    },
+    selectedPaymentTextView:{
+      flexDirection:'row',
+      justifyContent:'center',
+    },
+    selectedPaymentText:{
+      color:'#A0A0A0',
+      fontSize:windowHeight/51.636,
+      marginTop:windowHeight*0.02,
+    },
+    placeOrderButtonWrapper:{
+      flexDirection:'row',        
+      justifyContent: 'center',
+      backgroundColor:'#FFCC33',
+      position:'absolute',
+      left: 0, 
+      right: 0,
+      top:windowHeight-windowHeight*0.075,
+      height:windowHeight*0.075,
+      width:windowWidth,
     },
     placeOrderButton:{
-      marginVertical:20,
-      height:windowHeight/13.38,
-      width:windowWidth*0.9,
-      backgroundColor:'#ff9933',
+      flexDirection:'row',        
       justifyContent: 'center',
+      height:windowHeight*0.075,
+      width:windowWidth,
     },
-    buttonText:{
+    placeOrderButtontText:{
       color:'#fff',
-      fontSize:windowHeight/30.6,
-      fontWeight:'300',
-      alignSelf:'center',
-    }
-
+      fontSize:windowHeight/37.056,
+      fontWeight:'bold',
+      alignSelf: 'center',
+    },
 });
 
 module.exports = PaymentPage;

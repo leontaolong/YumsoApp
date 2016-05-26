@@ -7,6 +7,7 @@ var paypalIcon = require('./icons/Icon-paypal.png');
 var visaIcon = require('./icons/Icon-visa.png');
 var plusIcon = require('./icons/Icon-add.png');
 var backIcon = require('./icons/icon-back.png');
+var Swipeout = require('react-native-swipeout')
 
 import Dimensions from 'Dimensions';
 
@@ -65,33 +66,37 @@ class PaymentOptionPage extends Component {
     }
 
     renderRow(card){  
+        var swipeoutBtns = [
+                                {
+                                    text: 'Delete',
+                                    backgroundColor:'#FF0000',
+                                    onPress:()=>this.removeAPayment(card),
+                                }
+                            ]
         return (
-             <View style={stylePaymentOptionPage.paymentMethodView}>
-                <TouchableHighlight underlayColor={'transparent'} style={stylePaymentOptionPage.paymentMethodIconView} onPress={()=>this.onCardClick(card)}>
-                   {this.renderPaymentMethodType(card)}
-                </TouchableHighlight>
-                <View style={stylePaymentOptionPage.paymentMethodInfoView}>
-                  <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
-                </View>
-                <View style={stylePaymentOptionPage.paymentMethodRemoveButtonView}>
-                   <Text onPress={()=>this.removeAPayment(card)} style={stylePaymentOptionPage.paymentMethodRemoveButtonText}>Remove</Text>
-                </View>
-             </View>
+             <Swipeout backgroundColor={'#FFFFFF'} right={swipeoutBtns}>
+                <View style={stylePaymentOptionPage.paymentMethodView}>
+                    <TouchableHighlight underlayColor={'transparent'} style={stylePaymentOptionPage.paymentMethodIconView} onPress={()=>this.onCardClick(card)}>
+                    {this.renderPaymentMethodType(card)}
+                    </TouchableHighlight>
+                    <View style={stylePaymentOptionPage.paymentMethodInfoView}>
+                    <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                    </View>
+                 </View>
+             </Swipeout>
         );
     }
     
     renderFooter(){
         return (
-             <View style={stylePaymentOptionPage.addCardView}>
-               <View style={stylePaymentOptionPage.addCardTitleView}>
-                  <Text style={stylePaymentOptionPage.addCardTitleText}>Credit/Debit Card</Text>
-               </View>
-               <View style={{flex:0.4}}>
-               </View>
+             <View style={stylePaymentOptionPage.addCardView}>          
                <TouchableHighlight style={stylePaymentOptionPage.addCardIconView} underlayColor={'transparent'} onPress={()=>this.addAPayment()}>
                   <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
                </TouchableHighlight>
-             </View>) ;
+               <View style={stylePaymentOptionPage.addCardTitleView}>
+                  <Text style={stylePaymentOptionPage.addCardTitleText}>Credit/Debit Card</Text>
+               </View>
+             </View>);
     }
     
     render() {
@@ -102,7 +107,7 @@ class PaymentOptionPage extends Component {
                 style={styles.loader}/> 
         } 
         return (
-            <View style={styles.container}>
+            <View style={styles.geryContainer}>
                <View style={styles.headerBannerView}>
                          <View style={styles.headerLeftView}>
                          <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBack()}>
@@ -198,15 +203,10 @@ var stylePaymentOptionPage = StyleSheet.create({
     paymentMethodView:{
         flex:1,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         paddingHorizontal:15,
-        borderBottomWidth:1,
-        borderColor:'#D7D7D7',
-    },
-    paymentMethodRemoveButtonText:{
-        alignSelf:'center',
-        fontSize:16,
-        color:'#ff9933',
+        borderTopWidth:3,
+        borderColor:'#F5F5F5',
     },
     paymentMethodInfoView:{
         flex:0.5,
@@ -215,10 +215,11 @@ var stylePaymentOptionPage = StyleSheet.create({
     },
     paymentMethodInfoText:{
         alignSelf:'center',
-        fontSize:16,
+        fontSize:windowHeight/51.636,
+        color:'#4A4A4A',
     },
     paymentMethodIconView:{
-        flex:0.25,
+        flex:0.15,
         flexDirection:'row',
         justifyContent:'flex-start'
     },
@@ -229,7 +230,7 @@ var stylePaymentOptionPage = StyleSheet.create({
         borderBottomWidth: 1,
     },
     paymentMethodRemoveButtonView:{
-        flex:0.25,
+        flex:0.15,
         flexDirection:'row',
         height:50,
         justifyContent:'flex-end',
@@ -242,10 +243,10 @@ var stylePaymentOptionPage = StyleSheet.create({
     addCardView:{
         flex:1,
         flexDirection:'row',
-        height:50,
+        height:windowHeight*0.075,
         paddingHorizontal:15,
-        borderBottomWidth:1,
-        borderColor:'#D7D7D7',
+        borderTopWidth:3,
+        borderColor:'#F5F5F5',
     },
     addCardTitleView:{
         flex:0.5,
@@ -254,12 +255,13 @@ var stylePaymentOptionPage = StyleSheet.create({
     },
     addCardTitleText:{
         alignSelf:'center',
-        fontSize:16,
+        fontSize:windowHeight/51.636,
+        color:'#4A4A4A',
     },
     addCardIconView:{
-        flex:0.1,
+        flex:0.25,
         flexDirection:'row',
-        justifyContent:'flex-end',
+        justifyContent:'flex-start'
     },
     addCardIcon:{
         width:30,
