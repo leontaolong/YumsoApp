@@ -70,7 +70,7 @@ class MapPage extends Component {
     render() {  
             let aptView = <View></View> 
             if(this.state.showApartmentNumber){
-               aptView = (<View style={{backgroundColor:'#fff', position:'absolute', flexDirection:'row', justifyContent:'center', 
+               aptView = (<View key={'aptView'} style={{backgroundColor:'#fff', position:'absolute', flexDirection:'row', justifyContent:'center', 
                                 top: this.state.aptNumberViewYposition, left:0, right:0, height:windowHeight*0.074,}}>
                               <Text style={styleMapPage.aptNumberViewTitle}>Apt/Suite# </Text>
                               <TextInput style={styleMapPage.aptNumberViewInput} onFocus = {()=>this.slideUpAptNumberView()} clearButtonMode={'while-editing'} returnKeyType = {'done'}
@@ -81,14 +81,14 @@ class MapPage extends Component {
             this.state.savedAddressesView = this.renderSavedAddresses(); //todo: also include home and work addresses for selection.
             let addressSelectionView=[];
             if(!this.state.showMapView){
-               addressSelectionView.push(<View style={styleMapPage.addressSelectionView}>
+               addressSelectionView.push(<View key={'addressSelectionView'} style={styleMapPage.addressSelectionView}>
                                           {this.state.savedAddressesView}               
                                          </View>);  
             }                       
 
             var searchAddressResultViewWrapper;
             if(this.state.searchAddressResultView){
-               searchAddressResultViewWrapper=(<View style={{backgroundColor:'#fff', position:'absolute', top: this.state.mapViewYposition,left:0,right:0, height:windowHeight-this.state.mapViewYposition,opacity:0.8}}> 
+               searchAddressResultViewWrapper=(<View key={'searchAddressResultView'} style={{backgroundColor:'#fff', position:'absolute', top: this.state.mapViewYposition,left:0,right:0, height:windowHeight-this.state.mapViewYposition,opacity:0.8}}> 
                                                  {this.state.searchAddressResultView}
                                                </View>);  
             }
@@ -170,9 +170,10 @@ class MapPage extends Component {
         let homeAddress = this.state.eater.homeAddress;
         let otherAddresses = this.state.eater.addressList;
         var addressesView = []
+        let i=1;
         if(homeAddress){
             addressesView.push(
-                <TouchableHighlight key={'homeAddress'} onPress={()=>this.useAddress(homeAddress)}>
+                <TouchableHighlight key={'homeAddress'} onPress={()=>this.useSavedAddress(homeAddress)}>
                 <View style={styleMapPage.oneAddressView}>
                     <View style={styleMapPage.oneAddressIconTitleView}>
                         <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
@@ -189,7 +190,7 @@ class MapPage extends Component {
         }
         if(workAddress){
             addressesView.push(
-                <TouchableHighlight key={'workAddress'} onPress={()=>this.useAddress(workAddress)}>
+                <TouchableHighlight key={'workAddress'} onPress={()=>this.useSavedAddress(workAddress)}>
                 <View style={styleMapPage.oneAddressView}>
                     <View style={styleMapPage.oneAddressIconTitleView}>
                         <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
@@ -206,7 +207,7 @@ class MapPage extends Component {
         }
         for(let address of otherAddresses){
             addressesView.push(
-                <TouchableHighlight key={address.formatted_address} onPress={()=>this.useAddress(address)}>
+                <TouchableHighlight key={'otherAddresses'+i} onPress={()=>this.useSavedAddress(address)}>
                 <View style={styleMapPage.oneAddressView}>
                     <View style={styleMapPage.oneAddressIconTitleView}>
                         <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
@@ -220,6 +221,7 @@ class MapPage extends Component {
                 </View>
                 </TouchableHighlight>
             );
+            i++;
         }
         return addressesView;
     }
@@ -389,6 +391,12 @@ class MapPage extends Component {
         }]; 
         this.setState({markers: markers, region: region, selectedAddress: address, showMapView: true,searchAddressResultView:''}); 
         this.refs.m1.showCallout();
+    }
+    
+    useSavedAddress(address){
+        this.isSpecific = false;
+        this.setState({showApartmentNumber:false});
+        this.useAddress(address);
     }
     
     locateToCurrentAddress(){
