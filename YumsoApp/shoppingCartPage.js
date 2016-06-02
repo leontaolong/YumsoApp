@@ -123,6 +123,7 @@ class ShoppingCartPage extends Component {
     }
     
     renderFooter(){
+       console.log(this.state.eater);
        if(!this.state.priceIsConfirmed){
        return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
@@ -195,8 +196,8 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
                       <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
                       <View style={styleShoppingCartPage.phoneNumberInputView}>                       
-                        <TextInput style={styleShoppingCartPage.phoneNumberInput} default={this.eater!=undefined? this.eater.phoneNumber:''} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                        keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text }) }/> 
+                        <TextInput style={styleShoppingCartPage.phoneNumberInput} placeholder={this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'} 
+                        returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text }) }/> 
                       </View>
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>

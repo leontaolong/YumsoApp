@@ -99,7 +99,7 @@ class ShoppingCartPage extends Component {
                                   </View>
                                   <Text style={styleOrderDetailPage.commentText}>{this.state.comment.trim() ? this.state.comment :'No comment'}</Text>
                                </View>
-        }else{
+        }else if(new Date().getTime()-this.state.order.orderDeliverTime < 7*24*60*60*1000){
            var commentBoxView = <View style={styleOrderDetailPage.commentBox}>
                                   <View style={styleOrderDetailPage.ratingView}>
                                      <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(1)}>
