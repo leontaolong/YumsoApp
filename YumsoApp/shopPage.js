@@ -125,16 +125,30 @@ class ShopPage extends Component {
     }
     
     renderHeader(){
-            
-               let deliveryTimeRendered = [];
-               for(var oneTimeString of this.state.timeData){
+               let scheduleSelectionView='';
+               if(this.state.timeData.length > 0){
+                 let deliveryTimeRendered = [];
+                 for(var oneTimeString of this.state.timeData){
                    if(oneTimeString.label=='All Schedules'){
                      deliveryTimeRendered.push({key:oneTimeString.label, label: 'All Schedules'});
                    }else{
                      deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
                    }
+                 }
+                 scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
+                                            <Text style={styleShopPage.openHourTitle}>Open Hours</Text>
+                                            <ModalPicker
+                                            style={styleShopPage.modalPicker}
+                                            data={deliveryTimeRendered}
+                                            initValue={'Select a Delivery Time'}
+                                            onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
+                                          </View>);
+               }else{
+                 scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
+                                            <Text style={styleShopPage.openHourTitle}>This chef does not have any schedule now</Text>
+                                          </View>);
                }
-                                          
+               
                if(this.state.like){
                   var  likeIcon = likedIcon;
                }else{
@@ -185,7 +199,7 @@ class ShopPage extends Component {
                             <View style={styleShopPage.chefDetailTextView}>
                                 <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
                             </View>
-                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
+                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                             </TouchableHighlight>
                         </View>), 
@@ -206,15 +220,9 @@ class ShopPage extends Component {
                             <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                             </TouchableHighlight>
-                        </View>),                                      
-                       (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
-                                <Text style={styleShopPage.openHourTitle}>Open Hours</Text>
-                                <ModalPicker
-                                 style={styleShopPage.modalPicker}
-                                 data={deliveryTimeRendered}
-                                 initValue={'Select a Delivery Time'}
-                                 onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
-                        </View>)];
+                        </View>),      
+                        scheduleSelectionView                                
+                       ];
     }
 
     renderRow(dish){
@@ -636,7 +644,7 @@ var styleShopPage = StyleSheet.create({
     },
     openHourTitle:{
         alignSelf:'center',
-        fontSize:windowHeight/35.5,
+        fontSize:windowHeight/40.57,
         color:'#4A4A4A',
         marginRight:windowWidth*0.015625,
     },
