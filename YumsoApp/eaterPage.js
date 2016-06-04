@@ -9,7 +9,6 @@ var defaultAvatar = require('./TestImages/Obama.jpg');
 var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/Icon-house.png');
 var paypalIcon = require('./icons/Icon-paypal.png');
-var visaIcon = require('./icons/Icon-visa.png');
 
 import Dimensions from 'Dimensions';
 

@@ -84,7 +84,7 @@ class PaymentPage extends Component {
                  {selectPaymentMethodView}
                  <TouchableHighlight style={stylePaymentPage.placeOrderButtonWrapper} onPress={()=>this.confirm()}>
                     <View style={stylePaymentPage.placeOrderButton}>
-                        <Text style={stylePaymentPage.placeOrderButtontText}>Place Order</Text>
+                        <Text style={stylePaymentPage.placeOrderButtonText}>Place Order</Text>
                     </View>
                  </TouchableHighlight>                 
               </View>);
@@ -141,6 +141,7 @@ class PaymentPage extends Component {
             name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
             passProps:{
                 eaterId: principal.userId,
+                isFromCheckOutPage:true,
                 onPaymentSelected: function(payment){
                     this.setState({paymentOption:payment});
                 }.bind(this)
@@ -209,7 +210,7 @@ var stylePaymentPage = StyleSheet.create({
       height:windowHeight*0.075,
       width:windowWidth,
     },
-    placeOrderButtontText:{
+    placeOrderButtonText:{
       color:'#fff',
       fontSize:windowHeight/37.056,
       fontWeight:'bold',
