@@ -211,9 +211,9 @@ class PaymentOptionPage extends Component {
                 return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
             case 'MasterCard':
                 return <Image source={masterIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
-            case 'AmEx':
+            case 'American Express':
                 return <Image source={amexIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
-            case 'Discovery':
+            case 'Discover':
                 return <Image source={discoveryIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;                    
             default:
                 return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>; 
