@@ -1,12 +1,18 @@
+'use strict';
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var BTClient = require('react-native-braintree');
 var paypalIcon = require('./icons/Icon-paypal.png');
-var visaIcon = require('./icons/Icon-visa.png');
+var visaIcon = require('./icons/icon-visa.png');
+var amexIcon = require('./icons/icon-amex.png');
+var masterIcon = require('./icons/icon-mastercard.png');
+var discoveryIcon = require('./icons/icon-discover.png');
 var plusIcon = require('./icons/Icon-add.png');
 var backIcon = require('./icons/icon-back.png');
+var checkedIcon = require('./icons/icon-checkBox-checked.jpeg');
+var uncheckedIcon = require('./icons/icon-checkBox-unchecked.jpeg');
 var Swipeout = require('react-native-swipeout')
 
 import Dimensions from 'Dimensions';
@@ -37,11 +43,15 @@ class PaymentOptionPage extends Component {
         }); 
         var routeStack = this.props.navigator.state.routeStack;
         var eaterId = routeStack[routeStack.length-1].passProps.eaterId;
+        var isFromCheckOutPage = routeStack[routeStack.length-1].passProps.isFromCheckOutPage;
         this.onPaymentSelected = routeStack[routeStack.length-1].passProps.onPaymentSelected;
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:true,
+            isFromCheckOutPage:isFromCheckOutPage,
             eaterId:eaterId,
+            checkBoxesState:{},
+            chosenCard:''
         };
     }
 
@@ -61,7 +71,7 @@ class PaymentOptionPage extends Component {
                     throw new Error('Fail getting past payment list');
                 }
                 let paymentList = res.data.paymentList;
-                this.setState({ dataSource: this.state.dataSource.cloneWithRows(paymentList), showProgress: false });
+                this.setState({ dataSource: this.state.dataSource.cloneWithRows(paymentList),paymentList:paymentList, showProgress: false });
             });
     }
 
@@ -72,23 +82,60 @@ class PaymentOptionPage extends Component {
                                     backgroundColor:'#FF0000',
                                     onPress:()=>this.removeAPayment(card),
                                 }
-                            ]
-        return (
-             <Swipeout backgroundColor={'#FFFFFF'} right={swipeoutBtns}>
-                <View style={stylePaymentOptionPage.paymentMethodView}>
-                    <TouchableHighlight underlayColor={'transparent'} style={stylePaymentOptionPage.paymentMethodIconView} onPress={()=>this.onCardClick(card)}>
-                    {this.renderPaymentMethodType(card)}
-                    </TouchableHighlight>
-                    <View style={stylePaymentOptionPage.paymentMethodInfoView}>
-                    <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                            ];
+              
+        if(this.state.chosenCard && this.state.chosenCard.cardType == card.cardType && this.state.chosenCard.last4 == card.last4){
+           var checkBoxIcon = checkedIcon;
+        }else{
+           var checkBoxIcon = uncheckedIcon;
+        }                  
+        
+        if(this.state.isFromCheckOutPage){                 
+            return (
+                <Swipeout backgroundColor={'#FFFFFF'} right={swipeoutBtns}>
+                    <View style={stylePaymentOptionPage.paymentMethodView}>         
+                        <TouchableHighlight style={stylePaymentOptionPage.checkBoxIconView} underlayColor={'transparent'} onPress={()=>this.onCardClick(card)}>
+                                        <Image style={stylePaymentOptionPage.checkBoxIcon} source={checkBoxIcon}/>
+                        </TouchableHighlight>
+                        <View  style={stylePaymentOptionPage.paymentMethodIconView}>
+                            {this.renderPaymentMethodType(card)}
+                        </View>
+                        <View style={stylePaymentOptionPage.paymentMethodInfoView}>
+                        <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                        </View>
                     </View>
-                 </View>
-             </Swipeout>
-        );
+                </Swipeout>
+            );
+        }else{
+            return (
+                <Swipeout backgroundColor={'#FFFFFF'} right={swipeoutBtns}>
+                    <View style={stylePaymentOptionPage.paymentMethodView}>         
+                        <View  style={stylePaymentOptionPage.paymentMethodIconView}>
+                            {this.renderPaymentMethodType(card)}
+                        </View>
+                        <View style={stylePaymentOptionPage.paymentMethodInfoView}>
+                        <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                        </View>
+                    </View>
+                </Swipeout>);
+        }
     }
     
     renderFooter(){
-        return (
+        if(this.state.isFromCheckOutPage){  
+          return (
+             <View style={stylePaymentOptionPage.addCardView}>          
+               <View style={stylePaymentOptionPage.checkBoxIconView}>
+               </View>
+               <TouchableHighlight style={stylePaymentOptionPage.addCardIconView} underlayColor={'transparent'} onPress={()=>this.addAPayment()}>
+                  <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
+               </TouchableHighlight>
+               <View style={stylePaymentOptionPage.addCardTitleView}>
+                  <Text style={stylePaymentOptionPage.addCardTitleText}>Credit/Debit Card</Text>
+               </View>
+             </View>);
+        }else{
+          return (
              <View style={stylePaymentOptionPage.addCardView}>          
                <TouchableHighlight style={stylePaymentOptionPage.addCardIconView} underlayColor={'transparent'} onPress={()=>this.addAPayment()}>
                   <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
@@ -97,6 +144,7 @@ class PaymentOptionPage extends Component {
                   <Text style={stylePaymentOptionPage.addCardTitleText}>Credit/Debit Card</Text>
                </View>
              </View>);
+        }
     }
     
     render() {
@@ -106,6 +154,16 @@ class PaymentOptionPage extends Component {
                 size="large"
                 style={styles.loader}/> 
         } 
+        
+
+        if(this.state.chosenCard && this.state.isFromCheckOutPage){
+          var paymentSelectionConfirmButton= (<TouchableHighlight style={stylePaymentOptionPage.bottomButtonWrapper} onPress={()=>this.confirmSelection()}>
+                                                    <View style={stylePaymentOptionPage.bottomButton}>
+                                                        <Text style={stylePaymentOptionPage.bottomButtonText}>Choose this Payment Method</Text>
+                                                    </View>
+                                              </TouchableHighlight>);
+        }
+        
         return (
             <View style={styles.geryContainer}>
                <View style={styles.headerBannerView}>
@@ -123,7 +181,8 @@ class PaymentOptionPage extends Component {
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this)}
-                    renderFooter={this.renderFooter.bind(this)}/>                 
+                    renderFooter={this.renderFooter.bind(this)}/>  
+              {paymentSelectionConfirmButton}                    
             </View>
         );
     }
@@ -133,21 +192,29 @@ class PaymentOptionPage extends Component {
     }
     
     onCardClick(card){
+        this.setState({chosenCard:card});
+        var _paymentList = JSON.parse(JSON.stringify(this.state.paymentList));
+        this.setState({dataSource:this.state.dataSource.cloneWithRows(_paymentList)});
+        
         if(this.onPaymentSelected){
-            this.onPaymentSelected(card);
-            this.props.navigator.pop();
+           this.onPaymentSelected(card);
         }
     }
+    
+    confirmSelection(){
+        this.props.navigator.pop();
+    }
+    
     renderPaymentMethodType(card){
         switch (card.cardType) {
             case 'Visa':
                 return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
             case 'MasterCard':
-                return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
+                return <Image source={masterIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
             case 'AmEx':
-                return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
+                return <Image source={amexIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;
             case 'Discovery':
-                return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;                    
+                return <Image source={discoveryIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>;                    
             default:
                 return <Image source={visaIcon} style={stylePaymentOptionPage.paymentMethodIcon}/>; 
         }
@@ -208,6 +275,16 @@ var stylePaymentOptionPage = StyleSheet.create({
         borderTopWidth:3,
         borderColor:'#F5F5F5',
     },
+    checkBoxIconView:{
+        flex:0.1,
+        flexDirection:'row',
+        justifyContent:'flex-start'  
+    },
+    checkBoxIcon:{
+        width:25,
+        height:25,
+        alignSelf:'center',
+    },
     paymentMethodInfoView:{
         flex:0.5,
         flexDirection:'row',
@@ -215,7 +292,7 @@ var stylePaymentOptionPage = StyleSheet.create({
     },
     paymentMethodInfoText:{
         alignSelf:'center',
-        fontSize:windowHeight/51.636,
+        fontSize:windowHeight/47.33,
         color:'#4A4A4A',
     },
     paymentMethodIconView:{
@@ -229,15 +306,9 @@ var stylePaymentOptionPage = StyleSheet.create({
         borderColor:'#D7D7D7',
         borderBottomWidth: 1,
     },
-    paymentMethodRemoveButtonView:{
-        flex:0.15,
-        flexDirection:'row',
-        height:50,
-        justifyContent:'flex-end',
-    },
     paymentMethodIcon:{
-        width:40,
-        height:25,
+        width:32,
+        height:20,
         alignSelf:'center',
     },
     addCardView:{
@@ -259,7 +330,7 @@ var stylePaymentOptionPage = StyleSheet.create({
         color:'#4A4A4A',
     },
     addCardIconView:{
-        flex:0.25,
+        flex:0.15,
         flexDirection:'row',
         justifyContent:'flex-start'
     },
@@ -267,141 +338,30 @@ var stylePaymentOptionPage = StyleSheet.create({
         width:30,
         height:30,
         alignSelf:'center',
-    },    
+    },
+    bottomButtonWrapper:{
+      flexDirection:'row',        
+      justifyContent: 'center',
+      backgroundColor:'#FFCC33',
+      position:'absolute',
+      left: 0, 
+      right: 0,
+      top:windowHeight-windowHeight*0.075,
+      height:windowHeight*0.075,
+      width:windowWidth,
+    },
+    bottomButton:{
+      flexDirection:'row',        
+      justifyContent: 'center',
+      height:windowHeight*0.075,
+      width:windowWidth,
+    },
+    bottomButtonText:{
+      color:'#fff',
+      fontSize:windowHeight/37.056,
+      fontWeight:'bold',
+      alignSelf: 'center',
+    },
 });                
                         
-var styleChefCommentsPage = StyleSheet.create({
-    headerBannerView:{
-        flex:0.1,
-        flexDirection:'row',
-        borderBottomWidth:1,
-        borderColor:'#D7D7D7',
-    },
-    backButtonView:{
-        flex:0.1/3,
-        width:windowWidth/3,
-        paddingTop:6,
-    },
-    backButtonIcon:{
-        width:30,
-        height:30,
-    },
-    historyOrderTitleView:{
-        flex:0.1/3, 
-        width:windowWidth/3,
-        alignItems:'center',     
-    },
-    historyOrderTitleText:{
-        marginTop:12,
-    },
-    commentListView:{
-        alignSelf:'stretch',
-        flexDirection:'column',
-        height: windowHeight*9/10
-    },
-    oneListingView:{
-       flex:1,
-       flexDirection:'row',
-       paddingHorizontal:10,
-       paddingVertical:20,
-       borderBottomWidth:1,
-       borderColor: '#f5f5f5',
-    },
-    eaterChefCommetView:{
-        flex:1,
-        flexDirection:'column',
-        marginLeft:10,
-    },
-    shopNameTimePriceView:{
-        flex:1,
-        flexDirection:'row',
-        marginBottom:7,
-    },
-    eaterNameRatingView:{
-        flex:1,
-        flexDirection:'row',
-    },
-    eaterNameView:{
-        flex:0.75,
-        flexDirection:'row',
-    },
-    eaterNameText:{
-        fontSize:15,
-        fontWeight:'600',
-    },
-    orderRatingView:{
-        flex:0.25,
-        flexDirection:'row',
-        marginBottom:10,
-    },
-    eaterCommentView:{
-        flex:1,
-        paddingHorizontal:10,
-        paddingVertical:6,
-        borderRadius: 6, 
-        borderWidth: 0, 
-        backgroundColor: '#f5f5f5',
-        overflow: 'hidden', 
-        marginBottom:10,
-    },
-    eaterPhotoView:{
-        borderRadius: 8, 
-        borderWidth: 0, 
-        overflow: 'hidden', 
-    },
-    eaterPhoto:{
-        width:windowHeight/13.8,
-        height:windowHeight/13.8,
-    },
-    CHEFView:{
-        backgroundColor:'#FF4500',
-        width:55,
-        paddingLeft:12,
-        marginVertical:5,
-    },
-    CHEFText:{
-        fontSize:13,
-        color:'#fff',
-    },
-    chefCommentView:{
-        flex:1,
-        flexDirection:'column',
-        backgroundColor: '#DCDCDC',
-        paddingRight:12,
-        paddingVertical:6,
-        borderRadius: 6, 
-        borderWidth: 0, 
-        overflow: 'hidden', 
-    },
-    commentText:{
-        fontSize:12,
-        color:'#696969',
-        marginBottom:5,
-        marginLeft:12,
-    },
-    commentTimeView:{
-        flex:1,
-        flexDirection:'row',
-        justifyContent:'flex-end',
-    },
-    commentTimeText:{
-        fontSize:12,
-        color:'#696969',
-    },
-    eaterNoCommentView:{
-        flex:1,
-        flexDirection:'row',
-        paddingHorizontal:10,
-        paddingVertical:6,
-        borderRadius: 6, 
-        borderWidth: 0, 
-        backgroundColor: '#f5f5f5',
-        overflow: 'hidden', 
-    },
-    addCommentTextClickable:{
-        color:'#ff9933',
-        fontSize:13,
-    },
-}); 
-
 module.exports = PaymentOptionPage;

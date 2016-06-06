@@ -87,7 +87,7 @@ class ChefCommentsPage extends Component {
                    </View>
                    
                    <View style={styleChefCommentsPage.eaterCommentView}>
-                        <Text style={styleChefCommentsPage.commentText}>{comment.eaterComment==undefined?'No Comment':comment.eaterComment}</Text>
+                        <Text style={styleChefCommentsPage.commentText}>{comment.eaterComment?'No Comment':comment.eaterComment}</Text>
                         <View style={styleChefCommentsPage.commentTimeView}>
                             <Text style={styleChefCommentsPage.commentTimeText}>{comment.eaterCommentTime==undefined? '':dateRender.renderDate1(comment.eaterCommentTime)}</Text>
                         </View>
@@ -208,7 +208,7 @@ var styleChefCommentsPage = StyleSheet.create({
     },
     eaterCommentView:{
         flex:1,
-        paddingHorizontal:10,
+        paddingRight:10,
         paddingVertical:6,
         borderRadius: 6, 
         borderWidth: 0, 
