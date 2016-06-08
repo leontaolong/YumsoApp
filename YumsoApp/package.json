@@ -16,6 +16,7 @@
     "react-native-keyboard-aware-scroll-view": "0.0.7",
     "react-native-maps": "^0.3.2",
     "react-native-modal-picker": "0.0.13",
+    "react-native-refreshable-listview": "^2.0.0-beta4",
     "react-native-side-menu": "^0.18.0",
     "react-native-swipeout": "^2.0.12",
     "react-native-swiper": "^1.4.3",

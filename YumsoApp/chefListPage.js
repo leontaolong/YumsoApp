@@ -26,6 +26,8 @@ var dollarSign3_Orange = require('./icons/icon-dollar3-orange.png');
 var dollarSign4_Orange = require('./icons/icon-dollar4-orange.png');
 var sortCriteriaIconGery = require('./icons/icon-rating-grey.png');
 var sortCriteriaIconOrange = require('./icons/icon-rating-orange.png');
+var RefreshableListView = require('react-native-refreshable-listview')
+
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -56,7 +58,7 @@ class ChefListPage extends Component {
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
         this.state = {
             dataSource: ds.cloneWithRows([]),
-            showProgress: true,
+            showProgress: false,
             showChefSearch:false,
             showLocSearch:false,
             showFavoriteChefsOnly:false,
@@ -72,10 +74,6 @@ class ChefListPage extends Component {
             chefsDictionary: {},
             city:'Seattle',
             state:'WA',
-            dollarSign1:dollarSign1_Grey,
-            dollarSign2:dollarSign2_Grey,
-            dollarSign3:dollarSign3_Grey,
-            dollarSign4:dollarSign4_Grey,
             sortCriteriaIcon:sortCriteriaIconGery,
         };
     }
@@ -103,6 +101,10 @@ class ChefListPage extends Component {
             //console.log(eater.chefFilterSettings);
             //console.log(JSON.stringify(eater.chefFilterSettings.priceRankFilter));
             this.setState({ 
+                dollarSign1: eater.chefFilterSettings.priceRankFilter[1]==true? dollarSign1_Orange:dollarSign1_Grey,
+                dollarSign2: eater.chefFilterSettings.priceRankFilter[2]==true? dollarSign2_Orange:dollarSign2_Grey,
+                dollarSign3: eater.chefFilterSettings.priceRankFilter[3]==true? dollarSign3_Orange:dollarSign3_Grey,
+                dollarSign4: eater.chefFilterSettings.priceRankFilter[4]==true? dollarSign4_Orange:dollarSign4_Grey,
                 priceRankFilter:eater.chefFilterSettings.priceRankFilter, 
                 withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
                 priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
@@ -113,6 +115,7 @@ class ChefListPage extends Component {
     }
 
     async fetchChefDishes() {
+        this.setState({showProgress:true});
         var query=''; //todo: should include seattle if no lat lng provided
         if(this.state.GPSproxAddress){
             query = '?lat='+this.state.GPSproxAddress.lat+'&lng='+this.state.GPSproxAddress.lng;
@@ -333,9 +336,10 @@ class ChefListPage extends Component {
                         </View>
                     </View> 
 
-                    <ListView style={styles.dishListView}
+                    <RefreshableListView style={styles.dishListView}
                         dataSource = {this.state.dataSource}
-                        renderRow={this.renderRow.bind(this) } />
+                        renderRow={this.renderRow.bind(this) }
+                        loadData={this.searchChef.bind(this)}/>
                 </View>
             </SideMenu>
         );
@@ -345,16 +349,16 @@ class ChefListPage extends Component {
         this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];
         switch(priceLevel){
             case 1:
-               this.setState({dollarSign1:this.state.dollarSign1==dollarSign1_Grey? dollarSign1_Orange:dollarSign1_Grey}); 
+               this.setState({dollarSign1: this.state.priceRankFilter[priceLevel]==true? dollarSign1_Orange:dollarSign1_Grey}); 
                break;
             case 2:
-               this.setState({dollarSign2:this.state.dollarSign2==dollarSign2_Grey? dollarSign2_Orange:dollarSign2_Grey}); 
+               this.setState({dollarSign2: this.state.priceRankFilter[priceLevel]==true? dollarSign2_Orange:dollarSign2_Grey}); 
                break;
             case 3:
-               this.setState({dollarSign3:this.state.dollarSign3==dollarSign3_Grey? dollarSign3_Orange:dollarSign3_Grey}); 
+               this.setState({dollarSign3: this.state.priceRankFilter[priceLevel]==true? dollarSign3_Orange:dollarSign3_Grey}); 
                break;
             case 4:
-               this.setState({dollarSign4:this.state.dollarSign4==dollarSign4_Grey? dollarSign4_Orange:dollarSign4_Grey}); 
+               this.setState({dollarSign4: this.state.priceRankFilter[priceLevel]==true? dollarSign4_Orange:dollarSign4_Grey}); 
                break;
         }
           
