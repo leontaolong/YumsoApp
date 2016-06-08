@@ -8,7 +8,7 @@ var MapPage = require('./mapPage');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
 var backIcon = require('./icons/icon-back.png');
-var addPromoCodeIcon = require('./icons/Icon-add.png');
+var addPromoCodeIcon = require('./icons/icon-add.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;

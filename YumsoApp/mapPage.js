@@ -7,11 +7,11 @@ var MapView = require('react-native-maps');
 var RCTUIManager = require('NativeModules').UIManager;
 var ballonIcon = null;
 var searchIcon = require('./icons/icon-search.png');
-var houseIconOrange = require('./icons/Icon-home-orange.png');
+var houseIconOrange = require('./icons/icon-home-orange.png');
 var backIcon = require('./icons/icon-back.png');
-var locatorIcon = require('./icons/Icon-location.png');
-var houseIcon = require('./icons/Icon-house.png');
-var cancelIcon = require('./icons/Icon-cancel.png');
+var locatorIcon = require('./icons/icon-location.png');
+var houseIcon = require('./icons/icon-grey-house.png');
+var cancelIcon = require('./icons/icon-cancel.png');
 
 import Dimensions from 'Dimensions';
 
