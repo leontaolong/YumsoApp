@@ -70,7 +70,7 @@ class ShopPage extends Component {
     
      async componentDidMount() {
          this.client = new HttpsClient(config.baseUrl, true);
-         await this.fetchDishesAndSchedules(this.state.chefId);
+         await this.fetchDishesAndSchedules();
          if (this.state.eater) {
              if (!this.state.eater.favoriteChefs) this.state.eater.favoriteChefs = []; //todo: remove this.
              this.setState({ like: this.state.eater.favoriteChefs.indexOf(this.state.chefId) !== -1 });
@@ -78,7 +78,8 @@ class ShopPage extends Component {
          this.setState({ showProgress: false });
      }
 
-    async fetchDishesAndSchedules(chefId) {
+    async fetchDishesAndSchedules() {
+        let chefId = this.state.chefId;
         const start = 'start='+new Date().getTime();
         const end = 'end='+new Date().setDate(new Date().getDate()+6);
         let getDishesTask = this.client.getWithoutAuth(config.chefDishesEndpoint+chefId);
@@ -313,7 +314,8 @@ class ShopPage extends Component {
                         <ListView style={styles.dishListView}
                                 dataSource = {this.state.dataSource}
                                 renderRow={this.renderRow.bind(this) } 
-                                renderHeader={this.renderHeader.bind(this)}/>           
+                                renderHeader={this.renderHeader.bind(this)}
+                                loadData={this.fetchDishesAndSchedules.bind(this)}/>           
 
                         <View style={styleShopPage.footerView}>          
                           <View style={styleShopPage.shoppingCartTimeView}>
