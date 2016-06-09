@@ -226,7 +226,7 @@ class ShopPage extends Component {
     }
 
     renderRow(dish){
-        let imageSrc =require('./ok.jpeg') ;
+        let imageSrc =require('./icons/dishImageUnavailable.png') ;
         if(dish.pictures && dish.pictures!=null && dish.pictures.length!=0){
             imageSrc={uri:dish.pictures[0]};   
         }

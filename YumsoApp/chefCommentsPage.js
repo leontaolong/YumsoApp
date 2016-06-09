@@ -60,7 +60,7 @@ class ChefCommentsPage extends Component {
     }
 
     renderRow(comment){
-        let imageSrc =require('./ok.jpeg') ;
+        let imageSrc =require('./icons/dishImageUnavailable.png') ;
         if(comment.eaterProfilePic){
             imageSrc={uri:comment.eaterProfilePic};   
         }

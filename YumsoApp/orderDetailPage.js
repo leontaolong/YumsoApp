@@ -57,7 +57,7 @@ class ShoppingCartPage extends Component {
     }
             
     renderRow(orderItem){
-        let imageSrc =require('./ok.jpeg') ;
+        let imageSrc =require('./icons/dishImageUnavailable.png') ;
         if(orderItem.dishDetail && orderItem.dishDetail.pictures && orderItem.dishDetail.pictures.length!=0){
             imageSrc={uri:orderItem.dishDetail.pictures[0]};   
         } 
