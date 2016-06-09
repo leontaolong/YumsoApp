@@ -7,8 +7,8 @@ var MapPage = require('./mapPage');
 var backIcon = require('./icons/icon-back.png');
 var defaultAvatar = require('./TestImages/Obama.jpg');
 var uploadPhotoIcon = require('./icons/icon-camera.png');
-var houseIcon = require('./icons/Icon-house.png');
-var paypalIcon = require('./icons/Icon-paypal.png');
+var houseIcon = require('./icons/icon-grey-house.png');
+var paypalIcon = require('./icons/icon-paypal.png');
 
 import Dimensions from 'Dimensions';
 
