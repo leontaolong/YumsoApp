@@ -547,7 +547,7 @@ var Menu = React.createClass({
                 {profile}
                 <View style={{height:windowHeight*0.09}}></View>
                 <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
-                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>Orders History</Text>
+                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
                 <Text onPress={()=>{if(isAuthenticated){this.goToEaterPage();}}} style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>

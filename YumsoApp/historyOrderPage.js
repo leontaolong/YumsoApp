@@ -123,7 +123,7 @@ class HistoryOrderPage extends Component {
                    </TouchableHighlight>
                    </View>    
                    <View style={styles.titleView}>
-                     <Text style={styles.titleText}>History Orders</Text>
+                     <Text style={styles.titleText}>My Orders</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>
