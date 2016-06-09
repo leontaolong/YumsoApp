@@ -1,5 +1,5 @@
  'use strict';
- var ratingIconFilledUrl = require('./icons/Icon-Small.png');
+ var ratingIconFilledUrl = require('./icons/icon-small-logo.png');
  var ratingIconEmptyUrl = require('./icons/forkhand2.png');
  
  import Dimensions from 'Dimensions';

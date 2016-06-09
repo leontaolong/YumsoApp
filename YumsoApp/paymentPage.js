@@ -52,7 +52,9 @@ class PaymentPage extends Component {
                                             </TouchableHighlight> 
                                         </View>),
                                        (<View key={'selectedPaymentTextView'} style={stylePaymentPage.selectedPaymentTextView}>
-                                            <Text style={stylePaymentPage.selectedPaymentText}>({this.state.paymentOption.cardType}*****{this.state.paymentOption.last4} has been chosen for this payment)</Text>
+                                            <Text style={stylePaymentPage.selectedPaymentText}>
+                                              {this.state.paymentOption.cardType}*****{this.state.paymentOption.last4} has been chosen for this payment
+                                            </Text>
                                         </View>)];
         }else{
            var selectPaymentMethodView=[(<View key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonView}>
@@ -175,7 +177,7 @@ var stylePaymentPage = StyleSheet.create({
     selectPaymentbutton:{
       height:windowHeight*0.075,
       width:windowWidth*0.62,
-      backgroundColor:'#55ACEE',
+      backgroundColor:'#7BCBBE',
       justifyContent: 'center',
     },
     selectPaymentbuttonText:{
@@ -185,13 +187,14 @@ var stylePaymentPage = StyleSheet.create({
       alignSelf:'center',
     },
     selectedPaymentTextView:{
-      flexDirection:'row',
-      justifyContent:'center',
+      flexDirection:'column',
     },
     selectedPaymentText:{
       color:'#A0A0A0',
       fontSize:windowHeight/51.636,
       marginTop:windowHeight*0.02,
+      textAlign:'center',
+      alignSelf:'center',
     },
     placeOrderButtonWrapper:{
       flexDirection:'row',        

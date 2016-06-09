@@ -8,7 +8,7 @@ var MapPage = require('./mapPage');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
 var backIcon = require('./icons/icon-back.png');
-var addPromoCodeIcon = require('./icons/Icon-add.png');
+var addPromoCodeIcon = require('./icons/icon-add.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -56,6 +56,7 @@ class ShoppingCartPage extends Component {
             eater:eater,
             priceIsConfirmed:false,
             showPromotionCodeInput:false,
+            phoneNumber:eater.phoneNumber,
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
@@ -113,10 +114,7 @@ class ShoppingCartPage extends Component {
                       <View style={styleShoppingCartPage.totalPriceView}>
                           <Text style={styleShoppingCartPage.totalPriceText}>${dish.price*quantity}</Text>
                       </View>                              
-                    </View>  
-                    <Text style={styleShoppingCartPage.quantityText}>{this.state.selectedTime === 'All Schedules' ? '' : (this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity) + ' orders left'}
-                            {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? ' | ' + this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''}
-                    </Text>                        
+                    </View>                        
                 </View>
             </View>
         );
@@ -409,7 +407,10 @@ class ShoppingCartPage extends Component {
             });  
             return;
         }
-         this.setState({phoneNumber:eater.phoneNumber});
+        
+        if(!this.state.phoneNumber){
+           this.setState({phoneNumber:eater.phoneNumber});
+        }
         //todo: Best practise is not to get eater here but cache it somewhere, but have to ensure the cached user is indeed not expired.              
         if(!this.state.phoneNumber){
             Alert.alert('Warning','Please add a phone number',[{ text: 'OK' }]);
@@ -645,7 +646,8 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     dishNameText:{
         fontSize:windowHeight/40.89,
-        fontWeight:'500'
+        fontWeight:'500',
+        color:'#4A4A4A'
     },
     dishPriceView:{
         flex:0.3,
@@ -657,8 +659,7 @@ var styleShoppingCartPage = StyleSheet.create({
         color:'#808080',
     },
     dishIngredientView:{
-        flex:1,
-        height:windowHeight*0.0792,  
+        height:windowHeight*0.0968,  
     },
     dishIngredientText:{
         fontSize:windowHeight/47.33,
@@ -680,6 +681,7 @@ var styleShoppingCartPage = StyleSheet.create({
     totalPriceText:{
         fontSize:windowHeight/33.45,
         fontWeight:'500',
+        color:'#4A4A4A'
     },
     plusMinusIcon:{
         width: windowHeight/27.6, 

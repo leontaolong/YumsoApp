@@ -4,7 +4,7 @@ var AuthService = require('./authService');
 var styles = require('./style');
 var FBLogin = require('react-native-facebook-login');
 var backIcon = require('./icons/icon-back.png');
-var logoIcon = require('./icons/Icon-Large.png');
+var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
 import Dimensions from 'Dimensions';
 
