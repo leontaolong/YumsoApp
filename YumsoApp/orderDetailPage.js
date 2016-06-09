@@ -135,16 +135,52 @@ class ShoppingCartPage extends Component {
                 size="large"
                 style={styles.loader}/> 
         } 
-
-        if(this.state.showDeliverTimeView){
+                     
+        //Render 'Delivered' status 
+        if(this.state.showDeliverTimeView && this.state.order.orderStatus=='Delivered'){
           var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
-                                    <Text style={styleOrderDetailPage.deliverTimeText}>Your order was delivered at {dateRender.renderDate2(this.state.order.orderDeliverTime)}</Text>
+                                    <Text style={styleOrderDetailPage.deliverTimeText}>Your order was delivered at {dateRender.renderDate2(this.state.order.orderStatusModifiedTime)}</Text>
                                     <TouchableHighlight style={styleOrderDetailPage.deleteBannerIconView} underlayColor={'transparent'} onPress={()=>this.setState({showDeliverTimeView:false})}>
                                        <Image source={deleteBannerIcon} style={styleOrderDetailPage.deleteBannerIcon} />
                                     </TouchableHighlight>
                                  </View>);
+        }else{
+          //Render 'Order received' status 
+          var currentTime = new Date().getTime();
+          if(this.state.order.orderStatus == 'new'){
+            var newStatusTextColor = "#FFFFFF";
+            var cookingStatusTextColor = "#b89467";
+            var DeliveringStatusTextColor = "#b89467";
+            if(currentTime > this.state.order.orderDeliverTime - 2*60*60*1000 && currentTime < this.state.order.orderDeliverTime){
+                cookingStatusTextColor = "#FFFFFF";
+            }
+          }else if(this.state.order.orderStatus == 'Delivering'){
+            var newStatusTextColor = "#FFFFFF";
+            var cookingStatusTextColor = "#FFFFFF";
+            var DeliveringStatusTextColor = "#FFFFFF";
+          }
+          
+          var deliverTimeView = (<View style={styleOrderDetailPage.deliverStatusView}>
+                                   <View style={styleOrderDetailPage.oneStatusView}>
+                                      <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Order</Text>
+                                      <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Received</Text>
+                                   </View>
+                                   <View style={styleOrderDetailPage.oneStatusView}>
+                                      <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
+                                   </View>
+                                   <View style={styleOrderDetailPage.oneStatusView}>
+                                      <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Cooking</Text>
+                                   </View>
+                                   <View style={styleOrderDetailPage.oneStatusView}>
+                                      <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
+                                   </View>
+                                   <View style={styleOrderDetailPage.oneStatusView}>
+                                      <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Out For</Text>
+                                      <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Delivery</Text>
+                                   </View>
+                               </View>);
         }
-
+        
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -242,6 +278,21 @@ var styleOrderDetailPage = StyleSheet.create({
         borderColor:'#F5F5F5',
         borderBottomWidth:windowHeight*0.007,
         backgroundColor:'#FFCC33'
+    },
+    deliverStatusView:{
+        flexDirection:'row',
+        justifyContent:'center',
+        height:windowHeight*0.0974,
+        borderColor:'#F5F5F5',
+        borderBottomWidth:windowHeight*0.007,
+        backgroundColor:'#FFCC33'
+    },
+    oneStatusView:{
+       flexDirection:'column',
+       alignItems:'center',
+       justifyContent:'center',
+       height:windowHeight*0.0974,
+       width:windowWidth/6.0,
     },
     deliverTimeText:{
         color:'#FFFFFF',
