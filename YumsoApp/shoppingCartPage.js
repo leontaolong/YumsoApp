@@ -56,6 +56,7 @@ class ShoppingCartPage extends Component {
             eater:eater,
             priceIsConfirmed:false,
             showPromotionCodeInput:false,
+            phoneNumber:eater.phoneNumber,
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
@@ -409,7 +410,7 @@ class ShoppingCartPage extends Component {
             });  
             return;
         }
-         this.setState({phoneNumber:eater.phoneNumber});
+        
         //todo: Best practise is not to get eater here but cache it somewhere, but have to ensure the cached user is indeed not expired.              
         if(!this.state.phoneNumber){
             Alert.alert('Warning','Please add a phone number',[{ text: 'OK' }]);
