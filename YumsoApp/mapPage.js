@@ -339,6 +339,7 @@ class MapPage extends Component {
     doneSelectAddress() {
         if (this.isSpecific) {
             if(!this.state.selectedAddress){
+                Alert.alert( 'Warning', 'Please specify an address',[ { text: 'OK' }]);
                 return;
             }
             if(!this.state.selectedAddress.streetNumber){ //todo: more validation on this.
@@ -381,6 +382,7 @@ class MapPage extends Component {
             }              
             this.state.selectedAddress.apartmentNumber = this.state.apartmentNumber;      
         }
+        
         if (this.state.selectedAddress) {
             if (this.state.eater) {
                 if (this.onSelectAddress) {
@@ -399,6 +401,9 @@ class MapPage extends Component {
                 }
                 this.state.selectedAddress = undefined;
             }
+        }else{
+            Alert.alert( 'Warning', 'Please specify an address',[ { text: 'OK' }]); 
+            return; 
         }
     }
     
