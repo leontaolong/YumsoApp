@@ -77,7 +77,9 @@ class ChefListPage extends Component {
     }
 
     async componentDidMount() {
-        await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
+        if(!this.state.pickedAddress){
+           await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
+        }
         // if(config.autoLogin){//this is for debugging so to auto login
         //    await AuthService.loginWithEmail(config.email, config.password);
         // }
