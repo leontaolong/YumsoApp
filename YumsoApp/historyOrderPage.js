@@ -69,19 +69,26 @@ class HistoryOrderPage extends Component {
         }
         this.setState({dataSource: this.state.dataSource.cloneWithRows(orders), showProgress:false, orders:orders});
     }
- 
+     
     renderRow(order){
         if(this.state.showProgress){
             return <ActivityIndicatorIOS
                 animating={this.state.showProgress}
                 size="large"
                 style={styles.loader}/> 
-        }   
+        }  
+
+        if(order.orderStatus == 'Delivered'){
+          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
+        }else{
+          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Pending....</Text>
+        }
+        
         return (<View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
                     <Image source={{uri:order.chefProfilePic}} style={styleHistoryOrderPage.shopPhoto}/>
                     <View style={styleHistoryOrderPage.orderInfoView}>
                         <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
-                        <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderDeliverTime)}</Text>            
+                        {orderStatusText}           
                         <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
                         <View style={styleHistoryOrderPage.orderDetailsClickableView}>
                         <Text onPress={()=>this.navigateToOrderDetailPage(order)} style={styleHistoryOrderPage.orderDetailsClickable}>Order Details  ></Text>                                                                               
@@ -116,7 +123,7 @@ class HistoryOrderPage extends Component {
                    </TouchableHighlight>
                    </View>    
                    <View style={styles.titleView}>
-                     <Text style={styles.titleText}>History Orders</Text>
+                     <Text style={styles.titleText}>My Orders</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>

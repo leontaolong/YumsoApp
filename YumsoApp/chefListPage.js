@@ -19,11 +19,9 @@ var backIcon = require('./icons/icon-back.png');
 var dollarSign1_Grey = require('./icons/icon-dollar1-grey.png');
 var dollarSign2_Grey = require('./icons/icon-dollar2-grey.png');
 var dollarSign3_Grey = require('./icons/icon-dollar3-grey.png');
-var dollarSign4_Grey = require('./icons/icon-dollar4-grey.png');
 var dollarSign1_Orange = require('./icons/icon-dollar1-orange.png');
 var dollarSign2_Orange = require('./icons/icon-dollar2-orange.png');
 var dollarSign3_Orange = require('./icons/icon-dollar3-orange.png');
-var dollarSign4_Orange = require('./icons/icon-dollar4-orange.png');
 var sortCriteriaIconGery = require('./icons/icon-rating-grey.png');
 var sortCriteriaIconOrange = require('./icons/icon-rating-orange.png');
 var RefreshableListView = require('react-native-refreshable-listview')
@@ -104,7 +102,6 @@ class ChefListPage extends Component {
                 dollarSign1: eater.chefFilterSettings.priceRankFilter[1]==true? dollarSign1_Orange:dollarSign1_Grey,
                 dollarSign2: eater.chefFilterSettings.priceRankFilter[2]==true? dollarSign2_Orange:dollarSign2_Grey,
                 dollarSign3: eater.chefFilterSettings.priceRankFilter[3]==true? dollarSign3_Orange:dollarSign3_Grey,
-                dollarSign4: eater.chefFilterSettings.priceRankFilter[4]==true? dollarSign4_Orange:dollarSign4_Grey,
                 priceRankFilter:eater.chefFilterSettings.priceRankFilter, 
                 withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
                 priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
@@ -277,9 +274,6 @@ class ChefListPage extends Component {
                               <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(3)}>
                                   <Image source={this.state.dollarSign3} style={styleFilterPage.dollarSign}/>
                               </TouchableHighlight>
-                              <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(4)}>
-                                  <Image source={this.state.dollarSign4} style={styleFilterPage.dollarSign}/>
-                              </TouchableHighlight>
                            </View>
                         </View> 
                     <View style={styleFilterPage.sortCriteriaSectionTitleView}>          
@@ -356,9 +350,6 @@ class ChefListPage extends Component {
                break;
             case 3:
                this.setState({dollarSign3: this.state.priceRankFilter[priceLevel]==true? dollarSign3_Orange:dollarSign3_Grey}); 
-               break;
-            case 4:
-               this.setState({dollarSign4: this.state.priceRankFilter[priceLevel]==true? dollarSign4_Orange:dollarSign4_Grey}); 
                break;
         }
           
@@ -556,7 +547,7 @@ var Menu = React.createClass({
                 {profile}
                 <View style={{height:windowHeight*0.09}}></View>
                 <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
-                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>Orders History</Text>
+                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
                 <Text onPress={()=>{if(isAuthenticated){this.goToEaterPage();}}} style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
                 <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>
@@ -754,7 +745,7 @@ var styleFilterPage = StyleSheet.create({
     },
     dollarSignView:{
         flexDirection:'row',
-        width:windowWidth*0.25,
+        width:windowWidth/3.0,
         justifyContent:'center',
     },
     dollarSign:{

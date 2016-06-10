@@ -339,18 +339,50 @@ class MapPage extends Component {
     doneSelectAddress() {
         if (this.isSpecific) {
             if(!this.state.selectedAddress){
+                Alert.alert( 'Warning', 'Please specify an address',[ { text: 'OK' }]);
                 return;
             }
             if(!this.state.selectedAddress.streetNumber){ //todo: more validation on this.
                 Alert.alert( 'Warning', 'the street is not valid since it is not specific',[ { text: 'OK' }]); 
                 return;   
             }
+            if(this.state.showApartmentNumber && (!this.state.apartmentNumber || !this.state.apartmentNumber.trim())){
+                Alert.alert( 'Warning', 
+                             'Wouldn\'t you specify your Apt./Suite# ?',
+                             [ { text: 'OK'} ,
+                               { text: 'Not Applicable', onPress:()=>{
+                                        if (this.state.selectedAddress) {
+                                            if (this.state.eater) {
+                                                if (this.onSelectAddress) {
+                                                    this.onSelectAddress(this.state.selectedAddress);
+                                                }
+                                                if (this.props.onSelectAddress) {
+                                                    this.props.onSelectAddress(this.state.selectedAddress);
+                                                }
+                                                this.state.selectedAddress = undefined;
+                                            } else {
+                                                if (this.onSelectAddress) {
+                                                    this.onSelectAddress(this.state.selectedAddress);
+                                                }
+                                                if (this.props.onSelectAddress) {
+                                                    this.props.onSelectAddress(this.state.selectedAddress);
+                                                }
+                                                this.state.selectedAddress = undefined;
+                                            }
+                                       }
+                                   }
+                               }
+                              ]
+                           );
+                return;
+            }
             if (this.state.apartmentNumber === undefined) {
                 this.setState({showApartmentNumber: true});
                 return;
-            }  
+            }              
             this.state.selectedAddress.apartmentNumber = this.state.apartmentNumber;      
         }
+        
         if (this.state.selectedAddress) {
             if (this.state.eater) {
                 if (this.onSelectAddress) {
@@ -369,6 +401,9 @@ class MapPage extends Component {
                 }
                 this.state.selectedAddress = undefined;
             }
+        }else{
+            Alert.alert( 'Warning', 'Please specify an address',[ { text: 'OK' }]); 
+            return; 
         }
     }
     
