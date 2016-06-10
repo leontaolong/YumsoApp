@@ -42,16 +42,36 @@ class PaymentOptionPage extends Component {
            rowHasChanged: (r1, r2) => r1!=r2 
         }); 
         var routeStack = this.props.navigator.state.routeStack;
-        var eaterId = routeStack[routeStack.length-1].passProps.eaterId;
+        let eater = routeStack[routeStack.length-1].passProps.eater;
         var isFromCheckOutPage = routeStack[routeStack.length-1].passProps.isFromCheckOutPage;
         this.onPaymentSelected = routeStack[routeStack.length-1].passProps.onPaymentSelected;
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:true,
             isFromCheckOutPage:isFromCheckOutPage,
-            eaterId:eaterId,
+            eaterId:eater?eater.eaterId: undefined,
             checkBoxesState:{},
-            chosenCard:''
+            chosenCard:'',
+            eater:eater
+        };
+        this.responseHandler = function(response){
+            if (response.statusCode === 401) {
+                return AuthService.logOut()
+                    .then(() => {
+                        delete this.state.eater;
+                        this.props.navigator.push({
+                            name: 'LoginPage',
+                            passProps: {
+                                callback: function (eater) {
+                                    this.setState({ eater: eater });
+                                    this.componentDidMount();
+                                }.bind(this)
+                            }
+                        });
+                    });
+            }else{
+                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+            }
         };
     }
 
@@ -61,14 +81,21 @@ class PaymentOptionPage extends Component {
     }
     
     fetchPaymentOptions() {
+        if (!this.state.eaterId) {
+            this.props.navigator.push({
+                name: 'LoginPage',
+                passProps: {
+                    callback: function (eater) {
+                        this.setState({ eater: eater, eaterId: eater.eaterId });
+                        this.fetchPaymentOptions();
+                    }.bind(this)
+                }
+            });
+        }
         return this.client.getWithAuth(config.getPaymentList+this.state.eaterId)
             .then((res) => {
-                if(res.statusCode===401){
-                    //todo: jump to sign in page.
-                    return;
-                }
                 if (res.statusCode != 200) {
-                    throw new Error('Fail getting past payment list');
+                    return this.responseHandler(res);
                 }
                 let paymentList = res.data.paymentList;
                 this.setState({ dataSource: this.state.dataSource.cloneWithRows(paymentList),paymentList:paymentList, showProgress: false });
@@ -220,15 +247,14 @@ class PaymentOptionPage extends Component {
         }
     }
     
-    editAPayment(card){
-        //todo:shall we enable edit or just remove and add a new one?
-    }
-    
     addAPayment(){
         this.setState({showProgress:true});
         var client = new HttpsClient(config.baseUrl, true);
         client.getWithAuth(config.paymentTokenEndpoint)
             .then((res) => {
+                if (res.statusCode != 200) {
+                    return this.responseHandler(res);
+                }
                 var clientToken = res.data.clientToken;
                 return BTClient.setup(clientToken)
                     .then(() => {              
@@ -236,7 +262,10 @@ class PaymentOptionPage extends Component {
                             .then((nonce) => {
                                 return client.postWithAuth(config.addAPayment, { payment_method_nonce: nonce, userId: this.state.eaterId })
                                 .then((res)=>{
-                                      this.fetchPaymentOptions();                                 
+                                    if (res.statusCode != 200) {
+                                        return this.responseHandler(res);
+                                    }                                  
+                                    this.fetchPaymentOptions();                                 
                                 });
                             }).catch((err) => {
                                 console.log(err);
@@ -251,6 +280,9 @@ class PaymentOptionPage extends Component {
         var client = new HttpsClient(config.baseUrl, true);
         return client.postWithAuth(config.deletePayment, { last4: card.last4, userId: this.state.eaterId })
             .then((res) => {
+                if (res.statusCode != 200) {
+                    return this.responseHandler(res);
+                }      
                 this.fetchPaymentOptions();
             });
     }

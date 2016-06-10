@@ -74,30 +74,33 @@ class ChefListPage extends Component {
             state:'WA',
             sortCriteriaIcon:sortCriteriaIconGery,
         };
+        this.responseHandler = function (response, msg) {
+            if (response.statusCode === 401) {
+                return AuthService.logOut()
+                    .then(()=>{
+                        delete this.state.eater;
+                        this.props.navigator.push({
+                            name: 'LoginPage',//todo: fb cached will signin and redirect back right away.
+                            passProps: {
+                                callback: function (eater) {
+                                    this.setState({ eater: eater });
+                                    this.componentDidMount();
+                                }.bind(this)
+                            }
+                        });                     
+                    });
+            } else {
+                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+            }
+        };
     }
 
     async componentDidMount() {
         await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
-        // if(config.autoLogin){//this is for debugging so to auto login
-        //    await AuthService.loginWithEmail(config.email, config.password);
-        // }
         let eater = await AuthService.getEater();
         let principal = await  AuthService.getPrincipalInfo();
         //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
-        //todo: clear the token and cache. 
         if(eater){
-            if(!eater.chefFilterSettings){ //todo: remove this part;
-                eater.chefFilterSettings = {};
-                eater.chefFilterSettings['priceRankFilter'] = {
-                    1: false,
-                    2: false,
-                    3: false,
-                    4: false,
-                };
-                eater.chefFilterSettings['withBestRatedSort'] = false;
-            }
-            //console.log(eater.chefFilterSettings);
-            //console.log(JSON.stringify(eater.chefFilterSettings.priceRankFilter));
             this.setState({ 
                 dollarSign1: eater.chefFilterSettings.priceRankFilter[1]==true? dollarSign1_Orange:dollarSign1_Grey,
                 dollarSign2: eater.chefFilterSettings.priceRankFilter[2]==true? dollarSign2_Orange:dollarSign2_Grey,
@@ -106,6 +109,13 @@ class ChefListPage extends Component {
                 withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
                 priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
                 withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort});
+        }else{
+            this.setState({
+                dollarSign1 : dollarSign1_Orange,
+                dollarSign2 : dollarSign2_Orange,
+                dollarSign3 : dollarSign3_Orange,
+                dollarSign4 : dollarSign4_Orange
+            });
         }   
         this.setState({ principal: principal, eater:eater });
         this.fetchChefDishes();
@@ -436,13 +446,18 @@ class ChefListPage extends Component {
             }
             this.state.eater.chefFilterSettings['priceRankFilter'] = this.state.priceRankFilter;
             this.state.eater.chefFilterSettings['withBestRatedSort'] = this.state.withBestRatedSort;
-            return AuthService.saveEater(this.state.eater) //todo: work on save eater reliability.
-            .then(()=>{
-                //todo: if success do this.
-                this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
-                this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;
-                return this.state.eater.chefFilterSettings;
-            });                      
+            return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:this.state.eater})
+                .then((res) => {
+                    if (res.statusCode != 200) {
+                        return this.responseHandler(res);
+                    }
+                    return AuthService.updateCacheEater(this.state.eater)
+                        .then(() => {
+                            this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
+                            this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;
+                            return this.state.eater.chefFilterSettings;
+                        });
+                });                      
         }
         this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
         this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;      
@@ -483,6 +498,9 @@ var Menu = React.createClass({
         }
         this.props.navigator.push({
             name: 'HistoryOrderPage',
+            passProps: {
+               eater: this.props.eater
+            }
         });
     },
 
