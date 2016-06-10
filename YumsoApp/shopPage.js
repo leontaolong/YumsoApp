@@ -406,7 +406,6 @@ class ShopPage extends Component {
         let _this = this;
         let eater = this.state.eater;
         if (eater) {
-            if (!eater.favoriteChefs) eater.favoriteChefs = []; //todo: remove this.
             let isAdd = eater.favoriteChefs.indexOf(_this.state.chefId) === -1
             _this.client.postWithAuth(isAdd ? config.addFavoriteEndpoint : config.removeFavoriteEndpoint, {
                 info: { chefId: _this.state.chefId, eaterId: eater.eaterId }
@@ -419,16 +418,20 @@ class ShopPage extends Component {
                             Alert.alert('Success', isAdd ? 'Added to favorite list' : 'Removed from favorite list', [{ text: 'OK' }]);
                         });
                 } else if (res.statusCode === 401) {
-                    _this.props.navigator.push({
-                        name: 'LoginPage',
-                        passProps: {
-                            callback: (eater) => {
-                                _this.setState({ like: eater.favoriteChefs.indexOf(_this.state.chefId) !== -1 });
-                            }
-                        }
-                    });
+                    return AuthService.logOut()
+                        .then(() => {
+                            delete _this.state.eater;
+                            _this.props.navigator.push({
+                                name: 'LoginPage',
+                                passProps: {
+                                    callback: (eater) => {
+                                        _this.setState({ like: eater.favoriteChefs.indexOf(_this.state.chefId) !== -1 });
+                                    }
+                                }
+                            });
+                        });
                 } else {
-                    Alert.alert('Failed', 'Failed. Please try again later', [{ text: 'OK' }]);
+                    Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
                 }
             });
         } else {

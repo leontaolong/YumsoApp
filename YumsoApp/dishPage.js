@@ -75,7 +75,7 @@ class DishPage extends Component {
                          </View>
                          <View style={styles.headerRightView}>
                              <View style={styles.likeShareButtonView}>
-                                <TouchableHighlight underlayColor={'transparent'} onPress={()=>{this.addToFavorite()}}>
+                                <TouchableHighlight underlayColor={'transparent'}>
                                    <Image source={likeIcon} style={styles.likeButtonIcon}/>
                                 </TouchableHighlight>
                                 <TouchableHighlight underlayColor={'transparent'}>
@@ -184,50 +184,6 @@ class DishPage extends Component {
             }
         } 
         this.getTotalPrice();
-    }
-    
-    addToFavorite(){
-        var _this = this;
-        return AuthService.getEater()
-        .then((eater)=>{
-            if(eater){
-                if (!eater.favoriteChefs) eater.favoriteChefs = []; //todo: remove this.
-                let isAdd = eater.favoriteChefs.indexOf(_this.state.chefId) === -1
-                console.log(isAdd);
-                _this.client.postWithAuth(isAdd?config.addFavoriteEndpoint:config.removeFavoriteEndpoint, {
-                    info:{ chefId: _this.state.chefId, eaterId: eater.eaterId}
-                }).then((res)=>{
-                    if(res.statusCode===200){
-                        isAdd?eater.favoriteChefs.push(_this.state.chefId):eater.favoriteChefs.splice(eater.favoriteChefs.indexOf(_this.state.chefId), 1);
-                        return AuthService.updateCacheEater(eater)
-                            .then(()=>{ 
-                                _this.setState({like:isAdd});
-                                Alert.alert('Success', isAdd?'Added to favorite list':'Removed from favorite list', [{ text: 'OK' }]);                          
-                            });
-                    }else if(res.statusCode===401){
-                        _this.props.navigator.push({
-                            name: 'LoginPage',
-                            passProps:{
-                                callback:(eater)=>{
-                                _this.setState({like:eater.favoriteChefs.indexOf(_this.state.chefId) !== -1});                  
-                                }  
-                            }                
-                        });
-                    }else{
-                        Alert.alert( 'Failed', 'Failed. Please try again later',[ { text: 'OK' }]);   
-                    }
-                });         
-            }else{
-                _this.props.navigator.push({
-                    name: 'LoginPage',
-                    passProps:{
-                        callback:(eater)=>{
-                           _this.setState({like:eater.favoriteChefs.indexOf(_this.state.chefId) !== -1});                  
-                        }
-                    }
-                });
-            }
-        });
     }
     
     navigateBackToShop() {
