@@ -56,7 +56,7 @@ class ShoppingCartPage extends Component {
             eater:eater,
             priceIsConfirmed:false,
             showPromotionCodeInput:false,
-            phoneNumber:eater.phoneNumber,
+            phoneNumber:eater? eater.phoneNumber:undefined,
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
@@ -398,11 +398,16 @@ class ShoppingCartPage extends Component {
         // }
         let eater = this.state.eater;
         if(!eater){
-            eater = await AuthService.getEater(); //todo: get eater and 401 jump after call.
+            eater = await AuthService.getEater();
         }
-        if(!eater){
+        if (!eater) {
             this.props.navigator.push({
-                name: 'LoginPage' //todo: call back to set eater.
+                name: 'LoginPage',
+                passProps: {
+                    callback: function (eater) {
+                        this.setState({ eater: eater });
+                    }.bind(this)
+                }
             });  
             return;
         }
@@ -428,7 +433,8 @@ class ShoppingCartPage extends Component {
         this.props.navigator.push({
             name: 'PaymentPage', 
             passProps:{
-                orderDetail: order
+                orderDetail: order,
+                eater: this.state.eater
             }
         });    
     }

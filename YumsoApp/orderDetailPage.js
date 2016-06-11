@@ -37,6 +37,7 @@ class ShoppingCartPage extends Component {
         }); 
         var routeStack = this.props.navigator.state.routeStack;
         let order = routeStack[routeStack.length-1].passProps.order;        
+        let eater = routeStack[routeStack.length-1].passProps.eater;        
         
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(order.orderList)),
@@ -54,6 +55,24 @@ class ShoppingCartPage extends Component {
             ratingIcon5:order.comment? (order.comment.starRating && order.comment.starRating>=5 ? ratingIconOrange :ratingIconGrey):ratingIconGrey,
         };
         this.client = new HttpsClient(config.baseUrl, true);
+        this.responseHandler = function (response, msg) {
+            if (response.statusCode === 401) {
+                return AuthService.logOut()
+                    .then(() => {
+                        delete this.state.eater;
+                        this.props.navigator.push({
+                            name: 'LoginPage',
+                            passProps: {
+                                callback: function (eater) {
+                                    this.setState({ eater: eater });
+                                }.bind(this)
+                            }
+                        });
+                    });
+            } else {
+                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+            }
+        };
     }
             
     renderRow(orderItem){
@@ -233,9 +252,10 @@ class ShoppingCartPage extends Component {
         };
         return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
         .then((res)=>{
-            if(res.statusCode===200){
-               Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
-            }  
+            if (res.statusCode != 200) {
+                return this.responseHandler(res);
+            }
+            Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
             self.setState({ratingSucceed:true, starRating:data.starRating, comment:data.commentText, eaterCommentTime:new Date().getTime()});     
         });
     }

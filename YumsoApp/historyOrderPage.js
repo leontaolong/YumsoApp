@@ -33,10 +33,31 @@ class HistoryOrderPage extends Component {
            rowHasChanged: (r1, r2) => r1!=r2 
         }); 
         var routeStack = this.props.navigator.state.routeStack;
+        let eater = routeStack[routeStack.length-1].passProps.eater;      
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:true,
-            showCommentBox:false
+            showCommentBox:false,
+            eater:eater
+        };
+        this.responseHandler = function (response, msg) {
+            if (response.statusCode === 401) {
+                return AuthService.logOut()
+                    .then(() => {
+                        delete this.state.eater;
+                        this.props.navigator.push({
+                            name: 'LoginPage',
+                            passProps: {
+                                callback: function (eater) {
+                                    this.setState({ eater: eater });
+                                    this.componentDidMount();
+                                }.bind(this)
+                            }
+                        });
+                    });
+            } else {
+                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+            }
         };
     }
 
@@ -51,11 +72,11 @@ class HistoryOrderPage extends Component {
         let eater = await AuthService.getPrincipalInfo();
         let pastOneWeekOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+start+'&'+end);
         let pastOneWeekComment = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+start+'&'+end);
-        if(pastOneWeekOrder.statusCode!=200){
-            throw new Error('Fail getting past orders');//todo: 401 jump
+        if (pastOneWeekOrder.statusCode != 200) {
+            return this.responseHandler(pastOneWeekOrder);
         }
-        if(pastOneWeekComment.statusCode!=200){
-            throw new Error('Fail getting past comments');
+        if (pastOneWeekComment.statusCode != 200) {
+            return this.responseHandler(pastOneWeekOrder);
         }
         let orders = pastOneWeekOrder.data.orders;
         let comments = pastOneWeekComment.data.comments;
@@ -153,9 +174,10 @@ class HistoryOrderPage extends Component {
         };
         return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
         .then((res)=>{
-            if(res.statusCode===200){
-               Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
+            if (res.statusCode != 200) {
+                return this.responseHandler(res);
             }
+            Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
             this.state.orderTheCommentIsFor.comment={
                         eaterComment:comment,
                         starRating: data.starRating,

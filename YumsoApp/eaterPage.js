@@ -1,4 +1,5 @@
 'use strict'
+var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
@@ -46,6 +47,25 @@ class EaterPage extends Component {
             editHomeAddress:false,
             editWorkAddress:false
         };
+        this.responseHandler = function (response, msg) {
+            if (response.statusCode === 401) {
+                return AuthService.logOut()
+                    .then(() => {
+                        delete this.state.eater;
+                        this.props.navigator.push({
+                            name: 'LoginPage',
+                            passProps: {
+                                callback: function (eater) {
+                                    this.setState({ eater: eater });
+                                }.bind(this)
+                            }
+                        });
+                    });
+            } else {
+                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+            }
+        };
+        this.client = new HttpsClient(config.baseUrl, true);
     }
     
      render() {
@@ -396,16 +416,18 @@ class EaterPage extends Component {
         eater.workAddress = this.state.workAddress;
         eater.addressList = this.state.addressList;
         this.setState({showProgress:true});
-        return AuthService.saveEater(eater)
-        .then((err)=>{
-            if(!err){
-                Alert.alert('Success', 'Successfully updated your profile', [{ text: 'OK' }]); 
-                this.setState({ eater: eater, edit: false, showProgress: false });
-                this.state.callback(eater);           
-            }else {
-                this.setState({showProgress:false});   
-                Alert.alert('Fail', 'Failed update your profile. Please retry again later', [{ text: 'OK' }]);                     
-            }
+        return this.client.postWithAuth(config.eaterUpdateEndpoint, { eater: eater })
+            .then((res) => {
+                this.setState({ showProgress: false });
+                if (res.statusCode != 200) {
+                    return this.responseHandler(res);
+                }
+                return AuthService.updateCacheEater(eater)
+                .then(() => {
+                    Alert.alert('Success', 'Successfully updated your profile', [{ text: 'OK' }]);
+                    this.setState({ eater: eater, edit: false, showProgress: false });
+                    this.state.callback(eater);
+                });
         });
     }
     
@@ -460,11 +482,10 @@ class EaterPage extends Component {
     }
     
     selectPayment() {
-        let principal = this.state.principal;
         this.props.navigator.push({
             name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
             passProps:{
-                eaterId: principal.userId
+                eater:this.state.eater
                 // onPaymentSelected: function(payment){
                 //     this.setState({paymentOption:payment});
                 //}.bind(this)

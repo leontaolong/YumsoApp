@@ -70,7 +70,7 @@ class ShopPage extends Component {
     
      async componentDidMount() {
          this.client = new HttpsClient(config.baseUrl, true);
-         await this.fetchDishesAndSchedules(this.state.chefId);
+         await this.fetchDishesAndSchedules();
          if (this.state.eater) {
              if (!this.state.eater.favoriteChefs) this.state.eater.favoriteChefs = []; //todo: remove this.
              this.setState({ like: this.state.eater.favoriteChefs.indexOf(this.state.chefId) !== -1 });
@@ -78,7 +78,8 @@ class ShopPage extends Component {
          this.setState({ showProgress: false });
      }
 
-    async fetchDishesAndSchedules(chefId) {
+    async fetchDishesAndSchedules() {
+        let chefId = this.state.chefId;
         const start = 'start='+new Date().getTime();
         const end = 'end='+new Date().setDate(new Date().getDate()+6);
         let getDishesTask = this.client.getWithoutAuth(config.chefDishesEndpoint+chefId);
@@ -313,7 +314,8 @@ class ShopPage extends Component {
                         <ListView style={styles.dishListView}
                                 dataSource = {this.state.dataSource}
                                 renderRow={this.renderRow.bind(this) } 
-                                renderHeader={this.renderHeader.bind(this)}/>           
+                                renderHeader={this.renderHeader.bind(this)}
+                                loadData={this.fetchDishesAndSchedules.bind(this)}/>           
 
                         <View style={styleShopPage.footerView}>          
                           <View style={styleShopPage.shoppingCartTimeView}>
@@ -404,7 +406,6 @@ class ShopPage extends Component {
         let _this = this;
         let eater = this.state.eater;
         if (eater) {
-            if (!eater.favoriteChefs) eater.favoriteChefs = []; //todo: remove this.
             let isAdd = eater.favoriteChefs.indexOf(_this.state.chefId) === -1
             _this.client.postWithAuth(isAdd ? config.addFavoriteEndpoint : config.removeFavoriteEndpoint, {
                 info: { chefId: _this.state.chefId, eaterId: eater.eaterId }
@@ -417,16 +418,20 @@ class ShopPage extends Component {
                             Alert.alert('Success', isAdd ? 'Added to favorite list' : 'Removed from favorite list', [{ text: 'OK' }]);
                         });
                 } else if (res.statusCode === 401) {
-                    _this.props.navigator.push({
-                        name: 'LoginPage',
-                        passProps: {
-                            callback: (eater) => {
-                                _this.setState({ like: eater.favoriteChefs.indexOf(_this.state.chefId) !== -1 });
-                            }
-                        }
-                    });
+                    return AuthService.logOut()
+                        .then(() => {
+                            delete _this.state.eater;
+                            _this.props.navigator.push({
+                                name: 'LoginPage',
+                                passProps: {
+                                    callback: (eater) => {
+                                        _this.setState({ like: eater.favoriteChefs.indexOf(_this.state.chefId) !== -1 });
+                                    }
+                                }
+                            });
+                        });
                 } else {
-                    Alert.alert('Failed', 'Failed. Please try again later', [{ text: 'OK' }]);
+                    Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
                 }
             });
         } else {

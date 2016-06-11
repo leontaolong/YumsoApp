@@ -27,11 +27,12 @@ class PaymentPage extends Component {
         super(props);
         let routeStack = props.navigator.state.routeStack;
         let orderDetail = routeStack[routeStack.length-1].passProps.orderDetail;
+        let eater = routeStack[routeStack.length-1].passProps.eater;
         this.state = {
             showProgress:false,
-            orderDetail:orderDetail
+            orderDetail:orderDetail,
+            eater:eater
         };
-        console.log(orderDetail);
         this.client = new HttpsClient(config.baseUrl, true);
     }
     
@@ -111,10 +112,18 @@ class PaymentPage extends Component {
          return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail, paymentOption: this.state.paymentOption})
          .then((response)=>{
             if(response.statusCode==401){
-                this.props.navigator.push({
-                    name: 'LoginPage',//todo: fb cached will signin and redirect back right away.
-                }); 
-                return; //todo: require pass in callback to verify eater is same as loged in user.
+                return AuthService.logOut()
+                    .then(() => {
+                        delete this.state.eater;
+                        this.props.navigator.push({
+                            name: 'LoginPage',//todo: fb cached will signin and redirect back right away.
+                            passProps: {
+                                callback: function (eater) {
+                                    this.setState({ eater: eater });
+                                }.bind(this)
+                            }
+                        });
+                    });
             }else if(response.statusCode==200){
                 Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]);  
                 this.props.navigator.push({
@@ -122,7 +131,7 @@ class PaymentPage extends Component {
                     //todo: perhaps pass orderId
                 });                     
             }else{
-                Alert.alert('Fail','Failed creating order',[{ text: 'OK' }]);            
+                Alert.alert('Network or Server Error','Failed creating order',[{ text: 'OK' }]);            
             }
          });   
     }
@@ -132,17 +141,10 @@ class PaymentPage extends Component {
     }
 
     async selectPayment() {
-        let principal = await AuthService.getPrincipalInfo();//todo: not use authservice.
-        if (principal === undefined) {
-            this.props.navigator.push({
-                name: 'LoginPage',//todo: fb cached will signin and redirect back right away.
-            });
-            return; //todo: require pass in callback to verify eater is same as loged in user.
-        }
         this.props.navigator.push({
             name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
             passProps:{
-                eaterId: principal.userId,
+                eater: this.state.eater,
                 isFromCheckOutPage:true,
                 onPaymentSelected: function(payment){
                     this.setState({paymentOption:payment});
