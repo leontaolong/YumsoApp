@@ -96,7 +96,7 @@ class ShoppingCartPage extends Component {
                     </View> 
                      
                     <View style={styleShoppingCartPage.dishIngredientView}>
-                       <Text style={styleShoppingCartPage.dishIngredientText}>{dish.ingredients}</Text>
+                       <Text style={styleShoppingCartPage.dishIngredientText}>{this.getTextLengthLimited(dish.ingredients,43)}</Text>
                     </View>
                     
                     <View style={styleShoppingCartPage.quantityTotalPriceView}>
@@ -121,7 +121,6 @@ class ShoppingCartPage extends Component {
     }
     
     renderFooter(){
-       console.log(this.state.eater);
        if(!this.state.priceIsConfirmed){
        return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
                   <View style={styleShoppingCartPage.priceTitleView}>
@@ -432,6 +431,16 @@ class ShoppingCartPage extends Component {
                 orderDetail: order
             }
         });    
+    }
+    
+    getTextLengthLimited(text,lengthLimit){
+        if(text.length<=lengthLimit){
+           return text;
+        }else{
+           var shortenedText = text.substr(0,lengthLimit-1);
+           var betterShortenedText = shortenedText.substr(0,Math.max(shortenedText.lastIndexOf(' '),shortenedText.lastIndexOf(','),shortenedText.lastIndexOf(';'),shortenedText.lastIndexOf('|')));
+           return betterShortenedText ? betterShortenedText + '...' : shortenedText+'...';
+        }
     }
     
     navigateBackToDishList(){
