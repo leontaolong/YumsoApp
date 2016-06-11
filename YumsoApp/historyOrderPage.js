@@ -102,7 +102,7 @@ class HistoryOrderPage extends Component {
         if(order.orderStatus == 'Delivered'){
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
         }else{
-          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Pending....</Text>
+          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Will be out for delivery at {dateRender.renderDate2(order.orderDeliverTime)}</Text>
         }
         
         return (<View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>

@@ -74,14 +74,6 @@ class DishPage extends Component {
                              <Text style={styles.titleText}></Text>
                          </View>
                          <View style={styles.headerRightView}>
-                             <View style={styles.likeShareButtonView}>
-                                <TouchableHighlight underlayColor={'transparent'}>
-                                   <Image source={likeIcon} style={styles.likeButtonIcon}/>
-                                </TouchableHighlight>
-                                <TouchableHighlight underlayColor={'transparent'}>
-                                   <Image source={shareIcon} style={styles.shareButtonIcon}/>
-                               </TouchableHighlight>
-                            </View>
                          </View>
                </View>
                <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={true}
