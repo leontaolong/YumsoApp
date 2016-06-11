@@ -79,7 +79,17 @@ class ShoppingCartPage extends Component {
     renderFooter(){
       if(this.state.order.orderStatus=='Delivered'){
         if(this.state.order.comment && this.state.order.comment.starRating){
-           var commentBoxView = <View style={styleOrderDetailPage.commentBox}>
+           if(this.state.order.comment.chefComment && this.state.order.comment.chefComment.trim()){
+             var  chefReplyView = <View key={'chefReplyView'} style={styleOrderDetailPage.chefReplyBox}>
+                                    <View style={styleOrderDetailPage.chefPhotoView}>
+                                      <Image source={{uri:this.state.order.chefProfilePic}} style={styleOrderDetailPage.chefPhoto}/>
+                                    </View>
+                                    <View style={styleOrderDetailPage.chefReplyContentView}>
+                                      <Text style={styleOrderDetailPage.chefReplyText}>{this.state.order.comment.chefComment}</Text>
+                                    </View>
+                                  </View>
+           }
+           var commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
                                   <View style={styleOrderDetailPage.ratingView}>
                                       <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
                                       <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
@@ -88,7 +98,8 @@ class ShoppingCartPage extends Component {
                                       <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
                                   </View>
                                   <Text style={styleOrderDetailPage.commentText}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
-                               </View>
+                                 </View>),
+                                 chefReplyView];
         }else if(this.state.ratingSucceed){
           var commentBoxView = <View style={styleOrderDetailPage.commentBox}>
                                   <View style={styleOrderDetailPage.ratingView}>
@@ -383,7 +394,7 @@ var styleOrderDetailPage = StyleSheet.create({
     commentText:{
         padding:15,
         fontSize:14,
-        color:'#A7A7A7',
+        color:'#4A4A4A',
     },
     ratingIconWrapper:{
         alignSelf:'center',
@@ -392,6 +403,33 @@ var styleOrderDetailPage = StyleSheet.create({
         width:30,
         height:30,        
     },
+    chefReplyBox:{
+        flexDirection:'row',
+        alignSelf:'center',
+        width:windowWidth*0.93,
+        marginTop:10,
+    },
+    chefPhotoView:{
+        flex:1/6,
+        flexDirection:'column',
+        alignItems:'flex-start',
+        justifyContent:'flex-start',
+    },
+    chefPhoto:{
+        width:windowWidth*0.93/7,
+        height:windowWidth*0.93/7,
+        borderWidth:0,
+        borderRadius:8,
+    },
+    chefReplyContentView:{
+         flex:5/6,
+         backgroundColor:"#4A4A4A",
+    },
+    chefReplyText:{
+        padding:15,
+        fontSize:14,
+        color:'#F5F5F5',
+    }
 });
 
 module.exports = ShoppingCartPage;

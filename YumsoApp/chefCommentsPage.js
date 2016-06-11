@@ -87,7 +87,7 @@ class ChefCommentsPage extends Component {
                    </View>
                    
                    <View style={styleChefCommentsPage.eaterCommentView}>
-                        <Text style={styleChefCommentsPage.commentText}>{comment.eaterComment?'No Comment':comment.eaterComment}</Text>
+                        <Text style={styleChefCommentsPage.commentText}>{comment.eaterComment && comment.eaterComment.trim()? comment.eaterComment.trim():'No Comment'}</Text>
                         <View style={styleChefCommentsPage.commentTimeView}>
                             <Text style={styleChefCommentsPage.commentTimeText}>{comment.eaterCommentTime==undefined? '':dateRender.renderDate1(comment.eaterCommentTime)}</Text>
                         </View>
