@@ -194,33 +194,33 @@ class ShopPage extends Component {
                             </View>                       
                           </View>
                         </View>),
-                       (<View key={'chefLivingAreaView'} style={styleShopPage.chefDetailView}>
+                       (<TouchableHighlight key={'chefLivingAreaView'} underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
+                         <View style={styleShopPage.chefDetailView}>
                             <Image source={mapIcon} style={styleShopPage.pickupAddressIcon}/>
                             <View style={styleShopPage.chefDetailTextView}>
                                 <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
                             </View>
-                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
-                               <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                            </TouchableHighlight>
-                        </View>), 
-                        (<View key={'chefPageClickableView'} style={styleShopPage.chefDetailView}>
-                            <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
-                            <View style={styleShopPage.chefDetailTextView}>
-                                <Text style={styleShopPage.pickupAddressText}>Chef page</Text>
-                            </View>
-                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
+                            <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+                          </View>
+                        </TouchableHighlight>), 
+                       (<TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
+                            <View key={'chefPageClickableView'} style={styleShopPage.chefDetailView}>
+                                <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
+                                <View style={styleShopPage.chefDetailTextView}>
+                                   <Text style={styleShopPage.pickupAddressText}>Chef page</Text>
+                                </View>
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                            </TouchableHighlight>
-                         </View>), 
-                        (<View key={'chefReviewsClickable'} style={styleShopPage.chefDetailView}>
-                            <Image source={reviewIcon} style={styleShopPage.pickupAddressIcon}/>
-                            <View style={styleShopPage.chefDetailTextView}>
-                                <Text style={styleShopPage.pickupAddressText}>{this.state.chef.reviewCount} reviews</Text>
                             </View>
-                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
+                        </TouchableHighlight>), 
+                       (<TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
+                            <View key={'chefReviewsClickable'} style={styleShopPage.chefDetailView}>
+                                <Image source={reviewIcon} style={styleShopPage.pickupAddressIcon}/>
+                                <View style={styleShopPage.chefDetailTextView}>
+                                    <Text style={styleShopPage.pickupAddressText}>{this.state.chef.reviewCount} reviews</Text>
+                                </View>
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                            </TouchableHighlight>
-                        </View>),      
+                            </View>
+                        </TouchableHighlight>),      
                         scheduleSelectionView                                
                        ];
     }
@@ -536,7 +536,7 @@ var styleShopPage = StyleSheet.create({
         height:windowHeight*0.14,
         paddingTop:windowHeight*0.0225,
         paddingBottom:windowHeight*0.02698,
-        paddingHorizontal:windowWidth*0.032,
+        paddingLeft:windowWidth*0.032,
     },
     chefPhotoView:{
         marginRight:windowWidth*0.04, 
@@ -558,7 +558,7 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
     },
     shopNameView:{
-       flex:0.93,
+       flex:0.85,
        flexDirection:'row',
        alignItems:'flex-start', 
     }, 
@@ -568,13 +568,16 @@ var styleShopPage = StyleSheet.create({
        color:'#4A4A4A',
     },
     likeIconView:{
-       flex:0.07,
+       height:windowWidth*0.06,
+       flex:0.15,
        flexDirection:'row',
        alignItems:'flex-end', 
+       justifyContent:'center'
     }, 
     likeIcon:{
         width:windowWidth*0.05,
         height:windowWidth*0.05,
+        alignSelf:'center',
     },
     shopInfoRow2:{
         flexDirection:'row',
@@ -638,8 +641,8 @@ var styleShopPage = StyleSheet.create({
     timeSelectorView:{
         flexDirection:'row',
         justifyContent:'center', 
-        borderColor:'#D7D7D7',
-        borderTopWidth:windowHeight*0.007,
+        borderColor:'#F5F5F5',
+        borderTopWidth:windowHeight*0.01,
         height:windowHeight*0.10,
     },
     openHourTitle:{

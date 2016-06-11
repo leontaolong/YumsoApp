@@ -244,7 +244,7 @@ class ChefListPage extends Component {
                         style={styles.loader}/>
                 </View>);  
         }else if(this.state.showLocSearch){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city}/>);   
         }else if(this.state.showChefSearch){
             return <View style={styleFilterPage.container}>
                        <View style={styles.headerBannerView}>    

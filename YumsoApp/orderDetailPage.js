@@ -7,7 +7,7 @@ var AuthService = require('./authService');
 var backIcon = require('./icons/icon-back.png');
 var ratingIconGrey = require('./icons/icon-rating-grey.png');
 var ratingIconOrange = require('./icons/icon-rating-orange.png');
-var deleteBannerIcon = require('./icons/icon-x.png')
+var deleteBannerIcon = require('./icons/icon-x.png');
 import Dimensions from 'Dimensions';
 import {KeyboardAwareListView} from 'react-native-keyboard-aware-scroll-view';
 
@@ -77,6 +77,7 @@ class ShoppingCartPage extends Component {
     }
     
     renderFooter(){
+      if(this.state.order.orderStatus=='Delivered'){
         if(this.state.order.comment && this.state.order.comment.starRating){
            var commentBoxView = <View style={styleOrderDetailPage.commentBox}>
                                   <View style={styleOrderDetailPage.ratingView}>
@@ -125,7 +126,8 @@ class ShoppingCartPage extends Component {
                                </View>
         }
                 
-        return commentBoxView;                                                 
+        return commentBoxView;
+      }                                               
     }
     
     render() {
