@@ -1,8 +1,6 @@
 module.exports={
     autoLogin:false,
-    baseUrl: 'http://192.168.1.134:8080',
-    email:'xihe@yumso.com',
-    password:'123',
+    baseUrl: 'http://192.168.1.113:8080',
     googleApiName:'yumsoIOS	',
     googleApiKey:'AIzaSyBQdKxM-ZRQ2r95bkQLPlY10joKJeC6slw',
     googleGeoBaseUrl: 'https://maps.googleapis.com',

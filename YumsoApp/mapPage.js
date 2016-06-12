@@ -65,6 +65,7 @@ class MapPage extends Component {
             eater:eater,
             city:city,
             showApartmentNumber:false,
+            usedSavedAddress:false,
             aptNumberViewYposition:windowHeight-windowHeight*0.074*2,
         };
         this.client = new HttpsClient(config.baseUrl, true);
@@ -233,7 +234,7 @@ class MapPage extends Component {
     renderSearchResult(addressList){
         var addressesView = []
         for(let address of addressList){
-            addressesView.push(<View style={styleMapPage.possibleAddressView}><Text style={styleMapPage.possibleAddressText} key={address.formatted_address} onPress={()=>this.useAddress(address)}>  {address.formatted_address}</Text></View>);
+            addressesView.push(<View style={styleMapPage.possibleAddressView}><Text style={styleMapPage.possibleAddressText} key={address.formatted_address} onPress={()=>{this.usedSavedAddress=false; this.useAddress(address)}}>  {address.formatted_address}</Text></View>);
         }
         return addressesView;
     }
@@ -250,11 +251,11 @@ class MapPage extends Component {
                 this.state.position = position;
                 return self.googleClient.getWithoutAuth(config.reverseGeoCoding + position.coords.latitude + ',' + position.coords.longitude)
                     .then((res) => {
-                        var streetNumber = 'unknown';
-                        var streetName = 'unknown';
-                        var city = 'unknown';
-                        var state = 'unknown';
-                        var postal = 'unknown';
+                        let streetNumber = 'unknown';
+                        let streetName = 'unknown';
+                        let city = 'unknown';
+                        let state = 'unknown';
+                        let postal = 'unknown';
                         if (res.statusCode === 200 && res.data.status === 'OK' && res.data.results.length > 0) {
                             var results = res.data.results;
                             var address = results[0].formatted_address;
@@ -277,6 +278,10 @@ class MapPage extends Component {
                                     }
                                 } 
                             }
+                            if((streetName==='unknown' || streetNumber==='unknown' || city=='unknown' || state=='unknown' || postal=='unknown') && this.isSpecific){
+                                Alert.alert( 'Warning', 'Cannot find enough information about this location',[ { text: 'OK' }]); 
+                                return;         
+                            }                         
                             self.setState({GPSproxAddress: {
                                                             formatted_address: address, 
                                                             lat: position.coords.latitude, 
@@ -304,7 +309,11 @@ class MapPage extends Component {
         }
         return this.googleClient.getWithoutAuth(config.reverseGeoCoding + address.lat + ',' + address.lng)
             .then((res) => {
-                let city; let state; let postal; let streetNumber; let streetName;
+                let streetNumber = 'unknown';
+                let streetName = 'unknown';
+                let city = 'unknown';
+                let state = 'unknown';
+                let postal = 'unknown';
                 if (res.statusCode === 200 && res.data.status === 'OK' && res.data.results.length > 0) {
                     let results = res.data.results;
                     let formatAddress = results[0].formatted_address;
@@ -327,12 +336,17 @@ class MapPage extends Component {
                             }
                         }
                     }
+                    if((streetName==='unknown' || streetNumber==='unknown' || city=='unknown' || state=='unknown' || postal=='unknown') && this.isSpecific){
+                        Alert.alert( 'Warning', 'Cannot find enough information about this location',[ { text: 'OK' }]); 
+                        return;         
+                    }
                     address.formatted_address = formatAddress;
                     address.city = city;
                     address.state = state;
                     address.postal = postal;
                     address.streetNumber = streetNumber;
                     address.streetName = streetName;
+                    this.usedSavedAddress = false;
                     this.useAddress(address);
                }
             }).then(()=>{
@@ -380,7 +394,7 @@ class MapPage extends Component {
                            );
                 return;
             }
-            if (this.state.apartmentNumber === undefined) {
+            if (this.state.apartmentNumber === undefined && !this.usedSavedAddress) {
                 this.setState({showApartmentNumber: true});
                 return;
             }              
@@ -428,17 +442,18 @@ class MapPage extends Component {
             title: addressName,
            // description: 'testDescription'
         }]; 
-        this.setState({markers: markers, region: region, selectedAddress: address, showMapView: true,searchAddressResultView:''}); 
+        this.setState({markers: markers, region: region, selectedAddress: address, showMapView: true,searchAddressResultView:'', addressFound: true}); 
         this.refs.m1.showCallout();
     }
     
     useSavedAddress(address){
-        this.isSpecific = false;
+        this.usedSavedAddress = true;
         this.setState({showApartmentNumber:false});
         this.useAddress(address);
     }
     
     locateToCurrentAddress(){
+        this.usedSavedAddress = false;
         if(this.state.GPSproxAddress){
            this.useAddress(this.state.GPSproxAddress);
         }else{//is this correct? need to asynchronize?
@@ -482,7 +497,7 @@ class MapPage extends Component {
                                 }                
                             }
                         }
-                        if(streetNumber==undefined && this.isSpecific){
+                        if((streetNumber==undefined || streetName==undefined || city==undefined || state==undefined || postal==undefined) && this.isSpecific){
                             showWarningForSpecific = true;
                             continue; //todo: we don't need the result that does not have street number.
                         }
@@ -500,6 +515,8 @@ class MapPage extends Component {
                     }
                     if(addresses.length==0 && showWarningForSpecific){
                         Alert.alert( 'Warning', 'Please be more specific',[ { text: 'OK' }]);
+                    }else if(addresses.length==0){
+                        Alert.alert( 'Warning', 'No possible address found',[ { text: 'OK' }]);            
                     }
                     let view = this.renderSearchResult(addresses);
                     //If only one possible address returned, locate it on the map
