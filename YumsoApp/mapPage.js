@@ -24,6 +24,7 @@ import React, {
   TextInput,
   ListView,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert,
@@ -39,15 +40,18 @@ class MapPage extends Component {
         super(props);
         let routeStack;
         let eater;
+        let city;
         if(this.props.navigator){
            routeStack = this.props.navigator.state.routeStack;
         }   
         if(routeStack && routeStack.length!=0){
             this.onSelectAddress = routeStack[routeStack.length-1].passProps.onSelectAddress;
             eater = routeStack[routeStack.length-1].passProps.eater;
+            city = routeStack[routeStack.length-1].passProps.city;
         }
         if(this.props.eater && this.props.eater!=null){
             eater = this.props.eater;
+            city = this.props.city;
         }
         if (this.props.specificAddressMode) {
             this.isSpecific = true;
@@ -59,16 +63,16 @@ class MapPage extends Component {
             showAddNewAddressInputView:false,
             markers:[],
             eater:eater,
+            city:city,
             showApartmentNumber:false,
             aptNumberViewYposition:windowHeight-windowHeight*0.074*2,
         };
         this.client = new HttpsClient(config.baseUrl, true);
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
-        this.getLocation();
     }
    
     render() {  
-            let aptView = <View></View> 
+            let aptView = <View></View>;
             if(this.state.showApartmentNumber){
                aptView = (<View key={'aptView'} style={{backgroundColor:'#fff', position:'absolute', flexDirection:'row', justifyContent:'center', 
                                 top: this.state.aptNumberViewYposition, left:0, right:0, height:windowHeight*0.074,}}>
@@ -151,10 +155,10 @@ class MapPage extends Component {
                                 />
                         ))}
                     </MapView>   
-                    
-                    <TouchableHighlight style={styleMapPage.confirmAddressButtonView} underlayColor={'transparent'} onPress={() => this.doneSelectAddress() }>
+                  
+                    <TouchableOpacity activeOpacity={0.7} style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress()}>
                         <Text style={styleMapPage.confirmAddressButtonText}>{this.isSpecific && !this.state.showApartmentNumber ? 'Next': 'Use this Address'}</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                     {searchAddressResultViewWrapper}
                     {addressSelectionView}
                     {aptView}   

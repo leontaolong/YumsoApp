@@ -96,7 +96,12 @@ class ChefListPage extends Component {
     }
 
     async componentDidMount() {
-        await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
+        if(!this.state.pickedAddress){
+           await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
+        }
+        // if(config.autoLogin){//this is for debugging so to auto login
+        //    await AuthService.loginWithEmail(config.email, config.password);
+        // }
         let eater = await AuthService.getEater();
         let principal = await  AuthService.getPrincipalInfo();
         //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
@@ -252,7 +257,7 @@ class ChefListPage extends Component {
                         style={styles.loader}/>
                 </View>);  
         }else if(this.state.showLocSearch){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater}/>);   
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city}/>);   
         }else if(this.state.showChefSearch){
             return <View style={styleFilterPage.container}>
                        <View style={styles.headerBannerView}>    
