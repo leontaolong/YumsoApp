@@ -343,7 +343,8 @@ class ChefListPage extends Component {
                     <RefreshableListView style={styles.dishListView}
                         dataSource = {this.state.dataSource}
                         renderRow={this.renderRow.bind(this) }
-                        loadData={this.searchChef.bind(this)}/>
+                        loadData={this.searchChef.bind(this)}
+                        refreshDescription = "Loading.."/>
                 </View>
             </SideMenu>
         );

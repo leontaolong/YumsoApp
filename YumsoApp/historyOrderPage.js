@@ -7,6 +7,7 @@ var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
 var backIcon = require('./icons/icon-back.png');
 import Dimensions from 'Dimensions';
+var RefreshableListView = require('react-native-refreshable-listview')
 
 import React, {
   Component,
@@ -149,9 +150,10 @@ class HistoryOrderPage extends Component {
                    <View style={styles.headerRightView}>
                    </View>
                </View>
-               <ListView
+               <RefreshableListView
                     dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this) }/>                    
+                    renderRow={this.renderRow.bind(this) }
+                    loadData={this.fetchOrderAndComments.bind(this)}/>                    
             </View>
         );
     }
