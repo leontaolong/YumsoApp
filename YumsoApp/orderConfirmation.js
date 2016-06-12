@@ -24,7 +24,7 @@ class OrderConfirmation extends Component {
     constructor(props){
         super(props);
         let routeStack = props.navigator.state.routeStack;
-        //let orderId = routeStack[routeStack.length-1].passProps.orderId;
+        this.eater = routeStack[routeStack.length-1].passProps.eater;        
     }
     
     render() {  
@@ -35,16 +35,29 @@ class OrderConfirmation extends Component {
                 <TouchableHighlight style={styleConfirmationPage.orderMoreMutton} underlayColor={'transparent'} onPress={()=>this.navigateBackToChefList()}>
                     <Text style={styleConfirmationPage.orderMoreMuttonText}>Order More</Text>
                 </TouchableHighlight>
-              </View>      
+              </View>  
+              <View style={styleConfirmationPage.buttonView}>
+                <TouchableHighlight style={styleConfirmationPage.orderMoreMutton} underlayColor={'transparent'} onPress={()=>this.navigateToOrderList()}>
+                    <Text style={styleConfirmationPage.orderMoreMuttonText}>Go to My Orders</Text>
+                </TouchableHighlight>
+              </View>                 
             </View>
         );
     }
    
     
     navigateBackToChefList(){
-        this.props.navigator.state.routeStack = [];
         this.props.navigator.push({
             name: 'ChefListPage',
+        });
+    }
+    
+    navigateToOrderList() {
+        this.props.navigator.push({
+            name: 'HistoryOrderPage',
+            passProps:{
+                eater:this.eater
+            }
         });
     }
 }
