@@ -350,6 +350,12 @@ class ShoppingCartPage extends Component {
         if(!this.state.deliveryAddress){
             Alert.alert('Warning','You do not have a delivery address',[{ text: 'OK' }]);
             return;         
+        }else{
+            let address = this.state.deliveryAddress; //todo: do this or should just make a disapear? which better UX?
+            if (address.streetName === 'unknown' || address.streetNumber === 'unknown' || address.city == 'unknown' || address.state == 'unknown' || address.postal == 'unknown') {
+                Alert.alert('Warning', 'Pleas set a specific location for delivery. The current address is only approximate', [{ text: 'OK' }]);
+                return;
+            }            
         }
         if(!this.state.shoppingCart  || !this.state.shoppingCart[this.state.selectedTime] || Object.keys(this.state.shoppingCart[this.state.selectedTime]).length===0){
             Alert.alert('Warning','You do not have any items',[{ text: 'OK' }]);         
@@ -371,7 +377,7 @@ class ShoppingCartPage extends Component {
         return this.client.postWithoutAuth(config.priceQuoteEndpoint, {orderDetail:orderQuote})
         .then((response)=>{
             if(response.statusCode==200){
-                if(reponse.data.result===true){
+                if(response.data.result===true){
                     console.log(response.data.detail.orderQuote)
                     this.setState({quotedOrder:response.data.detail.orderQuote, priceIsConfirmed:true});
                 }else{
