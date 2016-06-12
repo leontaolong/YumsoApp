@@ -271,7 +271,7 @@ var styleChefCommentsPage = StyleSheet.create({
         overflow: 'hidden', 
     },
     addCommentTextClickable:{
-        color:'#ff9933',
+        color:'#FFCC33',
         fontSize:13,
     }
 }); 

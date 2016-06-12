@@ -29,7 +29,7 @@ class LoginPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            showProgress: false
+            showProgress: false,
         };
         var routeStack = this.props.navigator.state.routeStack;
         if(routeStack && routeStack.length>0){
@@ -42,22 +42,23 @@ class LoginPage extends Component {
     }
     
     render() {
-        var _this = this;
-        return (
+      var _this = this;
+      return (
             <View style={styles.container}>
-              <View style={styleLoginPage.headerBannerView}>    
-                 <View style={styles.headerLeftView}>
-                    <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
-                      <Image source={backIcon} style={styleLoginPage.backButtonIcon}/>
-                    </TouchableHighlight>
-                 </View>    
-                 <View style={styles.titleView}>
-                    <Text style={styles.titleText}>Sign In</Text>
-                 </View>
-                 <View style={styles.headerRightView}>
-                 </View>
-             </View>
-             <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+              <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                <View style={styles.headerBannerView}>    
+                    <View style={styles.headerLeftView}>
+                        <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
+                        <Image source={backIcon} style={styles.backButtonIcon}/>
+                        </TouchableHighlight>
+                    </View>    
+                    <View style={styles.titleView}>
+                        <Text style={styles.titleText}>Sign In</Text>
+                    </View>
+                    <View style={styles.headerRightView}>
+                    </View>
+                </View>
+             
                 <View style={{height:windowHeight*0.184,width:windowWidth,}}>
                 </View>
                 <View style={styles.loginInputView}>
@@ -70,7 +71,7 @@ class LoginPage extends Component {
                 </View>
                 
                 <View style={styleLoginPage.forgotPasswordView}>
-                      <Text style={styleLoginPage.forgotPasswordText}>Forgot password?</Text>
+                      <Text style={styleLoginPage.forgotPasswordText} onPress={()=>this.onPressForgotPassword().bind(this)}>Forgot password?</Text>
                 </View>
                
                 <TouchableHighlight underlayColor={'#C0C0C0'} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
@@ -139,7 +140,18 @@ class LoginPage extends Component {
             this.state.callback(eater);
         }
     }
-    
+    async onPressForgotPassword(){ 
+        if(!this.state.email){
+            Alert.alert( 'Warning', 'Please enter your email',[ { text: 'OK' }]);
+            return;
+        }           
+        this.setState({showProgress:true});
+        let result = await AuthService.registerWithEmail(this.state.firstname, this.state.lastname,this.state.email, this.state.password, this.state.password_re);
+        if(result==false){
+            return;
+        }
+        this.setState({ showProgress: false });
+    }
     async onGettingFbToken(credentials){
         let token  = credentials.token;
         this.setState({showProgress:true});
@@ -172,21 +184,6 @@ class LoginPage extends Component {
 }
 
 var styleLoginPage = StyleSheet.create({
-    headerBannerView:{
-      flexDirection:'row',
-      borderBottomWidth:1,
-      borderColor:'#D7D7D7',
-      height:windowHeight/16.4,
-    },
-    backButtonView:{
-      flex:0.1/3,
-      width:windowWidth/3,
-      paddingTop:6,
-    },
-    backButtonIcon:{
-      width:30,
-      height:30,
-    },
     signInButtonView:{
       height:windowHeight*0.08,
       width:windowWidth*0.634,
@@ -225,7 +222,7 @@ var styleLoginPage = StyleSheet.create({
       marginTop:6,
     },
     forgotPasswordText:{
-      fontSize:16,
+      fontSize:14,
       color:'#FFF',
       backgroundColor:'transparent',
     },

@@ -10,6 +10,7 @@ var defaultAvatar = require('./TestImages/Obama.jpg');
 var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/icon-grey-house.png');
 var paypalIcon = require('./icons/icon-paypal.png');
+var ResetPasswordPage = require('./resetPasswordPage');
 
 import Dimensions from 'Dimensions';
 
@@ -45,7 +46,8 @@ class EaterPage extends Component {
             callback:callback,
             addMoreAddress:false,
             editHomeAddress:false,
-            editWorkAddress:false
+            editWorkAddress:false,
+            showResetPassword:false,
         };
         this.responseHandler = function (response, msg) {
             if (response.statusCode === 401) {
@@ -82,6 +84,9 @@ class EaterPage extends Component {
          }
          if (this.state.editWorkAddress) {
              return (<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this) } onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
+         }
+         if (this.state.showResetPassword){
+             return (<ResetPasswordPage onCancel={this.onCancelPasswordReset.bind(this)}/>)
          }
          if (this.state.edit) {
              var otherAddressListRendered = [];
@@ -134,7 +139,7 @@ class EaterPage extends Component {
                              </TouchableHighlight>
                          </View>
                      </View>
-                     <ScrollView>
+                     <ScrollView style={{backgroundColor:'#F5F5F5'}}>
 
                          <View style={styleEaterPage.sectionTitleView}>
                              <Text style={styleEaterPage.sectionTitleText}>ABOUT</Text>
@@ -267,6 +272,12 @@ class EaterPage extends Component {
          if (this.state.eater.email && this.state.principal.identityProvider !== 'Yumso') {
              emailView = <Text style={styleEaterPage.eaterPageGreyText}>{'Email: ' + this.state.eater.email}</Text>;
          }
+
+         var resetPasswordButton = null;
+         if (this.state.eater.email && this.state.principal.identityProvider === 'Yumso') {
+             resetPasswordButton = <Text style={styleEaterPage.eaterPageClickableText} onPress={()=> this.setState({showResetPassword:true})}>Reset Password</Text>
+         }
+
          var photoNumberView = null;
          if (this.state.eater.phoneNumber) {
              photoNumberView = <Text style={styleEaterPage.eaterPageGreyText}>{'Phone: ' + this.state.eater.phoneNumber}</Text>;
@@ -314,6 +325,7 @@ class EaterPage extends Component {
                          <Text style={styleEaterPage.eaterPageGreyText}>{this.state.principal.identityProvider === 'Yumso' ? `Email: ${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
                          {emailView}
                          {photoNumberView}
+                         {resetPasswordButton}
                      </View>
                      <View style={styleEaterPage.eaterPageRowView}>
                          <Text style={styleEaterPage.eaterPageGreyText}>Address: </Text>
@@ -463,11 +475,15 @@ class EaterPage extends Component {
          this.setState({editWorkAddress:false, editHomeAddress:false, addMoreAddress:false});
     }
 
+    onCancelPasswordReset(){
+         this.setState({showResetPassword:false});
+    }
+
     renderGenderTextColor(gender){
          if(this.state.gender == gender){
-             return '#ff9933';
+             return '#FFCC33';
          }else{
-             return '#808080';
+             return '#9B9B9B';
          }
     }
     
@@ -523,7 +539,7 @@ var styleEaterPage = StyleSheet.create({
         paddingHorizontal: windowWidth/20.7,
         paddingTop: windowWidth/20.7,
         paddingBottom: windowWidth/41.4,
-        borderColor: '#D7D7D7',
+        borderColor: '#F5F5F5',
         borderTopWidth: 1,
         backgroundColor: '#fff',
     },
@@ -545,14 +561,13 @@ var styleEaterPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         height:windowHeight*0.105,
-        backgroundColor:'#ECECEC',
         borderColor:'#D7D7D7',
         borderBottomWidth: 1,
     },
     sectionTitleText:{
         alignSelf:'center',
         fontSize:windowHeight/37.05,
-        color:'#696969',
+        color:'#4A4A4A',
         fontWeight:'400',
     },
     nameInputView:{
@@ -571,7 +586,7 @@ var styleEaterPage = StyleSheet.create({
     nameInputTitleText:{
         alignSelf:'center',
         fontSize:windowHeight/41.6875,
-        color:'#808080',
+        color:'#9B9B9B',
     },
     nameInputTextView:{
         flex:0.75,
@@ -605,7 +620,7 @@ var styleEaterPage = StyleSheet.create({
     },
     oneGenderSelectText:{
         fontSize:windowHeight/44.467,
-        color:'#808080',
+        color:'#9B9B9B',
         alignSelf:'center',
     },
     houseIcon:{
@@ -629,7 +644,7 @@ var styleEaterPage = StyleSheet.create({
     addressTitleText:{
         alignSelf:'center',
         fontSize:windowHeight/41.6875,
-        color:'#808080',
+        color:'#9B9B9B',
     },
     addressTextView:{
         marginLeft:windowWidth*0.025,
@@ -649,19 +664,18 @@ var styleEaterPage = StyleSheet.create({
     },
     addressEditText:{
         fontSize:windowHeight/44.467,
-        color:'#ff9933',
+        color:'#FFCC33',
         alignSelf:'center',
     },
     addNewAddressClickableView:{
         height:windowHeight*0.075,
         flexDirection:'row',
-        backgroundColor:'#ECECEC',
         justifyContent:'flex-start',
         paddingLeft:windowWidth*0.04,
     },
     addNewAddressClickableText:{
         fontSize:windowHeight/44.467,
-        color:'#ff9933',
+        color:'#FFCC33',
         alignSelf:'center',
     },
     paymentMethodView:{
