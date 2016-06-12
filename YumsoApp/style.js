@@ -249,7 +249,6 @@ module.exports = StyleSheet.create({
     dishListView:{
         alignSelf:'stretch',
         backgroundColor:'#fff',
-        paddingTop:30,
         paddingBottom:10,
         flexDirection:'column',
         height: windowHeight*9/10
