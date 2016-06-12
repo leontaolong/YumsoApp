@@ -397,8 +397,8 @@ class MapPage extends Component {
             if (this.state.apartmentNumber === undefined && !this.usedSavedAddress) {
                 this.setState({showApartmentNumber: true});
                 return;
-            }              
-            this.state.selectedAddress.apartmentNumber = this.state.apartmentNumber;      
+            }
+            if(!this.usedSavedAddress) this.state.selectedAddress.apartmentNumber = this.state.apartmentNumber; //todo: state management will add the apt and save next time in edit profile.
         }
         
         if (this.state.selectedAddress) {
@@ -442,7 +442,7 @@ class MapPage extends Component {
             title: addressName,
            // description: 'testDescription'
         }]; 
-        this.setState({markers: markers, region: region, selectedAddress: address, showMapView: true,searchAddressResultView:'', addressFound: true}); 
+        this.setState({markers: markers, region: region, selectedAddress: address, showMapView: true,searchAddressResultView:''}); 
         this.refs.m1.showCallout();
     }
     
