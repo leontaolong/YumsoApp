@@ -94,7 +94,7 @@ class resetPasswordPage extends Component {
             return;
         }      
         this.setState({showProgress:true});
-        let result = await AuthService.resetPassword(this.state.email, this.state.oldPassword, this.state.newPassword);
+        let result = await AuthService.resetPassword(this.state.email, this.state.oldPassword, this.state.newPassword, this.logOutAndJumptoLogin());
         // if(result==false){
         //     return;
         // }else{

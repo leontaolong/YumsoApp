@@ -743,7 +743,7 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1,
         flexDirection:'row',        
         justifyContent: 'center',
-        backgroundColor:'#FFCC33',
+        backgroundColor:'#FF9933',
     },
     checkOutButtonView:{
         width:windowWidth*0.5,

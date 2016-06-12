@@ -71,7 +71,7 @@ class LoginPage extends Component {
                 </View>
                 
                 <View style={styleLoginPage.forgotPasswordView}>
-                      <Text style={styleLoginPage.forgotPasswordText} onPress={()=>this.onPressForgotPassword().bind(this)}>Forgot password?</Text>
+                      <Text style={styleLoginPage.forgotPasswordText} onPress={this.onPressForgotPassword.bind(this)}>Forgot password?</Text>
                 </View>
                
                 <TouchableHighlight underlayColor={'#C0C0C0'} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
@@ -146,7 +146,7 @@ class LoginPage extends Component {
             return;
         }           
         this.setState({showProgress:true});
-        let result = await AuthService.registerWithEmail(this.state.firstname, this.state.lastname,this.state.email, this.state.password, this.state.password_re);
+        let result = await AuthService.forgotPasswordWithEmail(this.state.email);
         if(result==false){
             return;
         }
@@ -223,7 +223,7 @@ var styleLoginPage = StyleSheet.create({
     },
     forgotPasswordText:{
       fontSize:14,
-      color:'#FFF',
+      color:'#FFCC33',
       backgroundColor:'transparent',
     },
     fbSignInButtonView:{

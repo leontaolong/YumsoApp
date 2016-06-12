@@ -119,7 +119,6 @@ class ChefListPage extends Component {
                 dollarSign1 : dollarSign1_Orange,
                 dollarSign2 : dollarSign2_Orange,
                 dollarSign3 : dollarSign3_Orange,
-                dollarSign4 : dollarSign4_Orange
             });
         }   
         this.setState({ principal: principal, eater:eater });

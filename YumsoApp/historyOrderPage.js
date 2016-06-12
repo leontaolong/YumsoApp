@@ -136,6 +136,11 @@ class HistoryOrderPage extends Component {
                 </View>
             );
         }
+        
+        if(this.state.orders && this.state.orders.length==0){
+          var  noOrderText = <Text style={styleHistoryOrderPage.noOrderText}>You do not have any orders recently, come and order some!</Text>
+        }
+        
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -150,6 +155,7 @@ class HistoryOrderPage extends Component {
                    <View style={styles.headerRightView}>
                    </View>
                </View>
+               {noOrderText}
                <RefreshableListView
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) }
@@ -255,6 +261,14 @@ var styleHistoryOrderPage = StyleSheet.create({
         color:'#F8C84E',
         alignSelf:'flex-end',
     },
+    noOrderText:{
+        fontSize:16,
+        color:'#9B9B9B',
+        justifyContent:'center',
+        textAlign:'center',
+        marginTop:windowHeight*0.28,
+        marginHorizontal:15,
+    }
 
 });    
 
