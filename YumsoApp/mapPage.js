@@ -608,7 +608,7 @@ var styleMapPage = StyleSheet.create({
         flexDirection:'row',
         width:windowWidth*0.5,
         height:windowWidth*0.1,
-        borderColor:'#ff9933',
+        borderColor:'#FFCC33',
         borderWidth:0,
         borderRadius:6, 
         overflow: 'hidden', 
@@ -620,7 +620,7 @@ var styleMapPage = StyleSheet.create({
     },
     currentLocationClickableText:{
         fontSize:windowHeight/36.8,
-        color:'#ff9933',
+        color:'#FFCC33',
         fontWeight:'400',
         marginTop:windowHeight/105.14,
         marginLeft:windowWidth/207.0,
@@ -689,7 +689,7 @@ var styleMapPage = StyleSheet.create({
     addNewAddressClickableText:{
         alignSelf:'center',
         fontSize:windowHeight/36.8,
-        color:'#ff9933',
+        color:'#FFCC33',
         fontWeight:'400',
         marginTop:windowHeight/105.14,
     },

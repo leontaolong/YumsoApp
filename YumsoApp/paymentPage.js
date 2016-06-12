@@ -125,11 +125,16 @@ class PaymentPage extends Component {
                         });
                     });
             }else if(response.statusCode==200){
-                Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]);  
-                this.props.navigator.push({
-                    name: 'OrderConfirmation',//todo: fb cached will signin and redirect back right away.
-                    //todo: perhaps pass orderId
-                });                     
+                if(response.data.result===true){
+                    Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]);  
+                    this.props.navigator.push({
+                        name: 'OrderConfirmation',//todo: fb cached will signin and redirect back right away.
+                        //todo: perhaps pass orderId
+                    }); 
+                }else{
+                    console.log(response.data.detail);
+                    //todo: display the detail to user.
+                }                    
             }else{
                 Alert.alert('Network or Server Error','Failed creating order',[{ text: 'OK' }]);            
             }

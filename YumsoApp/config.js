@@ -1,5 +1,4 @@
 module.exports={
-    autoLogin:false,
     baseUrl: 'http://192.168.1.113:8080',
     googleApiName:'yumsoIOS	',
     googleApiKey:'AIzaSyBQdKxM-ZRQ2r95bkQLPlY10joKJeC6slw',
@@ -9,6 +8,7 @@ module.exports={
     //auth and payment
     authEndpointEmail:'/api/v1/auth/authenticateByEmail/eater',
     registerEndpointEmail:'/api/v1/auth/registerByEmail/eater',
+    resetPasswordEndpoint:'/api/v1/auth/reset/eater',
     authEndpointFacebook:'/api/v1/auth/authenticateFbToken/eater',
     authStatusEndpoint:'/api/v1/auth/getloginstatus',
     paymentTokenEndpoint:'/api/v1/payment/client_token',

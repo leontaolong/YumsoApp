@@ -25,7 +25,7 @@ module.exports = StyleSheet.create({
     headerBannerView:{
       flexDirection:'row',
       borderBottomWidth:1,
-      borderColor:'#D7D7D7',
+      borderColor:'#F5F5F5',
       height:windowHeight*0.066,
       backgroundColor:'#FFFFFF',
     },
