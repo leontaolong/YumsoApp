@@ -210,7 +210,7 @@ var stylePaymentPage = StyleSheet.create({
       position:'absolute',
       left: 0, 
       right: 0,
-      top:windowHeight-windowHeight*0.075,
+      top:windowHeight-15-windowHeight*0.075,
       height:windowHeight*0.075,
       width:windowWidth,
     },

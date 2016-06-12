@@ -17,7 +17,7 @@ module.exports = StyleSheet.create({
       backgroundColor:'#fff',
     },
     geryContainer:{
-        paddingTop:15,
+        marginTop:15,
         flex:1,
         flexDirection:'column',
         backgroundColor:'#F5F5F5',
@@ -61,6 +61,7 @@ module.exports = StyleSheet.create({
       color:'#4A4A4A',
       fontWeight:'500',
       alignSelf:'center',
+      textAlign:'center'
     },
     headerRightView:{
       flex:0.1/6.0,

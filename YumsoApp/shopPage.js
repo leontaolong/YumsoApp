@@ -324,7 +324,7 @@ class ShopPage extends Component {
                         {selectedDeliverTimeView}
                         <View style={styleShopPage.footerView}>          
                           <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Schedules'? '' : 'Total: $'+this.state.totalPrice}</Text>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Schedules'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
                           </View>
                           <View style={styleShopPage.checkoutButtonView}> 
                              <TouchableHighlight underlayColor={'#ECECEC'} style={styleShopPage.checkoutButtonWrapper} onPress={() => this.navigateToShoppingCart() }>
@@ -705,7 +705,7 @@ var styleShopPage = StyleSheet.create({
     shoppingCartTimePriceText:{
         color:'#fff',
         fontSize:windowHeight/37.8,
-        fontWeight:'bold',
+        fontWeight:'600',
         justifyContent:'center',
     },
     oneDishInListView:{

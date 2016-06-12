@@ -71,7 +71,7 @@ class DishPage extends Component {
                              </TouchableHighlight>
                          </View>    
                          <View style={styles.titleView}>
-                             <Text style={styles.titleText}></Text>
+                             <Text style={styles.titleText}>{this.state.dish.dishName}</Text>
                          </View>
                          <View style={styles.headerRightView}>
                          </View>
