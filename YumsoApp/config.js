@@ -1,6 +1,6 @@
 module.exports={
     autoLogin:false,
-    baseUrl: 'http://192.168.1.134:8080',
+    baseUrl: 'http://10.0.0.242:8080',
     email:'xihe@yumso.com',
     password:'123',
     googleApiName:'yumsoIOS	',
@@ -11,6 +11,7 @@ module.exports={
     //auth and payment
     authEndpointEmail:'/api/v1/auth/authenticateByEmail/eater',
     registerEndpointEmail:'/api/v1/auth/registerByEmail/eater',
+    resetPasswordEndpoint:'/api/v1/auth/reset/eater',
     authEndpointFacebook:'/api/v1/auth/authenticateFbToken/eater',
     authStatusEndpoint:'/api/v1/auth/getloginstatus',
     paymentTokenEndpoint:'/api/v1/payment/client_token',

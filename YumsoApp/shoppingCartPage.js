@@ -371,8 +371,13 @@ class ShoppingCartPage extends Component {
         return this.client.postWithoutAuth(config.priceQuoteEndpoint, {orderDetail:orderQuote})
         .then((response)=>{
             if(response.statusCode==200){
-                console.log(response.data.orderQuote)
-                this.setState({quotedOrder:response.data.orderQuote, priceIsConfirmed:true});
+                if(reponse.data.result===true){
+                    console.log(response.data.detail.orderQuote)
+                    this.setState({quotedOrder:response.data.detail.orderQuote, priceIsConfirmed:true});
+                }else{
+                   console.log(response.data.detail);
+                   //todo: show user the detail;  response.data.detail.problems; 
+                }
             }else{
                 console.log(response.data);
                 Alert.alert('Warning', 'Price quote failed. Please make sure delivery location is reachable.', [{ text: 'OK' }]);
@@ -732,7 +737,7 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1,
         flexDirection:'row',        
         justifyContent: 'center',
-        backgroundColor:'#ff9933',
+        backgroundColor:'#FFCC33',
     },
     checkOutButtonView:{
         width:windowWidth*0.5,

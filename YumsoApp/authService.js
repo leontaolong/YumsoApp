@@ -53,6 +53,21 @@ class AuthService {
             return false; 
         }
     }
+    
+    async resetPassword(email, oldPassword, newPassword){
+        let response = await this.client.postWithoutAuth(config.resetPasswordEndpoint, {
+            email: email,
+            oldPassword: oldPassword,
+            newPassword: newPassword,
+        });
+        if(response.statusCode==200){
+            Alert.alert( 'Success', 'You password has been updated',[ { text: 'OK' }]); 
+            return true;
+        }else{
+            Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);
+            return false; 
+        }
+    }
         
     async loginWithEmail(email, password){
         let response = await this.client.postWithoutAuth(config.authEndpointEmail, {

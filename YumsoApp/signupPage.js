@@ -34,19 +34,20 @@ class SignUpPage extends Component {
     render() {
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
-                    <View style={styles.headerBannerView}>    
-                        <View style={styles.headerLeftView}>
-                          <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
-                              <Image source={backIcon} style={styles.backButtonIcon}/>
-                          </TouchableHighlight>
-                        </View>    
-                        <View style={styles.titleView}>
-                            <Text style={styles.titleText}>Sign Up</Text>
-                        </View>
-                        <View style={styles.headerRightView}>
-                        </View>
-                    </View>
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                        <View style={styles.headerBannerView}>    
+                            <View style={styles.headerLeftView}>
+                              <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
+                                  <Image source={backIcon} style={styles.backButtonIcon}/>
+                              </TouchableHighlight>
+                            </View>    
+                            <View style={styles.titleView}>
+                                <Text style={styles.titleText}>Sign Up</Text>
+                            </View>
+                            <View style={styles.headerRightView}>
+                            </View>
+                        </View>
+                    
                         <View style={styleSignUpPage.logoView}>
                             <Image source={logoIcon} style={styleSignUpPage.logoIcon}/>
                         </View>

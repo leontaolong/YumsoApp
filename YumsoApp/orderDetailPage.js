@@ -86,7 +86,7 @@ class ShoppingCartPage extends Component {
                 <View style={styleOrderDetailPage.orderInfoView}>
                     <Text style={styleOrderDetailPage.dishNameText}>{orderItem.dishName}</Text>                             
                     <View style={styleOrderDetailPage.dishIngredientView}>
-                       <Text style={styleOrderDetailPage.dishIngredientText}>{orderItem.dishDetail.ingredients}</Text>
+                       <Text style={styleOrderDetailPage.dishIngredientText}>{this.getTextLengthLimited(orderItem.dishDetail.ingredients,43)}</Text>
                     </View>                  
                     <Text style={styleOrderDetailPage.dishPriceText}>${orderItem.price}</Text>                                          
                     <Text style={styleOrderDetailPage.dishIngredientText}>Quantity: {orderItem.quantity}</Text>                                        
@@ -258,6 +258,16 @@ class ShoppingCartPage extends Component {
             Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
             self.setState({ratingSucceed:true, starRating:data.starRating, comment:data.commentText, eaterCommentTime:new Date().getTime()});     
         });
+    }
+    
+    getTextLengthLimited(text,lengthLimit){
+        if(text.length<=lengthLimit){
+           return text;
+        }else{
+           var shortenedText = text.substr(0,lengthLimit-1);
+           var betterShortenedText = shortenedText.substr(0,Math.max(shortenedText.lastIndexOf(' '),shortenedText.lastIndexOf(','),shortenedText.lastIndexOf(';'),shortenedText.lastIndexOf('|')));
+           return betterShortenedText ? betterShortenedText + '...' : shortenedText+'...';
+        }
     }
     
     pressedRatingIcon(rating){
