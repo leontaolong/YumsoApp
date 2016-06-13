@@ -16,11 +16,24 @@ module.exports = StyleSheet.create({
       flexDirection:'column',
       backgroundColor:'#fff',
     },
+    loaderView:{
+      backgroundColor:'#fff', 
+      position:'absolute',
+      top:0,
+      left:0,
+      right:0, 
+      height:windowHeight,
+      opacity:0.3,
+    },
+    loader:{
+      alignSelf:'center',
+      marginTop:windowHeight*0.3,
+    },
     greyContainer:{
-        marginTop:15,
-        flex:1,
-        flexDirection:'column',
-        backgroundColor:'#F5F5F5',
+      marginTop:15,
+      flex:1,
+      flexDirection:'column',
+      backgroundColor:'#F5F5F5',
     },
     headerBannerView:{
       flexDirection:'row',
@@ -75,8 +88,8 @@ module.exports = StyleSheet.create({
       marginRight:10,
     },
     headerRightTextButtonText:{
-      fontSize:12,
-      fontWeight:'bold',
+      fontSize:windowHeight/46.0,
+      fontWeight:'600',
       color:'#FFCC33',
       alignSelf:'center',
     },
@@ -168,9 +181,7 @@ module.exports = StyleSheet.create({
       fontSize:20,
       alignSelf:'center'
     },
-    loader:{
-        marginTop:20
-    },
+    
     error:{
         color:'red',
         paddingTop: 10

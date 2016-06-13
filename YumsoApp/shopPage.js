@@ -34,6 +34,7 @@ import React, {
   TextInput,
   ListView,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert,
@@ -320,9 +321,9 @@ class ShopPage extends Component {
                                <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Schedules'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
                           </View>
                           <View style={styleShopPage.checkoutButtonView}> 
-                             <TouchableHighlight underlayColor={'#ECECEC'} style={styleShopPage.checkoutButtonWrapper} onPress={() => this.navigateToShoppingCart() }>
+                             <TouchableOpacity activeOpacity={0.7} style={styleShopPage.checkoutButtonWrapper} onPress={() => this.navigateToShoppingCart() }>
                                 <Text style={styleShopPage.checkoutButton}>SHOPPING CART</Text>
-                             </TouchableHighlight>
+                             </TouchableOpacity>
                           </View>
                        </View>
                 </View>);

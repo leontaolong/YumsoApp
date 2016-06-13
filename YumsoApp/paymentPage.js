@@ -17,6 +17,7 @@ import React, {
   TextInput,
   ListView,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert
@@ -85,11 +86,11 @@ class PaymentPage extends Component {
                     <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>   
                  </View>
                  {selectPaymentMethodView}
-                 <TouchableHighlight style={stylePaymentPage.placeOrderButtonWrapper} onPress={()=>this.confirm()}>
+                 <TouchableOpacity activeOpacity={0.7} style={stylePaymentPage.placeOrderButtonWrapper} onPress={()=>this.confirm()}>
                     <View style={stylePaymentPage.placeOrderButton}>
                         <Text style={stylePaymentPage.placeOrderButtonText}>Place Order</Text>
                     </View>
-                 </TouchableHighlight>
+                 </TouchableOpacity>
                  {loadingSpinnerView}                 
               </View>);
     }

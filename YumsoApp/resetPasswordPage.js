@@ -26,6 +26,10 @@ import React, {
 class resetPasswordPage extends Component {
     constructor(props){
         super(props);
+        this.routeStack = this.props.navigator.state.routeStack;
+        if(props.userEmail){
+            this.userEmail = props.userEmail;
+        }
         this.state = {
             showProgress: false
         };
@@ -56,7 +60,7 @@ class resetPasswordPage extends Component {
                         <View style={styleSignUpPage.logoView}>
                         </View>                        
                         <View style={styles.loginInputView}>                      
-                            <TextInput placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff'
+                            <TextInput value={this.userEmail} editable={this.userEmail} placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff'
                                     clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
                         </View>
                         <View style={styles.loginInputView}>
@@ -96,27 +100,16 @@ class resetPasswordPage extends Component {
             return;
         }      
         this.setState({showProgress:true});
-        let result = await AuthService.resetPassword(this.state.email, this.state.oldPassword, this.state.newPassword, this.logOutAndJumptoLogin());
-        // if(result==false){
-        //     return;
-        // }else{
-        //    this.setState({ showProgress: false});
-        //    return AuthService.logOut()
-        //             .then(() => {
-        //                 delete this.state.eater;
-        //                 this.props.navigator.push({
-        //                     name: 'LoginPage', 
-        //                 });
-        //             });
-        // }
+        let result = await AuthService.resetPassword(this.state.email, this.state.oldPassword, this.state.newPassword) 
         if(result==false){
             return;
         }
-        // this.setState({ showProgress: false });
-        // this.props.navigator.push({
-        //     name: 'LoginPage'
-        // });
-         
+
+        this.setState({ showProgress: false });
+        this.routeStack = [];                        
+        this.props.navigator.push({
+            name: 'ChefListPage',
+        });   
     }
     
     navigateBack() {

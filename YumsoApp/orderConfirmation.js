@@ -11,7 +11,7 @@ import React, {
   Image,
   TextInput,
   ListView,
-  TouchableHighlight,
+  TouchableOpacity,
   AsyncStorage,
   Alert
 } from 'react-native';
@@ -29,17 +29,13 @@ class OrderConfirmation extends Component {
     render() {  
         //todo: in design there is back button, where that supposed to go?? why we even need it?    
         return (
-            <View style={styles.greyContainer}>
-              <View style={styleConfirmationPage.buttonView}>
-                <TouchableHighlight style={styleConfirmationPage.orderMoreMutton} underlayColor={'transparent'} onPress={()=>this.navigateBackToChefList()}>
+            <View style={styleConfirmationPage.greyContainer}>
+              <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.orderMoreMutton} onPress={()=>this.navigateBackToChefList()}>
                     <Text style={styleConfirmationPage.orderMoreMuttonText}>Order More</Text>
-                </TouchableHighlight>
-              </View>  
-              <View style={styleConfirmationPage.buttonView}>
-                <TouchableHighlight style={styleConfirmationPage.orderMoreMutton} underlayColor={'transparent'} onPress={()=>this.navigateToOrderList()}>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.GotoMyOrdersMutton} onPress={()=>this.navigateToOrderList()}>
                     <Text style={styleConfirmationPage.orderMoreMuttonText}>Go to My Orders</Text>
-                </TouchableHighlight>
-              </View>                 
+              </TouchableOpacity>                
             </View>
         );
     }
@@ -62,21 +58,31 @@ class OrderConfirmation extends Component {
 }
 
 var styleConfirmationPage = StyleSheet.create({
-    buttonView:{
-        height:windowHeight*0.6,
-        width:windowWidth,
+    greyContainer:{
+        flex:1,
+        flexDirection:'column',
+        backgroundColor:'#F5F5F5',
         justifyContent:'center',
     },
     orderMoreMutton:{
         width:windowWidth*0.75,
-        height:50,
+        height:windowHeight*0.088,
         flexDirection:'row',
         justifyContent:'center',
         alignSelf:'center',
         backgroundColor:'#FFCC33',
     },
+    GotoMyOrdersMutton:{
+        marginTop:windowHeight*0.176,
+        width:windowWidth*0.75,
+        height:windowHeight*0.088,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignSelf:'center',
+        backgroundColor:'#7BCBBE',
+    },
     orderMoreMuttonText:{
-        fontSize:16,
+        fontSize:windowHeight/37.056,
         fontWeight:'600',
         color:'#fff',
         alignSelf:'center',
