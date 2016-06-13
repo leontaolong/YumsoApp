@@ -297,7 +297,7 @@ class MapPage extends Component {
                         self.setState({ city: city, state: state });
                     });       
             },
-            (error) => alert(error.message),
+            (error) => Alert.alert( 'Warning', error.message,[ { text: 'OK' }]),
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
         );   
     }
@@ -515,8 +515,6 @@ class MapPage extends Component {
                     }
                     if(addresses.length==0 && showWarningForSpecific){
                         Alert.alert( 'Warning', 'Please be more specific',[ { text: 'OK' }]);
-                    }else if(addresses.length==0){
-                        Alert.alert( 'Warning', 'No possible address found',[ { text: 'OK' }]);            
                     }
                     let view = this.renderSearchResult(addresses);
                     //If only one possible address returned, locate it on the map
@@ -525,6 +523,8 @@ class MapPage extends Component {
                     }else{
                        this.setState({searchAddressResultView: view,showMapView:true}); 
                     }
+                }else if(res.data.status==='ZERO_RESULTS'){
+                    Alert.alert( 'Warning', 'No possible address found',[ { text: 'OK' }]);            
                 }
            })
            
