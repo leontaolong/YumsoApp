@@ -231,12 +231,7 @@ class ShopPage extends Component {
         if(dish.pictures && dish.pictures!=null && dish.pictures.length!=0){
             imageSrc={uri:dish.pictures[0]};   
         }
-        if(this.state.showProgress){
-           return <ActivityIndicatorIOS
-                animating={this.state.showProgress}
-                size="large"
-                style={styles.loader}/> 
-        }   
+ 
         return (
             <View style={styleShopPage.oneDishInListView}>
                <TouchableHighlight onPress={()=>this.navigateToDishPage(dish)}>
@@ -281,23 +276,20 @@ class ShopPage extends Component {
     }
          
     render() {
+        var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            return (
-                <View>
-                    <ActivityIndicatorIOS
-                        animating={this.state.showProgress}
-                        size="large"
-                        style={styles.loader}/>
-                </View>);
-        } else {
-            if(this.state.selectedTime!='All Schedules'){
-               var selectedDeliverTimeView = <View style={styleShopPage.selectedDeliverTimeView}>
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
+
+        if(this.state.selectedTime!='All Schedules'){
+           var selectedDeliverTimeView = <View style={styleShopPage.selectedDeliverTimeView}>
                                                <Text style={styleShopPage.selectedDeliverTimeText}>{dateRender.renderDate2(this.state.selectedTime)}</Text>
-                                             </View>;
-            }
+                                         </View>;
+        }
             
-            return (
-                <View style={styles.container}>
+        return (<View style={styles.container}>
                         <View style={styles.headerBannerView}>    
                             <View style={styles.headerLeftView}>
                                 <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
@@ -322,6 +314,7 @@ class ShopPage extends Component {
                                 renderHeader={this.renderHeader.bind(this)}
                                 loadData={this.fetchDishesAndSchedules.bind(this)}/>           
                         {selectedDeliverTimeView}
+                        {loadingSpinnerView}
                         <View style={styleShopPage.footerView}>          
                           <View style={styleShopPage.shoppingCartTimeView}>
                                <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Schedules'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
@@ -332,9 +325,7 @@ class ShopPage extends Component {
                              </TouchableHighlight>
                           </View>
                        </View>
-                </View>      
-            );
-        }
+                </View>);
     }
 
     getTotalPrice(){

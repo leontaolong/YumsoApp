@@ -175,14 +175,13 @@ class PaymentOptionPage extends Component {
     }
     
     render() {
-        if(this.state.showProgress){
-            return <ActivityIndicatorIOS
-                animating={this.state.showProgress}
-                size="large"
-                style={styles.loader}/> 
-        } 
+        var loadingSpinnerView = null;
+        if (this.state.showProgress) {
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
         
-
         if(this.state.chosenCard && this.state.isFromCheckOutPage){
           var paymentSelectionConfirmButton= (<TouchableHighlight style={stylePaymentOptionPage.bottomButtonWrapper} onPress={()=>this.confirmSelection()}>
                                                     <View style={stylePaymentOptionPage.bottomButton}>
@@ -209,7 +208,8 @@ class PaymentOptionPage extends Component {
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this)}
                     renderFooter={this.renderFooter.bind(this)}/>  
-              {paymentSelectionConfirmButton}                    
+              {paymentSelectionConfirmButton}
+              {loadingSpinnerView}                    
             </View>
         );
     }

@@ -64,13 +64,7 @@ class ChefCommentsPage extends Component {
         if(comment.eaterProfilePic){
             imageSrc={uri:comment.eaterProfilePic};   
         }
-        if(this.state.showProgress){
-            return <ActivityIndicatorIOS
-                animating={this.state.showProgress}
-                size="large"
-                style={styles.loader}/> 
-        }   
-        
+               
         return (
             <View style={styleChefCommentsPage.oneListingView}>
                 <View style={styleChefCommentsPage.eaterPhotoView}>
@@ -116,6 +110,12 @@ class ChefCommentsPage extends Component {
    }
     
     render() {
+        var loadingSpinnerView = null;
+        if (this.state.showProgress) {
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -132,7 +132,8 @@ class ChefCommentsPage extends Component {
                </View>
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this) }/>                  
+                    renderRow={this.renderRow.bind(this) }/>
+               {loadingSpinnerView}                  
             </View>
         );
     }

@@ -12,7 +12,6 @@ import React, {
   TextInput,
   ListView,
   TouchableHighlight,
-  ActivityIndicatorIOS,
   AsyncStorage,
   Alert
 } from 'react-native';

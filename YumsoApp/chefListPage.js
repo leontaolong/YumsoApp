@@ -109,7 +109,7 @@ class ChefListPage extends Component {
         let principal = await  AuthService.getPrincipalInfo();
         //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
         if(eater){
-            this.setState({ 
+           this.setState({ 
                 dollarSign1: eater.chefFilterSettings.priceRankFilter[1]==true? dollarSign1_Orange:dollarSign1_Grey,
                 dollarSign2: eater.chefFilterSettings.priceRankFilter[2]==true? dollarSign2_Orange:dollarSign2_Grey,
                 dollarSign3: eater.chefFilterSettings.priceRankFilter[3]==true? dollarSign3_Orange:dollarSign3_Grey,
@@ -244,15 +244,14 @@ class ChefListPage extends Component {
     
     render() {
         const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} principal={this.state.principal} caller = {this}/>;
+        var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            return (
-                <View>
-                    <ActivityIndicatorIOS
-                        animating={this.state.showProgress}
-                        size="large"
-                        style={styles.loader}/>
-                </View>);  
-        }else if(this.state.showLocSearch){
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
+        
+        if(this.state.showLocSearch){
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city}/>);   
         }else if(this.state.showChefSearch){
             return <View style={styles.greyContainer}>
@@ -346,6 +345,7 @@ class ChefListPage extends Component {
                         renderRow={this.renderRow.bind(this) }
                         loadData={this.searchChef.bind(this)}
                         refreshDescription = "Loading.."/>
+                    {loadingSpinnerView}
                 </View>
             </SideMenu>
         );

@@ -160,13 +160,13 @@ class ShoppingCartPage extends Component {
       }                                               
     }
     
-    render() {
-        if(this.state.showProgress){
-            return <ActivityIndicatorIOS
-                animating={this.state.showProgress}
-                size="large"
-                style={styles.loader}/> 
-        } 
+    render() {        
+        var loadingSpinnerView = null;
+        if (this.state.showProgress) {
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
                      
         //Render 'Delivered' status
         if(this.state.showDeliverStatusView){  
@@ -235,11 +235,13 @@ class ShoppingCartPage extends Component {
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } 
                     renderFooter={this.renderFooter.bind(this)}/>
+                {loadingSpinnerView}
             </View>
         );
     }
     
     submitComment(){
+        this.setState({showProgress:true});
         var self = this;
         if (!this.state.starRating) {
             Alert.alert('','Please rate the order',[{ text: 'OK' }]);
@@ -258,7 +260,7 @@ class ShoppingCartPage extends Component {
                 return this.responseHandler(res);
             }
             Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
-            self.setState({ratingSucceed:true, starRating:data.starRating, comment:data.commentText, eaterCommentTime:new Date().getTime()});     
+            self.setState({ratingSucceed:true, showProgress:false, starRating:data.starRating, comment:data.commentText, eaterCommentTime:new Date().getTime()});     
         });
     }
     

@@ -32,6 +32,12 @@ class resetPasswordPage extends Component {
     }
     
     render() {
+            var loadingSpinnerView = null;
+            if (this.state.showProgress) {
+                loadingSpinnerView =<View style={styles.loaderView}>
+                                        <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                    </View>;  
+            }
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
                     <View style={styles.headerBannerView}>    
@@ -69,11 +75,7 @@ class resetPasswordPage extends Component {
                     <TouchableHighlight underlayColor={'#C0C0C0'} style={styleSignUpPage.signUpButtonView} onPress = {this.onUpdatePressed.bind(this)}>
                         <Text style={styleSignUpPage.signUpButtonText}>Update</Text>
                     </TouchableHighlight>
-
-                    <ActivityIndicatorIOS
-                            animating={this.state.showProgress}
-                            size="large"
-                            style={styles.loader} />           
+                    {loadingSpinnerView}          
                 </View>
             );
     }

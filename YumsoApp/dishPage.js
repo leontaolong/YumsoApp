@@ -23,7 +23,6 @@ import React, {
   TextInput,
   ListView,
   TouchableHighlight,
-  ActivityIndicatorIOS,
   AsyncStorage,
   Alert,
   Picker
@@ -42,7 +41,6 @@ class DishPage extends Component {
         let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;
         let totalPrice = routeStack[routeStack.length-1].passProps.totalPrice;
         this.state = {
-            showProgress:true,
             dish: dish,
             shoppingCart: shoppingCart,
             selectedTime: selectedTime,

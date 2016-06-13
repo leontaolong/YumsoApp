@@ -37,12 +37,12 @@ class PaymentPage extends Component {
     }
     
     render() {
-        if(this.state.showProgress){
-            return <ActivityIndicatorIOS
-                animating={this.state.showProgress}
-                size="large"
-                style={styles.loader}/> 
-        } 
+        var loadingSpinnerView = null;
+        if (this.state.showProgress) {
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
         
         if(this.state.paymentOption){
           var selectPaymentMethodView=[(<View key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonView}>
@@ -89,7 +89,8 @@ class PaymentPage extends Component {
                     <View style={stylePaymentPage.placeOrderButton}>
                         <Text style={stylePaymentPage.placeOrderButtonText}>Place Order</Text>
                     </View>
-                 </TouchableHighlight>                 
+                 </TouchableHighlight>
+                 {loadingSpinnerView}                 
               </View>);
     }
       
