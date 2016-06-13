@@ -28,6 +28,7 @@ import React, {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Image,
   TextInput,
   ListView,
@@ -96,21 +97,22 @@ class ShoppingCartPage extends Component {
                     <View style={styles.headerRightView}>            
                     </View>
                </View>
-               
-               <View style={styleShoppingCartPage.oneListingView}>
-                    <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
-                    <View style={styleShoppingCartPage.chefInfoView}>
-                        <Text style={styleShoppingCartPage.chefNameText}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
-                        <Text style={styleShoppingCartPage.chefLocationText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>                                        
+               <ScrollView>
+                    <View style={styleShoppingCartPage.oneListingView}>
+                            <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
+                            <View style={styleShoppingCartPage.chefInfoView}>
+                                <Text style={styleShoppingCartPage.chefNameText}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
+                                <Text style={styleShoppingCartPage.chefLocationText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>                                        
+                            </View>
                     </View>
-               </View>
-               <View style={styleShoppingCartPage.badgeView}>
-                 {chefAllBadgesViews}
-               </View>
-               <View style={styleShoppingCartPage.chefStoryView}>
-                 <Text style={styleShoppingCartPage.myStoryTitleText}>My Story</Text>
-                 <Text style={styleShoppingCartPage.myStoryContentText}>{this.state.chef.storeDescription}</Text>
-               </View>
+                    <View style={styleShoppingCartPage.badgeView}>
+                        {chefAllBadgesViews}
+                    </View>
+                    <View style={styleShoppingCartPage.chefStoryView}>
+                        <Text style={styleShoppingCartPage.myStoryTitleText}>My Story</Text>
+                        <Text style={styleShoppingCartPage.myStoryContentText}>{this.state.chef.storeDescription}</Text>
+                    </View>
+               </ScrollView>
            </View>     
         );
     }
@@ -126,8 +128,6 @@ var styleShoppingCartPage = StyleSheet.create({
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
         height:windowWidth*0.344,
-        borderColor:'#D7D7D7',
-        borderTopWidth:2,
     },
     chefPhoto:{
         width:windowWidth*0.344,
@@ -156,8 +156,8 @@ var styleShoppingCartPage = StyleSheet.create({
         width:windowWidth,
         height:windowWidth*0.45,
         flexDirection:'row',
-        borderTopWidth:2,
-        borderColor:'#D7D7D7',
+        borderTopWidth:5,
+        borderColor:'#F5F5F5',
     },
     badgeIcon:{
         width:windowHeight*0.14,
@@ -175,8 +175,8 @@ var styleShoppingCartPage = StyleSheet.create({
         width:windowWidth,
         flexDirection:'column',
         paddingHorizontal:windowHeight*0.0264,
-        borderTopWidth:2,
-        borderColor:'#D7D7D7',
+        borderTopWidth:5,
+        borderColor:'#F5F5F5',
     },
     myStoryTitleText:{
         fontSize:windowHeight/35.5,
@@ -188,6 +188,7 @@ var styleShoppingCartPage = StyleSheet.create({
     myStoryContentText:{
         fontSize:windowHeight/47.33,
         color:'#4A4A4A',
+        textAlign:'justify',
     }
 });
 

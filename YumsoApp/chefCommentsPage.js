@@ -118,14 +118,14 @@ class ChefCommentsPage extends Component {
     render() {
         return (
             <View style={styles.container}>
-               <View style={styleChefCommentsPage.headerBannerView}>    
+               <View style={styles.headerBannerView}>    
                    <View style={styles.headerLeftView}>
                    <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefPage()}>
-                     <Image source={backIcon} style={styleChefCommentsPage.backButtonIcon}/>
+                     <Image source={backIcon} style={styles.backButtonIcon}/>
                    </TouchableHighlight>
                    </View>    
                    <View style={styles.titleView}>
-                     <Text style={styles.titleText}>Review</Text>
+                     <Text style={styles.titleText}>Reviews</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>

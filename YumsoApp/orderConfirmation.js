@@ -30,7 +30,7 @@ class OrderConfirmation extends Component {
     render() {  
         //todo: in design there is back button, where that supposed to go?? why we even need it?    
         return (
-            <View style={styleConfirmationPage.container}>
+            <View style={styles.greyContainer}>
               <View style={styleConfirmationPage.buttonView}>
                 <TouchableHighlight style={styleConfirmationPage.orderMoreMutton} underlayColor={'transparent'} onPress={()=>this.navigateBackToChefList()}>
                     <Text style={styleConfirmationPage.orderMoreMuttonText}>Order More</Text>
@@ -63,12 +63,6 @@ class OrderConfirmation extends Component {
 }
 
 var styleConfirmationPage = StyleSheet.create({
-    container:{
-        paddingTop:15,
-        flex:1,
-        flexDirection:'column',
-        backgroundColor:'#F5F5F5',
-    },
     buttonView:{
         height:windowHeight*0.6,
         width:windowWidth,

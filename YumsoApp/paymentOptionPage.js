@@ -186,13 +186,13 @@ class PaymentOptionPage extends Component {
         if(this.state.chosenCard && this.state.isFromCheckOutPage){
           var paymentSelectionConfirmButton= (<TouchableHighlight style={stylePaymentOptionPage.bottomButtonWrapper} onPress={()=>this.confirmSelection()}>
                                                     <View style={stylePaymentOptionPage.bottomButton}>
-                                                        <Text style={stylePaymentOptionPage.bottomButtonText}>Choose this Payment Method</Text>
+                                                        <Text style={stylePaymentOptionPage.bottomButtonText}>Choose this Card</Text>
                                                     </View>
                                               </TouchableHighlight>);
         }
         
         return (
-            <View style={styles.geryContainer}>
+            <View style={styles.container}>
                <View style={styles.headerBannerView}>
                          <View style={styles.headerLeftView}>
                          <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBack()}>

@@ -290,7 +290,12 @@ class ShopPage extends Component {
                         style={styles.loader}/>
                 </View>);
         } else {
-
+            if(this.state.selectedTime!='All Schedules'){
+               var selectedDeliverTimeView = <View style={styleShopPage.selectedDeliverTimeView}>
+                                               <Text style={styleShopPage.selectedDeliverTimeText}>{dateRender.renderDate2(this.state.selectedTime)}</Text>
+                                             </View>;
+            }
+            
             return (
                 <View style={styles.container}>
                         <View style={styles.headerBannerView}>    
@@ -316,14 +321,14 @@ class ShopPage extends Component {
                                 renderRow={this.renderRow.bind(this) } 
                                 renderHeader={this.renderHeader.bind(this)}
                                 loadData={this.fetchDishesAndSchedules.bind(this)}/>           
-
+                        {selectedDeliverTimeView}
                         <View style={styleShopPage.footerView}>          
                           <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}> {this.state.selectedTime=='All Schedules'?'':'$'+this.state.totalPrice+' for '+dateRender.renderDate2(this.state.selectedTime)}</Text>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Schedules'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
                           </View>
                           <View style={styleShopPage.checkoutButtonView}> 
                              <TouchableHighlight underlayColor={'#ECECEC'} style={styleShopPage.checkoutButtonWrapper} onPress={() => this.navigateToShoppingCart() }>
-                                <Text style={styleShopPage.checkoutButton}>CHECK OUT</Text>
+                                <Text style={styleShopPage.checkoutButton}>SHOPPING CART</Text>
                              </TouchableHighlight>
                           </View>
                        </View>
@@ -669,13 +674,14 @@ var styleShopPage = StyleSheet.create({
         backgroundColor:'#FFCC33',
     },
     checkoutButtonView:{
-        width:windowWidth*0.3,
+        width:windowWidth*0.4,
         flexDirection:'row',
-        alignItems:'flex-end',
+        justifyContent:'flex-end',
+        paddingRight: windowWidth/27.6,
     },
     checkoutButtonWrapper:{ 
         height: windowHeight*0.044, 
-        width: windowWidth*0.27, 
+        width: windowWidth*0.35, 
         flexDirection:'row',
         alignSelf:'center',
         borderRadius:6,
@@ -690,15 +696,16 @@ var styleShopPage = StyleSheet.create({
         alignSelf:'center',
     },
     shoppingCartTimeView:{
-        width:windowWidth*0.7,
+        width:windowWidth*0.6,
         alignItems:'flex-start',
         flexDirection:'row',
         alignSelf:'center',
+        paddingLeft: windowWidth/27.6,
     },
     shoppingCartTimePriceText:{
         color:'#fff',
         fontSize:windowHeight/37.8,
-        fontWeight:'400',
+        fontWeight:'600',
         justifyContent:'center',
     },
     oneDishInListView:{
@@ -729,6 +736,7 @@ var styleShopPage = StyleSheet.create({
         fontSize:windowHeight/40.57,
         color:'#9B9B9B',
         marginTop:windowHeight*0.0088,
+        textAlign:'justify',
     },
     priceView:{
         flex: 1,
@@ -778,6 +786,17 @@ var styleShopPage = StyleSheet.create({
         fontSize:windowHeight/40.57,
         color:'#9B9B9B',
         marginTop:windowHeight*0.0035,
+    },
+    selectedDeliverTimeView:{
+        backgroundColor:'#4A4A4A',
+        flexDirection:'row', 
+        height:windowHeight*0.05,
+        paddingHorizontal:windowWidth/27.6,
+    },
+    selectedDeliverTimeText:{
+       fontSize:14,
+       color:'#F5F5F5',
+       alignSelf:'center',
     },
 });
 

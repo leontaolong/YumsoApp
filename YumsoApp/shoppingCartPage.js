@@ -70,7 +70,7 @@ class ShoppingCartPage extends Component {
                     <Text style={styleShoppingCartPage.chefShopNameText}>{this.state.shopName}</Text>
                 </View>),
                (<View key={'deliverTimeView'} style={styleShoppingCartPage.deliverTimeView}>
-                    <Text style={styleShoppingCartPage.deliverTimeText}>To be delivered at {dateRender.renderDate2(this.state.selectedTime)}</Text>
+                    <Text style={styleShoppingCartPage.deliverTimeText}>To be out for delivery at {dateRender.renderDate2(this.state.selectedTime)}</Text>
                 </View>)
               ]
     }
@@ -252,12 +252,12 @@ class ShoppingCartPage extends Component {
                     </View>
                </View>
 
-               <ListView style={styleShoppingCartPage.dishListView}
+               <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderHeader={this.renderHeader.bind(this)}
                     renderRow={this.renderRow.bind(this) } 
                     renderFooter={this.renderFooter.bind(this)}/>
-               <View style={styleShoppingCartPage.bottomButtonView}>
+               <View style={styleShoppingCartPage.footerView}>
                     <TouchableHighlight onPress={() => this.getPrice() }>
                         <View style={styleShoppingCartPage.getPriceButtonView}>
                             <Text style={styleShoppingCartPage.bottomButtonText}>Get Price</Text>
@@ -476,7 +476,7 @@ var styleShoppingCartPage = StyleSheet.create({
         justifyContent:'center',
         height:windowHeight/14.72,
         borderBottomWidth:1,
-        borderColor:'#D7D7D7',
+        borderColor:'#F5F5F5',
     },
     chefShopNameText:{
         color:'#FFCC33',
@@ -494,17 +494,13 @@ var styleShoppingCartPage = StyleSheet.create({
         fontSize:windowHeight/49.06,
         marginTop:windowHeight/73.6,
     },
-    dishListView:{
-        flex:1,
-        backgroundColor:'#fff',
-        flexDirection:'column',
-    },
     subtotalView:{
         flexDirection:'row',
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
-        borderWidth:1,
-        borderColor:'#D7D7D7',
+        borderTopWidth:1,
+        borderBottomWidth:1,
+        borderColor:'#F5F5F5',
         justifyContent:'center'
     },
     taxView:{
@@ -512,7 +508,7 @@ var styleShoppingCartPage = StyleSheet.create({
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
         borderTopWidth:1,
-        borderColor:'#D7D7D7',
+        borderColor:'#F5F5F5',
         justifyContent:'center',
     },
     promotionDeductionView:{
@@ -520,7 +516,7 @@ var styleShoppingCartPage = StyleSheet.create({
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
         borderBottomWidth:1,
-        borderColor:'#D7D7D7',
+        borderColor:'#F5F5F5',
         justifyContent:'center',
     },
     deliveryFeeView:{
@@ -539,7 +535,7 @@ var styleShoppingCartPage = StyleSheet.create({
     phoneNumberInputView:{
         height:25,
         flexDirection:'row',
-        borderColor:'#D7D7D7',
+        borderColor:'#F5F5F5',
         borderWidth:1,
         borderRadius:5,
         marginTop:windowHeight/147.2,
@@ -554,7 +550,7 @@ var styleShoppingCartPage = StyleSheet.create({
     promoCodeInputView:{
         height:25,
         flexDirection:'row',
-        borderColor:'#D7D7D7',
+        borderColor:'#F5F5F5',
         borderWidth:1,
         borderRadius:5,
         width:windowWidth*0.55,
@@ -572,7 +568,7 @@ var styleShoppingCartPage = StyleSheet.create({
         paddingHorizontal:windowWidth/27.6,
         borderTopWidth:1,
         borderBottomWidth:1,
-        borderColor:'#D7D7D7',
+        borderColor:'#F5F5F5',
         justifyContent:'center'
     },
     totalView:{
@@ -581,7 +577,7 @@ var styleShoppingCartPage = StyleSheet.create({
         paddingHorizontal:windowWidth/27.6,
         paddingTop:windowHeight/20.0,
         borderBottomWidth:1,
-        borderColor:'#D7D7D7',
+        borderColor:'#F5F5F5',
         justifyContent:'center'
     },
     totalPriceTitleText:{ 
@@ -599,7 +595,7 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'column',
     },
     addressLine:{
-        color:'#696969',
+        color:'#4A4A4A',
         fontSize:windowHeight/49.06,
         marginTop:windowHeight/147.2,
     },
@@ -682,7 +678,7 @@ var styleShoppingCartPage = StyleSheet.create({
     dishPriceText:{
         fontSize:windowHeight/40.89,
         fontWeight:'600',
-        color:'#808080',
+        color:'#9B9B9B',
     },
     dishIngredientView:{
         height:windowHeight*0.0968,  
@@ -728,22 +724,18 @@ var styleShoppingCartPage = StyleSheet.create({
     addPromoCodeIcon:{
         width: windowHeight/36.8, 
         height: windowHeight/36.8,
-    },
-    bottomButtonView:{
-        height:windowHeight*0.074,
-        flexDirection:'row',        
-        backgroundColor:'#FFCC33',
-        position:'absolute',
-        left: 0, 
-        right: 0,
-        top:windowHeight-windowHeight*0.074,
     }, 
+    footerView:{ 
+        flexDirection:'row', 
+        height:windowHeight*0.075, 
+        backgroundColor:'#FFCC33',
+    },
     getPriceButtonView:{
         width:windowWidth*0.5,
         flex:1,
         flexDirection:'row',        
         justifyContent: 'center',
-        backgroundColor:'#FFCC33',
+        backgroundColor:'#FF9933',
     },
     checkOutButtonView:{
         width:windowWidth*0.5,
