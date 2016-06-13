@@ -67,7 +67,7 @@ class PaymentPage extends Component {
                                         </View>)];
         }
                 
-        return (<View style={styles.geryContainer}>
+        return (<View style={styles.greyContainer}>
                   <View style={styles.headerBannerView}>
                     <View style={styles.headerLeftView}>
                         <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={()=>this.navigateBackToShoppingCartPage()}>
@@ -213,7 +213,7 @@ var stylePaymentPage = StyleSheet.create({
       position:'absolute',
       left: 0, 
       right: 0,
-      top:windowHeight-windowHeight*0.075,
+      top:windowHeight-15-windowHeight*0.075,
       height:windowHeight*0.075,
       width:windowWidth,
     },

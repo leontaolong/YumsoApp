@@ -46,7 +46,18 @@ class AuthService {
             }
         });
         if(response.statusCode==200){
-            Alert.alert( 'Success', 'successfully registered. Please confirm your email. You will not be able to log in till your email is verified',[ { text: 'OK' }]); 
+            Alert.alert( 'Success', 'Successfully registered. Please confirm your email. You will not be able to log in till your email is verified',[ { text: 'OK' }]); 
+            return true;
+        }else{
+            Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);
+            return false; 
+        }
+    }
+    
+    async forgotPasswordWithEmail(email){
+        let response = await this.client.postWithoutAuth(config.forgotPasswordEndpointEmail + email, {});
+        if(response.statusCode==200){
+            Alert.alert( 'Success', 'Please reset the password through the link sent to '+email,[ { text: 'OK' }]); 
             return true;
         }else{
             Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);

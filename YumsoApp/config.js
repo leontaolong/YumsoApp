@@ -1,5 +1,5 @@
 module.exports={
-    baseUrl: 'http://192.168.1.113:8080',
+    baseUrl: 'http://10.0.0.242:8080',
     googleApiName:'yumsoIOS	',
     googleApiKey:'AIzaSyBQdKxM-ZRQ2r95bkQLPlY10joKJeC6slw',
     googleGeoBaseUrl: 'https://maps.googleapis.com',
@@ -9,6 +9,7 @@ module.exports={
     authEndpointEmail:'/api/v1/auth/authenticateByEmail/eater',
     registerEndpointEmail:'/api/v1/auth/registerByEmail/eater',
     resetPasswordEndpoint:'/api/v1/auth/reset/eater',
+    forgotPasswordEndpointEmail:'/api/v1/auth/forgotPassword/eater/',
     authEndpointFacebook:'/api/v1/auth/authenticateFbToken/eater',
     authStatusEndpoint:'/api/v1/auth/getloginstatus',
     paymentTokenEndpoint:'/api/v1/payment/client_token',

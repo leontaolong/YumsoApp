@@ -6,7 +6,7 @@ var AuthService = require('./authService');
 var ImageCamera = require('./imageCamera');
 var MapPage = require('./mapPage');
 var backIcon = require('./icons/icon-back.png');
-var defaultAvatar = require('./TestImages/Obama.jpg');
+var defaultAvatar = require('./icons/defaultAvatar.jpg');
 var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/icon-grey-house.png');
 var paypalIcon = require('./icons/icon-paypal.png');
@@ -258,7 +258,7 @@ class EaterPage extends Component {
 
          var addressListRendered = [];
          if (this.state.eater.addressList.length > 0) {
-             addressListRendered.push(<Text style={styleEaterPage.eaterPageGreyText}>+ OTHER</Text>);
+             addressListRendered.push(<Text key={'OTHER'} style={styleEaterPage.eaterPageGreyText}>+ OTHER</Text>);
          }
 
          for (let i = 0; i < this.state.eater.addressList.length; i++) {

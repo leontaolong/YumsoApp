@@ -11,7 +11,6 @@ var houseIconOrange = require('./icons/icon-home-orange.png');
 var backIcon = require('./icons/icon-back.png');
 var locatorIcon = require('./icons/icon-location.png');
 var houseIcon = require('./icons/icon-grey-house.png');
-var cancelIcon = require('./icons/icon-cancel.png');
 
 import Dimensions from 'Dimensions';
 
@@ -132,7 +131,7 @@ class MapPage extends Component {
                              <Text style={styles.titleText}>{this.state.city}</Text>
                          </View>
                          <View style={styles.headerRightView}>
-                             <TouchableHighlight underlayColor={'transparent'} onPress={() =>{this.setState({showMapView: false})}}>
+                             <TouchableHighlight underlayColor={'transparent'} onPress={() =>{this.setState({showMapView: this.state.showMapView? false:true})}}>
                                  <Image source={houseIconOrange} style={styleMapPage.houseIconOrange}/>
                              </TouchableHighlight>
                          </View>
@@ -144,12 +143,9 @@ class MapPage extends Component {
                                 <TouchableHighlight style={styleMapPage.locationSearchIconView} underlayColor={'transparent'} onPress={() => this.searchAddress() }>
                                     <Image source={searchIcon} style={styleMapPage.searchIcon}/>
                                 </TouchableHighlight>  
-                                <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}  onSubmitEditing = {()=> this.searchAddress()} returnKeyType = {'search'}
+                                <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}  onSubmitEditing = {()=> this.searchAddress()} returnKeyType = {'search'} clearButtonMode={'while-editing'}
                                     onChangeText = {(text)=>this.setState({searchAddress: text,selectedAddress:''})} value={this.state.selectedAddress?this.state.selectedAddress.formatted_address:this.state.searchAddress}/>
                             </View>
-                            <TouchableHighlight style={styleMapPage.cancelIconView} underlayColor={'transparent'} onPress={() => {this.setState({showMapView:true,selectedAddress:'',searchAddressResultView:'',searchAddress:''})}}>
-                                <Image source={cancelIcon} style={styleMapPage.cancelIcon}/>
-                            </TouchableHighlight>
                        </View>
                        <View style={styleMapPage.currentLocationClickableView}>
                             <TouchableHighlight onPress={()=>this.locateToCurrentAddress()} underlayColor={'transparent'}>
@@ -195,7 +191,7 @@ class MapPage extends Component {
         let i=1;
         if(homeAddress){
             addressesView.push(
-                <TouchableHighlight key={'homeAddress'} onPress={()=>this.useSavedAddress(homeAddress)}>
+                <TouchableHighlight key={'homeAddress'} underlayColor={'#F5F5F5'} onPress={()=>this.useSavedAddress(homeAddress)}>
                 <View style={styleMapPage.oneAddressView}>
                     <View style={styleMapPage.oneAddressIconTitleView}>
                         <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
@@ -212,7 +208,7 @@ class MapPage extends Component {
         }
         if(workAddress){
             addressesView.push(
-                <TouchableHighlight key={'workAddress'} onPress={()=>this.useSavedAddress(workAddress)}>
+                <TouchableHighlight key={'workAddress'} underlayColor={'#F5F5F5'} onPress={()=>this.useSavedAddress(workAddress)}>
                 <View style={styleMapPage.oneAddressView}>
                     <View style={styleMapPage.oneAddressIconTitleView}>
                         <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
@@ -229,7 +225,7 @@ class MapPage extends Component {
         }
         for(let address of otherAddresses){
             addressesView.push(
-                <TouchableHighlight key={'otherAddresses'+i} onPress={()=>this.useSavedAddress(address)}>
+                <TouchableHighlight key={'otherAddresses'+i} underlayColor={'#F5F5F5'} onPress={()=>this.useSavedAddress(address)}>
                 <View style={styleMapPage.oneAddressView}>
                     <View style={styleMapPage.oneAddressIconTitleView}>
                         <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
@@ -588,33 +584,20 @@ var styleMapPage = StyleSheet.create({
     locationSearchInputView:{
         flexDirection:'row',
         alignItems:'flex-end',
-        marginLeft:windowWidth*0.03,
-        width:windowWidth*0.87,
+        width:windowWidth*0.93,
         height:windowWidth*0.7/8,
         marginTop:windowHeight/36.8,
         marginBottom:windowHeight/147.2,
         borderWidth:1,
         borderRadius:8,
-        borderColor:'#D7D7D7',
+        borderColor:'#D9D9D9',
     },
     locationSearchIconView:{
         alignSelf:'center',
-        marginRight:windowWidth/103.5,
     },
     searchIcon:{
         width:30,
         height:30,
-    },
-    cancelIconView:{
-        width:windowWidth*0.1,
-        flexDirection:'row',
-        alignItems:'flex-end',
-        paddingTop:windowHeight/44.47,
-        marginRight:windowWidth/75.0,  
-    },
-    cancelIcon:{
-        width:windowHeight/16.675,
-        height:windowHeight/16.675,
     },
     locationSearchInput:{
         flex:0.9,
@@ -627,9 +610,6 @@ var styleMapPage = StyleSheet.create({
         flexDirection:'row',
         width:windowWidth*0.5,
         height:windowWidth*0.1,
-        borderColor:'#FFCC33',
-        borderWidth:0,
-        borderRadius:6, 
         overflow: 'hidden', 
         alignSelf:'center',
     },
@@ -691,8 +671,6 @@ var styleMapPage = StyleSheet.create({
     },
     addressSelectionView:{
         flexDirection:'column',
-        borderTopWidth:1,
-        borderColor:'#D7D7D7', 
         backgroundColor:'#fff', 
         position:'absolute',
         top:windowHeight/16.4+windowHeight/36.8+windowWidth*0.7/8+windowHeight/147.2+windowWidth*0.5/5+15,
@@ -715,6 +693,8 @@ var styleMapPage = StyleSheet.create({
     oneAddressView:{
         flex:1,
         flexDirection:'row', 
+        paddingLeft:windowWidth*0.01875,
+        paddingRight:windowWidth*0.0375,
     },
     oneAddressIconTitleView:{
         flex:0.3,
@@ -738,6 +718,7 @@ var styleMapPage = StyleSheet.create({
     oneAddressText:{
         marginTop:windowHeight/55.583,
         fontSize:windowHeight/39.24,
+        textAlign:'justify',
     },
     aptNumberView:{
         backgroundColor:'#fff', 
@@ -762,7 +743,7 @@ var styleMapPage = StyleSheet.create({
         paddingHorizontal:7,
         fontSize:windowHeight/47.64,
         borderRadius:6,
-        borderColor:'#D7D7D7',
+        borderColor:'#9B9B9B',
     },
 })    
 
