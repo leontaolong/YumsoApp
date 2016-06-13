@@ -384,6 +384,7 @@ class MapPage extends Component {
                              'Wouldn\'t you specify your Apt./Suite# ?',
                              [ { text: 'OK'} ,
                                { text: 'Not Applicable', onPress:()=>{
+                                        this.state.selectedAddress.apartmentNumber = null;
                                         if (this.state.selectedAddress) {
                                             if (this.state.eater) {
                                                 if (this.onSelectAddress) {
