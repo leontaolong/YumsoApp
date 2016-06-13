@@ -89,7 +89,7 @@ class EaterPage extends Component {
              return (<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this) } initialLoc = {this.state.workAddress}  onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
          }
          if (this.state.showResetPassword){
-             return (<ResetPasswordPage onCancel={this.onCancelPasswordReset.bind(this)}/>)
+             return (<ResetPasswordPage userEmail={this.state.eater.email} navigator = {this.props.navigator} onCancel={this.onCancelPasswordReset.bind(this)}/>)
          }
          if (this.state.edit) {
              var otherAddressListRendered = [];

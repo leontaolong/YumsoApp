@@ -48,13 +48,18 @@ import React, {
 class ChefListPage extends Component {
     constructor(props) {
         super(props);
-
+        var routeStack = this.props.navigator.state.routeStack;
+        let eater = undefined;
+        if(routeStack.length>0 && routeStack[routeStack.length-1].passProps){
+            eater = routeStack[routeStack.length-1].passProps.eater;
+        }
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 != r2
         });
         this.client = new HttpsClient(config.baseUrl, true);     
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
         this.state = {
+            eater: eater,
             dataSource: ds.cloneWithRows([]),
             showProgress: false,
             showChefSearch:false,
@@ -102,12 +107,11 @@ class ChefListPage extends Component {
         if(!this.state.pickedAddress){
            await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
         }
-        // if(config.autoLogin){//this is for debugging so to auto login
-        //    await AuthService.loginWithEmail(config.email, config.password);
-        // }
-        let eater = await AuthService.getEater();
-        let principal = await  AuthService.getPrincipalInfo();
-        //todo: when token expired, we shall clear garbage but we need also figure out a way to auto authenticate for long life token or fb token to acquire again.
+        let eater = this.state.eater;
+        if(!eater){
+            eater = await AuthService.getEater();
+        }
+        let principal = await AuthService.getPrincipalInfo();
         if(eater){
             this.setState({ 
                 dollarSign1: eater.chefFilterSettings.priceRankFilter[1]==true? dollarSign1_Orange:dollarSign1_Grey,
