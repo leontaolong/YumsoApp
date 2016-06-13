@@ -126,10 +126,13 @@ class PaymentPage extends Component {
                     });
             }else if(response.statusCode==200){
                 if(response.data.result===true){
-                    Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]);  
+                    Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]); 
+                    this.props.navigator.state.routeStack = [];                  
                     this.props.navigator.push({
-                        name: 'OrderConfirmation',//todo: fb cached will signin and redirect back right away.
-                        //todo: perhaps pass orderId
+                        name: 'OrderConfirmation',
+                        passProps:{
+                            eater: this.state.eater
+                        }
                     }); 
                 }else{
                     console.log(response.data.detail);

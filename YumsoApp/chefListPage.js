@@ -73,6 +73,9 @@ class ChefListPage extends Component {
             city:'Seattle',
             state:'WA',
             sortCriteriaIcon:sortCriteriaIconGery,
+            dollarSign1: dollarSign1_Orange,
+            dollarSign2: dollarSign2_Orange,
+            dollarSign3: dollarSign3_Orange,
         };
         this.responseHandler = function (response, msg) {
             if (response.statusCode === 401) {
@@ -114,13 +117,7 @@ class ChefListPage extends Component {
                 withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
                 priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
                 withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort});
-        }else{
-            this.setState({
-                dollarSign1 : dollarSign1_Orange,
-                dollarSign2 : dollarSign2_Orange,
-                dollarSign3 : dollarSign3_Orange,
-            });
-        }   
+        }
         this.setState({ principal: principal, eater:eater });
         this.fetchChefDishes();
     }

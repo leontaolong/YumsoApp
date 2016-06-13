@@ -266,7 +266,7 @@ class EaterPage extends Component {
                  <Text key={i + 'otherAddress'} style={styleEaterPage.eaterPageGreyText}>Apt/Suite#: {this.state.eater.addressList[i].apartmentNumber}</Text>
              );
          }
-         var chefProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
+         var eaterProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
 
          var emailView = null;
          if (this.state.eater.email && this.state.principal.identityProvider !== 'Yumso') {
@@ -315,7 +315,7 @@ class EaterPage extends Component {
                      </View>
                  </View>
                  <ScrollView>
-                     <Image source={chefProfile} style={styleEaterPage.eaterProfilePic}>
+                     <Image source={eaterProfile} style={styleEaterPage.eaterProfilePic}>
                          <TouchableHighlight style={styleEaterPage.uploadPhotoButtonView} underlayColor={'transparent'} onPress={() => this.uploadPic() }>
                              <Image source={uploadPhotoIcon} style={styleEaterPage.uploadPhotoIcon}/>
                          </TouchableHighlight>
@@ -370,6 +370,7 @@ class EaterPage extends Component {
 
 
     uploadPic(){
+           this.setState({showProgress:true});
            ImageCamera.PickImage((source)=>{
                 this.state.eater.eaterProfilePic = source.uri;
                 this.setState({eater:this.state.eater});
@@ -391,10 +392,11 @@ class EaterPage extends Component {
 
                     if (request.status === 200) {
                         console.log('success', request.responseText);
-                        Alert.alert( 'Success', 'Successfully upload your profile picture',[ { text: 'OK' }]); 
+                        Alert.alert( 'Success', 'Successfully upload your profile picture',[ { text: 'OK' }]);                        
                     } else {
                         Alert.alert( 'Fail', 'Failed to upload your profile picture. Please retry again later',[ { text: 'OK' }]); 
                     }
+                    this.setState({showProgress:false});                  
                 };  
                 
                 request.open('POST', config.baseUrl+config.eaterPicUploadEndpoint);
@@ -418,7 +420,8 @@ class EaterPage extends Component {
             Alert.alert('Warning', 'Missing alias name. This will be displayed publicly to chef and other users', [{ text: 'OK' }]);                
         }
         var _this = this;
-        let eater = JSON.parse(JSON.stringify(this.state.eater));
+        let eater = {};
+        eater.eaterId = this.state.eater.eaterId;
         eater.firstname = this.state.firstname.trim();
         eater.lastname = this.state.lastname.trim();
         eater.eaterAlias = this.state.eaterAlias.trim();
@@ -427,6 +430,9 @@ class EaterPage extends Component {
         eater.homeAddress = this.state.homeAddress;
         eater.workAddress = this.state.workAddress;
         eater.addressList = this.state.addressList;
+        for(let prop in eater){
+            this.state.eater[prop] = eater[prop];
+        }
         this.setState({showProgress:true});
         return this.client.postWithAuth(config.eaterUpdateEndpoint, { eater: eater })
             .then((res) => {
@@ -434,11 +440,11 @@ class EaterPage extends Component {
                 if (res.statusCode != 200) {
                     return this.responseHandler(res);
                 }
-                return AuthService.updateCacheEater(eater)
+                return AuthService.updateCacheEater(this.state.eater)
                 .then(() => {
                     Alert.alert('Success', 'Successfully updated your profile', [{ text: 'OK' }]);
-                    this.setState({ eater: eater, edit: false, showProgress: false });
-                    this.state.callback(eater);
+                    this.setState({ eater: this.state.eater, edit: false, showProgress: false });
+                    this.state.callback(this.state.eater);
                 });
         });
     }
