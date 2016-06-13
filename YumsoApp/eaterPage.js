@@ -82,13 +82,13 @@ class EaterPage extends Component {
          }
          
          if (this.state.addMoreAddress) {
-             return (<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this) } onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
+             return (<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this) } onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
          }
          if (this.state.editHomeAddress) {
-             return (<MapPage onSelectAddress={this.mapDoneForHomeAddress.bind(this) } initialLoc = {this.state.homeAddress} onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
+             return (<MapPage onSelectAddress={this.mapDoneForHomeAddress.bind(this) } initialLoc = {this.state.homeAddress} onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
          }
          if (this.state.editWorkAddress) {
-             return (<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this) } initialLoc = {this.state.workAddress}  onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
+             return (<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this) } initialLoc = {this.state.workAddress}  onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
          }
          if (this.state.showResetPassword){
              return (<ResetPasswordPage userEmail={this.state.eater.email} navigator = {this.props.navigator} onCancel={this.onCancelPasswordReset.bind(this)}/>)

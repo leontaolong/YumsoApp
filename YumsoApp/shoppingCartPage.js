@@ -235,7 +235,7 @@ class ShoppingCartPage extends Component {
                                 </View>;  
         }
         if(this.state.selectDeliveryAddress){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true}/>);   
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true} showHouseIcon={true}/>);   
         }       
         return (
             <View style={styles.container}>
