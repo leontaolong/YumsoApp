@@ -446,22 +446,23 @@ class ChefListPage extends Component {
     }
  
     applySearchSettings(){
+        let self = this;
         if(this.state.eater){
             if(!this.state.eater.chefFilterSettings){//todo: remove this since the object should be exist when creating
                 this.state.eater.chefFilterSettings = {};
             }
             this.state.eater.chefFilterSettings['priceRankFilter'] = this.state.priceRankFilter;
             this.state.eater.chefFilterSettings['withBestRatedSort'] = this.state.withBestRatedSort;
-            return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:this.state.eater})
+            return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:{eaterId: this.state.eater.eaterId, chefFilterSettings: this.state.eater.chefFilterSettings}})
                 .then((res) => {
                     if (res.statusCode != 200) {
-                        return this.responseHandler(res);
+                        return self.responseHandler(res);
                     }
-                    return AuthService.updateCacheEater(this.state.eater)
+                    return AuthService.updateCacheEater(self.state.eater)
                         .then(() => {
-                            this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
-                            this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;
-                            return this.state.eater.chefFilterSettings;
+                            self.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(self.state.priceRankFilter));
+                            self.state.withBestRatedSortOrigin = self.state.withBestRatedSort;
+                            return self.state.eater.chefFilterSettings;
                         });
                 });                      
         }
