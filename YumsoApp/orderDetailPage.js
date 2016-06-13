@@ -230,7 +230,7 @@ class ShoppingCartPage extends Component {
                     </View>
                </View>
                {deliverTimeView}
-               <KeyboardAwareListView style={styleOrderDetailPage.dishListView}
+               <ListView style={styleOrderDetailPage.dishListView}
                     ref={'scroll'}        
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) } 
