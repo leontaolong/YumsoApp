@@ -42,7 +42,28 @@ class MapPage extends Component {
         let city;
         if(this.props.navigator){
            routeStack = this.props.navigator.state.routeStack;
-        }   
+        }    
+        let mark = undefined;
+        if(this.props.initialLoc){
+            mark = {
+                id :'saved',
+                latlng: { latitude: this.props.initialLoc.lat, longitude: this.props.initialLoc.lng },
+                title: this.props.initialLoc.formatted_address,
+            };       
+            this.initialRegion = {
+                latitude: this.props.initialLoc.lat,
+                longitude: this.props.initialLoc.lng,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            };
+        }else{//Seattle,WA
+            this.initialRegion = {
+                latitude: 47.6062095,
+                longitude: -122.3320708,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            };
+        }
         if(routeStack && routeStack.length!=0){
             this.onSelectAddress = routeStack[routeStack.length-1].passProps.onSelectAddress;
             eater = routeStack[routeStack.length-1].passProps.eater;
@@ -60,11 +81,12 @@ class MapPage extends Component {
             showProgress:true,
             showMapView:true,
             showAddNewAddressInputView:false,
-            markers:[],
+            markers:mark?[mark]:[],
             eater:eater,
             city:city,
             showApartmentNumber:false,
             usedSavedAddress:false,
+            selectedAddress: this.props.initialLoc,
             aptNumberViewYposition:windowHeight-windowHeight*0.074*2,
         };
         this.client = new HttpsClient(config.baseUrl, true);
@@ -78,7 +100,7 @@ class MapPage extends Component {
                                 top: this.state.aptNumberViewYposition, left:0, right:0, height:windowHeight*0.074,}}>
                               <Text style={styleMapPage.aptNumberViewTitle}>Apt/Suite# </Text>
                               <TextInput style={styleMapPage.aptNumberViewInput} onFocus = {()=>this.slideUpAptNumberView()} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                   keyboardType={'numbers-and-punctuation'} onSubmitEditing = {()=>this.slideDownAptNumberView()} onChangeText = {(text) => this.setState({ apartmentNumber: text })}/>
+                                   value={this.state.apartmentNumber} keyboardType={'numbers-and-punctuation'} onSubmitEditing = {()=>this.slideDownAptNumberView()} onChangeText = {(text) => this.setState({ apartmentNumber: text })}/>
                           </View>);
             }   
             
@@ -135,12 +157,7 @@ class MapPage extends Component {
                        </View>                       
                     </View>
                     <MapView ref='MapView' style={styleMapPage.mapView}
-                        initialRegion={{
-                            latitude: 47.6062095,
-                            longitude:  -122.3320708,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        }}
+                        initialRegion={this.initialRegion}
                         region={this.state.region}
                         onRegionChange={this.onRegionChange.bind(this) }>
                         {this.state.markers.map(marker => (
@@ -275,6 +292,7 @@ class MapPage extends Component {
                                 } 
                             }
                             if((streetName==='unknown' || streetNumber==='unknown' || city=='unknown' || state=='unknown' || postal=='unknown') && this.isSpecific){
+                                this.setState({selectedAddress:undefined});
                                 Alert.alert( 'Warning', 'Cannot find enough information about this location',[ { text: 'OK' }]); 
                                 return;         
                             }                         
@@ -333,6 +351,7 @@ class MapPage extends Component {
                         }
                     }
                     if((streetName==='unknown' || streetNumber==='unknown' || city=='unknown' || state=='unknown' || postal=='unknown') && this.isSpecific){
+                        this.setState({ selectedAddress: undefined });                      
                         Alert.alert( 'Warning', 'Cannot find enough information about this location',[ { text: 'OK' }]); 
                         return;         
                     }
@@ -365,6 +384,7 @@ class MapPage extends Component {
                              'Wouldn\'t you specify your Apt./Suite# ?',
                              [ { text: 'OK'} ,
                                { text: 'Not Applicable', onPress:()=>{
+                                        this.state.selectedAddress.apartmentNumber = null;
                                         if (this.state.selectedAddress) {
                                             if (this.state.eater) {
                                                 if (this.onSelectAddress) {
@@ -390,8 +410,8 @@ class MapPage extends Component {
                            );
                 return;
             }
-            if (this.state.apartmentNumber === undefined && !this.usedSavedAddress) {
-                this.setState({showApartmentNumber: true});
+            if (this.state.apartmentNumber === undefined && !this.usedSavedAddress) {     
+                this.setState({showApartmentNumber: true, apartmentNumber: this.props.initialLoc? this.props.initialLoc.apartmentNumber:undefined});
                 return;
             }
             if(!this.usedSavedAddress) this.state.selectedAddress.apartmentNumber = this.state.apartmentNumber; //todo: state management will add the apt and save next time in edit profile.

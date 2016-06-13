@@ -48,6 +48,9 @@ class EaterPage extends Component {
             editHomeAddress:false,
             editWorkAddress:false,
             showResetPassword:false,
+            homeAddress:eater.homeAddress,
+            workAddress:eater.workAddress,
+            addressList:eater.addressList
         };
         this.responseHandler = function (response, msg) {
             if (response.statusCode === 401) {
@@ -80,10 +83,10 @@ class EaterPage extends Component {
              return (<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this) } onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
          }
          if (this.state.editHomeAddress) {
-             return (<MapPage onSelectAddress={this.mapDoneForHomeAddress.bind(this) } onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
+             return (<MapPage onSelectAddress={this.mapDoneForHomeAddress.bind(this) } initialLoc = {this.state.homeAddress} onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
          }
          if (this.state.editWorkAddress) {
-             return (<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this) } onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
+             return (<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this) } initialLoc = {this.state.workAddress}  onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
          }
          if (this.state.showResetPassword){
              return (<ResetPasswordPage onCancel={this.onCancelPasswordReset.bind(this)}/>)
