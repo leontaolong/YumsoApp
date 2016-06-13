@@ -736,6 +736,7 @@ var styleShopPage = StyleSheet.create({
         fontSize:windowHeight/40.57,
         color:'#9B9B9B',
         marginTop:windowHeight*0.0088,
+        textAlign:'justify',
     },
     priceView:{
         flex: 1,

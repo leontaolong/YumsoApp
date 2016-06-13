@@ -18,6 +18,7 @@ import React, {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Image,
   TextInput,
   ListView,
@@ -76,52 +77,50 @@ class DishPage extends Component {
                          <View style={styles.headerRightView}>
                          </View>
                </View>
-               <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={true}
-                        dot={<View style={{ backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />}
-                        activeDot={<View style={{ backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />} >
-                        {this.state.dish.pictures.map((picture) => {
-                            return (
-                                    <Image key={picture} source={{ uri: picture }} style={styleShopPage.oneDishPicture}/>
-                            );
-                        }) }
-               </Swiper>
-               
-               <View style={styleShopPage.oneDishNameDiscriptionView}>                  
-                    <Text style={styleShopPage.oneDishNameText}>{this.state.dish.dishName}</Text>
-                    <Text style={styleShopPage.oneDishIngredientText}>{this.state.dish.ingredients}</Text>
-                    <Text style={styleShopPage.oneDishDiscriptionText}>{this.state.dish.description}</Text>
-               </View>
-               
-                
-                <View style={styleShopPage.priceView}>
-                    <View style={styleShopPage.priceTextView}>
-                        <Text style={styleShopPage.priceText}>${this.state.dish.price}</Text>
-                        <Text style={styleShopPage.orderStatusText}>
+               <ScrollView>
+                <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={true}
+                            dot={<View style={{ backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />}
+                            activeDot={<View style={{ backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />} >
+                            {this.state.dish.pictures.map((picture) => {
+                                return (
+                                        <Image key={picture} source={{ uri: picture }} style={styleDishPage.oneDishPicture}/>
+                                );
+                            }) }
+                </Swiper>
+                <View style={styleDishPage.oneDishNameDiscriptionView}>                  
+                        <Text style={styleDishPage.oneDishNameText}>{this.state.dish.dishName}</Text>
+                        <Text style={styleDishPage.oneDishIngredientText}>{this.state.dish.ingredients}</Text>
+                        <Text style={styleDishPage.oneDishDiscriptionText}>{this.state.dish.description}</Text>
+                </View>
+                <View style={styleDishPage.priceView}>
+                    <View style={styleDishPage.priceTextView}>
+                        <Text style={styleDishPage.priceText}>${this.state.dish.price}</Text>
+                        <Text style={styleDishPage.orderStatusText}>
                         {this.state.selectedTime === 'All Schedules' ? '' : (this.state.scheduleMapping[this.state.selectedTime][this.state.dish.dishId].leftQuantity)+' orders left'} 
                         </Text>
-                        <Text style={styleShopPage.orderStatusText}>
+                        <Text style={styleDishPage.orderStatusText}>
                         {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity + ' ordered ' : ''} 
                         </Text>
                     </View>
-                    <View style={styleShopPage.chooseQuantityView}>
-                                             
-                        <View style={styleShopPage.minusIconView}>
+                    <View style={styleDishPage.chooseQuantityView}>
+                        <View style={styleDishPage.minusIconView}>
                             <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.removeFromShoppingCart(this.state.dish) }>
-                                <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
+                                <Image source={minusIcon} style={styleDishPage.plusMinusIcon}/>
                             </TouchableHighlight>
                         </View>
-                        <View style={styleShopPage.quantityTextView}>
-                            <Text style={styleShopPage.quantityText}>
+                        <View style={styleDishPage.quantityTextView}>
+                            <Text style={styleDishPage.quantityText}>
                             {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity: ' '}
                             </Text>
                         </View>
-                        <View style={styleShopPage.plusIconView}>
+                        <View style={styleDishPage.plusIconView}>
                             <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.addToShoppingCart(this.state.dish) }>
-                                <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
+                                <Image source={plusIcon} style={styleDishPage.plusMinusIcon}/>
                             </TouchableHighlight>
                         </View>                        
                     </View>
                 </View>
+                </ScrollView>
             </View>
         );
     }
@@ -183,7 +182,7 @@ class DishPage extends Component {
     }
 }
 
-var styleShopPage = StyleSheet.create({
+var styleDishPage = StyleSheet.create({
     shopPictureView:{
         height: windowHeight*0.4419,
     },
@@ -381,17 +380,17 @@ var styleShopPage = StyleSheet.create({
         fontSize:windowHeight/40.57,
         color:'#9B9B9B',
         marginTop:windowHeight*0.0088,
+        textAlign:'justify', 
     },
     oneDishDiscriptionText:{
         fontSize:windowHeight/47.33,
         color:'#9B9B9B',
         marginTop:windowHeight*0.0088,
+        textAlign:'justify',
     },   
     priceView:{
         flex: 1,
         flexDirection: 'row',
-        borderColor: '#F5F5F5',
-        borderBottomWidth: windowHeight*0.0088,
         backgroundColor: '#fff',
         paddingHorizontal:windowWidth*0.07,
         paddingVertical:windowHeight*0.0352,

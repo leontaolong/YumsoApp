@@ -16,7 +16,7 @@ module.exports = StyleSheet.create({
       flexDirection:'column',
       backgroundColor:'#fff',
     },
-    geryContainer:{
+    greyContainer:{
         marginTop:15,
         flex:1,
         flexDirection:'column',

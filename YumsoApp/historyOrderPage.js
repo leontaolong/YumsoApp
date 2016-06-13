@@ -122,7 +122,7 @@ class HistoryOrderPage extends Component {
     render() {
         if(this.state.showCommentBox == true){
            return (
-                <View style={styles.geryContainer}> 
+                <View style={styles.greyContainer}> 
                     <TextInput placeholder="comments" style={styles.loginInput}
                         onChangeText = {(text) => this.setState({ comment: text }) }/>
                     <TextInput placeholder="Star Rating integer" style={styles.loginInput} onChangeText = {(text) => this.setState({ starRating: text }) }/>                    

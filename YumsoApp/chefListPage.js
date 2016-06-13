@@ -258,7 +258,7 @@ class ChefListPage extends Component {
         }else if(this.state.showLocSearch){
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city}/>);   
         }else if(this.state.showChefSearch){
-            return <View style={styleFilterPage.container}>
+            return <View style={styles.greyContainer}>
                        <View style={styles.headerBannerView}>    
                             <View style={styles.headerLeftView}>
                                 <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} 
@@ -752,16 +752,10 @@ var styleChefListPage = StyleSheet.create({
 });
 
 var styleFilterPage = StyleSheet.create({
-    container:{
-        paddingTop:15,
-        flex:1,
-        flexDirection:'column',
-        backgroundColor:'#F5F5F5',
-    },
     dollarSignSelectionView:{
         flexDirection:'row',
         height:windowHeight*0.0792,
-        borderColor:'#D7D7D7',
+        borderColor:'#F5F5F5',
         borderBottomWidth:0.5,
         alignItems:'center',
         backgroundColor:'#FFFFFF',
@@ -780,7 +774,7 @@ var styleFilterPage = StyleSheet.create({
         position:'absolute',
         left: 0, 
         right: 0,
-        top:windowHeight-windowHeight/13.38,
+        top:windowHeight-15-windowHeight/13.38,
         height:windowHeight/13.38,
         backgroundColor:'#FFCC33',
         justifyContent: 'center',
@@ -809,7 +803,7 @@ var styleFilterPage = StyleSheet.create({
         width:windowWidth,
         height:windowHeight*0.088,
         flexDirection:'row', 
-        borderColor:'#D7D7D7',
+        borderColor:'#F5F5F5',
         borderBottomWidth:1,    
         backgroundColor:'#FFFFFF',
     },

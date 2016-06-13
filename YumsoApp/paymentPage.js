@@ -67,7 +67,7 @@ class PaymentPage extends Component {
                                         </View>)];
         }
                 
-        return (<View style={styles.geryContainer}>
+        return (<View style={styles.greyContainer}>
                   <View style={styles.headerBannerView}>
                     <View style={styles.headerLeftView}>
                         <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={()=>this.navigateBackToShoppingCartPage()}>
