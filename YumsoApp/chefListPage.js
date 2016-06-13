@@ -388,7 +388,7 @@ class ChefListPage extends Component {
     
     mapDone(address){
          if(address){
-             Alert.alert( '', 'Your delivery location is set to '+address.formatted_address,[ { text: 'OK' }]); 
+             Alert.alert( '', 'Your search location is set to '+address.formatted_address,[ { text: 'OK' }]); 
              //todo: get chef use location info;                 
          }
          this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, isMenuOpen: false, showProgress: true});
