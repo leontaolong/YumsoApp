@@ -8,6 +8,7 @@ var backIcon = require('./icons/icon-back.png');
 var ratingIconGrey = require('./icons/icon-rating-grey.png');
 var ratingIconOrange = require('./icons/icon-rating-orange.png');
 var deleteBannerIcon = require('./icons/icon-x.png');
+var defaultDishPic = require('./icons/defaultAvatar.jpg');
 import Dimensions from 'Dimensions';
 import {KeyboardAwareListView} from 'react-native-keyboard-aware-scroll-view';
 
@@ -76,7 +77,7 @@ class ShoppingCartPage extends Component {
     }
             
     renderRow(orderItem){
-        let imageSrc =require('./icons/dishImageUnavailable.png') ;
+        let imageSrc = defaultDishPic;
         if(orderItem.dishDetail && orderItem.dishDetail.pictures && orderItem.dishDetail.pictures.length!=0){
             imageSrc={uri:orderItem.dishDetail.pictures[0]};   
         } 
@@ -109,45 +110,57 @@ class ShoppingCartPage extends Component {
                                   </View>
            }
            var commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
-                                  <View style={styleOrderDetailPage.ratingView}>
-                                      <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
-                                      <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
-                                      <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
-                                      <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
-                                      <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
-                                  </View>
-                                  <Text style={styleOrderDetailPage.commentText}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
+                                    <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                        <View style={styleOrderDetailPage.ratingView}>
+                                            <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
+                                            <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
+                                            <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
+                                            <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
+                                            <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                        </View>
+                                        <View style={styleOrderDetailPage.commentTimeView}>
+                                            <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(this.state.order.comment.eaterCommentTime)}</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styleOrderDetailPage.commentText}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
                                  </View>),
                                  chefReplyView];
         }else if(this.state.ratingSucceed){
           var commentBoxView = <View style={styleOrderDetailPage.commentBox}>
-                                  <View style={styleOrderDetailPage.ratingView}>
-                                      <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
-                                      <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
-                                      <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
-                                      <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
-                                      <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                  <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                    <View style={styleOrderDetailPage.ratingView}>
+                                        <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
+                                        <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
+                                        <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
+                                        <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
+                                        <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                    </View>
+                                    <View style={styleOrderDetailPage.commentTimeView}>
+                                        <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(new Date().getTime())}</Text>
+                                    </View>
                                   </View>
                                   <Text style={styleOrderDetailPage.commentText}>{this.state.comment.trim() ? this.state.comment :'No comment'}</Text>
                                </View>
         }else if(new Date().getTime()-this.state.order.orderDeliverTime < 7*24*60*60*1000){
            var commentBoxView = <View style={styleOrderDetailPage.commentBox}>
-                                  <View style={styleOrderDetailPage.ratingView}>
-                                     <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(1)}>
-                                      <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
-                                     </TouchableHighlight>
-                                     <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(2)}>
-                                      <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>
-                                     </TouchableHighlight>
-                                     <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(3)}>
-                                      <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
-                                     </TouchableHighlight>
-                                     <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(4)}>
-                                      <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
-                                     </TouchableHighlight>
-                                     <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(5)}>
-                                      <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
-                                     </TouchableHighlight>
+                                  <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                    <View style={styleOrderDetailPage.ratingView}>
+                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(1)}>
+                                        <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
+                                        </TouchableHighlight>
+                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(2)}>
+                                        <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>
+                                        </TouchableHighlight>
+                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(3)}>
+                                        <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
+                                        </TouchableHighlight>
+                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(4)}>
+                                        <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
+                                        </TouchableHighlight>
+                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(5)}>
+                                        <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                        </TouchableHighlight>
+                                    </View>
                                   </View>
                                   <TextInput placeholder="Leave your comment here" style={styleOrderDetailPage.commentInput} multiline={true} returnKeyType = {'done'} autoCorrect={false} onChangeText = {(text) => this.setState({ comment: text }) }/>                                     
                                   <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.submitCommentButton} onPress={()=>this.submitComment()}>
@@ -323,7 +336,7 @@ var styleOrderDetailPage = StyleSheet.create({
         justifyContent:'space-around',
         height:windowHeight*0.0974,
         borderColor:'#F5F5F5',
-        borderBottomWidth:windowHeight*0.007,
+        borderBottomWidth:5,
         backgroundColor:'#FFCC33'
     },
     deliverStatusView:{
@@ -331,7 +344,7 @@ var styleOrderDetailPage = StyleSheet.create({
         justifyContent:'center',
         height:windowHeight*0.0974,
         borderColor:'#F5F5F5',
-        borderBottomWidth:windowHeight*0.007,
+        borderBottomWidth:5,
         backgroundColor:'#FFCC33'
     },
     oneStatusView:{
@@ -364,7 +377,7 @@ var styleOrderDetailPage = StyleSheet.create({
         flexDirection:'row',
         flex:1,
         borderColor:'#F5F5F5',
-        borderBottomWidth:windowHeight*0.007,
+        borderBottomWidth:5,
     },
     dishPhoto:{
         width:windowWidth*0.344,
@@ -400,7 +413,7 @@ var styleOrderDetailPage = StyleSheet.create({
         alignSelf:'center',
         backgroundColor:'#F5F5F5',
         width:windowWidth*0.93,
-        marginTop:24,
+        marginTop:windowHeight*0.0224,
     },
     submitCommentButton:{
         backgroundColor:'#FFCC33',
@@ -413,16 +426,14 @@ var styleOrderDetailPage = StyleSheet.create({
         alignSelf:'center',
     },
     ratingView:{
-        height:40,
+        flex:0.5,
         justifyContent:'flex-start',
         flexDirection:'row',
-        borderBottomWidth:1,
-        borderColor:'#D7D7D7',
-        marginHorizontal:10,
+        backgroundColor:'#FFFFFF',
     },
     commentInput:{
         height:90, 
-        padding:15,
+        padding:windowHeight*0.0224,
         fontSize:14,       
     },
     commentText:{
@@ -434,8 +445,8 @@ var styleOrderDetailPage = StyleSheet.create({
         alignSelf:'center',
     },
     ratingIcon:{
-        width:30,
-        height:30,        
+        width:windowHeight*0.045,
+        height:windowHeight*0.045,        
     },
     chefReplyBox:{
         flexDirection:'row',
@@ -463,6 +474,23 @@ var styleOrderDetailPage = StyleSheet.create({
         padding:15,
         fontSize:14,
         color:'#F5F5F5',
+    },
+    ratingCommentTimeView:{
+        flexDirection:'row',
+        height:windowHeight*0.048,
+        flex:1,
+    },
+    commentTimeView:{
+        flex:0.5,
+        flexDirection:'row',
+        justifyContent:'flex-end',
+        backgroundColor:'#FFFFFF'
+    },
+    commentTimeText:{
+        alignSelf:'center',
+        fontSize:12,
+        color:'#9B9B9B',
+        fontWeight:'600',
     }
 });
 

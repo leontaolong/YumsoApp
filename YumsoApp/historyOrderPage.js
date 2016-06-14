@@ -6,6 +6,7 @@ var AuthService = require('./authService');
 var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
 var backIcon = require('./icons/icon-back.png');
+var defaultShopPic = require('./icons/defaultAvatar.jpg');
 import Dimensions from 'Dimensions';
 var RefreshableListView = require('react-native-refreshable-listview')
 
@@ -100,7 +101,9 @@ class HistoryOrderPage extends Component {
         }
         
         return (<View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
-                    <Image source={{uri:order.chefProfilePic}} style={styleHistoryOrderPage.shopPhoto}/>
+                    <TouchableHighlight onPress={()=>this.navigateToOrderDetailPage(order)}>
+                    <Image source={{uri:order.shopPictures && order.shopPictures.values[1] ? order.shopPictures.values[1] : defaultShopPic}} style={styleHistoryOrderPage.shopPhoto}/>
+                    </TouchableHighlight>
                     <View style={styleHistoryOrderPage.orderInfoView}>
                         <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
                         {orderStatusText}           
@@ -220,7 +223,7 @@ var styleHistoryOrderPage = StyleSheet.create({
         flexDirection:'row',
         flex:1,
         borderColor:'#F5F5F5',
-        borderBottomWidth:windowHeight*0.007,
+        borderBottomWidth:5,
     },
     shopPhoto:{
         width:windowWidth*0.344,

@@ -18,6 +18,7 @@ var labelIcon = require('./icons/icon-label.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
 var dollarSign = require('./commonModules/dollarIconRender');
+var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var ActivityView = require('react-native-activity-view');
 // import * as WeChat from 'react-native-wechat';
 // var result = await  WeChat.shareToTimeline({type: 'text', description: 'I\'m Wechat, :)'});
@@ -228,7 +229,7 @@ class ShopPage extends Component {
     }
 
     renderRow(dish){
-        let imageSrc =require('./icons/dishImageUnavailable.png') ;
+        let imageSrc = defaultDishPic;
         if(dish.pictures && dish.pictures!=null && dish.pictures.length!=0){
             imageSrc={uri:dish.pictures[0]};   
         }
@@ -484,7 +485,8 @@ class ShopPage extends Component {
         this.props.navigator.push({
             name: 'ChefCommentsPage', 
             passProps:{
-                chefId:this.state.chefId
+                chefId:this.state.chefId,
+                chefProfilePic:this.state.chef.chefProfilePic,
             }
         });       
     }
@@ -644,7 +646,8 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center', 
         borderColor:'#F5F5F5',
-        borderTopWidth:windowHeight*0.01,
+        borderTopWidth:5,
+        borderBottomWidth:5,
         height:windowHeight*0.10,
     },
     openHourTitle:{
@@ -655,7 +658,6 @@ var styleShopPage = StyleSheet.create({
     },
     modalPicker:{
         alignSelf:'center',
-        borderColor:'#FFCC33',
     },
     openHoursText:{
 
@@ -734,7 +736,7 @@ var styleShopPage = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         borderColor: '#F5F5F5',
-        borderBottomWidth: windowHeight*0.0088,
+        borderBottomWidth: 5,
         backgroundColor: '#fff',
         paddingHorizontal:windowWidth*0.07,
         paddingVertical:windowHeight*0.0352,
