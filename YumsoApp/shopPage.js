@@ -20,6 +20,7 @@ var likedIcon = require('./icons/icon-liked.png');
 var dollarSign = require('./commonModules/dollarIconRender');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var ActivityView = require('react-native-activity-view');
+var Swiper = require('react-native-swiper');
 // import * as WeChat from 'react-native-wechat';
 // var result = await  WeChat.shareToTimeline({type: 'text', description: 'I\'m Wechat, :)'});
 
@@ -159,9 +160,12 @@ class ShopPage extends Component {
                }
             
                return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
-                            <Image source={{ uri: this.state.chef.shopPictures[0] }} style={styleShopPage.shopPicture}
-                                onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false }) }>
-                            </Image>
+                            <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={false}
+                                dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
+                                {this.state.chef.shopPictures.map((shopPicture) => {
+                                    return <Image key={shopPicture} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
+                                }) }
+                            </Swiper>
                         </View>),                        
                        (<View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
                           <TouchableHighlight style={styleShopPage.chefPhotoView} underlayColor={'transparent'}>
