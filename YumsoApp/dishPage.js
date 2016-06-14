@@ -3,7 +3,7 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
-var Swiper = require('react-native-swiper')
+var Swiper = require('react-native-swiper');
 var shareIcon = require('./icons/icon-share.png');
 var backIcon = require('./icons/icon-back.png');
 var notlikedIcon = require('./icons/icon-unliked-onheader.png')
@@ -77,12 +77,9 @@ class DishPage extends Component {
                </View>
                <ScrollView>
                 <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={true}
-                            dot={<View style={{ backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />}
-                            activeDot={<View style={{ backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />} >
+                            dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
                             {this.state.dish.pictures.map((picture) => {
-                                return (
-                                        <Image key={picture} source={{ uri: picture }} style={styleDishPage.oneDishPicture}/>
-                                );
+                                return <Image key={picture} source={{ uri: picture }} style={styleDishPage.oneDishPicture}/>
                             }) }
                 </Swiper>
                 <View style={styleDishPage.oneDishNameDiscriptionView}>                  
