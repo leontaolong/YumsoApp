@@ -76,6 +76,12 @@ class MapPage extends Component {
         if (this.props.specificAddressMode) {
             this.isSpecific = true;
         }
+
+        if (this.props.showHouseIcon) {
+            this.showHouseIcon = true;
+        }else{
+            this.showHouseIcon = false;
+        }
         
         this.state = {
             showProgress:true,
@@ -112,11 +118,18 @@ class MapPage extends Component {
                                          </View>);  
             }                       
 
-            var searchAddressResultViewWrapper;
+            var searchAddressResultViewWrapper=null;
             if(this.state.searchAddressResultView){
                searchAddressResultViewWrapper=(<View key={'searchAddressResultView'} style={{backgroundColor:'#fff', position:'absolute', top: this.state.mapViewYposition,left:0,right:0, height:windowHeight-this.state.mapViewYposition,opacity:0.8}}> 
                                                  {this.state.searchAddressResultView}
                                                </View>);  
+            }
+
+            var houseIconView = null;
+            if(this.showHouseIcon){
+               houseIconView = <TouchableHighlight underlayColor={'transparent'} onPress={() =>{this.setState({showMapView: this.state.showMapView? false:true})}}>
+                                 <Image source={houseIconOrange} style={styleMapPage.houseIconOrange}/>
+                               </TouchableHighlight>
             }
                                                 
             return (
@@ -131,9 +144,7 @@ class MapPage extends Component {
                              <Text style={styles.titleText}>{this.state.city}</Text>
                          </View>
                          <View style={styles.headerRightView}>
-                             <TouchableHighlight underlayColor={'transparent'} onPress={() =>{this.setState({showMapView: this.state.showMapView? false:true})}}>
-                                 <Image source={houseIconOrange} style={styleMapPage.houseIconOrange}/>
-                             </TouchableHighlight>
+                             {houseIconView}
                          </View>
                     </View>
                     

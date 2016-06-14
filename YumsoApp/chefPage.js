@@ -33,7 +33,6 @@ import React, {
   TextInput,
   ListView,
   TouchableHighlight,
-  ActivityIndicatorIOS,
   AsyncStorage,
   Alert
 } from 'react-native';
@@ -54,14 +53,7 @@ class ShoppingCartPage extends Component {
         this.client = new HttpsClient(config.baseUrl, true);
     }
       
-    render() {
-        if(this.state.showProgress){
-            return <ActivityIndicatorIOS
-                animating={this.state.showProgress}
-                size="large"
-                style={styles.loader}/> 
-        }
-         
+    render() {         
         var chefAllBadges=[];
         if(this.state.chef.yumsoVerifiedBadge){
             chefAllBadges.push(0);

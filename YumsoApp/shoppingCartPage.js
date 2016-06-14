@@ -228,14 +228,14 @@ class ShoppingCartPage extends Component {
     }
     
     render() {
-        if(this.state.showProgress){
-            return <ActivityIndicatorIOS
-                animating={this.state.showProgress}
-                size="large"
-                style={styles.loader}/> 
-        }  
+        var loadingSpinnerView = null;
+        if (this.state.showProgress) {
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
         if(this.state.selectDeliveryAddress){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true}/>);   
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true} showHouseIcon={true}/>);   
         }       
         return (
             <View style={styles.container}>
@@ -257,6 +257,7 @@ class ShoppingCartPage extends Component {
                     renderHeader={this.renderHeader.bind(this)}
                     renderRow={this.renderRow.bind(this) } 
                     renderFooter={this.renderFooter.bind(this)}/>
+               {loadingSpinnerView}
                <View style={styleShoppingCartPage.footerView}>
                     <TouchableHighlight onPress={() => this.getPrice() }>
                         <View style={styleShoppingCartPage.getPriceButtonView}>

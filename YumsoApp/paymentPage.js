@@ -17,6 +17,7 @@ import React, {
   TextInput,
   ListView,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert
@@ -37,12 +38,12 @@ class PaymentPage extends Component {
     }
     
     render() {
-        if(this.state.showProgress){
-            return <ActivityIndicatorIOS
-                animating={this.state.showProgress}
-                size="large"
-                style={styles.loader}/> 
-        } 
+        var loadingSpinnerView = null;
+        if (this.state.showProgress) {
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
         
         if(this.state.paymentOption){
           var selectPaymentMethodView=[(<View key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonView}>
@@ -85,11 +86,12 @@ class PaymentPage extends Component {
                     <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>   
                  </View>
                  {selectPaymentMethodView}
-                 <TouchableHighlight style={stylePaymentPage.placeOrderButtonWrapper} onPress={()=>this.confirm()}>
+                 <TouchableOpacity activeOpacity={0.7} style={stylePaymentPage.placeOrderButtonWrapper} onPress={()=>this.confirm()}>
                     <View style={stylePaymentPage.placeOrderButton}>
                         <Text style={stylePaymentPage.placeOrderButtonText}>Place Order</Text>
                     </View>
-                 </TouchableHighlight>                 
+                 </TouchableOpacity>
+                 {loadingSpinnerView}                 
               </View>);
     }
       

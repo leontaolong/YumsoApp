@@ -93,13 +93,6 @@ class HistoryOrderPage extends Component {
     }
      
     renderRow(order){
-        if(this.state.showProgress){
-            return <ActivityIndicatorIOS
-                animating={this.state.showProgress}
-                size="large"
-                style={styles.loader}/> 
-        }  
-
         if(order.orderStatus == 'Delivered'){
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
         }else{
@@ -120,6 +113,13 @@ class HistoryOrderPage extends Component {
     }
         
     render() {
+        var loadingSpinnerView = null;
+        if (this.state.showProgress) {
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
+        
         if(this.state.showCommentBox == true){
            return (
                 <View style={styles.greyContainer}> 
@@ -159,7 +159,8 @@ class HistoryOrderPage extends Component {
                <RefreshableListView
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) }
-                    loadData={this.fetchOrderAndComments.bind(this)}/>                    
+                    loadData={this.fetchOrderAndComments.bind(this)}/>
+               {loadingSpinnerView}                   
             </View>
         );
     }

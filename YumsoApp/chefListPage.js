@@ -113,7 +113,7 @@ class ChefListPage extends Component {
         }
         let principal = await AuthService.getPrincipalInfo();
         if(eater){
-            this.setState({ 
+           this.setState({ 
                 dollarSign1: eater.chefFilterSettings.priceRankFilter[1]==true? dollarSign1_Orange:dollarSign1_Grey,
                 dollarSign2: eater.chefFilterSettings.priceRankFilter[2]==true? dollarSign2_Orange:dollarSign2_Grey,
                 dollarSign3: eater.chefFilterSettings.priceRankFilter[3]==true? dollarSign3_Orange:dollarSign3_Grey,
@@ -248,16 +248,15 @@ class ChefListPage extends Component {
     
     render() {
         const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} principal={this.state.principal} caller = {this}/>;
+        var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            return (
-                <View>
-                    <ActivityIndicatorIOS
-                        animating={this.state.showProgress}
-                        size="large"
-                        style={styles.loader}/>
-                </View>);  
-        }else if(this.state.showLocSearch){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city}/>);   
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
+        }
+        
+        if(this.state.showLocSearch){
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} showHouseIcon={true}/>);   
         }else if(this.state.showChefSearch){
             return <View style={styles.greyContainer}>
                        <View style={styles.headerBannerView}>    
@@ -350,6 +349,7 @@ class ChefListPage extends Component {
                         renderRow={this.renderRow.bind(this) }
                         loadData={this.searchChef.bind(this)}
                         refreshDescription = "Loading.."/>
+                    {loadingSpinnerView}
                 </View>
             </SideMenu>
         );
@@ -725,7 +725,7 @@ var styleChefListPage = StyleSheet.create({
     distanceDollarSignView:{
         flex:0.25,
         flexDirection:'row',
-        alignItems:'flex-end',
+        justifyContent:'flex-end',
     },
     distanceDollarSignText:{
         fontSize:11,
@@ -758,7 +758,7 @@ var styleFilterPage = StyleSheet.create({
         flexDirection:'row',
         height:windowHeight*0.0792,
         borderColor:'#F5F5F5',
-        borderBottomWidth:0.5,
+        borderBottomWidth:1,
         alignItems:'center',
         backgroundColor:'#FFFFFF',
     },
@@ -782,10 +782,10 @@ var styleFilterPage = StyleSheet.create({
         justifyContent: 'center',
     },
     applySearchButtonText:{
-      color:'#fff',
-      fontSize:windowHeight/30.6,
-      fontWeight:'400',
-      alignSelf:'center',
+        color:'#fff',
+        fontSize:windowHeight/30.6,
+        fontWeight:'400',
+        alignSelf:'center',
     },
     sortCriteriaSectionTitleView:{
         height:windowHeight*0.0528,

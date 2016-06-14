@@ -73,20 +73,22 @@ class EaterPage extends Component {
         this.client = new HttpsClient(config.baseUrl, true);
     }
     
-     render() {
+     render() {         
+         var loadingSpinnerView = null;
          if (this.state.showProgress) {
-             return (<View>
-                 <ActivityIndicatorIOS animating={this.state.showProgress} size="large"  Dstyle={styles.loader}/>
-             </View>);
+            loadingSpinnerView =<View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                </View>;  
          }
+         
          if (this.state.addMoreAddress) {
-             return (<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this) } onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
+             return (<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this) } onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
          }
          if (this.state.editHomeAddress) {
-             return (<MapPage onSelectAddress={this.mapDoneForHomeAddress.bind(this) } initialLoc = {this.state.homeAddress} onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
+             return (<MapPage onSelectAddress={this.mapDoneForHomeAddress.bind(this) } initialLoc = {this.state.homeAddress} onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
          }
          if (this.state.editWorkAddress) {
-             return (<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this) } initialLoc = {this.state.workAddress}  onCancel={this.onCancelMap.bind(this) } specificAddressMode={true}/>);
+             return (<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this) } initialLoc = {this.state.workAddress}  onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
          }
          if (this.state.showResetPassword){
              return (<ResetPasswordPage userEmail={this.state.eater.email} navigator = {this.props.navigator} onCancel={this.onCancelPasswordReset.bind(this)}/>)
@@ -246,11 +248,7 @@ class EaterPage extends Component {
                          <View style={styleEaterPage.addNewAddressClickableView}>
                              <Text onPress = {() => this.setState({ addMoreAddress: true }) } style={styleEaterPage.addNewAddressClickableText}>+ Add a new address</Text>
                          </View>
-
-                         <ActivityIndicatorIOS
-                             animating={this.state.showProgress}
-                             size="large"
-                             style={styles.loader}/>
+                         {loadingSpinnerView}
                      </ScrollView>
                  </View>);
          }
