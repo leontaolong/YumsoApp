@@ -207,7 +207,7 @@ class ChefListPage extends Component {
                     </Swiper>
                 </View>
                 <View style={styleChefListPage.shopInfoView}>
-                    <TouchableHighlight style={styleChefListPage.chefPhotoView} underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef.chefId) }>
+                    <TouchableHighlight style={styleChefListPage.chefPhotoView} underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
                        <Image source={{ uri: chef.chefProfilePic }} style={styleChefListPage.chefPhoto}/>
                     </TouchableHighlight>                   
                     <View style={styleChefListPage.shopInfoSection}>
