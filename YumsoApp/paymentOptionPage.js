@@ -29,6 +29,7 @@ import React, {
   TextInput,
   ListView,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert,
@@ -183,11 +184,11 @@ class PaymentOptionPage extends Component {
         }
         
         if(this.state.chosenCard && this.state.isFromCheckOutPage){
-          var paymentSelectionConfirmButton= (<TouchableHighlight style={stylePaymentOptionPage.bottomButtonWrapper} onPress={()=>this.confirmSelection()}>
+          var paymentSelectionConfirmButton= (<TouchableOpacity activeOpacity={0.7} style={stylePaymentOptionPage.bottomButtonWrapper} onPress={()=>this.confirmSelection()}>
                                                     <View style={stylePaymentOptionPage.bottomButton}>
                                                         <Text style={stylePaymentOptionPage.bottomButtonText}>Choose this Card</Text>
                                                     </View>
-                                              </TouchableHighlight>);
+                                              </TouchableOpacity>);
         }
         
         return (
