@@ -160,6 +160,26 @@ module.exports = StyleSheet.create({
       paddingVertical:5,
       textAlign:'left',
     },
+    dot:{ 
+      backgroundColor: 'rgba(0,0,0,.2)', 
+      width: 5, 
+      height: 5, 
+      borderRadius: 4, 
+      marginLeft: 3, 
+      marginRight: 3, 
+      marginTop: 3, 
+      marginBottom: 3, 
+    },
+    activeDot:{ 
+      backgroundColor: '#FFF', 
+      width: 8, 
+      height: 8, 
+      borderRadius: 4, 
+      marginLeft: 3, 
+      marginRight: 3, 
+      marginTop: 3, 
+      marginBottom: 3, 
+    },
 
     logo:{
       width:66,
@@ -261,7 +281,7 @@ module.exports = StyleSheet.create({
     dishListView:{
         alignSelf:'stretch',
         backgroundColor:'#fff',
-        paddingBottom:10,
+        paddingBottom:20,
         flexDirection:'column',
         height: windowHeight*9/10
     }, 

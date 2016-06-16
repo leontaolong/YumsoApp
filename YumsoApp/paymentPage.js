@@ -111,9 +111,12 @@ class PaymentPage extends Component {
             Alert.alert('Warning','Please select a payment option.',[{ text: 'OK' }]);      
             return; 
         }
-         return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail, paymentOption: this.state.paymentOption})
+        
+        this.setState({showProgress:true});
+        return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail, paymentOption: this.state.paymentOption})
          .then((response)=>{
             if(response.statusCode==401){
+               this.setState({showProgress:false});
                 return AuthService.logOut()
                     .then(() => {
                         delete this.state.eater;
@@ -127,6 +130,7 @@ class PaymentPage extends Component {
                         });
                     });
             }else if(response.statusCode==200){
+                this.setState({showProgress:false});
                 if(response.data.result===true){
                     Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]); 
                     this.props.navigator.state.routeStack = [];                  
@@ -137,10 +141,12 @@ class PaymentPage extends Component {
                         }
                     }); 
                 }else{
+                    this.setState({showProgress:false});
                     console.log(response.data.detail);
                     //todo: display the detail to user.
                 }                    
             }else{
+                this.setState({showProgress:false});
                 Alert.alert('Network or Server Error','Failed creating order',[{ text: 'OK' }]);            
             }
          });   

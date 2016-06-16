@@ -9,6 +9,7 @@ var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
 var backIcon = require('./icons/icon-back.png');
 var addPromoCodeIcon = require('./icons/icon-add.png');
+var defaultDishPic = require('./icons/defaultAvatar.jpg');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -23,6 +24,7 @@ import React, {
   TextInput,
   ListView,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert
@@ -78,7 +80,7 @@ class ShoppingCartPage extends Component {
     renderRow(cartItem){
         var dish = cartItem.dish;
         var quantity = cartItem.quantity;
-        let imageSrc =require('./icons/dishImageUnavailable.png') ;
+        let imageSrc = defaultDishPic ;
         if(dish.pictures && dish.pictures!=null && dish.pictures.length!=0){
             imageSrc={uri:dish.pictures[0]};   
         } 
@@ -236,7 +238,22 @@ class ShoppingCartPage extends Component {
         }
         if(this.state.selectDeliveryAddress){
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true} showHouseIcon={true}/>);   
-        }       
+        }
+        
+        if(this.state.priceIsConfirmed){
+          var payNowButtonView = <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
+                                    <View style={styleShoppingCartPage.checkOutButtonView}>
+                                        <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
+                                    </View>
+                                 </TouchableHighlight>;
+        }else{
+          var payNowButtonView = <TouchableOpacity activeOpacity={0.7}>
+                                    <View style={styleShoppingCartPage.checkOutButtonGreyView}>
+                                        <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
+                                    </View>
+                                 </TouchableOpacity>;
+        }
+               
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -264,12 +281,7 @@ class ShoppingCartPage extends Component {
                             <Text style={styleShoppingCartPage.bottomButtonText}>Get Price</Text>
                         </View>
                     </TouchableHighlight>
-
-                    <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
-                        <View style={styleShoppingCartPage.checkOutButtonView}>
-                            <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
-                        </View>
-                    </TouchableHighlight>
+                    {payNowButtonView}
                </View>
             </View>
         );
@@ -579,7 +591,8 @@ var styleShoppingCartPage = StyleSheet.create({
         paddingTop:windowHeight/20.0,
         borderBottomWidth:1,
         borderColor:'#F5F5F5',
-        justifyContent:'center'
+        justifyContent:'center',
+        marginBottom:20,
     },
     totalPriceTitleText:{ 
         fontSize:windowHeight/36.8,
@@ -729,7 +742,6 @@ var styleShoppingCartPage = StyleSheet.create({
     footerView:{ 
         flexDirection:'row', 
         height:windowHeight*0.075, 
-        backgroundColor:'#FFCC33',
     },
     getPriceButtonView:{
         width:windowWidth*0.5,
@@ -744,6 +756,13 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row',        
         justifyContent: 'center',
         backgroundColor:'#FFCC33',
+    }, 
+    checkOutButtonGreyView:{
+        width:windowWidth*0.5,
+        flex:1,
+        flexDirection:'row',        
+        justifyContent: 'center',
+        backgroundColor:'#9B9B9B',
     }, 
     bottomButtonText:{
         fontSize:windowHeight/30.6,

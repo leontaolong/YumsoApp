@@ -194,8 +194,7 @@ class ChefListPage extends Component {
             <View style={styleChefListPage.oneShopListView}>
                 <View style={styleChefListPage.oneShopPhotoView}>
                     <Swiper showsButtons={false} height={windowHeight*0.388} horizontal={true} autoplay={false}
-                        dot={<View style={{ backgroundColor: 'rgba(0,0,0,.2)', width: 5, height: 5, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />}
-                        activeDot={<View style={{ backgroundColor: '#FFF', width: 8, height: 8, borderRadius: 4, marginLeft: 3, marginRight: 3, marginTop: 3, marginBottom: 3, }} />} >
+                        dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
                         {this.state.chefView[chef.chefId].map((picture) => {
                             return (
                                 <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef)} underlayColor='#C0C0C0'>
