@@ -24,7 +24,6 @@ import React, {
   Image,
   TextInput,
   ListView,
-  ScrollView,
   TouchableHighlight,
   TouchableOpacity,
   ActivityIndicatorIOS,
@@ -146,13 +145,15 @@ class ShoppingCartPage extends Component {
                         <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add Address': 'Change Address'}</Text>
                      </TouchableHighlight>
                   </View>
+               </View>),
+               (<View key={'listViewBottom'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}>
                </View>)];
        }
        
        if(this.state.showPromotionCodeInput){
           var promotionCodeInputView = <View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}>   
-                                         <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text, priceIsConfirmed:false })} 
-                                         onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this._onBlurScrollBack()} onBlur={()=>this._onBlurScrollBack()}/>
+                                         <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text})} 
+                                         onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/>
                                        </View>;
        }else{
           var promotionCodeInputView =  <TouchableHighlight key={'promotionCodeInputView'} style={styleShoppingCartPage.priceNumberView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
@@ -198,7 +199,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
                       <View style={styleShoppingCartPage.phoneNumberInputView}>                       
                         <TextInput style={styleShoppingCartPage.phoneNumberInput} placeholder={this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'} 
-                        returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this._onBlurScrollBack()} onBlur={()=>this._onBlurScrollBack()}/> 
+                        returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/> 
                       </View>
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>
@@ -242,18 +243,18 @@ class ShoppingCartPage extends Component {
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true} showHouseIcon={true}/>);   
         }
         
-        if(this.state.priceIsConfirmed){
-          var payNowButtonView = <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
-                                    <View style={styleShoppingCartPage.checkOutButtonView}>
-                                        <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
-                                    </View>
-                                 </TouchableHighlight>;
-        }else{
-          var payNowButtonView = <TouchableOpacity activeOpacity={0.7}>
+        if(!this.state.priceIsConfirmed || (this.state.promotionCode && this.state.promotionCode.trim() && this.state.quotedOrder.price.couponValue==undefined)){
+           var payNowButtonView = <TouchableOpacity activeOpacity={1}>
                                     <View style={styleShoppingCartPage.checkOutButtonGreyView}>
                                         <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
                                     </View>
                                  </TouchableOpacity>;
+        }else{
+           var payNowButtonView = <TouchableHighlight onPress={() => this.navigateToPaymentPage() }>
+                                    <View style={styleShoppingCartPage.checkOutButtonView}>
+                                        <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
+                                    </View>
+                                 </TouchableHighlight>;
         }
                
         return (
@@ -270,15 +271,12 @@ class ShoppingCartPage extends Component {
                     <View style={styles.headerRightView}>
                     </View>
                </View>
-               <ScrollView ref="scrollView">
-                    <ListView style={styles.dishListView}
-                            dataSource = {this.state.dataSource}
-                            renderHeader={this.renderHeader.bind(this)}
-                            renderRow={this.renderRow.bind(this) } 
-                            renderFooter={this.renderFooter.bind(this)}/>
-                    {loadingSpinnerView}
-                    <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
-               </ScrollView>
+               <ListView style={styles.dishListView} ref="listView"
+                                dataSource = {this.state.dataSource}
+                                renderHeader={this.renderHeader.bind(this)}
+                                renderRow={this.renderRow.bind(this) } 
+                                renderFooter={this.renderFooter.bind(this)}/>
+               {loadingSpinnerView}
                <View style={styleShoppingCartPage.footerView}>
                     <TouchableHighlight onPress={() => this.getPrice() }>
                         <View style={styleShoppingCartPage.getPriceButtonView}>
@@ -293,17 +291,23 @@ class ShoppingCartPage extends Component {
     
     _onLayout(event) {
         this.y = event.nativeEvent.layout.y;
-        console.log(this.y);
+        console.log("_UnConfirmed: "+this.y);
     }
     
     _onFocus() {
-        let scrollViewLength = this.y;
-        let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        this.refs.scrollView.scrollTo({x:0, y:keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
+        let listViewLength = this.y+0.422*windowHeight;
+        let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
+        this.refs.listView.scrollTo({x:0, y:keyboardHeight - listViewBottomToScreenBottom, animated: true})
     }
     
-    _onBlurScrollBack(){
-        this.refs.scrollView.scrollTo({x:0, y:30, animated: true})
+    scrollToShowTotalPrice(){
+        let listViewLength = this.y+0.422*windowHeight;
+        console.log("listViewLength "+listViewLength);
+        // let windowScrollableHeight = windowHeight-(windowHeight*0.066 + 15+windowHeight*0.075)
+        let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
+        if(listViewBottomToScreenBottom<0){
+           this.refs.listView.scrollTo({x:0, y:windowHeight*0.075-listViewBottomToScreenBottom, animated: true})
+        }
     }
     
     mapDone(address){
@@ -422,7 +426,8 @@ class ShoppingCartPage extends Component {
                 //todo: more specific
                 this.setState({priceIsConfirmed:false});
             }
-            this.setState({showProgress:false});        
+            this.scrollToShowTotalPrice(); 
+            this.setState({showProgress:false});     
         });
 
     }
