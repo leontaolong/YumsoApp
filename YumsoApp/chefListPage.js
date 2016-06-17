@@ -83,7 +83,9 @@ class ChefListPage extends Component {
             dollarSign3: dollarSign3_Orange,
         };
         this.responseHandler = function (response, msg) {
-            if (response.statusCode === 401) {
+             if(response.statusCode==400){
+                 Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
+            }else if (response.statusCode === 401) {
                 return AuthService.logOut()
                     .then(()=>{
                         delete this.state.eater;
@@ -299,7 +301,7 @@ class ChefListPage extends Component {
                        <View style={styleFilterPage.sortCriteriaIconView}>
                           <TouchableHighlight style={styleFilterPage.sortCriteriaIconWrapper} underlayColor={'transparent'} 
                                onPress={() => {this.setState({withBestRatedSort:!this.state.withBestRatedSort,
-                               sortCriteriaIcon:this.state.sortCriteriaIcon==sortCriteriaIconGery? sortCriteriaIconOrange :sortCriteriaIconGery})}}>
+                               sortCriteriaIcon:this.state.sortCriteriaIcon==this.state.withBestRatedSort==false? sortCriteriaIconOrange :sortCriteriaIconGery})}}>
                               <Image source={this.state.sortCriteriaIcon} style={styleFilterPage.sortCriteriaIcon}/>
                           </TouchableHighlight>
                        </View>

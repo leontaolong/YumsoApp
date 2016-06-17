@@ -57,7 +57,9 @@ class ShoppingCartPage extends Component {
         };
         this.client = new HttpsClient(config.baseUrl, true);
         this.responseHandler = function (response, msg) {
-            if (response.statusCode === 401) {
+            if(response.statusCode==400){
+                 Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
+            }else if (response.statusCode === 401) {
                 return AuthService.logOut()
                     .then(() => {
                         delete this.state.eater;
