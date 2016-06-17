@@ -151,7 +151,7 @@ class ShoppingCartPage extends Component {
        
        if(this.state.showPromotionCodeInput){
           var promotionCodeInputView = <View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}>   
-                                         <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text })} 
+                                         <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text, priceIsConfirmed:false })} 
                                          onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this._onBlurScrollBack()} onBlur={()=>this._onBlurScrollBack()}/>
                                        </View>;
        }else{
@@ -303,7 +303,7 @@ class ShoppingCartPage extends Component {
     }
     
     _onBlurScrollBack(){
-        this.refs.scrollView.scrollTo({x:0, y:0, animated: true})
+        this.refs.scrollView.scrollTo({x:0, y:30, animated: true})
     }
     
     mapDone(address){

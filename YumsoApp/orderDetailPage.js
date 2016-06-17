@@ -165,7 +165,7 @@ class OrderDetailPage extends Component {
                                     </View>
                                   </View>
                                   <TextInput placeholder="Leave your comment here" style={styleOrderDetailPage.commentInput} multiline={true} returnKeyType = {'default'} autoCorrect={false} 
-                                  onChangeText = {(text) => this.setState({ comment: text }) } ref="myInput"  onFocus={(()=>this._onFocus()).bind(this)}/>                                     
+                                  onChangeText = {(text) => this.setState({ comment: text }) } onFocus={(()=>this._onFocus()).bind(this)}/>                                     
                                   <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.submitCommentButton} onPress={()=>this.submitComment()}>
                                         <Text style={styleOrderDetailPage.submitCommentButtonText}>Submit</Text>    
                                   </TouchableHighlight>
