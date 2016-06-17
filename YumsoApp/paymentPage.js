@@ -115,7 +115,9 @@ class PaymentPage extends Component {
         this.setState({showProgress:true});
         return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail, paymentOption: this.state.paymentOption})
          .then((response)=>{
-            if(response.statusCode==401){
+            if(response.statusCode==400){
+                 Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
+            }else if(response.statusCode==401){
                this.setState({showProgress:false});
                 return AuthService.logOut()
                     .then(() => {
