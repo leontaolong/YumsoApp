@@ -412,7 +412,9 @@ class ShopPage extends Component {
             _this.client.postWithAuth(isAdd ? config.addFavoriteEndpoint : config.removeFavoriteEndpoint, {
                 info: { chefId: _this.state.chefId, eaterId: eater.eaterId }
             }).then((res) => {
-                if (res.statusCode === 200) {
+                if(response.statusCode==400){
+                    Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
+                }else if (res.statusCode === 200) {
                     isAdd ? eater.favoriteChefs.push(_this.state.chefId) : eater.favoriteChefs.splice(eater.favoriteChefs.indexOf(_this.state.chefId), 1);
                     return AuthService.updateCacheEater(eater)
                         .then(() => {
