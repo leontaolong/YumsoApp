@@ -4,7 +4,7 @@ var config = require('./config');
 var AuthService = require('./authService');
 var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
-var backIcon = require('./icons/icon-back.png')
+var backIcon = require('./icons/icon-back.png');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;

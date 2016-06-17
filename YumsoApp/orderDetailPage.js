@@ -14,6 +14,7 @@ import {KeyboardAwareListView} from 'react-native-keyboard-aware-scroll-view';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
+var keyboardHeight = 250 //Todo: get keyboard size programmatically.
 
 import React, {
   Component,
@@ -25,12 +26,13 @@ import React, {
   ListView,
   TouchableHighlight,
   ActivityIndicatorIOS,
+  ScrollView,
   AsyncStorage,
-  Alert
+  Alert,
 } from 'react-native';
 
 
-class ShoppingCartPage extends Component {
+class OrderDetailPage extends Component {
     constructor(props){
         super(props);
         var ds = new ListView.DataSource({
@@ -162,7 +164,8 @@ class ShoppingCartPage extends Component {
                                         </TouchableHighlight>
                                     </View>
                                   </View>
-                                  <TextInput placeholder="Leave your comment here" style={styleOrderDetailPage.commentInput} multiline={true} returnKeyType = {'done'} autoCorrect={false} onChangeText = {(text) => this.setState({ comment: text }) }/>                                     
+                                  <TextInput placeholder="Leave your comment here" style={styleOrderDetailPage.commentInput} multiline={true} returnKeyType = {'default'} autoCorrect={false} 
+                                  onChangeText = {(text) => this.setState({ comment: text }) } ref="myInput"  onFocus={(()=>this._onFocus()).bind(this)}/>                                     
                                   <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.submitCommentButton} onPress={()=>this.submitComment()}>
                                         <Text style={styleOrderDetailPage.submitCommentButtonText}>Submit</Text>    
                                   </TouchableHighlight>
@@ -172,6 +175,7 @@ class ShoppingCartPage extends Component {
         return commentBoxView;
       }                                               
     }
+     
     
     render() {        
         var loadingSpinnerView = null;
@@ -242,15 +246,27 @@ class ShoppingCartPage extends Component {
                     <View style={styles.headerRightView}>
                     </View>
                </View>
-               {deliverTimeView}
-               <ListView style={styleOrderDetailPage.dishListView}
-                    ref={'scroll'}        
-                    dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this) } 
-                    renderFooter={this.renderFooter.bind(this)}/>
-                {loadingSpinnerView}
+               <ScrollView ref="scrollView">  
+                  {deliverTimeView} 
+                  <ListView style={styleOrderDetailPage.dishListView} 
+                            dataSource = {this.state.dataSource}
+                            renderRow={this.renderRow.bind(this) } 
+                            renderFooter={this.renderFooter.bind(this)}/>
+                  {loadingSpinnerView}
+                  <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
+               </ScrollView>
             </View>
         );
+    }
+    
+    _onLayout(event) {
+        this.y = event.nativeEvent.layout.y;
+    }
+    
+    _onFocus() {
+        let scrollViewLength = this.y;
+        let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
+        this.refs.scrollView.scrollTo({x: 0, y: keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
     }
     
     submitComment(){
@@ -325,9 +341,6 @@ class ShoppingCartPage extends Component {
         this.props.navigator.pop();
     }
     
-    _scrollToInput (event, reactNode) {
-        this.refs.scroll.scrollToFocusedInput(event, reactNode);
-    }
 }
 
 var styleOrderDetailPage = StyleSheet.create({
@@ -371,6 +384,7 @@ var styleOrderDetailPage = StyleSheet.create({
         flex:1,
         backgroundColor:'#fff',
         flexDirection:'column',
+        paddingBottom:10,
     },
     oneListingView:{
         backgroundColor:'#FFFFFF',  
@@ -494,5 +508,5 @@ var styleOrderDetailPage = StyleSheet.create({
     }
 });
 
-module.exports = ShoppingCartPage;
+module.exports = OrderDetailPage;
 
