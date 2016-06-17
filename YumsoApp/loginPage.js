@@ -15,6 +15,7 @@ import React, {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Image,
   TextInput,
   TouchableHighlight,
@@ -57,34 +58,36 @@ class LoginPage extends Component {
                     </View>
                     <View style={styles.headerRightView}>
                     </View>
-                </View>
-             
-                <View style={{height:windowHeight*0.184,width:windowWidth,}}>
-                </View>
-                <View style={styles.loginInputView}>
-                  <TextInput placeholder="email" style={styles.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
-                       onChangeText = {(text) => this.setState({ email: text }) }/>
-                </View>
-                <View style={styles.loginInputView}>
-                  <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
-                        onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
-                </View>
+               </View>
+                 <ScrollView scrollEnabled={false} contentContainerStyle={styleLoginPage.scrollView}>
+                    <View style={styleLoginPage.blankView}>
+                    </View>
+                    <View style={styles.loginInputView}>
+                    <TextInput placeholder="email" style={styles.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
+                        onChangeText = {(text) => this.setState({ email: text }) }/>
+                    </View>
+                    <View style={styles.loginInputView}>
+                    <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
+                            onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
+                    </View>
+                    
+                    <View style={styleLoginPage.forgotPasswordView}>
+                        <Text style={styleLoginPage.forgotPasswordText} onPress={this.onPressForgotPassword.bind(this)}>Forgot password?</Text>
+                    </View>
                 
-                <View style={styleLoginPage.forgotPasswordView}>
-                      <Text style={styleLoginPage.forgotPasswordText} onPress={this.onPressForgotPassword.bind(this)}>Forgot password?</Text>
-                </View>
-               
-                <TouchableHighlight underlayColor={'#C0C0C0'} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
-                       <Text style={styleLoginPage.signInButtonText}>Sign in</Text>
-                </TouchableHighlight>
-                       
-                <View style={styleLoginPage.askToSignUpView}>
-                       <Text style={styleLoginPage.askToSignUpText}>Do not have an account? </Text>
-                       <Text onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpText}>Sign up now!</Text>
-                </View>
-                
-                <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader} />
+                    <TouchableHighlight underlayColor={'#C0C0C0'} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
+                        <Text style={styleLoginPage.signInButtonText}>Sign in</Text>
+                    </TouchableHighlight>
+                        
+                    <View style={styleLoginPage.askToSignUpView}>
+                        <Text style={styleLoginPage.askToSignUpText}>Do not have an account? </Text>
+                        <Text onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpText}>Sign up now!</Text>
+                    </View>
+                    
+                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader} />
+                 </ScrollView>
               </Image>
+              
               <View style={styleLoginPage.fbSignInButtonView}>
                     <FBLogin style={styleLoginPage.fbSignInButton}
                         permissions={facebookPermissions}
@@ -184,6 +187,13 @@ class LoginPage extends Component {
 }
 
 var styleLoginPage = StyleSheet.create({
+    scrollView:{
+      alignItems:'center',
+    },
+    blankView:{
+      height:windowHeight*0.184,
+      width:windowWidth,
+    },
     signInButtonView:{
       height:windowHeight*0.08,
       width:windowWidth*0.634,

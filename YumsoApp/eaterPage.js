@@ -12,6 +12,7 @@ var houseIcon = require('./icons/icon-grey-house.png');
 var paypalIcon = require('./icons/icon-paypal.png');
 var ResetPasswordPage = require('./resetPasswordPage');
 
+
 import Dimensions from 'Dimensions';
 
 import React, {

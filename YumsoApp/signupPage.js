@@ -9,12 +9,14 @@ import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
+var keyboardHeight = 275 //Todo: get keyboard size programmatically.
 
 import React, {
   Component,
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Image,
   TextInput,
   TouchableHighlight,
@@ -47,36 +49,38 @@ class SignUpPage extends Component {
                             <View style={styles.headerRightView}>
                             </View>
                         </View>
-                    
-                        <View style={styleSignUpPage.logoView}>
-                            <Image source={logoIcon} style={styleSignUpPage.logoIcon}/>
-                        </View>
-                        
-                        <View style={styles.loginInputView}>
-                            <TextInput placeholder="first name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff'
-                                    onChangeText = {(text)=>this.setState({firstname: text})}/>
-                        </View> 
-                        <View style={styles.loginInputView}>
-                            <TextInput placeholder="last name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff'
-                                    onChangeText = {(text)=>this.setState({lastname: text})}/> 
-                        </View>
-                        <View style={styles.loginInputView}>                      
-                            <TextInput placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff'
-                                    clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
-                        </View>
-                        <View style={styles.loginInputView}>
-                            <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff'
-                                    onChangeText = {(text)=>this.setState({password: text})} secureTextEntry={true}/>
-                        </View>
-                        <View style={styles.loginInputView}>
-                            <TextInput placeholder="confirm password" style={styles.loginInput} onSubmitEditing={this.onSignUpPressed.bind(this)} placeholderTextColor='#fff'
-                                    returnKeyType = {'go'} onChangeText = {(text)=>this.setState({password_re: text})} secureTextEntry={true}/>
-                        </View>
-                        
-                        <View style={styleSignUpPage.legalView}>
-                            <Text style={styleSignUpPage.legalText}>By signing up, I agree with the </Text>
-                            <Text style={styleSignUpPage.legalTextClickable}>Terms & Conditions</Text>
-                        </View>
+                        <ScrollView contentContainerStyle={{alignItems:'center'}} keyboardShouldPersistTaps={true} ref="scrollView">
+                            <View style={styleSignUpPage.logoView}>
+                                <Image source={logoIcon} style={styleSignUpPage.logoIcon}/>
+                            </View>
+                            
+                            <View style={styles.loginInputView}>
+                                <TextInput placeholder="first name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'} 
+                                onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} onChangeText = {(text)=>this.setState({firstname: text})}/>
+                            </View> 
+                            <View style={styles.loginInputView}>
+                                <TextInput placeholder="last name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'} 
+                                onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} onChangeText = {(text)=>this.setState({lastname: text})}/> 
+                            </View>
+                            <View style={styles.loginInputView}>                      
+                                <TextInput placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff' returnKeyType = {'done'}
+                                        onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
+                            </View>
+                            <View style={styles.loginInputView}>
+                                <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)}
+                                        onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} returnKeyType = {'done'} onChangeText = {(text)=>this.setState({password: text})} secureTextEntry={true}/>
+                            </View>
+                            <View style={styles.loginInputView}>
+                                <TextInput placeholder="confirm password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)} 
+                                returnKeyType = {'done'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onChangeText = {(text)=>this.setState({password_re: text})} secureTextEntry={true}/>
+                            </View>
+                            <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
+                            <View style={styleSignUpPage.legalView}>
+                                <Text style={styleSignUpPage.legalText}>By signing up, I agree with the </Text>
+                                <Text style={styleSignUpPage.legalTextClickable}>Terms & Conditions</Text>
+                            </View>
+                            
+                        </ScrollView>
                     </Image> 
                     <TouchableHighlight underlayColor={'#C0C0C0'} style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
                         <Text style={styleSignUpPage.signUpButtonText}>Sign up</Text>
@@ -88,6 +92,20 @@ class SignUpPage extends Component {
                             style={styles.loader} />           
                 </View>
             );
+    }
+
+    _onLayout(event) {
+        this.y = event.nativeEvent.layout.y;
+    }
+    
+    _onFocus() {
+        let scrollViewLength = this.y;
+        let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
+        this.refs.scrollView.scrollTo({x:0, y:keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
+    }
+
+    onKeyBoardDonePressed(){
+        this.refs.scrollView.scrollTo({x:0, y:0, animated: true})
     }
     
     async onSignUpPressed(){

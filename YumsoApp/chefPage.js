@@ -12,7 +12,7 @@ var yumsoVerifiedIcon = require('./icons/icon-YumsoVerified.png');
 var chefQualificationIcon = require('./icons/icon-ChefQualification.png');
 var bestReviewedIcon = require('./icons/icon-BestReviewed.png');
 import Dimensions from 'Dimensions';
-import {KeyboardAwareListView} from 'react-native-keyboard-aware-scroll-view';
+
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;

@@ -14,6 +14,7 @@ import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
+var keyboardHeight = 250 //Todo: get keyboard size programmatically.
 
 import React, {
   Component,
@@ -23,6 +24,7 @@ import React, {
   Image,
   TextInput,
   ListView,
+  ScrollView,
   TouchableHighlight,
   TouchableOpacity,
   ActivityIndicatorIOS,
@@ -149,8 +151,8 @@ class ShoppingCartPage extends Component {
        
        if(this.state.showPromotionCodeInput){
           var promotionCodeInputView = <View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}>   
-                                         <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                         onChangeText = {(text) => this.setState({ promotionCode: text }) }/>
+                                         <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text, priceIsConfirmed:false })} 
+                                         onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this._onBlurScrollBack()} onBlur={()=>this._onBlurScrollBack()}/>
                                        </View>;
        }else{
           var promotionCodeInputView =  <TouchableHighlight key={'promotionCodeInputView'} style={styleShoppingCartPage.priceNumberView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
@@ -196,7 +198,7 @@ class ShoppingCartPage extends Component {
                       <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
                       <View style={styleShoppingCartPage.phoneNumberInputView}>                       
                         <TextInput style={styleShoppingCartPage.phoneNumberInput} placeholder={this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'} 
-                        returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text }) }/> 
+                        returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this._onBlurScrollBack()} onBlur={()=>this._onBlurScrollBack()}/> 
                       </View>
                   </View>
                   <View style={styleShoppingCartPage.addressChangeButtonView}>
@@ -268,13 +270,15 @@ class ShoppingCartPage extends Component {
                     <View style={styles.headerRightView}>
                     </View>
                </View>
-
-               <ListView style={styles.dishListView}
-                    dataSource = {this.state.dataSource}
-                    renderHeader={this.renderHeader.bind(this)}
-                    renderRow={this.renderRow.bind(this) } 
-                    renderFooter={this.renderFooter.bind(this)}/>
-               {loadingSpinnerView}
+               <ScrollView ref="scrollView">
+                    <ListView style={styles.dishListView}
+                            dataSource = {this.state.dataSource}
+                            renderHeader={this.renderHeader.bind(this)}
+                            renderRow={this.renderRow.bind(this) } 
+                            renderFooter={this.renderFooter.bind(this)}/>
+                    {loadingSpinnerView}
+                    <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
+               </ScrollView>
                <View style={styleShoppingCartPage.footerView}>
                     <TouchableHighlight onPress={() => this.getPrice() }>
                         <View style={styleShoppingCartPage.getPriceButtonView}>
@@ -285,6 +289,21 @@ class ShoppingCartPage extends Component {
                </View>
             </View>
         );
+    }
+    
+    _onLayout(event) {
+        this.y = event.nativeEvent.layout.y;
+        console.log(this.y);
+    }
+    
+    _onFocus() {
+        let scrollViewLength = this.y;
+        let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
+        this.refs.scrollView.scrollTo({x:0, y:keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
+    }
+    
+    _onBlurScrollBack(){
+        this.refs.scrollView.scrollTo({x:0, y:30, animated: true})
     }
     
     mapDone(address){
