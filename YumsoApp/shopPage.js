@@ -210,8 +210,8 @@ class ShopPage extends Component {
                             <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                           </View>
                         </TouchableHighlight>), 
-                       (<TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
-                            <View key={'chefPageClickableView'} style={styleShopPage.chefDetailView}>
+                       (<TouchableHighlight key={'chefPageClickableView'}  underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
+                            <View style={styleShopPage.chefDetailView}>
                                 <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
                                 <View style={styleShopPage.chefDetailTextView}>
                                    <Text style={styleShopPage.pickupAddressText}>Chef page</Text>
@@ -219,8 +219,8 @@ class ShopPage extends Component {
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                             </View>
                         </TouchableHighlight>), 
-                       (<TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
-                            <View key={'chefReviewsClickable'} style={styleShopPage.chefDetailView}>
+                       (<TouchableHighlight key={'chefReviewsClickable'} underlayColor={'#ECECEC'} onPress={() => this.navigateToChefCommentsPage()}>
+                            <View style={styleShopPage.chefDetailView}>
                                 <Image source={reviewIcon} style={styleShopPage.pickupAddressIcon}/>
                                 <View style={styleShopPage.chefDetailTextView}>
                                     <Text style={styleShopPage.pickupAddressText}>{this.state.chef.reviewCount} reviews</Text>
