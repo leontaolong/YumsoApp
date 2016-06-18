@@ -95,16 +95,22 @@ class HistoryOrderPage extends Component {
         this.setState({dataSource: this.state.dataSource.cloneWithRows(orders), showProgress:false, orders:orders});
     }
      
+    
     renderRow(order){
         if(order.orderStatus == 'Delivered'){
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
         }else{
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Will be out for delivery at {dateRender.renderDate2(order.orderDeliverTime)}</Text>
         }
-        
+        if(order.shopPictures && order.shopPictures.values[1]){
+           var imageSrc = {uri:order.shopPictures.values[1]};
+        }else{
+           var imageSrc = defaultShopPic;
+        }
+     
         return (<View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
                     <TouchableHighlight onPress={()=>this.navigateToOrderDetailPage(order)}>
-                    <Image source={{uri:order.shopPictures && order.shopPictures.values[1] ? order.shopPictures.values[1] : defaultShopPic}} style={styleHistoryOrderPage.shopPhoto}/>
+                    <Image source={imageSrc} style={styleHistoryOrderPage.shopPhoto}/>
                     </TouchableHighlight>
                     <View style={styleHistoryOrderPage.orderInfoView}>
                         <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
