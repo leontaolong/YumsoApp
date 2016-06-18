@@ -85,7 +85,11 @@ class ShoppingCartPage extends Component {
         let imageSrc = defaultDishPic ;
         if(dish.pictures && dish.pictures!=null && dish.pictures.length!=0){
             imageSrc={uri:dish.pictures[0]};   
-        } 
+        }
+        let actualQuantityView = <View></View>;
+        if(this.state.dishUnavailableSet && this.state.dishUnavailableSet[dish.dishId]){
+            actualQuantityView = <Text> actualy quantity: {this.state.dishUnavailableSet[dish.dishid].actualLeftQuantity}</Text>;
+        }
         return (
             <View style={styleShoppingCartPage.oneListingView}>
                 <Image source={imageSrc} style={styleShoppingCartPage.dishPhoto}/>
@@ -101,8 +105,8 @@ class ShoppingCartPage extends Component {
                      
                     <View style={styleShoppingCartPage.dishIngredientView}>
                        <Text style={styleShoppingCartPage.dishIngredientText}>{this.getTextLengthLimited(dish.ingredients,43)}</Text>
-                    </View>
-                    
+                    </View>  
+                    {actualQuantityView}                                        
                     <View style={styleShoppingCartPage.quantityTotalPriceView}>
                       <View style={styleShoppingCartPage.quantityView}>
                         <TouchableHighlight style={styleShoppingCartPage.plusIconView} underlayColor={'transparent'}
@@ -329,7 +333,7 @@ class ShoppingCartPage extends Component {
         }
         console.log("listViewLength "+listViewLength);
         let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        if(listViewBottomToScreenBottom<0){
+        if(listViewBottomToScreenBottom < 0){
            this.refs.listView.scrollTo({x:0, y:windowHeight*0.075-listViewBottomToScreenBottom, animated: true})
         }
     }
@@ -353,7 +357,7 @@ class ShoppingCartPage extends Component {
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;  
         }
-        if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity===0){
+        if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity <= 0){
             Alert.alert( 'Warning', 'No more available',[ { text: 'OK' }]);
             return;          
         }    
@@ -379,7 +383,12 @@ class ShoppingCartPage extends Component {
         }   
         if(this.state.shoppingCart[this.state.selectedTime][dish.dishId] && this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity>0){
             this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity-=1;
-           this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+=1;
+            this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+=1;
+            if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity>=0){
+                if(this.state.dishUnavailableSet && this.state.dishUnavailableSet[dish.dishId]){
+                    delete this.state.dishUnavailableSet[dish.dishId];   //todo: need setstate to ensure dish actualy quantity text is gone?      
+                }
+            }
             if(this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity===0){
                 delete this.state.shoppingCart[this.state.selectedTime][dish.dishId];
                 if(Object.keys(this.state.shoppingCart[this.state.selectedTime])===0){
@@ -421,6 +430,10 @@ class ShoppingCartPage extends Component {
     }
     
     getPrice(){
+        if(this.state.dishUnavailableSet && Object.keys(this.state.dishUnavailableSet).length!=0){
+            Alert.alert('Warning','Please fix your order items',[{ text: 'OK' }]);
+            return;           
+        }
         if(!this.state.deliveryAddress){
             Alert.alert('Warning','You do not have a delivery address',[{ text: 'OK' }]);
             return;         
@@ -456,18 +469,40 @@ class ShoppingCartPage extends Component {
                     this.setState({quotedOrder:response.data.detail.orderQuote, priceIsConfirmed:true});
                 }else{
                    console.log(response.data.detail);
-                   //todo: show user the detail;  response.data.detail.problems; 
+                   let detailError = response.data.detail;
+                   if(detailError.type==='NoAvailableDishQuantityException'){
+                       this.handleDishNotAvailable(detailError.deliverTimestamp,  detailError.quantityFact);
+                   }else if(detailError.type==='PaymentException'){
+                       Alert.alert('Warning', 'Payment failed. ' + detailError.message, [{ text: 'OK' }]);  
+                   }else if(detailError.type==='NoDeliveryRouteFoundException'){
+                       Alert.alert('Warning', 'Delivery address is not reachable. ' + detailError.message, [{ text: 'OK' }]);   
+                   }else{
+                       Alert.alert('Warning', 'Failed creating order. Please try again later.' [{ text: 'OK' }]);                       
+                   }
+                   this.setState({priceIsConfirmed:false});
                 }
-            }else{
-                console.log(response.data);
-                Alert.alert('Warning', 'Price quote failed. Please make sure delivery location is reachable.', [{ text: 'OK' }]);
-                //todo: more specific
+            }else if(response.statusCode==400){
+                Alert.alert('Warning', 'Price quote failed. '+response.data, [{ text: 'OK' }]);
                 this.setState({priceIsConfirmed:false});
+            }else {
+                Alert.alert('Warning', 'Price quote failed. Please make sure delivery location is reachable.', [{ text: 'OK' }]);       
+                this.setState({ priceIsConfirmed: false });
             }
             this.scrollToShowTotalPrice(); 
             this.setState({showProgress:false});     
         });
 
+    }
+    
+    handleDishNotAvailable(deliverTimestamp, quantityFact){
+        let dishUnavailableSet = {};
+        for(let fact of quantityFact){
+            this.state.scheduleMapping[deliverTimestamp][fact.dishId].leftQuantity = fact.actualLeftQuantity - fact.orderQuantity;
+            dishUnavailableSet[fact.dishId] = {
+                actualLeftQuantity: fact.actualLeftQuantity
+            };
+        }                
+        this.setState({priceIsConfirmed:false, dishUnavailableSet : dishUnavailableSet});             
     }
     
     async navigateToPaymentPage(){
@@ -526,7 +561,7 @@ class ShoppingCartPage extends Component {
     }
     
     getTextLengthLimited(text,lengthLimit){
-        if(text.length<=lengthLimit){
+        if(text.length <=lengthLimit){
            return text;
         }else{
            var shortenedText = text.substr(0,lengthLimit-1);
@@ -541,6 +576,16 @@ class ShoppingCartPage extends Component {
                 this.defaultDeliveryAddress[key] = this.state.deliveryAddress[key];
             }
         }
+        if(Object.keys(this.state.dishUnavailableSet).length!=0){
+            Alert.alert('Warning','You have invalid order currently. Your cart will be clear if conitune go back',[{ text: 'OK', onPress:()=>{ 
+                for(let dishId in this.state.dishUnavailableSet){
+                    this.state.scheduleMapping[this.state.selectedTime][dishId].leftQuantity = this.state.dishUnavailableSet[dishId].actualLeftQuantity;
+                }
+                delete this.state.shoppingCart[this.state.selectedTime];
+            }}, {text:'Cancel'}]);
+            return;
+        }
+
         this.props.navigator.pop();
     }
 }
