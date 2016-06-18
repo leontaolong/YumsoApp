@@ -9,7 +9,7 @@ import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
-var keyboardHeight = 275 //Todo: get keyboard size programmatically.
+var keyboardHeight = 280 //Todo: get keyboard size programmatically.
 
 import React, {
   Component,
@@ -20,6 +20,7 @@ import React, {
   Image,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert
@@ -29,11 +30,19 @@ class SignUpPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            showProgress: false
+            showProgress: false,
+            showPasswordRequirment:false,
         };
     }
     
     render() {
+            if(this.state.showPasswordRequirment){
+              var passwordRequirmentText = <Text style={styleSignUpPage.passwordRequirementText}>
+                                            Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
+                                           </Text>;
+            }
+            
+        
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
@@ -75,17 +84,18 @@ class SignUpPage extends Component {
                                 returnKeyType = {'done'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onChangeText = {(text)=>this.setState({password_re: text})} secureTextEntry={true}/>
                             </View>
                             <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
+                            <View style={styleSignUpPage.passwordRequirementView}>
+                               {passwordRequirmentText}
+                            </View>
                             <View style={styleSignUpPage.legalView}>
                                 <Text style={styleSignUpPage.legalText}>By signing up, I agree with the </Text>
                                 <Text style={styleSignUpPage.legalTextClickable}>Terms & Conditions</Text>
                             </View>
-                            
                         </ScrollView>
                     </Image> 
-                    <TouchableHighlight underlayColor={'#C0C0C0'} style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
-                        <Text style={styleSignUpPage.signUpButtonText}>Sign up</Text>
-                    </TouchableHighlight>
-
+                    <TouchableOpacity activeOpacity={0.7} style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
+                         <Text style={styleSignUpPage.signUpButtonText}>Sign up</Text>
+                    </TouchableOpacity>
                     <ActivityIndicatorIOS
                             animating={this.state.showProgress}
                             size="large"
@@ -99,15 +109,50 @@ class SignUpPage extends Component {
     }
     
     _onFocus() {
+        this.setState({showPasswordRequirment:true});
         let scrollViewLength = this.y;
         let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
         this.refs.scrollView.scrollTo({x:0, y:keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
     }
 
     onKeyBoardDonePressed(){
+        this.setState({showPasswordRequirment:false});
         this.refs.scrollView.scrollTo({x:0, y:0, animated: true})
     }
     
+        //password strength check
+   isPasswordStrong () {
+        if (this.state.password.length < 7) {
+            return false;
+        }
+
+        var hasUpper = false;
+        for (var i = 0; i < this.state.password.length; i++) {
+             if (this.state.password[i] >= 'A' && this.state.password[i] <= 'Z') {
+                 var hasUpper = true;
+                 break;
+             }
+        }
+
+        var hasLower = false;
+        for (var i = 0; i < this.state.password.length; i++) {
+             if (this.state.password[i] >= 'a' && this.state.password[i] <= 'z') {
+                 var hasLower = true;
+                 break;
+             }
+        }
+
+        var hasNumber = false;
+        for (var i = 0; i < this.state.password.length; i++) {
+             if (this.state.password[i] >= '0' && this.state.password[i] <= '9') {
+                 var hasNumber = true;
+                 break;
+             }
+        }
+
+        return hasUpper && hasLower && hasNumber;
+    }
+            
     async onSignUpPressed(){
         if(!this.state.firstname || !this.state.lastname){
             Alert.alert( 'Warning', 'Missing first name or last name',[ { text: 'OK' }]);
@@ -124,10 +169,15 @@ class SignUpPage extends Component {
             return; 
         }
         
+        if(!this.isPasswordStrong()){
+            Alert.alert( 'Warning', 'Your password does not meet the complexity requirment' ,[ { text: 'OK' }]);
+            return;  
+        }
+        
         if(this.state.password_re !== this.state.password){
-            Alert.alert( 'Warning', 'Two Passwords entered are different' ,[ { text: 'OK' }]);
+            Alert.alert( 'Warning', 'Two password inputs do not match' ,[ { text: 'OK' }]);
             return;
-        }      
+        }
         this.setState({showProgress:true});
         let result = await AuthService.registerWithEmail(this.state.firstname, this.state.lastname,this.state.email, this.state.password, this.state.password_re);
         if(result==false){
@@ -155,12 +205,21 @@ var styleSignUpPage = StyleSheet.create({
       width:windowWidth*0.208,
       height:windowWidth*0.208,
     },
+    passwordRequirementView:{
+      height:windowHeight*0.08,
+      width:windowWidth*0.88,
+      backgroundColor:'transparent',
+    },
+    passwordRequirementText:{
+      fontSize:11,
+      color:'#fff',
+      textAlign:'justify',
+    },
     legalView:{
       flex:1,
       flexDirection:'row',
       justifyContent: 'center',
       backgroundColor:'transparent',
-      paddingTop:windowHeight*0.08,
     },
     legalText:{
       fontSize:windowHeight/47.64,

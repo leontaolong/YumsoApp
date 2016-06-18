@@ -14,7 +14,7 @@ import {KeyboardAwareListView} from 'react-native-keyboard-aware-scroll-view';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
-var keyboardHeight = 250 //Todo: get keyboard size programmatically.
+var keyboardHeight = 280 //Todo: get keyboard size programmatically.
 
 import React, {
   Component,
@@ -26,7 +26,6 @@ import React, {
   ListView,
   TouchableHighlight,
   ActivityIndicatorIOS,
-  ScrollView,
   AsyncStorage,
   Alert,
 } from 'react-native';
@@ -100,6 +99,56 @@ class OrderDetailPage extends Component {
         );
     }
     
+    renderHeader(){
+        //Render 'Delivered' status
+        if(this.state.showDeliverStatusView){  
+            if(this.state.order.orderStatus=='Delivered'){
+            var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
+                                        <Text style={styleOrderDetailPage.deliverTimeText}>Your order was delivered at {dateRender.renderDate2(this.state.order.orderStatusModifiedTime)}</Text>
+                                        <TouchableHighlight style={styleOrderDetailPage.deleteBannerIconView} underlayColor={'transparent'} onPress={()=>this.setState({showDeliverStatusView:false})}>
+                                        <Image source={deleteBannerIcon} style={styleOrderDetailPage.deleteBannerIcon} />
+                                        </TouchableHighlight>
+                                    </View>);
+            }else{
+            //Render 'Order received' status 
+            var currentTime = new Date().getTime();
+            if(this.state.order.orderStatus == 'new'){
+                var newStatusTextColor = "#FFFFFF";
+                var cookingStatusTextColor = "#b89467";
+                var DeliveringStatusTextColor = "#b89467";
+                if(currentTime > this.state.order.orderDeliverTime - 2*60*60*1000 && currentTime < this.state.order.orderDeliverTime){
+                    cookingStatusTextColor = "#FFFFFF";
+                }
+            }else if(this.state.order.orderStatus == 'Delivering'){
+                var newStatusTextColor = "#FFFFFF";
+                var cookingStatusTextColor = "#FFFFFF";
+                var DeliveringStatusTextColor = "#FFFFFF";
+            }
+            
+            var deliverTimeView = (<View style={styleOrderDetailPage.deliverStatusView}>
+                                    <View style={styleOrderDetailPage.oneStatusView}>
+                                        <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Order</Text>
+                                        <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Received</Text>
+                                    </View>
+                                    <View style={styleOrderDetailPage.oneStatusView}>
+                                        <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
+                                    </View>
+                                    <View style={styleOrderDetailPage.oneStatusView}>
+                                        <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Cooking</Text>
+                                    </View>
+                                    <View style={styleOrderDetailPage.oneStatusView}>
+                                        <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
+                                    </View>
+                                    <View style={styleOrderDetailPage.oneStatusView}>
+                                        <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Out For</Text>
+                                        <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Delivery</Text>
+                                    </View>
+                                </View>);
+            }
+            return deliverTimeView;
+        }
+    }
+    
     renderFooter(){
       if(this.state.order.orderStatus=='Delivered'){
         if(this.state.order.comment && this.state.order.comment.starRating){
@@ -146,32 +195,33 @@ class OrderDetailPage extends Component {
                                   <Text style={styleOrderDetailPage.commentText}>{this.state.comment.trim() ? this.state.comment :'No comment'}</Text>
                                </View>
         }else if(new Date().getTime()-this.state.order.orderDeliverTime < 7*24*60*60*1000){
-           var commentBoxView = <View style={styleOrderDetailPage.commentBox}>
-                                  <View style={styleOrderDetailPage.ratingCommentTimeView}>
-                                    <View style={styleOrderDetailPage.ratingView}>
-                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(1)}>
-                                        <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
-                                        </TouchableHighlight>
-                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(2)}>
-                                        <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>
-                                        </TouchableHighlight>
-                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(3)}>
-                                        <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
-                                        </TouchableHighlight>
-                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(4)}>
-                                        <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
-                                        </TouchableHighlight>
-                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(5)}>
-                                        <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
-                                        </TouchableHighlight>
+           var commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
+                                    <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                        <View style={styleOrderDetailPage.ratingView}>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(1)}>
+                                            <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(2)}>
+                                            <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(3)}>
+                                            <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(4)}>
+                                            <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(5)}>
+                                            <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                        </View>
                                     </View>
-                                  </View>
-                                  <TextInput placeholder="Leave your comment here" style={styleOrderDetailPage.commentInput} multiline={true} returnKeyType = {'default'} autoCorrect={false} 
-                                  onChangeText = {(text) => this.setState({ comment: text }) } onFocus={(()=>this._onFocus()).bind(this)}/>                                     
-                                  <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.submitCommentButton} onPress={()=>this.submitComment()}>
-                                        <Text style={styleOrderDetailPage.submitCommentButtonText}>Submit</Text>    
-                                  </TouchableHighlight>
-                               </View>
+                                    <TextInput placeholder="Leave your comment here" style={styleOrderDetailPage.commentInput} multiline={true} returnKeyType = {'default'} autoCorrect={false} 
+                                    onChangeText = {(text) => this.setState({ comment: text }) } onFocus={(()=>this._onFocus()).bind(this)} onBlur={()=>this.scrollToCommentBoxtoBottom()}/>                                     
+                                    <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.submitCommentButton} onPress={()=>this.submitComment()}>
+                                            <Text style={styleOrderDetailPage.submitCommentButtonText}>Submit</Text>    
+                                    </TouchableHighlight>
+                                 </View>),
+                                (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
         }
                 
         return commentBoxView;
@@ -186,54 +236,7 @@ class OrderDetailPage extends Component {
                                     <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                 </View>;  
         }
-                     
-        //Render 'Delivered' status
-        if(this.state.showDeliverStatusView){  
-            if(this.state.order.orderStatus=='Delivered'){
-            var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
-                                        <Text style={styleOrderDetailPage.deliverTimeText}>Your order was delivered at {dateRender.renderDate2(this.state.order.orderStatusModifiedTime)}</Text>
-                                        <TouchableHighlight style={styleOrderDetailPage.deleteBannerIconView} underlayColor={'transparent'} onPress={()=>this.setState({showDeliverStatusView:false})}>
-                                        <Image source={deleteBannerIcon} style={styleOrderDetailPage.deleteBannerIcon} />
-                                        </TouchableHighlight>
-                                    </View>);
-            }else{
-            //Render 'Order received' status 
-            var currentTime = new Date().getTime();
-            if(this.state.order.orderStatus == 'new'){
-                var newStatusTextColor = "#FFFFFF";
-                var cookingStatusTextColor = "#b89467";
-                var DeliveringStatusTextColor = "#b89467";
-                if(currentTime > this.state.order.orderDeliverTime - 2*60*60*1000 && currentTime < this.state.order.orderDeliverTime){
-                    cookingStatusTextColor = "#FFFFFF";
-                }
-            }else if(this.state.order.orderStatus == 'Delivering'){
-                var newStatusTextColor = "#FFFFFF";
-                var cookingStatusTextColor = "#FFFFFF";
-                var DeliveringStatusTextColor = "#FFFFFF";
-            }
-            
-            var deliverTimeView = (<View style={styleOrderDetailPage.deliverStatusView}>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Order</Text>
-                                        <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Received</Text>
-                                    </View>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
-                                    </View>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Cooking</Text>
-                                    </View>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
-                                    </View>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Out For</Text>
-                                        <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Delivery</Text>
-                                    </View>
-                                </View>);
-            }
-        }
-        
+   
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -248,31 +251,38 @@ class OrderDetailPage extends Component {
                     <View style={styles.headerRightView}>
                     </View>
                </View>
-               <ScrollView ref="scrollView">  
-                  {deliverTimeView} 
-                  <ListView style={styleOrderDetailPage.dishListView} 
+               <ListView style={styleOrderDetailPage.dishListView} ref="listView" 
                             dataSource = {this.state.dataSource}
+                            renderHeader={this.renderHeader.bind(this)}
                             renderRow={this.renderRow.bind(this) } 
                             renderFooter={this.renderFooter.bind(this)}/>
-                  {loadingSpinnerView}
-                  <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
-               </ScrollView>
+               {loadingSpinnerView}
             </View>
         );
     }
     
     _onLayout(event) {
         this.y = event.nativeEvent.layout.y;
+        console.log(this.y);
     }
     
     _onFocus() {
-        let scrollViewLength = this.y;
-        let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        this.refs.scrollView.scrollTo({x: 0, y: keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
+        let listViewLength = this.y;
+        let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
+        if(listViewBottomToScreenBottom < keyboardHeight){//Scroll up only when keyboard covers part of listView
+           this.refs.listView.scrollTo({x: 0, y: keyboardHeight - listViewBottomToScreenBottom, animated: true});   
+        }
+    }
+    
+    scrollToCommentBoxtoBottom(){
+        let listViewLength = this.y;
+        let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
+        if(listViewBottomToScreenBottom < 0){//Scroll down to near screen bottom only listViewBottomToScreenBottom excceed the screen
+          this.refs.listView.scrollTo({x:0, y:30 - listViewBottomToScreenBottom, animated: true})
+        }
     }
     
     submitComment(){
-        this.setState({showProgress:true});
         var self = this;
         if (!this.state.starRating) {
             Alert.alert('','Please rate the order',[{ text: 'OK' }]);
@@ -285,6 +295,7 @@ class OrderDetailPage extends Component {
             commentText: this.state.comment,
             starRating: Number(this.state.starRating)
         };
+        this.setState({showProgress:true});
         return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
         .then((res)=>{
             if (res.statusCode != 200) {
