@@ -576,7 +576,7 @@ class ShoppingCartPage extends Component {
                 this.defaultDeliveryAddress[key] = this.state.deliveryAddress[key];
             }
         }
-        if(Object.keys(this.state.dishUnavailableSet).length!=0){
+        if(this.state.dishUnavailableSet && Object.keys(this.state.dishUnavailableSet).length!=0){
             Alert.alert('Warning','You have invalid order currently. Your cart will be clear if conitune go back',[{ text: 'OK', onPress:()=>{ 
                 for(let dishId in this.state.dishUnavailableSet){
                     this.state.scheduleMapping[this.state.selectedTime][dishId].leftQuantity = this.state.dishUnavailableSet[dishId].actualLeftQuantity;
