@@ -137,9 +137,9 @@ class ShoppingCartPage extends Component {
           console.log("showPromotionCodeInput false");
           var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}> 
                                            <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text})} 
-                                            onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.setState({showPromotionCodeInput:true})}/>
+                                            onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
                                         </View>),
-                                       (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
+                                       (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressAddCoupon()}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
                                         </TouchableHighlight>)];
        }
@@ -259,7 +259,7 @@ class ShoppingCartPage extends Component {
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true} showHouseIcon={true}/>);   
         }
         
-        if(!this.state.priceIsConfirmed || (this.state.promotionCode && this.state.promotionCode.trim() && this.state.quotedOrder.price.couponValue==undefined)){
+        if(!this.state.priceIsConfirmed){
            var payNowButtonView = <TouchableOpacity activeOpacity={1}>
                                     <View style={styleShoppingCartPage.checkOutButtonGreyView}>
                                         <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
@@ -406,6 +406,13 @@ class ShoppingCartPage extends Component {
         if(this.state.priceIsConfirmed){
            this.getPrice();
         }        
+    }
+    
+    onPressAddCoupon(){
+        this.setState({showPromotionCodeInput:true});
+        if(this.state.priceIsConfirmed){
+           this.getPrice();
+        } 
     }
     
     changeDeliveryAddress(){
