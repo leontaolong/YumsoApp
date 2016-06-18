@@ -269,13 +269,17 @@ class OrderDetailPage extends Component {
     _onFocus() {
         let listViewLength = this.y;
         let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        this.refs.listView.scrollTo({x: 0, y: keyboardHeight - listViewBottomToScreenBottom, animated: true})
+        if(listViewBottomToScreenBottom < keyboardHeight){//Scroll up only when keyboard covers part of listView
+           this.refs.listView.scrollTo({x: 0, y: keyboardHeight - listViewBottomToScreenBottom, animated: true});   
+        }
     }
     
     scrollToCommentBoxtoBottom(){
         let listViewLength = this.y;
         let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        this.refs.listView.scrollTo({x:0, y:30 - listViewBottomToScreenBottom, animated: true})
+        if(listViewBottomToScreenBottom < 0){//Scroll down to near screen bottom only listViewBottomToScreenBottom excceed the screen
+          this.refs.listView.scrollTo({x:0, y:30 - listViewBottomToScreenBottom, animated: true})
+        }
     }
     
     submitComment(){
