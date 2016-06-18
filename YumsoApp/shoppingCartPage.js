@@ -401,7 +401,7 @@ class ShoppingCartPage extends Component {
     }    
     
     onPressRemoveCoupon(){
-        this.setState({promotionCode:''});
+        this.setState({promotionCode:'',showPromotionCodeInput:'false'});
         this.getPrice();
     }
     
