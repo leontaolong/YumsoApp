@@ -91,11 +91,11 @@ class ShoppingCartPage extends Component {
                </View>
                <ScrollView>
                     <View style={styleShoppingCartPage.oneListingView}>
-                            <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
-                            <View style={styleShoppingCartPage.chefInfoView}>
-                                <Text style={styleShoppingCartPage.chefNameText}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
-                                <Text style={styleShoppingCartPage.chefLocationText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>                                        
-                            </View>
+                          <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
+                          <View style={styleShoppingCartPage.chefInfoView}>
+                              <Text style={styleShoppingCartPage.chefNameText}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
+                              <Text style={styleShoppingCartPage.chefLocationText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>                                        
+                          </View>
                     </View>
                     <View style={styleShoppingCartPage.badgeView}>
                         {chefAllBadgesViews}

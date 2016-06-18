@@ -14,7 +14,7 @@ import {KeyboardAwareListView} from 'react-native-keyboard-aware-scroll-view';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
-var keyboardHeight = 250 //Todo: get keyboard size programmatically.
+var keyboardHeight = 280 //Todo: get keyboard size programmatically.
 
 import React, {
   Component,

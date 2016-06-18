@@ -15,7 +15,7 @@ import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
-var keyboardHeight = 250 //Todo: get keyboard size programmatically.
+var keyboardHeight = 280 //Todo: get keyboard size programmatically.
 
 import React, {
   Component,
@@ -126,18 +126,20 @@ class ShoppingCartPage extends Component {
     
     renderFooter(){
        if(this.state.showPromotionCodeInput){
+          console.log("showPromotionCodeInput true");
           var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.shownPromoCodeView}>   
                                            <Text style={styleShoppingCartPage.dishIngredientText}>{this.state.promotionCode}</Text>
                                         </View>),
-                                       (<TouchableHighlight key={'AddRemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressRemoveCoupon()}>
-                                           <Image source={removePromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
+                                       (<TouchableHighlight key={'RemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressRemoveCoupon()}>
+                                           <Image source={removePromoCodeIcon} style={styleShoppingCartPage.removePromoCodeIcon}/>
                                         </TouchableHighlight>)];
        }else{
+          console.log("showPromotionCodeInput false");
           var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}> 
                                            <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text})} 
-                                            onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'}/>
+                                            onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.setState({showPromotionCodeInput:true})}/>
                                         </View>),
-                                       (<TouchableHighlight key={'AddRemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
+                                       (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
                                         </TouchableHighlight>)];
        }
@@ -179,7 +181,6 @@ class ShoppingCartPage extends Component {
                 promotionDeductionView=(<View key={'promotionDeductionView'} style={styleShoppingCartPage.promotionDeductionView}>
                                                 <View style={styleShoppingCartPage.couponTitleView}>
                                                     <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
-                                                    <Text style={styleShoppingCartPage.removeCouponText} onPress={()=>this.onPressRemoveCoupon()}>Remove</Text>
                                                 </View>
                                                 <View style={styleShoppingCartPage.couponNumberView}>
                                                     <Text style={styleShoppingCartPage.priceNumberText}>-${this.state.quotedOrder.price.couponValue}</Text>
@@ -196,7 +197,7 @@ class ShoppingCartPage extends Component {
                         </View>
                     </View>),
                     (<View key={'promotionCodeView'} style={styleShoppingCartPage.promotionCodeView}>
-                        <View style={styleShoppingCartPage.pomotionCodeTitleView}>
+                        <View style={styleShoppingCartPage.promotionCodeTitleView}>
                             <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
                         </View>
                         {promotionCodeInputView}
@@ -269,7 +270,7 @@ class ShoppingCartPage extends Component {
                                     <View style={styleShoppingCartPage.checkOutButtonView}>
                                         <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
                                     </View>
-                                 </TouchableHighlight>;
+                                  </TouchableHighlight>;
         }
                
         return (
@@ -401,8 +402,10 @@ class ShoppingCartPage extends Component {
     }    
     
     onPressRemoveCoupon(){
-        this.setState({promotionCode:'',showPromotionCodeInput:'false'});
-        this.getPrice();
+        this.setState({promotionCode:'',showPromotionCodeInput:false});
+        if(this.state.priceIsConfirmed){
+           this.getPrice();
+        }        
     }
     
     changeDeliveryAddress(){
@@ -711,30 +714,26 @@ var styleShoppingCartPage = StyleSheet.create({
         alignSelf:'center',
     },
     promotionCodeTitleView:{
-        flex:3/8,
-        width:windowWidth*3/8,
+        flex:0.375,
         alignItems:'flex-start',
         alignSelf:'center',
     },
     shownPromoCodeView:{
-        flex:4/8,
         flexDirection:'row',
         width:windowWidth*0.5,
         alignSelf:'center',
     },
     promoCodeInputView:{
-        height:25,
+        height:28,
         flexDirection:'row',
-        borderColor:'#F5F5F5',
+        borderColor:'#F2F2F2',
         borderWidth:1,
         borderRadius:5,
-        flex:4/8,
-        width:windowWidth*0.5,
+        flex:0.53,
         alignSelf:'center',
     },
     AddRemoveCouponButtonView:{
-        flex:1/8,
-        width:windowWidth*1/8,
+        flex:0.095,
         alignItems:'flex-end',
         alignSelf:'center',
     },
@@ -824,8 +823,12 @@ var styleShoppingCartPage = StyleSheet.create({
         color:'#ffcc33',
     },
     addPromoCodeIcon:{
-        width: windowHeight/36.8, 
-        height: windowHeight/36.8,
+        width: windowHeight/24.53, 
+        height: windowHeight/24.53,
+    }, 
+    removePromoCodeIcon:{
+        width: windowHeight/24.53, 
+        height: windowHeight/24.53,
     }, 
     footerView:{ 
         flexDirection:'row', 
