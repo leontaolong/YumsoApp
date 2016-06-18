@@ -146,6 +146,7 @@ class PaymentPage extends Component {
                     this.setState({showProgress:false});
                     console.log(response.data.detail);
                     //todo: display the detail to user.
+                    //todo: redirect to shoppingcart page by pop once and setstate;
                 }                    
             }else{
                 this.setState({showProgress:false});
