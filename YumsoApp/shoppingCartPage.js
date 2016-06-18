@@ -127,8 +127,8 @@ class ShoppingCartPage extends Component {
     renderFooter(){
        if(this.state.showPromotionCodeInput){
           console.log("showPromotionCodeInput true");
-          var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.shownPromoCodeView}>   
-                                           <Text style={styleShoppingCartPage.dishIngredientText}>{this.state.promotionCode}</Text>
+          var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.showPromoCodeView}>   
+                                           <Text style={styleShoppingCartPage.showPromoCodeText}>{this.state.promotionCode}</Text>
                                         </View>),
                                        (<TouchableHighlight key={'RemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressRemoveCoupon()}>
                                            <Image source={removePromoCodeIcon} style={styleShoppingCartPage.removePromoCodeIcon}/>
@@ -725,9 +725,14 @@ var styleShoppingCartPage = StyleSheet.create({
         alignItems:'flex-start',
         alignSelf:'center',
     },
-    shownPromoCodeView:{
+    showPromoCodeView:{
         flexDirection:'row',
         width:windowWidth*0.5,
+        justifyContent:'center',
+    },
+    showPromoCodeText:{
+        fontSize:windowHeight/47.33,
+        color:'#9B9B9B',
         alignSelf:'center',
     },
     promoCodeInputView:{
