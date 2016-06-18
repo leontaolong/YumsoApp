@@ -9,6 +9,7 @@ var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
 var backIcon = require('./icons/icon-back.png');
 var addPromoCodeIcon = require('./icons/icon-add.png');
+var removePromoCodeIcon = require('./icons/icon-cancel.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 import Dimensions from 'Dimensions';
 
@@ -124,112 +125,126 @@ class ShoppingCartPage extends Component {
     }
     
     renderFooter(){
-       if(!this.state.priceIsConfirmed){
-       return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice}</Text>
-                  </View>
-               </View>),
-               (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
-                  <View style={styleShoppingCartPage.addressTextView}>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.addressChangeButtonView}>
-                     <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
-                        <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add Address': 'Change Address'}</Text>
-                     </TouchableHighlight>
-                  </View>
-               </View>),
-               (<View key={'listViewBottom'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}>
-               </View>)];
-       }
-       
        if(this.state.showPromotionCodeInput){
-          var promotionCodeInputView = <View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}>   
-                                         <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text})} 
-                                         onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/>
-                                       </View>;
+          var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.shownPromoCodeView}>   
+                                           <Text style={styleShoppingCartPage.dishIngredientText}>{this.state.promotionCode}</Text>
+                                        </View>),
+                                       (<TouchableHighlight key={'AddRemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressRemoveCoupon()}>
+                                           <Image source={removePromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
+                                        </TouchableHighlight>)];
        }else{
-          var promotionCodeInputView =  <TouchableHighlight key={'promotionCodeInputView'} style={styleShoppingCartPage.priceNumberView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
+          var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}> 
+                                           <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text})} 
+                                            onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'}/>
+                                        </View>),
+                                       (<TouchableHighlight key={'AddRemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.setState({showPromotionCodeInput:true})}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
-                                        </TouchableHighlight>;
+                                        </TouchableHighlight>)];
        }
-       
-       var promotionDeductionView=null;
-       if(this.state.quotedOrder.price.couponValue){
-           promotionDeductionView=(<View key={'promotionDeductionView'} style={styleShoppingCartPage.promotionDeductionView}>
-                                        <View style={styleShoppingCartPage.priceTitleView}>
-                                            <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
-                                        </View>
-                                        <View style={styleShoppingCartPage.priceNumberView}>
-                                            <Text style={styleShoppingCartPage.priceNumberText}>-${this.state.quotedOrder.price.couponValue}</Text>
-                                        </View>
-                                   </View>);
-       }
-        
-       return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.subTotal}</Text>
-                  </View>
-               </View>),
-               promotionDeductionView,
-               (<View key={'deliveryFeeView'} style={styleShoppingCartPage.deliveryFeeView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.deliveryFee}</Text>
-                  </View>
-               </View>),
-               (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
-                  <View style={styleShoppingCartPage.addressTextView}>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
-                      <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
-                      <View style={styleShoppingCartPage.phoneNumberInputView}>                       
-                        <TextInput style={styleShoppingCartPage.phoneNumberInput} placeholder={this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'} 
-                        returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/> 
-                      </View>
-                  </View>
-                  <View style={styleShoppingCartPage.addressChangeButtonView}>
-                     <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
-                        <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add delivery address': 'Change Address'}</Text>
-                     </TouchableHighlight>
-                  </View>                      
-               </View>),
-               (<View key={'taxView'} style={styleShoppingCartPage.taxView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.tax}</Text>
-                  </View>
-               </View>),
-               (<View key={'promotionCodeView'} style={styleShoppingCartPage.promotionCodeView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
-                  </View>
-                 {promotionCodeInputView}
-               </View>),
-               (<View key={'totalView'} style={styleShoppingCartPage.totalView}>
-                  <View style={styleShoppingCartPage.priceTitleView}>
-                      <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
-                  </View>
-                  <View style={styleShoppingCartPage.priceNumberView}>
-                      <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.quotedOrder.price.grandTotal}</Text>
-                  </View>
-               </View>)];
+              
+       if(!this.state.priceIsConfirmed){//if price not quoted
+            return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
+                        <View style={styleShoppingCartPage.priceTitleView}>
+                            <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
+                        </View>
+                        <View style={styleShoppingCartPage.priceNumberView}>
+                            <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice}</Text>
+                        </View>
+                    </View>),
+                    (<View key={'promotionCodeView'} style={styleShoppingCartPage.promotionCodeView}>
+                        <View style={styleShoppingCartPage.promotionCodeTitleView}>
+                            <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
+                        </View>
+                        {promotionCodeInputView}
+                    </View>),
+                    (<View key={'promotionCodeInputViewBottom'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}>
+                    </View>),
+                    (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
+                        <View style={styleShoppingCartPage.addressTextView}>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
+                        </View>
+                        <View style={styleShoppingCartPage.addressChangeButtonView}>
+                            <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                                <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add Address': 'Change Address'}</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>),
+                    ];
+       }else{//if price quoted
+            var promotionDeductionView=null;
+            if(this.state.quotedOrder && this.state.quotedOrder.price && this.state.quotedOrder.price.couponValue){
+                promotionDeductionView=(<View key={'promotionDeductionView'} style={styleShoppingCartPage.promotionDeductionView}>
+                                                <View style={styleShoppingCartPage.couponTitleView}>
+                                                    <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
+                                                    <Text style={styleShoppingCartPage.removeCouponText} onPress={()=>this.onPressRemoveCoupon()}>Remove</Text>
+                                                </View>
+                                                <View style={styleShoppingCartPage.couponNumberView}>
+                                                    <Text style={styleShoppingCartPage.priceNumberText}>-${this.state.quotedOrder.price.couponValue}</Text>
+                                                </View>
+                                        </View>);
+            }
+                   
+            return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
+                        <View style={styleShoppingCartPage.priceTitleView}>
+                            <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
+                        </View>
+                        <View style={styleShoppingCartPage.priceNumberView}>
+                            <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.subTotal}</Text>
+                        </View>
+                    </View>),
+                    (<View key={'promotionCodeView'} style={styleShoppingCartPage.promotionCodeView}>
+                        <View style={styleShoppingCartPage.pomotionCodeTitleView}>
+                            <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
+                        </View>
+                        {promotionCodeInputView}
+                    </View>),
+                    promotionDeductionView,
+                    (<View key={'deliveryFeeView'} style={styleShoppingCartPage.deliveryFeeView}>
+                        <View style={styleShoppingCartPage.priceTitleView}>
+                            <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
+                        </View>
+                        <View style={styleShoppingCartPage.priceNumberView}>
+                            <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.deliveryFee}</Text>
+                        </View>
+                    </View>),
+                    (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
+                        <View style={styleShoppingCartPage.addressTextView}>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
+                            <View style={styleShoppingCartPage.phoneNumberInputView}>                       
+                                <TextInput style={styleShoppingCartPage.phoneNumberInput} placeholder={this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'} 
+                                returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/> 
+                            </View>
+                        </View>
+                        <View style={styleShoppingCartPage.addressChangeButtonView}>
+                            <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                                <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add delivery address': 'Change Address'}</Text>
+                            </TouchableHighlight>
+                        </View>                      
+                    </View>),
+                    (<View key={'taxView'} style={styleShoppingCartPage.taxView}>
+                        <View style={styleShoppingCartPage.priceTitleView}>
+                            <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
+                        </View>
+                        <View style={styleShoppingCartPage.priceNumberView}>
+                            <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.tax}</Text>
+                        </View>
+                    </View>),
+                    (<View key={'totalView'} style={styleShoppingCartPage.totalView}>
+                        <View style={styleShoppingCartPage.priceTitleView}>
+                            <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
+                        </View>
+                        <View style={styleShoppingCartPage.priceNumberView}>
+                            <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.quotedOrder.price.grandTotal}</Text>
+                        </View>
+                    </View>)];
+        }
     }
     
     render() {
@@ -295,21 +310,29 @@ class ShoppingCartPage extends Component {
     }
     
     _onFocus() {
-        let listViewLength = this.y+0.422*windowHeight;
+        let listViewLength = this.y+0.5*windowHeight;
         let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
         this.refs.listView.scrollTo({x:0, y:keyboardHeight - listViewBottomToScreenBottom, animated: true})
     }
     
+    _onFocusPromoCode() {
+        let listViewLength = this.y;
+        let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
+        this.refs.listView.scrollTo({x:0, y:25+keyboardHeight - listViewBottomToScreenBottom, animated: true})
+    }
+    
     scrollToShowTotalPrice(){
-        let listViewLength = this.y+0.422*windowHeight;
+        let listViewLength = this.y+0.5*windowHeight;
+        if(this.state.quotedOrder && this.state.quotedOrder.price && this.state.quotedOrder.price.couponValue){
+           listViewLength +=0.075*windowHeight;
+        }
         console.log("listViewLength "+listViewLength);
-        // let windowScrollableHeight = windowHeight-(windowHeight*0.066 + 15+windowHeight*0.075)
         let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
         if(listViewBottomToScreenBottom<0){
            this.refs.listView.scrollTo({x:0, y:windowHeight*0.075-listViewBottomToScreenBottom, animated: true})
         }
     }
-    
+        
     mapDone(address){
          if(address){
              Alert.alert( '', 'Your delivery location is set to '+address.formatted_address,[ { text: 'OK' }]); 
@@ -376,6 +399,11 @@ class ShoppingCartPage extends Component {
         let newShoppingCart = JSON.parse(JSON.stringify(this.state.shoppingCart));
         this.setState({shoppingCart:this.state.shoppingCart, totalPrice:total, priceIsConfirmed:false, dataSource:this.state.dataSource.cloneWithRows(newShoppingCart[this.state.selectedTime])});
     }    
+    
+    onPressRemoveCoupon(){
+        this.setState({promotionCode:''});
+        this.getPrice();
+    }
     
     changeDeliveryAddress(){
         //todo: onSelect address list and assign it to deliveryAddress set State.
@@ -545,6 +573,7 @@ var styleShoppingCartPage = StyleSheet.create({
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
         borderTopWidth:1,
+        borderBottomWidth:1,
         borderColor:'#F5F5F5',
         justifyContent:'center',
     },
@@ -584,26 +613,16 @@ var styleShoppingCartPage = StyleSheet.create({
         color:'#4A4A4A',
         width:windowWidth*0.4,  
     },
-    promoCodeInputView:{
-        height:25,
-        flexDirection:'row',
-        borderColor:'#F5F5F5',
-        borderWidth:1,
-        borderRadius:5,
-        width:windowWidth*0.55,
-        alignSelf:'center',
-    },
     promoCodeInput:{
-        paddingLeft:7,
+        paddingLeft:3,
         fontSize:14,
         color:'#4A4A4A', 
-        width:windowWidth*0.55,     
+        width:windowWidth*0.5,     
     },
     promotionCodeView:{
         flexDirection:'row',
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
-        borderTopWidth:1,
         borderBottomWidth:1,
         borderColor:'#F5F5F5',
         justifyContent:'center'
@@ -613,7 +632,6 @@ var styleShoppingCartPage = StyleSheet.create({
         height:windowHeight/10,
         paddingHorizontal:windowWidth/27.6,
         paddingTop:windowHeight/20.0,
-        borderBottomWidth:1,
         borderColor:'#F5F5F5',
         justifyContent:'center',
         marginBottom:20,
@@ -654,6 +672,13 @@ var styleShoppingCartPage = StyleSheet.create({
         fontWeight:'500',
         alignSelf:'center',  
     },
+    removeCouponText:{
+        fontSize:windowHeight/49.06,
+        color:'#ffcc33',
+        fontWeight:'500',
+        alignSelf:'center',
+        paddingLeft:10,
+    },
     addressChangeButtonView:{
         flex:0.43,
         flexDirection:'row',
@@ -664,6 +689,17 @@ var styleShoppingCartPage = StyleSheet.create({
         alignItems:'flex-start',
         alignSelf:'center',
     },
+    couponTitleView:{
+        flex:0.75,
+        flexDirection:'row',
+        alignItems:'flex-start',
+        alignSelf:'center',
+    },
+    couponNumberView:{
+        flex:0.25,
+        alignItems:'flex-end',
+        alignSelf:'center',
+    },
     priceTitleText:{ 
         fontSize:windowHeight/40.89,
         fontWeight:'500',
@@ -671,6 +707,34 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     priceNumberView:{
         flex:1/2.0,
+        alignItems:'flex-end',
+        alignSelf:'center',
+    },
+    promotionCodeTitleView:{
+        flex:3/8,
+        width:windowWidth*3/8,
+        alignItems:'flex-start',
+        alignSelf:'center',
+    },
+    shownPromoCodeView:{
+        flex:4/8,
+        flexDirection:'row',
+        width:windowWidth*0.5,
+        alignSelf:'center',
+    },
+    promoCodeInputView:{
+        height:25,
+        flexDirection:'row',
+        borderColor:'#F5F5F5',
+        borderWidth:1,
+        borderRadius:5,
+        flex:4/8,
+        width:windowWidth*0.5,
+        alignSelf:'center',
+    },
+    AddRemoveCouponButtonView:{
+        flex:1/8,
+        width:windowWidth*1/8,
         alignItems:'flex-end',
         alignSelf:'center',
     },
