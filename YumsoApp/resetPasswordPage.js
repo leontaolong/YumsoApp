@@ -9,12 +9,14 @@ import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
+var keyboardHeight = 250 //Todo: get keyboard size programmatically.
 
 import React, {
   Component,
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Image,
   TextInput,
   TouchableHighlight,
@@ -31,7 +33,9 @@ class resetPasswordPage extends Component {
             this.userEmail = props.userEmail;
         }
         this.state = {
-            showProgress: false
+            showProgress: false,
+            email:this.userEmail,
+            showPasswordRequirment:false,
         };
     }
     
@@ -42,6 +46,14 @@ class resetPasswordPage extends Component {
                                         <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                     </View>;  
             }
+            
+            if(this.state.showPasswordRequirment){
+              var passwordRequirmentText = <Text style={styleSignUpPage.passwordRequirementText}>
+                                            Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
+                                           </Text>;
+            }
+            
+            
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
                     <View style={styles.headerBannerView}>    
@@ -57,24 +69,30 @@ class resetPasswordPage extends Component {
                         </View>
                     </View>
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                    <ScrollView contentContainerStyle={{alignItems:'center'}} keyboardShouldPersistTaps={true} ref="scrollView">
                         <View style={styleSignUpPage.logoView}>
                         </View>                        
                         <View style={styles.loginInputView}>                      
-                            <TextInput value={this.userEmail} editable={this.userEmail} placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff'
-                                    clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
+                            <TextInput value={this.userEmail} placeholder="email" style={styles.loginInput} autoCapitalize={'none'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
+                            placeholderTextColor='#fff' clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
                         </View>
                         <View style={styles.loginInputView}>
-                            <TextInput placeholder="current password" style={styles.loginInput} placeholderTextColor='#fff'
-                                    onChangeText = {(text)=>this.setState({oldPassword: text})} secureTextEntry={true}/>
+                            <TextInput placeholder="current password" style={styles.loginInput} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
+                            placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({oldPassword: text})} secureTextEntry={true}/>
                         </View>
                         <View style={styles.loginInputView}>
-                            <TextInput placeholder="new password" style={styles.loginInput} placeholderTextColor='#fff'
-                                    onChangeText = {(text)=>this.setState({newPassword: text})} secureTextEntry={true}/>
+                            <TextInput placeholder="new password" style={styles.loginInput} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
+                            placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({newPassword: text})} secureTextEntry={true}/>
                         </View>
                         <View style={styles.loginInputView}>
-                            <TextInput placeholder="confirm new password" style={styles.loginInput} onSubmitEditing={this.onUpdatePressed.bind(this)} placeholderTextColor='#fff'
-                                    returnKeyType = {'go'} onChangeText = {(text)=>this.setState({newPassword_re: text})} secureTextEntry={true}/>
-                        </View>                        
+                            <TextInput placeholder="confirm new password" style={styles.loginInput} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
+                            placeholderTextColor='#fff' returnKeyType = {'done'} onChangeText = {(text)=>this.setState({newPassword_re: text})} secureTextEntry={true}/>
+                        </View>               
+                        <View style={styleSignUpPage.passwordRequirementView}>
+                               {passwordRequirmentText}
+                        </View>
+                        <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
+                    </ScrollView>                       
                     </Image> 
                     <TouchableHighlight underlayColor={'#C0C0C0'} style={styleSignUpPage.signUpButtonView} onPress = {this.onUpdatePressed.bind(this)}>
                         <Text style={styleSignUpPage.signUpButtonText}>Update</Text>
@@ -82,6 +100,55 @@ class resetPasswordPage extends Component {
                     {loadingSpinnerView}          
                 </View>
             );
+    }
+    
+     _onLayout(event) {
+        this.y = event.nativeEvent.layout.y;
+    }
+    
+    _onFocus() {
+        this.setState({showPasswordRequirment:true});
+        let scrollViewLength = this.y;
+        let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
+        this.refs.scrollView.scrollTo({x:0, y:keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
+    }
+
+    onKeyBoardDonePressed(){
+        this.setState({showPasswordRequirment:false});
+        this.refs.scrollView.scrollTo({x:0, y:0, animated: true})
+    }
+    
+    //password strength check
+    isPasswordStrong () {
+        if (this.state.newPassword.length < 7) {
+            return false;
+        }
+
+        var hasUpper = false;
+        for (var i = 0; i < this.state.newPassword.length; i++) {
+             if (this.state.newPassword[i] >= 'A' && this.state.newPassword[i] <= 'Z') {
+                 var hasUpper = true;
+                 break;
+             }
+        }
+
+        var hasLower = false;
+        for (var i = 0; i < this.state.newPassword.length; i++) {
+             if (this.state.newPassword[i] >= 'a' && this.state.newPassword[i] <= 'z') {
+                 var hasLower = true;
+                 break;
+             }
+        }
+
+        var hasNumber = false;
+        for (var i = 0; i < this.state.newPassword.length; i++) {
+             if (this.state.newPassword[i] >= '0' && this.state.newPassword[i] <= '9') {
+                 var hasNumber = true;
+                 break;
+             }
+        }
+
+        return hasUpper && hasLower && hasNumber;
     }
     
     async onUpdatePressed(){        
@@ -96,9 +163,15 @@ class resetPasswordPage extends Component {
         }
         
         if(this.state.newPassword_re !== this.state.newPassword){
-            Alert.alert( 'Warning', 'Two Passwords entered are different' ,[ { text: 'OK' }]);
+            Alert.alert( 'Warning', 'Two password entries are different' ,[ { text: 'OK' }]);
             return;
-        }      
+        }   
+        
+        if(!this.isPasswordStrong()){
+            Alert.alert( 'Warning', 'Your new password does not meet the complexity requirment' ,[ { text: 'OK' }]);
+            return;
+        }
+           
         this.setState({showProgress:true});
         let result = await AuthService.resetPassword(this.state.email, this.state.oldPassword, this.state.newPassword) 
         if(result==false){
@@ -134,20 +207,16 @@ var styleSignUpPage = StyleSheet.create({
       width:windowWidth*0.208,
       height:windowWidth*0.208,
     },
-    legalView:{
-      flex:1,
-      flexDirection:'row',
-      justifyContent: 'center',
+    passwordRequirementView:{
+      marginTop:10,
+      height:windowHeight*0.08,
+      width:windowWidth*0.88,
       backgroundColor:'transparent',
-      paddingTop:windowHeight*0.08,
     },
-    legalText:{
-      fontSize:windowHeight/47.64,
+    passwordRequirementText:{
+      fontSize:11,
       color:'#fff',
-    },
-    legalTextClickable:{
-      fontSize:windowHeight/47.64,
-      color:'#FFCC33',
+      textAlign:'justify',
     },
     signUpButtonView:{
       position:'absolute',
