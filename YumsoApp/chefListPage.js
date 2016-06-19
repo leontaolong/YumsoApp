@@ -22,8 +22,8 @@ var dollarSign3_Grey = require('./icons/icon-dollar3-grey.png');
 var dollarSign1_Orange = require('./icons/icon-dollar1-orange.png');
 var dollarSign2_Orange = require('./icons/icon-dollar2-orange.png');
 var dollarSign3_Orange = require('./icons/icon-dollar3-orange.png');
-var sortCriteriaIconGery = require('./icons/icon-rating-grey.png');
-var sortCriteriaIconOrange = require('./icons/icon-rating-orange.png');
+var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.png');
+var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.png');
 var RefreshableListView = require('react-native-refreshable-listview')
 
 import Dimensions from 'Dimensions';
@@ -41,6 +41,7 @@ import React, {
     Image,
     ListView,
     TouchableHighlight,
+    TouchableOpacity,
     ActivityIndicatorIOS,
     Alert
 } from 'react-native';
@@ -65,22 +66,10 @@ class ChefListPage extends Component {
             showChefSearch:false,
             showLocSearch:false,
             showFavoriteChefsOnly:false,
-            priceRankFilter:{
-                1:false,
-                2:false,
-                3:false,
-                4:false,
-                5:false
-            }, 
-            withBestRatedSort:false,
             chefView: {},
             chefsDictionary: {},
             city:'Seattle',
             state:'WA',
-            sortCriteriaIcon:sortCriteriaIconGery,
-            dollarSign1: dollarSign1_Orange,
-            dollarSign2: dollarSign2_Orange,
-            dollarSign3: dollarSign3_Orange,
         };
         this.responseHandler = function (response, msg) {
              if(response.statusCode==400){
@@ -122,7 +111,8 @@ class ChefListPage extends Component {
                 priceRankFilter:eater.chefFilterSettings.priceRankFilter, 
                 withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
                 priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
-                withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort});
+                withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort,
+                sortCriteriaIcon:eater.chefFilterSettings.withBestRatedSort ? sortCriteriaIconOrange:sortCriteriaIconGrey});            
         }
         this.setState({ principal: principal, eater:eater });
         this.fetchChefDishes();
@@ -300,15 +290,14 @@ class ChefListPage extends Component {
                        </View>
                        <View style={styleFilterPage.sortCriteriaIconView}>
                           <TouchableHighlight style={styleFilterPage.sortCriteriaIconWrapper} underlayColor={'transparent'} 
-                               onPress={() => {this.setState({withBestRatedSort:!this.state.withBestRatedSort,
-                               sortCriteriaIcon:this.state.sortCriteriaIcon==this.state.withBestRatedSort==false? sortCriteriaIconOrange :sortCriteriaIconGery})}}>
+                               onPress={() => this.clickSortSelection('withBestRatedSort')}>
                               <Image source={this.state.sortCriteriaIcon} style={styleFilterPage.sortCriteriaIcon}/>
                           </TouchableHighlight>
                        </View>
                     </View>
-                    <TouchableHighlight underlayColor={'#C0C0C0'} style={styleFilterPage.applySearchButtonView} onPress={() => this.searchChef()}>
+                    <TouchableOpacity activeOpacity={0.7} style={styleFilterPage.applySearchButtonView} onPress={() => this.searchChef()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply and Search</Text>
-                    </TouchableHighlight>                
+                    </TouchableOpacity>                
                </View>                    
         }
         
@@ -371,6 +360,11 @@ class ChefListPage extends Component {
         }
           
         this.setState({priceRankFilter:this.state.priceRankFilter});
+    }
+    
+    clickSortSelection(sortByKey){
+        this.setState({[sortByKey]:!this.state[sortByKey]});
+        this.setState({sortCriteriaIcon:this.state[sortByKey]? sortCriteriaIconOrange : sortCriteriaIconGrey})
     }
     
     showFavoriteChefs(){
@@ -843,8 +837,8 @@ var styleFilterPage = StyleSheet.create({
         alignSelf:'center',
     },
     sortCriteriaIcon:{
-        width:windowHeight*0.0704,
-        height:windowHeight*0.0704,
+        width:windowHeight*0.050,
+        height:windowHeight*0.050,
     },
 });
 module.exports = ChefListPage;
