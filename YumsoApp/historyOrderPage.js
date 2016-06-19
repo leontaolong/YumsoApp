@@ -77,9 +77,11 @@ class HistoryOrderPage extends Component {
         let pastOneWeekOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+start+'&'+end);
         let pastOneWeekComment = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+start+'&'+end);
         if (pastOneWeekOrder.statusCode != 200) {
+            this.setState({showProgress:false});
             return this.responseHandler(pastOneWeekOrder);
         }
         if (pastOneWeekComment.statusCode != 200) {
+            this.setState({showProgress:false});  
             return this.responseHandler(pastOneWeekOrder);
         }
         let orders = pastOneWeekOrder.data.orders;

@@ -468,6 +468,7 @@ class ChefListPage extends Component {
             return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:{eaterId: this.state.eater.eaterId, chefFilterSettings: this.state.eater.chefFilterSettings}})
                 .then((res) => {
                     if (res.statusCode != 200) {
+                        this.setState({showProgress:false});                                 
                         return self.responseHandler(res);
                     }
                     return AuthService.updateCacheEater(self.state.eater)
