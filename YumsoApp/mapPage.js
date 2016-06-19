@@ -106,7 +106,7 @@ class MapPage extends Component {
                                 top: this.state.aptNumberViewYposition, left:0, right:0, height:windowHeight*0.074,}}>
                               <Text style={styleMapPage.aptNumberViewTitle}>Apt/Suite# </Text>
                               <TextInput style={styleMapPage.aptNumberViewInput} onFocus = {()=>this.slideUpAptNumberView()} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
-                                   value={this.state.apartmentNumber} keyboardType={'numbers-and-punctuation'} onSubmitEditing = {()=>this.slideDownAptNumberView()} onChangeText = {(text) => this.setState({ apartmentNumber: text })}/>
+                               maxLength={20} value={this.state.apartmentNumber} keyboardType={'numbers-and-punctuation'} onSubmitEditing = {()=>this.slideDownAptNumberView()} onChangeText = {(text) => this.setState({ apartmentNumber: text })}/>
                           </View>);
             }   
             
@@ -154,7 +154,7 @@ class MapPage extends Component {
                                 <TouchableHighlight style={styleMapPage.locationSearchIconView} underlayColor={'transparent'} onPress={() => this.searchAddress() }>
                                     <Image source={searchIcon} style={styleMapPage.searchIcon}/>
                                 </TouchableHighlight>  
-                                <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}  onSubmitEditing = {()=> this.searchAddress()} returnKeyType = {'search'} clearButtonMode={'while-editing'}
+                                <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}  onSubmitEditing = {()=> this.searchAddress()} returnKeyType = {'search'} clearButtonMode={'while-editing'} maxLength={60}
                                 autoCorrect={false} onChangeText = {(text)=>this.setState({searchAddress: text,selectedAddress:''})} value={this.state.selectedAddress?this.state.selectedAddress.formatted_address:this.state.searchAddress}/>
                             </View>
                        </View>

@@ -48,7 +48,7 @@ class resetPasswordPage extends Component {
             }
             
             if(this.state.showPasswordRequirment){
-              var passwordRequirmentText = <Text style={styleSignUpPage.passwordRequirementText}>
+              var passwordRequirmentText = <Text style={styles.passwordRequirementText}>
                                             Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
                                            </Text>;
             }
@@ -57,11 +57,11 @@ class resetPasswordPage extends Component {
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
                     <View style={styles.headerBannerView}>    
-                        <View style={styles.headerLeftView}>
-                          <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                          <View style={styles.backButtonView}>
                               <Image source={backIcon} style={styles.backButtonIcon}/>
-                          </TouchableHighlight>
-                        </View>    
+                          </View>
+                        </TouchableHighlight>    
                         <View style={styles.titleView}>
                             <Text style={styles.titleText}>Reset Password</Text>
                         </View>
@@ -74,21 +74,21 @@ class resetPasswordPage extends Component {
                         </View>                        
                         <View style={styles.loginInputView}>                      
                             <TextInput value={this.userEmail} placeholder="email" style={styles.loginInput} autoCapitalize={'none'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
-                            placeholderTextColor='#fff' clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
+                            maxLength={40} placeholderTextColor='#fff' clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
                         </View>
                         <View style={styles.loginInputView}>
                             <TextInput placeholder="current password" style={styles.loginInput} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
-                            placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({oldPassword: text})} secureTextEntry={true}/>
+                            maxLength={12} placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({oldPassword: text})} secureTextEntry={true}/>
                         </View>
                         <View style={styles.loginInputView}>
                             <TextInput placeholder="new password" style={styles.loginInput} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
-                            placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({newPassword: text})} secureTextEntry={true}/>
+                            maxLength={12} placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({newPassword: text})} secureTextEntry={true}/>
                         </View>
                         <View style={styles.loginInputView}>
                             <TextInput placeholder="confirm new password" style={styles.loginInput} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
-                            placeholderTextColor='#fff' returnKeyType = {'done'} onChangeText = {(text)=>this.setState({newPassword_re: text})} secureTextEntry={true}/>
+                            maxLength={12} placeholderTextColor='#fff' returnKeyType = {'done'} onChangeText = {(text)=>this.setState({newPassword_re: text})} secureTextEntry={true}/>
                         </View>               
-                        <View style={styleSignUpPage.passwordRequirementView}>
+                        <View style={styles.passwordRequirementView}>
                                {passwordRequirmentText}
                         </View>
                         <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
@@ -206,17 +206,6 @@ var styleSignUpPage = StyleSheet.create({
     logoIcon:{
       width:windowWidth*0.208,
       height:windowWidth*0.208,
-    },
-    passwordRequirementView:{
-      marginTop:10,
-      height:windowHeight*0.08,
-      width:windowWidth*0.88,
-      backgroundColor:'transparent',
-    },
-    passwordRequirementText:{
-      fontSize:11,
-      color:'#fff',
-      textAlign:'justify',
     },
     signUpButtonView:{
       position:'absolute',

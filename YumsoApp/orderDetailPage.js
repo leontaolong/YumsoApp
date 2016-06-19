@@ -216,7 +216,7 @@ class OrderDetailPage extends Component {
                                         </View>
                                     </View>
                                     <TextInput placeholder="Leave your comment here" style={styleOrderDetailPage.commentInput} multiline={true} returnKeyType = {'default'} autoCorrect={false} 
-                                    onChangeText = {(text) => this.setState({ comment: text }) } onFocus={(()=>this._onFocus()).bind(this)} onBlur={()=>this.scrollToCommentBoxtoBottom()}/>                                     
+                                    maxLength={500} onChangeText = {(text) => this.setState({ comment: text }) } onFocus={(()=>this._onFocus()).bind(this)} onBlur={()=>this.scrollToCommentBoxtoBottom()}/>                                     
                                     <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.submitCommentButton} onPress={()=>this.submitComment()}>
                                             <Text style={styleOrderDetailPage.submitCommentButtonText}>Submit</Text>    
                                     </TouchableHighlight>
@@ -240,11 +240,11 @@ class OrderDetailPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                    <View style={styles.headerLeftView}>
-                       <TouchableHighlight style={styles.backButtonView} underlayColor={'#ECECEC'} onPress={() => this.navigateBackToDishList()}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToDishList()}>
+                       <View style={styles.backButtonView}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
-                       </TouchableHighlight>
-                    </View>    
+                       </View>
+                    </TouchableHighlight>    
                     <View style={styles.titleView}>
                        <Text style={styles.titleText}>Order Details</Text>
                     </View>

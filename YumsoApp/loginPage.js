@@ -57,11 +57,11 @@ class LoginPage extends Component {
             <View style={styles.container}>
               <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                 <View style={styles.headerBannerView}>    
-                    <View style={styles.headerLeftView}>
-                        <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
-                        <Image source={backIcon} style={styles.backButtonIcon}/>
-                        </TouchableHighlight>
-                    </View>    
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                        <View style={styles.backButtonView}>
+                           <Image source={backIcon} style={styles.backButtonIcon}/>
+                        </View>
+                    </TouchableHighlight>    
                     <View style={styles.titleView}>
                         <Text style={styles.titleText}>Sign In</Text>
                     </View>
@@ -73,11 +73,11 @@ class LoginPage extends Component {
                     </View>
                     <View style={styles.loginInputView}>
                     <TextInput placeholder="email" style={styles.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} 
-                       autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
+                       maxLength={40} autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
                     </View>
                     <View style={styles.loginInputView}>
                     <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
-                       onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
+                       maxLength={12} onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
                     </View>
                     
                     <View style={styleLoginPage.forgotPasswordView}>

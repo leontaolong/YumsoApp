@@ -35,7 +35,6 @@ console.log(windowHeight+" "+windowWidth);
 import React, {
     Component,
     StyleSheet,
-    TextInput,
     Text,
     View,
     Image,
@@ -576,18 +575,32 @@ var Menu = React.createClass({
         return (
             <View style={sideMenuStyle.sidemenu}>
                 {profile}
-                <View style={{height:windowHeight*0.09}}></View>
-                <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
-                <Text onPress={this.goToOrderHistory} style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
-                <Text onPress={()=>{if(isAuthenticated){this.goToEaterPage();}}} style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
-                <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
-                <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>
-                <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
-                <Text onPress={isAuthenticated?this.logOut:this.logIn} style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
+                <View style={{height:windowHeight*0.07}}></View>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={()=>{if(isAuthenticated){this.goToEaterPage();}}} >
+                   <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
+                </TouchableOpacity>
                 <View style={{height:windowHeight*0.035}}></View>
-                <View style={sideMenuStyle.paddingMenuItemAboutView}>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView}>
                    <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
-                </View>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -615,16 +628,20 @@ var sideMenuStyle = StyleSheet.create({
         width:windowWidth*2/3.0,
         height:windowWidth*2/3.0,
     },
-    paddingMenuItem: {
-        paddingLeft:windowWidth*0.064,
+    paddingMenuItemView:{
         paddingVertical:windowWidth*0.0227,
+    },
+    paddingMenuItem: {
+        paddingLeft:windowWidth*0.064,        
         color:'#fff',
+        fontSize:windowHeight/37.055,
     },
     paddingMenuItemAbout: {
         paddingVertical: windowWidth*0.02,
         color:'#fff',
         borderTopWidth:1,
         borderColor:'#fff',
+        fontSize:windowHeight/41.69,
     },
     paddingMenuItemAboutView:{
         borderTopWidth:1,

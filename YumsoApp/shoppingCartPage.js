@@ -47,6 +47,7 @@ class ShoppingCartPage extends Component {
         let scheduleMapping = routeStack[routeStack.length-1].passProps.scheduleMapping;        
         this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
+        this.backCallback = routeStack[routeStack.length-1].passProps.backCallback;
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(shoppingCart[selectedTime])),
             showProgress:false,
@@ -143,7 +144,7 @@ class ShoppingCartPage extends Component {
           console.log("showPromotionCodeInput false");
           var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}> 
                                            <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text})} 
-                                            onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
+                                            maxLength={20} onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
                                         </View>),
                                        (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressAddCoupon()}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
@@ -174,11 +175,11 @@ class ShoppingCartPage extends Component {
                             <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
                             <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
                         </View>
-                        <View style={styleShoppingCartPage.addressChangeButtonView}>
-                            <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                        <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonView} underlayColor={'transparent'} onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                            <View style={styleShoppingCartPage.addressChangeButtonWrapper}>
                                 <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add Address': 'Change Address'}</Text>
-                            </TouchableHighlight>
-                        </View>
+                            </View>
+                        </TouchableHighlight>
                     </View>),
                     ];
        }else{//if price quoted
@@ -226,7 +227,7 @@ class ShoppingCartPage extends Component {
                             <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
                             <View style={styleShoppingCartPage.phoneNumberInputView}>                       
                                 <TextInput style={styleShoppingCartPage.phoneNumberInput} placeholder={this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'} 
-                                returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/> 
+                                maxLength={15} returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/> 
                             </View>
                         </View>
                         <View style={styleShoppingCartPage.addressChangeButtonView}>
@@ -282,11 +283,11 @@ class ShoppingCartPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                    <View style={styles.headerLeftView}>
-                       <TouchableHighlight style={styles.backButtonView} underlayColor={'#ECECEC'} onPress={() => this.navigateBackToDishList()}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToDishList()}>
+                       <View style={styles.backButtonView}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
-                       </TouchableHighlight>
-                    </View>    
+                       </View>
+                    </TouchableHighlight>    
                     <View style={styles.titleView}>
                        <Text style={styles.titleText}>Shopping Cart</Text>
                     </View>
@@ -589,12 +590,14 @@ class ShoppingCartPage extends Component {
                     this.state.scheduleMapping[this.state.selectedTime][dishId].leftQuantity = this.state.dishUnavailableSet[dishId].actualLeftQuantity;
                 }
                 delete this.state.shoppingCart[this.state.selectedTime];
-                this.props.navigator.pop();              
+                this.props.navigator.pop();
+                this.backCallback(this.state.totalPrice);                              
             }}, {text:'Cancel'}]);
             return;
         }
 
         this.props.navigator.pop();
+        this.backCallback(this.state.totalPrice);     
     }
 }
 

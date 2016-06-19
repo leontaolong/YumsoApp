@@ -16,7 +16,6 @@ import React, {
   Text,
   View,
   Image,
-  TextInput,
   ListView,
   TouchableHighlight,
   ActivityIndicatorIOS,
@@ -116,9 +115,9 @@ class HistoryOrderPage extends Component {
                         <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
                         {orderStatusText}           
                         <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
-                        <View style={styleHistoryOrderPage.orderDetailsClickableView}>
-                        <Text onPress={()=>this.navigateToOrderDetailPage(order)} style={styleHistoryOrderPage.orderDetailsClickable}>Order Details  ></Text>                                                                               
-                        </View>
+                        <TouchableHighlight style={styleHistoryOrderPage.orderDetailsClickableView} underlayColor={'transparent'} onPress={()=>this.navigateToOrderDetailPage(order)}>
+                           <Text style={styleHistoryOrderPage.orderDetailsClickable}>Order Details  ></Text>                                                                               
+                        </TouchableHighlight>
                     </View>
                 </View>);
     }
@@ -130,24 +129,7 @@ class HistoryOrderPage extends Component {
                                     <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                 </View>;  
         }
-        
-        if(this.state.showCommentBox == true){
-           return (
-                <View style={styles.greyContainer}> 
-                    <TextInput placeholder="comments" style={styles.loginInput}
-                        onChangeText = {(text) => this.setState({ comment: text }) }/>
-                    <TextInput placeholder="Star Rating integer" style={styles.loginInput} onChangeText = {(text) => this.setState({ starRating: text }) }/>                    
-                    <TouchableHighlight style={styles.button} onPress={()=>this.submitComment()}>
-                        <Text style={styles.buttonText}>Submit</Text>    
-                    </TouchableHighlight>                                                
-                    <TouchableHighlight style={styles.button}
-                        onPress={()=>this.setState({showCommentBox:false, comment:undefined, starRating:undefined, orderTheCommentIsFor:undefined}) }>
-                        <Text style={styles.buttonText}>Cancel</Text>
-                    </TouchableHighlight>       
-                </View>
-            );
-        }
-        
+                
         if(this.state.orders && this.state.orders.length==0){
           var  noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order recently, come and order some!</Text>
         }
@@ -155,13 +137,13 @@ class HistoryOrderPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                   <View style={styles.headerLeftView}>
-                   <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBackToChefList()}>
-                     <Image source={backIcon} style={styles.backButtonIcon}/>
-                   </TouchableHighlight>
-                   </View>    
+                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
+                      <View style={styles.backButtonView}>
+                        <Image source={backIcon} style={styles.backButtonIcon}/>
+                      </View>
+                   </TouchableHighlight>    
                    <View style={styles.titleView}>
-                     <Text style={styles.titleText}>My Orders</Text>
+                      <Text style={styles.titleText}>My Orders</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>
