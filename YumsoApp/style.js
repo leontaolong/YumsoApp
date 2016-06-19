@@ -180,6 +180,15 @@ module.exports = StyleSheet.create({
       marginTop: 3, 
       marginBottom: 3, 
     },
+    listViewEmptyText:{
+      fontSize:16,
+      color:'#9B9B9B',
+      justifyContent:'center',
+      textAlign:'center',
+      marginTop:windowHeight*0.28,
+      marginHorizontal:15,
+    },
+
 
     logo:{
       width:66,
