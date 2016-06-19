@@ -9,8 +9,6 @@ import React, {
   Text,
   View,
   Image,
-  TextInput,
-  ListView,
   TouchableOpacity,
   AsyncStorage,
   Alert

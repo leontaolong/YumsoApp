@@ -37,7 +37,7 @@ class SignUpPage extends Component {
     
     render() {
             if(this.state.showPasswordRequirment){
-              var passwordRequirmentText = <Text style={styleSignUpPage.passwordRequirementText}>
+              var passwordRequirmentText = <Text style={styles.passwordRequirementText}>
                                             Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
                                            </Text>;
             }
@@ -47,11 +47,11 @@ class SignUpPage extends Component {
                 <View style={styles.container}>
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                         <View style={styles.headerBannerView}>    
-                            <View style={styles.headerLeftView}>
-                              <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
+                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                              <View style={styles.backButtonView}>
                                   <Image source={backIcon} style={styles.backButtonIcon}/>
-                              </TouchableHighlight>
-                            </View>    
+                              </View>
+                            </TouchableHighlight>    
                             <View style={styles.titleView}>
                                 <Text style={styles.titleText}>Sign Up</Text>
                             </View>
@@ -64,27 +64,27 @@ class SignUpPage extends Component {
                             </View>
                             
                             <View style={styles.loginInputView}>
-                                <TextInput placeholder="first name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'} 
+                                <TextInput placeholder="first name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'} maxLength={30}
                                 onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} onChangeText = {(text)=>this.setState({firstname: text})}/>
                             </View> 
                             <View style={styles.loginInputView}>
-                                <TextInput placeholder="last name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'} 
+                                <TextInput placeholder="last name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'}  maxLength={30}
                                 onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} onChangeText = {(text)=>this.setState({lastname: text})}/> 
                             </View>
                             <View style={styles.loginInputView}>                      
-                                <TextInput placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff' returnKeyType = {'done'}
-                                        onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
+                                <TextInput placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff' returnKeyType = {'done'} maxLength={40}
+                                onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
                             </View>
                             <View style={styles.loginInputView}>
-                                <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)}
-                                        onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} returnKeyType = {'done'} onChangeText = {(text)=>this.setState({password: text})} secureTextEntry={true}/>
+                                <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)} maxLength={12}
+                                onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} returnKeyType = {'done'} onChangeText = {(text)=>this.setState({password: text})} secureTextEntry={true}/>
                             </View>
                             <View style={styles.loginInputView}>
-                                <TextInput placeholder="confirm password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)} 
+                                <TextInput placeholder="confirm password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)} maxLength={12}
                                 returnKeyType = {'done'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onChangeText = {(text)=>this.setState({password_re: text})} secureTextEntry={true}/>
                             </View>
                             <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
-                            <View style={styleSignUpPage.passwordRequirementView}>
+                            <View style={styles.passwordRequirementView}>
                                {passwordRequirmentText}
                             </View>
                             <View style={styleSignUpPage.legalView}>
@@ -204,16 +204,6 @@ var styleSignUpPage = StyleSheet.create({
     logoIcon:{
       width:windowWidth*0.208,
       height:windowWidth*0.208,
-    },
-    passwordRequirementView:{
-      height:windowHeight*0.08,
-      width:windowWidth*0.88,
-      backgroundColor:'transparent',
-    },
-    passwordRequirementText:{
-      fontSize:11,
-      color:'#fff',
-      textAlign:'justify',
     },
     legalView:{
       flex:1,

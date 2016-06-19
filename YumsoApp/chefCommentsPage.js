@@ -16,7 +16,7 @@ import React, {
   Text,
   View,
   Image,
-  TextInput,
+
   ListView,
   TouchableHighlight,
   ActivityIndicatorIOS,
@@ -57,7 +57,7 @@ class ChefCommentsPage extends Component {
                     throw new Error('Fail getting past comments');
                 }
                 let comments = res.data.comments;
-                this.setState({ dataSource: this.state.dataSource.cloneWithRows(comments), showProgress: false });
+                this.setState({ dataSource: this.state.dataSource.cloneWithRows(comments), showProgress: false,comments:comments });
             });
     }
 
@@ -106,20 +106,26 @@ class ChefCommentsPage extends Component {
                                     <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                 </View>;  
         }
+        
+        if(this.state.comments && this.state.comments.length==0){
+           var  noReviewText = <Text style={styles.listViewEmptyText}>This chef does not have any review left</Text>
+        }
+        
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                   <View style={styles.headerLeftView}>
-                   <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefPage()}>
-                     <Image source={backIcon} style={styles.backButtonIcon}/>
-                   </TouchableHighlight>
-                   </View>    
+                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefPage()}>
+                      <View style={styles.backButtonView}>
+                         <Image source={backIcon} style={styles.backButtonIcon}/>
+                      </View>
+                   </TouchableHighlight>    
                    <View style={styles.titleView}>
-                     <Text style={styles.titleText}>Reviews</Text>
+                      <Text style={styles.titleText}>Reviews</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>
                </View>
+               {noReviewText}
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) }/>

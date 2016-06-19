@@ -30,7 +30,6 @@ import React, {
   View,
   ScrollView,
   Image,
-  TextInput,
   ListView,
   TouchableHighlight,
   AsyncStorage,
@@ -78,11 +77,11 @@ class ShoppingCartPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                    <View style={styles.headerLeftView}>
-                       <TouchableHighlight style={styles.backButtonView} underlayColor={'#ECECEC'} onPress={() => this.navigateBackToShopPage()}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToShopPage()}>
+                       <View style={styles.backButtonView}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
-                       </TouchableHighlight>
-                    </View>    
+                       </View>
+                    </TouchableHighlight>    
                     <View style={styles.titleView}>
                        <Text style={styles.titleText}>About the Chef</Text>
                     </View>

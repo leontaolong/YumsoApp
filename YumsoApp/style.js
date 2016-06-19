@@ -152,7 +152,7 @@ module.exports = StyleSheet.create({
     loginInput:{
       width:windowWidth*0.634,
       height:windowHeight*0.08,
-      fontSize:16,
+      fontSize:20,
       fontWeight:'bold',
       color: '#fff',
       borderBottomWidth:1,
@@ -180,6 +180,27 @@ module.exports = StyleSheet.create({
       marginTop: 3, 
       marginBottom: 3, 
     },
+    listViewEmptyText:{
+      fontSize:16,
+      color:'#9B9B9B',
+      justifyContent:'center',
+      textAlign:'center',
+      marginTop:windowHeight*0.28,
+      marginHorizontal:15,
+    },
+    passwordRequirementView:{
+      height:windowHeight*0.08,
+      width:windowWidth*0.88,
+      backgroundColor:'transparent',
+    },
+    passwordRequirementText:{
+      fontSize:12,
+      color:'#F5F5F5',
+      textAlign:'justify',
+      paddingTop:8,
+      fontWeight:'600'
+    },
+
 
     logo:{
       width:66,

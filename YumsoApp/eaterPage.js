@@ -99,6 +99,12 @@ class EaterPage extends Component {
          if (this.state.edit) {
              var otherAddressListRendered = [];
              for (let i = 0; i < this.state.addressList.length; i++) {
+                 let aptNumberView = null;
+                 if(this.state.addressList[i].apartmentNumber ){
+                     aptNumberView= <Text style={styleEaterPage.addressText}>
+                                    {'Apt/Suite#: ' + this.state.addressList[i].apartmentNumber}
+                                    </Text>
+                 }
                  otherAddressListRendered.push(
                      <View key={i} style={styleEaterPage.addressView}>
                          <View style={styleEaterPage.addressTitleView}>
@@ -109,9 +115,7 @@ class EaterPage extends Component {
                              <Text style={styleEaterPage.addressText}>
                                  {this.state.addressList[i].formatted_address}
                              </Text>
-                             <Text style={styleEaterPage.addressText}>
-                                 {this.state.addressList[i].apartmentNumber ? 'Apt/Suite#: ' + this.state.addressList[i].apartmentNumber : ''}
-                             </Text>
+                             {aptNumberView}
                          </View>
                          <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.removeAddress(this.state.addressList[i]) }>
                              <Text style={styleEaterPage.addressEditText}>Delete</Text>
@@ -133,19 +137,19 @@ class EaterPage extends Component {
              return (
                  <View style={styles.container}>
                      <View style={styles.headerBannerView}>
-                         <View style={styles.headerLeftView}>
-                             <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress = {() => { this.setState({ edit: false }) } }>
+                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress = {() => { this.setState({ edit: false })}}>
+                             <View style={styles.backButtonView}>
                                  <Image source={backIcon} style={styles.backButtonIcon}/>
-                             </TouchableHighlight>
-                         </View>
+                             </View>
+                         </TouchableHighlight>
                          <View style={styles.titleView}>
                              <Text style={styles.titleText}>Edit Profile</Text>
                          </View>
-                         <View style={styles.headerRightView}>
-                             <TouchableHighlight style={styles.headerRightTextButtonView} underlayColor={'transparent'} onPress = {this.submit.bind(this) }>
+                         <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress = {this.submit.bind(this)}>
+                             <View style={styles.headerRightTextButtonView}>
                                  <Text style={styles.headerRightTextButtonText}>Save</Text>
-                             </TouchableHighlight>
-                         </View>
+                             </View>
+                         </TouchableHighlight>
                      </View>
                      <ScrollView style={{backgroundColor:'#F5F5F5'}}>
 
@@ -158,7 +162,7 @@ class EaterPage extends Component {
                              </View>
                              <View style={styleEaterPage.nameInputTextView}>
                                  <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                     onChangeText = {(text) => this.setState({ firstname: text }) }/>
+                                     maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ firstname: text }) }/>
                              </View>
                          </View>
                          <View style={styleEaterPage.nameInputView}>
@@ -167,7 +171,7 @@ class EaterPage extends Component {
                              </View>
                              <View style={styleEaterPage.nameInputTextView}>
                                  <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.lastname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                     onChangeText = {(text) => this.setState({ lastname: text }) }/>
+                                     maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ lastname: text }) }/>
                              </View>
                          </View>
                          <View style={styleEaterPage.nameInputView}>
@@ -176,7 +180,7 @@ class EaterPage extends Component {
                              </View>
                              <View style={styleEaterPage.nameInputTextView}>
                                  <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                     onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
+                                     maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
                              </View>
                          </View>
 
@@ -194,21 +198,11 @@ class EaterPage extends Component {
 
                          <View style={styleEaterPage.nameInputView}>
                              <View style={styleEaterPage.nameInputTitleView}>
-                                 <Text style={styleEaterPage.nameInputTitleText}>Email</Text>
-                             </View>
-                             <View style={styleEaterPage.nameInputTextView}>
-                                 <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.email} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                     onChangeText = {(text) => this.setState({ email: text }) }/>
-                             </View>
-                         </View>
-
-                         <View style={styleEaterPage.nameInputView}>
-                             <View style={styleEaterPage.nameInputTitleView}>
                                  <Text style={styleEaterPage.nameInputTitleText}>Phone</Text>
                              </View>
                              <View style={styleEaterPage.nameInputTextView}>
                                  <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.phoneNumber} keyboardType = { 'phone-pad'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                     onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>
+                                     maxLength={15} onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>
                              </View>
                          </View>
 
@@ -259,16 +253,29 @@ class EaterPage extends Component {
 
          var addressListRendered = [];
          if (this.state.eater.addressList.length > 0) {
-             addressListRendered.push(<Text key={'OTHER'} style={styleEaterPage.eaterPageGreyText}>+ OTHER</Text>);
+             addressListRendered.push(<Text key={'OTHER'} style={styleEaterPage.eaterPageClickableText} onPress={() => {
+                                        this.setState({
+                                            edit: true,
+                                            firstname: this.state.eater.firstname,
+                                            lastname: this.state.eater.lastname,
+                                            eaterAlias: this.state.eater.eaterAlias,
+                                            gender: this.state.eater.gender,
+                                            phoneNumber: this.state.eater.phoneNumber,
+                                            homeAddress: this.state.eater.homeAddress,
+                                            workAddress: this.state.eater.workAddress,
+                                            addressList: this.state.eater.addressList
+                                        })}}>+ OTHER</Text>);
          }
 
          for (let i = 0; i < this.state.eater.addressList.length; i++) {
              addressListRendered.push(
                  <Text key={i} style={styleEaterPage.eaterPageGreyText}>{this.state.eater.addressList[i].formatted_address}</Text>
              );
-             addressListRendered.push(
-                 <Text key={i + 'otherAddress'} style={styleEaterPage.eaterPageGreyText}>Apt/Suite#: {this.state.eater.addressList[i].apartmentNumber}</Text>
-             );
+             if(this.state.eater.addressList[i].apartmentNumber && this.state.eater.addressList[i].apartmentNumber.trim()){
+               addressListRendered.push(
+                 <Text key={i + '_aptNumber'} style={styleEaterPage.eaterPageGreyText}>Apt/Suite#: {this.state.eater.addressList[i].apartmentNumber}</Text>
+               );
+             }
          }
          var eaterProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
 
@@ -290,17 +297,15 @@ class EaterPage extends Component {
          return (
              <View style={styles.container}>
                  <View style={styles.headerBannerView}>
-                     <View style={styles.headerLeftView}>
-                         <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList() }>
+                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
+                         <View style={styles.backButtonView}>
                              <Image source={backIcon} style={styles.backButtonIcon}/>
-                         </TouchableHighlight>
-                     </View>
-
+                         </View>
+                     </TouchableHighlight>
                      <View style={styles.titleView}>
                          <Text style={styles.titleText}>My Profile</Text>
                      </View>
-                     <View style={styles.headerRightView}>
-                         <TouchableHighlight style={styles.headerRightTextButtonView} underlayColor={'transparent'} onPress={() => {
+                     <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={() => {
                              this.setState({
                                  edit: true,
                                  firstname: this.state.eater.firstname,
@@ -312,11 +317,11 @@ class EaterPage extends Component {
                                  workAddress: this.state.eater.workAddress,
                                  addressList: this.state.eater.addressList
                              })
-                         } }>
-
+                         }}>
+                         <View style={styles.headerRightTextButtonView}>
                              <Text style={styles.headerRightTextButtonText}>Edit</Text>
-                         </TouchableHighlight>
-                     </View>
+                         </View>
+                     </TouchableHighlight>
                  </View>
                  <ScrollView>
                      <Image source={eaterProfile} style={styleEaterPage.eaterProfilePic}>
