@@ -175,11 +175,11 @@ class ShoppingCartPage extends Component {
                             <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
                             <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
                         </View>
-                        <View style={styleShoppingCartPage.addressChangeButtonView}>
-                            <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                        <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonView} underlayColor={'transparent'} onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                            <View style={styleShoppingCartPage.addressChangeButtonWrapper}>
                                 <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add Address': 'Change Address'}</Text>
-                            </TouchableHighlight>
-                        </View>
+                            </View>
+                        </TouchableHighlight>
                     </View>),
                     ];
        }else{//if price quoted

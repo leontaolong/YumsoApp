@@ -98,21 +98,21 @@ class DishPage extends Component {
                         </Text>
                     </View>
                     <View style={styleDishPage.chooseQuantityView}>
-                        <View style={styleDishPage.minusIconView}>
-                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.removeFromShoppingCart(this.state.dish) }>
+                        <TouchableHighlight style={styleDishPage.minusIconView} underlayColor={'transparent'} onPress={() => this.removeFromShoppingCart(this.state.dish)}>
+                            <View>
                                 <Image source={minusIcon} style={styleDishPage.plusMinusIcon}/>
-                            </TouchableHighlight>
-                        </View>
+                            </View>
+                        </TouchableHighlight>
                         <View style={styleDishPage.quantityTextView}>
                             <Text style={styleDishPage.quantityText}>
                             {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity: ' '}
                             </Text>
                         </View>
-                        <View style={styleDishPage.plusIconView}>
-                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.addToShoppingCart(this.state.dish) }>
+                        <TouchableHighlight style={styleDishPage.plusIconView} underlayColor={'transparent'} onPress={() => this.addToShoppingCart(this.state.dish) }>
+                            <View>
                                 <Image source={plusIcon} style={styleDishPage.plusMinusIcon}/>
-                            </TouchableHighlight>
-                        </View>                        
+                            </View>
+                        </TouchableHighlight>                        
                     </View>
                 </View>
                 </ScrollView>
@@ -403,13 +403,19 @@ var styleDishPage = StyleSheet.create({
     plusMinusIcon:{
         width: windowHeight/27.6, 
         height: windowHeight/27.6,
+        alignSelf:'center',
     },
     plusIconView:{
+        width:windowHeight*0.08,
+        height:windowHeight*0.06,
+        alignSelf:'center',
     },
     minusIconView:{
+        width:windowHeight*0.08,
+        height:windowHeight*0.06,
     },
     quantityTextView:{
-        width:windowHeight*0.0827,
+        width:windowHeight*0.04,
         justifyContent:'flex-start',
         flexDirection:'column',
     },

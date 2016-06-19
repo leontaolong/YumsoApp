@@ -258,7 +258,7 @@ class ShopPage extends Component {
                         </Text>
                     </View>
                     <View style={styleShopPage.chooseQuantityView}>
-                        <TouchableHighlight style={styleShopPage.minusIconView} underlayColor={'#F5F5F5'} onPress={() => this.removeFromShoppingCart(dish) }>
+                        <TouchableHighlight style={styleShopPage.minusIconView} underlayColor={'transparent'} onPress={() => this.removeFromShoppingCart(dish) }>
                             <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
                         </TouchableHighlight>
                         <View style={styleShopPage.quantityTextView}>
@@ -266,7 +266,7 @@ class ShopPage extends Component {
                             {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity: ' '}
                             </Text>
                         </View>
-                        <TouchableHighlight style={styleShopPage.plusIconView} underlayColor={'#F5F5F5'} onPress={() => this.addToShoppingCart(dish) }>
+                        <TouchableHighlight style={styleShopPage.plusIconView} underlayColor={'transparent'} onPress={() => this.addToShoppingCart(dish) }>
                             <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
                         </TouchableHighlight>                        
                     </View>
@@ -319,11 +319,11 @@ class ShopPage extends Component {
                           <View style={styleShopPage.shoppingCartTimeView}>
                                <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Schedules'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
                           </View>
-                          <View style={styleShopPage.checkoutButtonView}> 
-                             <TouchableOpacity activeOpacity={0.7} style={styleShopPage.checkoutButtonWrapper} onPress={() => this.navigateToShoppingCart() }>
+                          <TouchableOpacity style={styleShopPage.checkoutButtonView} activeOpacity={0.7} onPress={() => this.navigateToShoppingCart()}> 
+                             <View style={styleShopPage.checkoutButtonWrapper}>
                                 <Text style={styleShopPage.checkoutButton}>SHOPPING CART</Text>
-                             </TouchableOpacity>
-                          </View>
+                             </View>
+                          </TouchableOpacity>
                        </View>
                 </View>);
     }
@@ -759,13 +759,18 @@ var styleShopPage = StyleSheet.create({
     plusMinusIcon:{
         width: windowHeight/27.6, 
         height: windowHeight/27.6,
+        alignSelf:'center',
     },
     plusIconView:{
+        width:windowHeight*0.08,
+        height:windowHeight*0.06,
     },
     minusIconView:{
+        width:windowHeight*0.08,
+        height:windowHeight*0.06,
     },
     quantityTextView:{
-        width:windowHeight*0.0827,
+        width:windowHeight*0.04,
         justifyContent:'flex-start',
         flexDirection:'column',
     },
