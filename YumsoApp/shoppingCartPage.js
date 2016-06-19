@@ -47,6 +47,7 @@ class ShoppingCartPage extends Component {
         let scheduleMapping = routeStack[routeStack.length-1].passProps.scheduleMapping;        
         this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
+        this.backCallback = routeStack[routeStack.length-1].passProps.backCallback;
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(shoppingCart[selectedTime])),
             showProgress:false,
@@ -589,12 +590,14 @@ class ShoppingCartPage extends Component {
                     this.state.scheduleMapping[this.state.selectedTime][dishId].leftQuantity = this.state.dishUnavailableSet[dishId].actualLeftQuantity;
                 }
                 delete this.state.shoppingCart[this.state.selectedTime];
-                this.props.navigator.pop();              
+                this.props.navigator.pop();
+                this.backCallback(this.state.totalPrice);                              
             }}, {text:'Cancel'}]);
             return;
         }
 
         this.props.navigator.pop();
+        this.backCallback(this.state.totalPrice);     
     }
 }
 

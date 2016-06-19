@@ -259,7 +259,6 @@ class ShopPage extends Component {
                         </Text>
                     </View>
                     <View style={styleShopPage.chooseQuantityView}>
-                                             
                         <TouchableHighlight style={styleShopPage.minusIconView} underlayColor={'#F5F5F5'} onPress={() => this.removeFromShoppingCart(dish) }>
                             <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
                         </TouchableHighlight>
@@ -479,6 +478,9 @@ class ShopPage extends Component {
                 eater:this.state.eater,
                 shopName:this.state.chef.shopname,
                 scheduleMapping: this.state.scheduleMapping,
+                backCallback: function(totalPrice){
+                    this.setState({totalPrice: totalPrice})
+                }.bind(this)
             }
         });    
     }
@@ -502,6 +504,9 @@ class ShopPage extends Component {
                 selectedTime:this.state.selectedTime,
                 scheduleMapping:this.state.scheduleMapping,
                 totalPrice: this.state.totalPrice,
+                backCallback: function(totalPrice){
+                    this.setState({totalPrice: totalPrice})
+                }.bind(this)
             }
         });      
     }

@@ -40,6 +40,7 @@ class DishPage extends Component {
         let scheduleMapping = routeStack[routeStack.length-1].passProps.scheduleMapping;
         let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;
         let totalPrice = routeStack[routeStack.length-1].passProps.totalPrice;
+        this.backCallback = routeStack[routeStack.length-1].passProps.backCallback;
         this.state = {
             dish: dish,
             shoppingCart: shoppingCart,
@@ -174,6 +175,7 @@ class DishPage extends Component {
     
     navigateBackToShop() {
         this.props.navigator.pop();
+        this.backCallback(this.state.totalPrice);
     }
 }
 
