@@ -105,7 +105,7 @@ class MapPage extends Component {
                aptView = (<View key={'aptView'} style={{backgroundColor:'#fff', position:'absolute', flexDirection:'row', justifyContent:'center', 
                                 top: this.state.aptNumberViewYposition, left:0, right:0, height:windowHeight*0.074,}}>
                               <Text style={styleMapPage.aptNumberViewTitle}>Apt/Suite# </Text>
-                              <TextInput style={styleMapPage.aptNumberViewInput} onFocus = {()=>this.slideUpAptNumberView()} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                              <TextInput style={styleMapPage.aptNumberViewInput} onFocus = {()=>this.slideUpAptNumberView()} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
                                    value={this.state.apartmentNumber} keyboardType={'numbers-and-punctuation'} onSubmitEditing = {()=>this.slideDownAptNumberView()} onChangeText = {(text) => this.setState({ apartmentNumber: text })}/>
                           </View>);
             }   
@@ -127,7 +127,7 @@ class MapPage extends Component {
 
             var houseIconView = null;
             if(this.showHouseIcon){
-               houseIconView = <TouchableHighlight underlayColor={'transparent'} onPress={() =>{this.setState({showMapView: this.state.showMapView? false:true})}}>
+               houseIconView = <TouchableHighlight underlayColor={'transparent'} onPress={() => this.onPressHouseIcon()}>
                                  <Image source={houseIconOrange} style={styleMapPage.houseIconOrange}/>
                                </TouchableHighlight>
             }
@@ -155,7 +155,7 @@ class MapPage extends Component {
                                     <Image source={searchIcon} style={styleMapPage.searchIcon}/>
                                 </TouchableHighlight>  
                                 <TextInput placeholder="City/State/Zip Code" style={styleMapPage.locationSearchInput}  onSubmitEditing = {()=> this.searchAddress()} returnKeyType = {'search'} clearButtonMode={'while-editing'}
-                                    onChangeText = {(text)=>this.setState({searchAddress: text,selectedAddress:''})} value={this.state.selectedAddress?this.state.selectedAddress.formatted_address:this.state.searchAddress}/>
+                                autoCorrect={false} onChangeText = {(text)=>this.setState({searchAddress: text,selectedAddress:''})} value={this.state.selectedAddress?this.state.selectedAddress.formatted_address:this.state.searchAddress}/>
                             </View>
                        </View>
                        <View style={styleMapPage.currentLocationClickableView}>
@@ -244,7 +244,7 @@ class MapPage extends Component {
                     </View>
                     <View style={styleMapPage.oneAddressTextView}>
                         <Text style={styleMapPage.oneAddressText}>
-                            {address.formatted_address}
+                            {address.formatted_address} {address.apartmentNumber? 'Apt/Suite# '+address.apartmentNumber:''}
                         </Text>
                     </View>
                 </View>
@@ -450,6 +450,11 @@ class MapPage extends Component {
             Alert.alert( 'Warning', 'Please specify an address',[ { text: 'OK' }]); 
             return; 
         }
+    }
+    
+    onPressHouseIcon() {
+        this.setState({selectedAddress:'',searchAddressResultView:'',searchAddress:''});
+        this.setState({showMapView: this.state.showMapView? false:true});
     }
     
     //Locate the map view to current user location

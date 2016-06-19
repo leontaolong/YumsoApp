@@ -19,6 +19,7 @@ import React, {
   Image,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert
@@ -71,21 +72,21 @@ class LoginPage extends Component {
                     <View style={styleLoginPage.blankView}>
                     </View>
                     <View style={styles.loginInputView}>
-                    <TextInput placeholder="email" style={styles.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
-                        onChangeText = {(text) => this.setState({ email: text }) }/>
+                    <TextInput placeholder="email" style={styles.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} 
+                       autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
                     </View>
                     <View style={styles.loginInputView}>
                     <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
-                            onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
+                       onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
                     </View>
                     
                     <View style={styleLoginPage.forgotPasswordView}>
                         <Text style={styleLoginPage.forgotPasswordText} onPress={this.onPressForgotPassword.bind(this)}>Forgot password?</Text>
                     </View>
                 
-                    <TouchableHighlight underlayColor={'#C0C0C0'} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
+                    <TouchableOpacity activeOpacity={0.7} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
                         <Text style={styleLoginPage.signInButtonText}>Sign in</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                         
                     <View style={styleLoginPage.askToSignUpView}>
                         <Text style={styleLoginPage.askToSignUpText}>Do not have an account? </Text>

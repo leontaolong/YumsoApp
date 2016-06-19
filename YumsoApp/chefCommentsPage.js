@@ -57,7 +57,7 @@ class ChefCommentsPage extends Component {
                     throw new Error('Fail getting past comments');
                 }
                 let comments = res.data.comments;
-                this.setState({ dataSource: this.state.dataSource.cloneWithRows(comments), showProgress: false });
+                this.setState({ dataSource: this.state.dataSource.cloneWithRows(comments), showProgress: false,comments:comments });
             });
     }
 
@@ -106,6 +106,11 @@ class ChefCommentsPage extends Component {
                                     <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                 </View>;  
         }
+        
+        if(this.state.comments && this.state.comments.length==0){
+           var  noReviewText = <Text style={styles.listViewEmptyText}>This chef does not have any review left</Text>
+        }
+        
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -120,6 +125,7 @@ class ChefCommentsPage extends Component {
                    <View style={styles.headerRightView}>
                    </View>
                </View>
+               {noReviewText}
                <ListView style={styles.dishListView}
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this) }/>

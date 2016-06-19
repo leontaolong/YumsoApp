@@ -99,6 +99,12 @@ class EaterPage extends Component {
          if (this.state.edit) {
              var otherAddressListRendered = [];
              for (let i = 0; i < this.state.addressList.length; i++) {
+                 let aptNumberView = null;
+                 if(this.state.addressList[i].apartmentNumber ){
+                     aptNumberView= <Text style={styleEaterPage.addressText}>
+                                    {'Apt/Suite#: ' + this.state.addressList[i].apartmentNumber}
+                                    </Text>
+                 }
                  otherAddressListRendered.push(
                      <View key={i} style={styleEaterPage.addressView}>
                          <View style={styleEaterPage.addressTitleView}>
@@ -109,9 +115,7 @@ class EaterPage extends Component {
                              <Text style={styleEaterPage.addressText}>
                                  {this.state.addressList[i].formatted_address}
                              </Text>
-                             <Text style={styleEaterPage.addressText}>
-                                 {this.state.addressList[i].apartmentNumber ? 'Apt/Suite#: ' + this.state.addressList[i].apartmentNumber : ''}
-                             </Text>
+                             {aptNumberView}
                          </View>
                          <TouchableHighlight style={styleEaterPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.removeAddress(this.state.addressList[i]) }>
                              <Text style={styleEaterPage.addressEditText}>Delete</Text>
@@ -158,7 +162,7 @@ class EaterPage extends Component {
                              </View>
                              <View style={styleEaterPage.nameInputTextView}>
                                  <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                     onChangeText = {(text) => this.setState({ firstname: text }) }/>
+                                     autoCorrect={false} onChangeText = {(text) => this.setState({ firstname: text }) }/>
                              </View>
                          </View>
                          <View style={styleEaterPage.nameInputView}>
@@ -167,7 +171,7 @@ class EaterPage extends Component {
                              </View>
                              <View style={styleEaterPage.nameInputTextView}>
                                  <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.lastname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                     onChangeText = {(text) => this.setState({ lastname: text }) }/>
+                                     autoCorrect={false} onChangeText = {(text) => this.setState({ lastname: text }) }/>
                              </View>
                          </View>
                          <View style={styleEaterPage.nameInputView}>
@@ -176,7 +180,7 @@ class EaterPage extends Component {
                              </View>
                              <View style={styleEaterPage.nameInputTextView}>
                                  <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                     onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
+                                     autoCorrect={false} onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
                              </View>
                          </View>
 
@@ -198,7 +202,7 @@ class EaterPage extends Component {
                              </View>
                              <View style={styleEaterPage.nameInputTextView}>
                                  <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.email} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                     onChangeText = {(text) => this.setState({ email: text }) }/>
+                                     autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
                              </View>
                          </View>
 
@@ -259,16 +263,29 @@ class EaterPage extends Component {
 
          var addressListRendered = [];
          if (this.state.eater.addressList.length > 0) {
-             addressListRendered.push(<Text key={'OTHER'} style={styleEaterPage.eaterPageGreyText}>+ OTHER</Text>);
+             addressListRendered.push(<Text key={'OTHER'} style={styleEaterPage.eaterPageClickableText} onPress={() => {
+                                        this.setState({
+                                            edit: true,
+                                            firstname: this.state.eater.firstname,
+                                            lastname: this.state.eater.lastname,
+                                            eaterAlias: this.state.eater.eaterAlias,
+                                            gender: this.state.eater.gender,
+                                            phoneNumber: this.state.eater.phoneNumber,
+                                            homeAddress: this.state.eater.homeAddress,
+                                            workAddress: this.state.eater.workAddress,
+                                            addressList: this.state.eater.addressList
+                                        })}}>+ OTHER</Text>);
          }
 
          for (let i = 0; i < this.state.eater.addressList.length; i++) {
              addressListRendered.push(
                  <Text key={i} style={styleEaterPage.eaterPageGreyText}>{this.state.eater.addressList[i].formatted_address}</Text>
              );
-             addressListRendered.push(
-                 <Text key={i + 'otherAddress'} style={styleEaterPage.eaterPageGreyText}>Apt/Suite#: {this.state.eater.addressList[i].apartmentNumber}</Text>
-             );
+             if(this.state.eater.addressList[i].apartmentNumber && this.state.eater.addressList[i].apartmentNumber.trim()){
+               addressListRendered.push(
+                 <Text key={i + '_aptNumber'} style={styleEaterPage.eaterPageGreyText}>Apt/Suite#: {this.state.eater.addressList[i].apartmentNumber}</Text>
+               );
+             }
          }
          var eaterProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
 
