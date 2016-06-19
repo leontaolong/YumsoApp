@@ -102,8 +102,8 @@ class HistoryOrderPage extends Component {
         }else{
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Will be out for delivery at {dateRender.renderDate2(order.orderDeliverTime)}</Text>
         }
-        if(order.shopPictures && order.shopPictures.values[1]){
-           var imageSrc = {uri:order.shopPictures.values[1]};
+        if(order.shopPictures && order.shopPictures.values[0]){
+           var imageSrc = {uri:order.shopPictures.values[0]};
         }else{
            var imageSrc = defaultShopPic;
         }
