@@ -251,17 +251,16 @@ class ChefListPage extends Component {
         }else if(this.state.showChefSearch){
             return <View style={styles.greyContainer}>
                        <View style={styles.headerBannerView}>    
-                            <View style={styles.headerLeftView}>
-                                <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} 
-                                 onPress={() => this.setState({
+                            <TouchableHighlight style={styles.headerLeftView} onPress={() => this.setState({
                                                                 showChefSearch: false,
                                                                 isMenuOpen: false,
                                                                 priceRankFilter: JSON.stringify(this.state.priceRankFilterOrigin)==undefined ? null : JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
                                                                 withBestRatedSort: this.state.withBestRatedSortOrigin,
-                                                             })}>
+                                                             })} underlayColor={'#F5F5F5'}>
+                                <View style={styles.backButtonView}>
                                     <Image source={backIcon} style={styles.backButtonIcon}/>
-                                </TouchableHighlight>
-                            </View>    
+                                </View>
+                            </TouchableHighlight>    
                             <View style={styles.titleView}>
                                 <Text style={styles.titleText}>Filter</Text>
                             </View>
@@ -306,30 +305,30 @@ class ChefListPage extends Component {
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
                 <View style={styles.container}>                    
                     <View style={styleChefListPage.headerBannerView}>
-                        <View style={styles.headerLeftView}>
-                          <TouchableHighlight style={styles.menuButtonView} underlayColor={'transparent'}  onPress={() => this.setState({ isMenuOpen: true }) }>
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({ isMenuOpen: true }) }>
+                          <View style={styles.menuButtonView}>
                             <Image source={menuIcon} style={styles.menuIcon}/>
-                          </TouchableHighlight>
-                        </View>
-                        <TouchableHighlight underlayColor={'transparent'} onPress={() => this.setState({showLocSearch:true}) }>
+                          </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.titleView}>
                             <Text style={styles.titleText}>{this.state.city}</Text>
                         </View>
                         </TouchableHighlight>
-                        <View style={styles.headerRightView}>
-                          <TouchableHighlight style={styles.headerRightTextButtonView} underlayColor={'transparent'} onPress={() => this.setState({showChefSearch:true}) }>
+                        <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
+                          <View style={styles.headerRightTextButtonView}>
                               <Text style={styles.headerRightTextButtonText}>Filter</Text>
-                          </TouchableHighlight>
-                        </View>
+                          </View>
+                        </TouchableHighlight>
                     </View>
                     <View style={styleChefListPage.orangeTopBannerView}>
                         <View style={styleChefListPage.orangeTopBannerButtonView}>
-                          <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} underlayColor={'transparent'}  onPress={() => this.setState({showLocSearch:true}) }>
+                          <TouchableHighlight style={styleChefListPage.orangeTopBannerButtonWrapper} underlayColor={'transparent'}  onPress={() => this.setState({showLocSearch:true}) }>
                              <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={ballonIcon}/>
                           </TouchableHighlight>
                         </View>
                         <View style={styleChefListPage.orangeTopBannerButtonView}>
-                           <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} underlayColor={'transparent'}  onPress={() => this.showFavoriteChefs() }>
+                           <TouchableHighlight style={styleChefListPage.orangeTopBannerButtonWrapper} underlayColor={'transparent'}  onPress={() => this.showFavoriteChefs() }>
                              <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={this.state.showFavoriteChefsOnly===true?likedIcon:favoriteIcon}/>
                            </TouchableHighlight>
                         </View>
@@ -651,6 +650,11 @@ var styleChefListPage = StyleSheet.create({
        width:windowWidth*0.5,
        flexDirection:'row',
        justifyContent:'center',
+    },
+    orangeTopBannerButtonWrapper:{
+       flexDirection:'row',
+       justifyContent:'center',
+       width:windowWidth*0.25,
     },
     orangeTopBannerButtonIcon:{
        width:windowWidth*0.08,
