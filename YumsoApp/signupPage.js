@@ -37,7 +37,7 @@ class SignUpPage extends Component {
     
     render() {
             if(this.state.showPasswordRequirment){
-              var passwordRequirmentText = <Text style={styleSignUpPage.passwordRequirementText}>
+              var passwordRequirmentText = <Text style={styles.passwordRequirementText}>
                                             Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
                                            </Text>;
             }
@@ -48,9 +48,9 @@ class SignUpPage extends Component {
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                         <View style={styles.headerBannerView}>    
                             <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                              <TouchableHighlight style={styles.backButtonView}>
+                              <View style={styles.backButtonView}>
                                   <Image source={backIcon} style={styles.backButtonIcon}/>
-                              </TouchableHighlight>
+                              </View>
                             </TouchableHighlight>    
                             <View style={styles.titleView}>
                                 <Text style={styles.titleText}>Sign Up</Text>
@@ -84,7 +84,7 @@ class SignUpPage extends Component {
                                 returnKeyType = {'done'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onChangeText = {(text)=>this.setState({password_re: text})} secureTextEntry={true}/>
                             </View>
                             <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
-                            <View style={styleSignUpPage.passwordRequirementView}>
+                            <View style={styles.passwordRequirementView}>
                                {passwordRequirmentText}
                             </View>
                             <View style={styleSignUpPage.legalView}>
@@ -204,16 +204,6 @@ var styleSignUpPage = StyleSheet.create({
     logoIcon:{
       width:windowWidth*0.208,
       height:windowWidth*0.208,
-    },
-    passwordRequirementView:{
-      height:windowHeight*0.08,
-      width:windowWidth*0.88,
-      backgroundColor:'transparent',
-    },
-    passwordRequirementText:{
-      fontSize:11,
-      color:'#fff',
-      textAlign:'justify',
     },
     legalView:{
       flex:1,
