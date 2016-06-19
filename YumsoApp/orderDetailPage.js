@@ -240,11 +240,11 @@ class OrderDetailPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                    <View style={styles.headerLeftView}>
-                       <TouchableHighlight style={styles.backButtonView} underlayColor={'#ECECEC'} onPress={() => this.navigateBackToDishList()}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToDishList()}>
+                       <View style={styles.backButtonView}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
-                       </TouchableHighlight>
-                    </View>    
+                       </View>
+                    </TouchableHighlight>    
                     <View style={styles.titleView}>
                        <Text style={styles.titleText}>Order Details</Text>
                     </View>

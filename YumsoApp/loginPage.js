@@ -57,11 +57,11 @@ class LoginPage extends Component {
             <View style={styles.container}>
               <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                 <View style={styles.headerBannerView}>    
-                    <View style={styles.headerLeftView}>
-                        <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
-                        <Image source={backIcon} style={styles.backButtonIcon}/>
-                        </TouchableHighlight>
-                    </View>    
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                        <View style={styles.backButtonView}>
+                           <Image source={backIcon} style={styles.backButtonIcon}/>
+                        </View>
+                    </TouchableHighlight>    
                     <View style={styles.titleView}>
                         <Text style={styles.titleText}>Sign In</Text>
                     </View>

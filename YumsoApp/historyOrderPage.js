@@ -155,13 +155,13 @@ class HistoryOrderPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                   <View style={styles.headerLeftView}>
-                   <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBackToChefList()}>
-                     <Image source={backIcon} style={styles.backButtonIcon}/>
-                   </TouchableHighlight>
-                   </View>    
+                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
+                      <View style={styles.backButtonView}>
+                        <Image source={backIcon} style={styles.backButtonIcon}/>
+                      </View>
+                   </TouchableHighlight>    
                    <View style={styles.titleView}>
-                     <Text style={styles.titleText}>My Orders</Text>
+                      <Text style={styles.titleText}>My Orders</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>

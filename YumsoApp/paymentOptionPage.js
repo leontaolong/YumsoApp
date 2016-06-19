@@ -197,11 +197,11 @@ class PaymentOptionPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>
-                         <View style={styles.headerLeftView}>
-                         <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBack()}>
-                             <Image source={backIcon} style={styles.backButtonIcon}/>
-                         </TouchableHighlight> 
-                         </View>
+                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                             <View style={styles.backButtonView}>
+                                <Image source={backIcon} style={styles.backButtonIcon}/>
+                             </View> 
+                         </TouchableHighlight>
                          <View style={styles.titleView}>
                              <Text style={styles.titleText}>Payment Options</Text>
                          </View>
@@ -212,8 +212,8 @@ class PaymentOptionPage extends Component {
                     dataSource = {this.state.dataSource}
                     renderRow={this.renderRow.bind(this)}
                     renderFooter={this.renderFooter.bind(this)}/>  
-              {paymentSelectionConfirmButton}
-              {loadingSpinnerView}                    
+               {paymentSelectionConfirmButton}
+               {loadingSpinnerView}                    
             </View>
         );
     }

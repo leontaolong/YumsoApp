@@ -57,11 +57,11 @@ class resetPasswordPage extends Component {
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
                     <View style={styles.headerBannerView}>    
-                        <View style={styles.headerLeftView}>
-                          <TouchableHighlight underlayColor={'transparent'} style={styles.backButtonView} onPress={() => this.navigateBack()}>
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                          <View style={styles.backButtonView}>
                               <Image source={backIcon} style={styles.backButtonIcon}/>
-                          </TouchableHighlight>
-                        </View>    
+                          </View>
+                        </TouchableHighlight>    
                         <View style={styles.titleView}>
                             <Text style={styles.titleText}>Reset Password</Text>
                         </View>

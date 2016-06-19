@@ -71,11 +71,11 @@ class PaymentPage extends Component {
                 
         return (<View style={styles.greyContainer}>
                   <View style={styles.headerBannerView}>
-                    <View style={styles.headerLeftView}>
-                        <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={()=>this.navigateBackToShoppingCartPage()}>
-                        <Image source={backIcon} style={styles.backButtonIcon}/>
-                        </TouchableHighlight> 
-                    </View>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={()=>this.navigateBackToShoppingCartPage()}>
+                        <View style={styles.backButtonView}>
+                           <Image source={backIcon} style={styles.backButtonIcon}/>
+                        </View> 
+                    </TouchableHighlight>
                     <View style={styles.titleView}>
                         <Text style={styles.titleText}>Check Out</Text>
                     </View>

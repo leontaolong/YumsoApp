@@ -65,16 +65,16 @@ class DishPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                        <View style={styles.headerLeftView}>
-                             <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToShop()}>
-                                 <Image source={backIcon} style={styles.backButtonIcon}/>
-                             </TouchableHighlight>
-                         </View>    
-                         <View style={styles.titleView}>
-                             <Text style={styles.titleText}>{this.state.dish.dishName}</Text>
-                         </View>
-                         <View style={styles.headerRightView}>
-                         </View>
+                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToShop()}>
+                      <View style={styles.backButtonView}>
+                         <Image source={backIcon} style={styles.backButtonIcon}/>
+                      </View>
+                   </TouchableHighlight>    
+                   <View style={styles.titleView}>
+                      <Text style={styles.titleText}>{this.state.dish.dishName}</Text>
+                   </View>
+                   <View style={styles.headerRightView}>
+                   </View>
                </View>
                <ScrollView>
                 <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={true}

@@ -114,13 +114,13 @@ class ChefCommentsPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                   <View style={styles.headerLeftView}>
-                   <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefPage()}>
-                     <Image source={backIcon} style={styles.backButtonIcon}/>
-                   </TouchableHighlight>
-                   </View>    
+                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefPage()}>
+                      <View style={styles.backButtonView}>
+                         <Image source={backIcon} style={styles.backButtonIcon}/>
+                      </View>
+                   </TouchableHighlight>    
                    <View style={styles.titleView}>
-                     <Text style={styles.titleText}>Reviews</Text>
+                      <Text style={styles.titleText}>Reviews</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>
