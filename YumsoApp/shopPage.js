@@ -260,21 +260,17 @@ class ShopPage extends Component {
                     </View>
                     <View style={styleShopPage.chooseQuantityView}>
                                              
-                        <View style={styleShopPage.minusIconView}>
-                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.removeFromShoppingCart(dish) }>
-                                <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
-                            </TouchableHighlight>
-                        </View>
+                        <TouchableHighlight style={styleShopPage.minusIconView} underlayColor={'#F5F5F5'} onPress={() => this.removeFromShoppingCart(dish) }>
+                            <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
+                        </TouchableHighlight>
                         <View style={styleShopPage.quantityTextView}>
                             <Text style={styleShopPage.quantityText}>
                             {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity: ' '}
                             </Text>
                         </View>
-                        <View style={styleShopPage.plusIconView}>
-                            <TouchableHighlight underlayColor={'#ECECEC'} onPress={() => this.addToShoppingCart(dish) }>
-                                <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
-                            </TouchableHighlight>
-                        </View>                        
+                        <TouchableHighlight style={styleShopPage.plusIconView} underlayColor={'#F5F5F5'} onPress={() => this.addToShoppingCart(dish) }>
+                            <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
+                        </TouchableHighlight>                        
                     </View>
                 </View>
             </View>
@@ -297,21 +293,21 @@ class ShopPage extends Component {
             
         return (<View style={styles.container}>
                         <View style={styles.headerBannerView}>    
-                            <View style={styles.headerLeftView}>
-                                <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
+                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
+                                <View style={styles.backButtonView}>
                                     <Image source={backIcon} style={styles.backButtonIcon}/>
-                                </TouchableHighlight>
-                            </View>    
+                                </View>
+                            </TouchableHighlight>    
                             <View style={styles.titleView}>
                                 <Text style={styles.titleText}>{this.state.chef.shopname}</Text>
                             </View>
-                            <View style={styles.headerRightView}>
+                            <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={()=>this.share()}>
                                 <View style={styles.likeShareButtonView}>
-                                   <TouchableHighlight underlayColor={'transparent'} onPress={()=>this.share()}>
+                                   <View>
                                       <Image source={shareIcon} style={styles.shareButtonIcon}/>
-                                   </TouchableHighlight>
+                                   </View>
                                 </View>
-                            </View>
+                            </TouchableHighlight>
                         </View>
                         
                         <ListView style={styles.dishListView}

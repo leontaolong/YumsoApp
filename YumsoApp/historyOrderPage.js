@@ -149,7 +149,7 @@ class HistoryOrderPage extends Component {
         }
         
         if(this.state.orders && this.state.orders.length==0){
-          var  noOrderText = <Text style={styleHistoryOrderPage.noOrderText}>You do not have any orders recently, come and order some!</Text>
+          var  noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order recently, come and order some!</Text>
         }
         
         return (
@@ -273,15 +273,6 @@ var styleHistoryOrderPage = StyleSheet.create({
         color:'#F8C84E',
         alignSelf:'flex-end',
     },
-    noOrderText:{
-        fontSize:16,
-        color:'#9B9B9B',
-        justifyContent:'center',
-        textAlign:'center',
-        marginTop:windowHeight*0.28,
-        marginHorizontal:15,
-    }
-
 });    
 
 module.exports = HistoryOrderPage;

@@ -296,13 +296,15 @@ class OrderDetailPage extends Component {
             starRating: Number(this.state.starRating)
         };
         this.setState({showProgress:true});
+        
         return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
         .then((res)=>{
             if (res.statusCode != 200) {
                 return this.responseHandler(res);
             }
+            this.state.order.comment = {starRating:data.starRating, eaterComment:data.commentText, eaterCommentTime:new Date().getTime()}
             Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
-            self.setState({ratingSucceed:true, showProgress:false, starRating:data.starRating, comment:data.commentText, eaterCommentTime:new Date().getTime()});     
+            self.setState({ratingSucceed:true, showProgress:false, starRating:data.starRating});     
         });
     }
     

@@ -22,8 +22,8 @@ var dollarSign3_Grey = require('./icons/icon-dollar3-grey.png');
 var dollarSign1_Orange = require('./icons/icon-dollar1-orange.png');
 var dollarSign2_Orange = require('./icons/icon-dollar2-orange.png');
 var dollarSign3_Orange = require('./icons/icon-dollar3-orange.png');
-var sortCriteriaIconGery = require('./icons/icon-rating-grey.png');
-var sortCriteriaIconOrange = require('./icons/icon-rating-orange.png');
+var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.png');
+var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.png');
 var RefreshableListView = require('react-native-refreshable-listview')
 
 import Dimensions from 'Dimensions';
@@ -41,6 +41,7 @@ import React, {
     Image,
     ListView,
     TouchableHighlight,
+    TouchableOpacity,
     ActivityIndicatorIOS,
     Alert
 } from 'react-native';
@@ -65,22 +66,10 @@ class ChefListPage extends Component {
             showChefSearch:false,
             showLocSearch:false,
             showFavoriteChefsOnly:false,
-            priceRankFilter:{
-                1:false,
-                2:false,
-                3:false,
-                4:false,
-                5:false
-            }, 
-            withBestRatedSort:false,
             chefView: {},
             chefsDictionary: {},
             city:'Seattle',
             state:'WA',
-            sortCriteriaIcon:sortCriteriaIconGery,
-            dollarSign1: dollarSign1_Orange,
-            dollarSign2: dollarSign2_Orange,
-            dollarSign3: dollarSign3_Orange,
         };
         this.responseHandler = function (response, msg) {
              if(response.statusCode==400){
@@ -122,7 +111,8 @@ class ChefListPage extends Component {
                 priceRankFilter:eater.chefFilterSettings.priceRankFilter, 
                 withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
                 priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
-                withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort});
+                withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort,
+                sortCriteriaIcon:eater.chefFilterSettings.withBestRatedSort ? sortCriteriaIconOrange:sortCriteriaIconGrey});            
         }
         this.setState({ principal: principal, eater:eater });
         this.fetchChefDishes();
@@ -261,17 +251,16 @@ class ChefListPage extends Component {
         }else if(this.state.showChefSearch){
             return <View style={styles.greyContainer}>
                        <View style={styles.headerBannerView}>    
-                            <View style={styles.headerLeftView}>
-                                <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} 
-                                 onPress={() => this.setState({
+                            <TouchableHighlight style={styles.headerLeftView} onPress={() => this.setState({
                                                                 showChefSearch: false,
                                                                 isMenuOpen: false,
                                                                 priceRankFilter: JSON.stringify(this.state.priceRankFilterOrigin)==undefined ? null : JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
                                                                 withBestRatedSort: this.state.withBestRatedSortOrigin,
-                                                             })}>
+                                                             })} underlayColor={'#F5F5F5'}>
+                                <View style={styles.backButtonView}>
                                     <Image source={backIcon} style={styles.backButtonIcon}/>
-                                </TouchableHighlight>
-                            </View>    
+                                </View>
+                            </TouchableHighlight>    
                             <View style={styles.titleView}>
                                 <Text style={styles.titleText}>Filter</Text>
                             </View>
@@ -300,15 +289,15 @@ class ChefListPage extends Component {
                        </View>
                        <View style={styleFilterPage.sortCriteriaIconView}>
                           <TouchableHighlight style={styleFilterPage.sortCriteriaIconWrapper} underlayColor={'transparent'} 
-                               onPress={() => {this.setState({withBestRatedSort:!this.state.withBestRatedSort,
-                               sortCriteriaIcon:this.state.sortCriteriaIcon==this.state.withBestRatedSort==false? sortCriteriaIconOrange :sortCriteriaIconGery})}}>
+                               onPress={() => this.clickSortSelection('withBestRatedSort')}>
                               <Image source={this.state.sortCriteriaIcon} style={styleFilterPage.sortCriteriaIcon}/>
                           </TouchableHighlight>
                        </View>
                     </View>
-                    <TouchableHighlight underlayColor={'#C0C0C0'} style={styleFilterPage.applySearchButtonView} onPress={() => this.searchChef()}>
+                    {loadingSpinnerView}
+                    <TouchableOpacity activeOpacity={0.7} style={styleFilterPage.applySearchButtonView} onPress={() => this.searchChef()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply and Search</Text>
-                    </TouchableHighlight>                
+                    </TouchableOpacity>                
                </View>                    
         }
         
@@ -316,30 +305,30 @@ class ChefListPage extends Component {
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
                 <View style={styles.container}>                    
                     <View style={styleChefListPage.headerBannerView}>
-                        <View style={styles.headerLeftView}>
-                          <TouchableHighlight style={styles.menuButtonView} underlayColor={'transparent'}  onPress={() => this.setState({ isMenuOpen: true }) }>
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({ isMenuOpen: true }) }>
+                          <View style={styles.menuButtonView}>
                             <Image source={menuIcon} style={styles.menuIcon}/>
-                          </TouchableHighlight>
-                        </View>
-                        <TouchableHighlight underlayColor={'transparent'} onPress={() => this.setState({showLocSearch:true}) }>
+                          </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.titleView}>
                             <Text style={styles.titleText}>{this.state.city}</Text>
                         </View>
                         </TouchableHighlight>
-                        <View style={styles.headerRightView}>
-                          <TouchableHighlight style={styles.headerRightTextButtonView} underlayColor={'transparent'} onPress={() => this.setState({showChefSearch:true}) }>
+                        <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
+                          <View style={styles.headerRightTextButtonView}>
                               <Text style={styles.headerRightTextButtonText}>Filter</Text>
-                          </TouchableHighlight>
-                        </View>
+                          </View>
+                        </TouchableHighlight>
                     </View>
                     <View style={styleChefListPage.orangeTopBannerView}>
                         <View style={styleChefListPage.orangeTopBannerButtonView}>
-                          <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} underlayColor={'transparent'}  onPress={() => this.setState({showLocSearch:true}) }>
+                          <TouchableHighlight style={styleChefListPage.orangeTopBannerButtonWrapper} underlayColor={'transparent'}  onPress={() => this.setState({showLocSearch:true}) }>
                              <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={ballonIcon}/>
                           </TouchableHighlight>
                         </View>
                         <View style={styleChefListPage.orangeTopBannerButtonView}>
-                           <TouchableHighlight style={{flexDirection:'row',justifyContent:'center'}} underlayColor={'transparent'}  onPress={() => this.showFavoriteChefs() }>
+                           <TouchableHighlight style={styleChefListPage.orangeTopBannerButtonWrapper} underlayColor={'transparent'}  onPress={() => this.showFavoriteChefs() }>
                              <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={this.state.showFavoriteChefsOnly===true?likedIcon:favoriteIcon}/>
                            </TouchableHighlight>
                         </View>
@@ -371,6 +360,11 @@ class ChefListPage extends Component {
         }
           
         this.setState({priceRankFilter:this.state.priceRankFilter});
+    }
+    
+    clickSortSelection(sortByKey){
+        this.setState({[sortByKey]:!this.state[sortByKey]});
+        this.setState({sortCriteriaIcon:this.state[sortByKey]? sortCriteriaIconOrange : sortCriteriaIconGrey})
     }
     
     showFavoriteChefs(){
@@ -657,6 +651,11 @@ var styleChefListPage = StyleSheet.create({
        flexDirection:'row',
        justifyContent:'center',
     },
+    orangeTopBannerButtonWrapper:{
+       flexDirection:'row',
+       justifyContent:'center',
+       width:windowWidth*0.25,
+    },
     orangeTopBannerButtonIcon:{
        width:windowWidth*0.08,
        height:windowWidth*0.08,
@@ -843,8 +842,8 @@ var styleFilterPage = StyleSheet.create({
         alignSelf:'center',
     },
     sortCriteriaIcon:{
-        width:windowHeight*0.0704,
-        height:windowHeight*0.0704,
+        width:windowHeight*0.050,
+        height:windowHeight*0.050,
     },
 });
 module.exports = ChefListPage;

@@ -339,8 +339,9 @@ class ShoppingCartPage extends Component {
     }
         
     mapDone(address){
+         let aptmentNumberText = address.apartmentNumber ? ' Apt/Suite# '+address.apartmentNumber : '';
          if(address){
-             Alert.alert( '', 'Your delivery location is set to '+address.formatted_address,[ { text: 'OK' }]); 
+             Alert.alert( '', 'Your delivery location is set to '+address.formatted_address+aptmentNumberText,[ { text: 'OK' }]); 
          }
          if(this.state.deliveryAddress && this.state.deliveryAddress.formatted_address!==address.formatted_address){
              this.setState({priceIsConfirmed:false});
