@@ -127,7 +127,7 @@ class MapPage extends Component {
 
             var houseIconView = null;
             if(this.showHouseIcon){
-               houseIconView = <TouchableHighlight underlayColor={'transparent'} onPress={() => this.onPressHouseIcon()}>
+               houseIconView = <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressHouseIcon()}>
                                  <Image source={houseIconOrange} style={styleMapPage.houseIconOrange}/>
                                </TouchableHighlight>
             }
@@ -135,11 +135,11 @@ class MapPage extends Component {
             return (
                  <View style={styles.container}>
                      <View style={styles.headerBannerView}>
-                         <View style={styles.headerLeftView}>
-                             <TouchableHighlight style={styles.backButtonView} underlayColor={'transparent'} onPress={() => this.navigateBack() }>
+                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                             <View style={styles.backButtonView}>
                                  <Image source={backIcon} style={styles.backButtonIcon}/>
-                             </TouchableHighlight>
-                         </View>
+                             </View>
+                         </TouchableHighlight>
                          <View style={styles.titleView}>
                              <Text style={styles.titleText}>{this.state.city}</Text>
                          </View>
@@ -158,14 +158,12 @@ class MapPage extends Component {
                                 autoCorrect={false} onChangeText = {(text)=>this.setState({searchAddress: text,selectedAddress:''})} value={this.state.selectedAddress?this.state.selectedAddress.formatted_address:this.state.searchAddress}/>
                             </View>
                        </View>
-                       <View style={styleMapPage.currentLocationClickableView}>
-                            <TouchableHighlight onPress={()=>this.locateToCurrentAddress()} underlayColor={'transparent'}>
-                                <View style={styleMapPage.currentLocationClickableView}>
-                                        <Image source={locatorIcon} style={styleMapPage.currentLocationClickableIcon}/>
-                                        <Text style={styleMapPage.currentLocationClickableText}>Current Location</Text>
-                                </View>
-                            </TouchableHighlight>
-                       </View>                       
+                       <TouchableHighlight onPress={()=>this.locateToCurrentAddress()} style={styleMapPage.currentLocationClickableView} underlayColor={'#F5F5F5'}>
+                            <View style={styleMapPage.currentLocationClickableView}>
+                                <Image source={locatorIcon} style={styleMapPage.currentLocationClickableIcon}/>
+                                <Text style={styleMapPage.currentLocationClickableText}>Current Location</Text>
+                            </View>
+                       </TouchableHighlight>                     
                     </View>
                     <MapView ref='MapView' style={styleMapPage.mapView}
                         initialRegion={this.initialRegion}
