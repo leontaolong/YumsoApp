@@ -74,19 +74,19 @@ class resetPasswordPage extends Component {
                         </View>                        
                         <View style={styles.loginInputView}>                      
                             <TextInput value={this.userEmail} placeholder="email" style={styles.loginInput} autoCapitalize={'none'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
-                            placeholderTextColor='#fff' clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
+                            maxLength={40} placeholderTextColor='#fff' clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
                         </View>
                         <View style={styles.loginInputView}>
                             <TextInput placeholder="current password" style={styles.loginInput} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
-                            placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({oldPassword: text})} secureTextEntry={true}/>
+                            maxLength={12} placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({oldPassword: text})} secureTextEntry={true}/>
                         </View>
                         <View style={styles.loginInputView}>
                             <TextInput placeholder="new password" style={styles.loginInput} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
-                            placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({newPassword: text})} secureTextEntry={true}/>
+                            maxLength={12} placeholderTextColor='#fff' onChangeText = {(text)=>this.setState({newPassword: text})} secureTextEntry={true}/>
                         </View>
                         <View style={styles.loginInputView}>
                             <TextInput placeholder="confirm new password" style={styles.loginInput} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
-                            placeholderTextColor='#fff' returnKeyType = {'done'} onChangeText = {(text)=>this.setState({newPassword_re: text})} secureTextEntry={true}/>
+                            maxLength={12} placeholderTextColor='#fff' returnKeyType = {'done'} onChangeText = {(text)=>this.setState({newPassword_re: text})} secureTextEntry={true}/>
                         </View>               
                         <View style={styleSignUpPage.passwordRequirementView}>
                                {passwordRequirmentText}

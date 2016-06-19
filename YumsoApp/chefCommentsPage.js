@@ -16,7 +16,7 @@ import React, {
   Text,
   View,
   Image,
-  TextInput,
+
   ListView,
   TouchableHighlight,
   ActivityIndicatorIOS,

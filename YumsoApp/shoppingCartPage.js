@@ -144,7 +144,7 @@ class ShoppingCartPage extends Component {
           console.log("showPromotionCodeInput false");
           var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}> 
                                            <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text})} 
-                                            onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
+                                            maxLength={20} onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
                                         </View>),
                                        (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressAddCoupon()}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
@@ -227,7 +227,7 @@ class ShoppingCartPage extends Component {
                             <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
                             <View style={styleShoppingCartPage.phoneNumberInputView}>                       
                                 <TextInput style={styleShoppingCartPage.phoneNumberInput} placeholder={this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'} 
-                                returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/> 
+                                maxLength={15} returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/> 
                             </View>
                         </View>
                         <View style={styleShoppingCartPage.addressChangeButtonView}>

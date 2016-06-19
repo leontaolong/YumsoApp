@@ -20,7 +20,6 @@ import React, {
   View,
   ScrollView,
   Image,
-  TextInput,
   ListView,
   TouchableHighlight,
   AsyncStorage,

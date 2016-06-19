@@ -35,7 +35,6 @@ console.log(windowHeight+" "+windowWidth);
 import React, {
     Component,
     StyleSheet,
-    TextInput,
     Text,
     View,
     Image,

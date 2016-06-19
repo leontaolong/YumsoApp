@@ -73,11 +73,11 @@ class LoginPage extends Component {
                     </View>
                     <View style={styles.loginInputView}>
                     <TextInput placeholder="email" style={styles.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} 
-                       autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
+                       maxLength={40} autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
                     </View>
                     <View style={styles.loginInputView}>
                     <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
-                       onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
+                       maxLength={12} onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
                     </View>
                     
                     <View style={styleLoginPage.forgotPasswordView}>

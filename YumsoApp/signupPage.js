@@ -64,23 +64,23 @@ class SignUpPage extends Component {
                             </View>
                             
                             <View style={styles.loginInputView}>
-                                <TextInput placeholder="first name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'} 
+                                <TextInput placeholder="first name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'} maxLength={30}
                                 onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} onChangeText = {(text)=>this.setState({firstname: text})}/>
                             </View> 
                             <View style={styles.loginInputView}>
-                                <TextInput placeholder="last name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'} 
+                                <TextInput placeholder="last name" style={styles.loginInput} autoCorrect={false} placeholderTextColor='#fff' returnKeyType = {'done'}  maxLength={30}
                                 onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} onChangeText = {(text)=>this.setState({lastname: text})}/> 
                             </View>
                             <View style={styles.loginInputView}>                      
-                                <TextInput placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff' returnKeyType = {'done'}
-                                        onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
+                                <TextInput placeholder="email" style={styles.loginInput} autoCapitalize={'none'} placeholderTextColor='#fff' returnKeyType = {'done'} maxLength={40}
+                                onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
                             </View>
                             <View style={styles.loginInputView}>
-                                <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)}
-                                        onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} returnKeyType = {'done'} onChangeText = {(text)=>this.setState({password: text})} secureTextEntry={true}/>
+                                <TextInput placeholder="password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)} maxLength={12}
+                                onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} returnKeyType = {'done'} onChangeText = {(text)=>this.setState({password: text})} secureTextEntry={true}/>
                             </View>
                             <View style={styles.loginInputView}>
-                                <TextInput placeholder="confirm password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)} 
+                                <TextInput placeholder="confirm password" style={styles.loginInput} placeholderTextColor='#fff' onFocus={(()=>this._onFocus()).bind(this)} maxLength={12}
                                 returnKeyType = {'done'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onChangeText = {(text)=>this.setState({password_re: text})} secureTextEntry={true}/>
                             </View>
                             <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>

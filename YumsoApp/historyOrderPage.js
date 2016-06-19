@@ -16,7 +16,6 @@ import React, {
   Text,
   View,
   Image,
-  TextInput,
   ListView,
   TouchableHighlight,
   ActivityIndicatorIOS,
@@ -116,9 +115,9 @@ class HistoryOrderPage extends Component {
                         <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
                         {orderStatusText}           
                         <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
-                        <View style={styleHistoryOrderPage.orderDetailsClickableView}>
-                        <Text onPress={()=>this.navigateToOrderDetailPage(order)} style={styleHistoryOrderPage.orderDetailsClickable}>Order Details  ></Text>                                                                               
-                        </View>
+                        <TouchableHighlight style={styleHistoryOrderPage.orderDetailsClickableView} underlayColor={'transparent'} onPress={()=>this.navigateToOrderDetailPage(order)}>
+                           <Text style={styleHistoryOrderPage.orderDetailsClickable}>Order Details  ></Text>                                                                               
+                        </TouchableHighlight>
                     </View>
                 </View>);
     }
@@ -130,24 +129,7 @@ class HistoryOrderPage extends Component {
                                     <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                 </View>;  
         }
-        
-        if(this.state.showCommentBox == true){
-           return (
-                <View style={styles.greyContainer}> 
-                    <TextInput placeholder="comments" style={styles.loginInput}
-                        onChangeText = {(text) => this.setState({ comment: text }) }/>
-                    <TextInput placeholder="Star Rating integer" style={styles.loginInput} onChangeText = {(text) => this.setState({ starRating: text }) }/>                    
-                    <TouchableHighlight style={styles.button} onPress={()=>this.submitComment()}>
-                        <Text style={styles.buttonText}>Submit</Text>    
-                    </TouchableHighlight>                                                
-                    <TouchableHighlight style={styles.button}
-                        onPress={()=>this.setState({showCommentBox:false, comment:undefined, starRating:undefined, orderTheCommentIsFor:undefined}) }>
-                        <Text style={styles.buttonText}>Cancel</Text>
-                    </TouchableHighlight>       
-                </View>
-            );
-        }
-        
+                
         if(this.state.orders && this.state.orders.length==0){
           var  noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order recently, come and order some!</Text>
         }
