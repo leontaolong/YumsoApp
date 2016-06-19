@@ -295,6 +295,7 @@ class ChefListPage extends Component {
                           </TouchableHighlight>
                        </View>
                     </View>
+                    {loadingSpinnerView}
                     <TouchableOpacity activeOpacity={0.7} style={styleFilterPage.applySearchButtonView} onPress={() => this.searchChef()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply and Search</Text>
                     </TouchableOpacity>                
