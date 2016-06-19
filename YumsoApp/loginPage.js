@@ -44,6 +44,14 @@ class LoginPage extends Component {
     
     render() {
       var _this = this;
+      
+      var loadingSpinnerView = null;
+      if (this.state.showProgress) {
+          loadingSpinnerView = <View style={styles.loaderView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                               </View>;  
+      }
+      
       return (
             <View style={styles.container}>
               <Image style={styles.pageBackgroundImage} source={backgroundImage}>
@@ -83,8 +91,6 @@ class LoginPage extends Component {
                         <Text style={styleLoginPage.askToSignUpText}>Do not have an account? </Text>
                         <Text onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpText}>Sign up now!</Text>
                     </View>
-                    
-                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader} />
                  </ScrollView>
               </Image>
               
@@ -120,6 +126,7 @@ class LoginPage extends Component {
                             console.log(data);
                         } }/>
                 </View> 
+                {loadingSpinnerView}
             </View>
         );
     }

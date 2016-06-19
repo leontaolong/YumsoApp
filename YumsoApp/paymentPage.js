@@ -29,6 +29,7 @@ class PaymentPage extends Component {
         let routeStack = props.navigator.state.routeStack;
         let orderDetail = routeStack[routeStack.length-1].passProps.orderDetail;
         let eater = routeStack[routeStack.length-1].passProps.eater;
+        this.shoppingCartContext = routeStack[routeStack.length-1].passProps.context;
         this.state = {
             showProgress:false,
             orderDetail:orderDetail,
@@ -143,10 +144,21 @@ class PaymentPage extends Component {
                         }
                     }); 
                 }else{
-                    this.setState({showProgress:false});
+                    this.setState({ showProgress: false });
                     console.log(response.data.detail);
-                    //todo: display the detail to user.
-                    //todo: redirect to shoppingcart page by pop once and setstate;
+                    let detailError = response.data.detail;
+                    this.props.navigator.pop();
+                    if (detailError.type === 'NoAvailableDishQuantityException') {
+                        Alert.alert('Warning', 'Oops, you have one or more dishes that are not available anymore. Please update your shopping cart', [{ text: 'OK' }]);
+                        this.shoppingCartContext.handleDishNotAvailable(detailError.deliverTimestamp,  detailError.quantityFact);
+                    } else if (detailError.type === 'PaymentException') {
+                        Alert.alert('Warning', 'Payment failed. ' + detailError.message, [{ text: 'OK' }]);
+                    } else if (detailError.type === 'NoDeliveryRouteFoundException') {
+                        Alert.alert('Warning', 'Delivery address is not reachable. ' + detailError.message, [{ text: 'OK' }]);
+                    } else {
+                        Alert.alert('Warning', 'Failed creating order. Please try again later.'[{ text: 'OK' }]);
+                    }
+                    this.shoppingCartContext.setState({priceIsConfirmed:false});
                 }                    
             }else{
                 this.setState({showProgress:false});

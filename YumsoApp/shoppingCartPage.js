@@ -86,13 +86,13 @@ class ShoppingCartPage extends Component {
         if(dish.pictures && dish.pictures!=null && dish.pictures.length!=0){
             imageSrc={uri:dish.pictures[0]};   
         }
-        let actualQuantityView = <View></View>;
+        let actualQuantityText = null;
         if(this.state.dishUnavailableSet && this.state.dishUnavailableSet[dish.dishId]){
-            actualQuantityView = <Text> actualy quantity: {this.state.dishUnavailableSet[dish.dishid].actualLeftQuantity}</Text>;
+            actualQuantityText =<Text style={styleShoppingCartPage.actualQuantityText}>{this.state.dishUnavailableSet[dish.dishId].actualLeftQuantity} left now</Text>;
         }
         return (
             <View style={styleShoppingCartPage.oneListingView}>
-                <Image source={imageSrc} style={styleShoppingCartPage.dishPhoto}/>
+                <Image source={imageSrc} style={{ width:windowWidth/2.76,height:windowWidth/2.76,opacity:actualQuantityText ? 0.3:1}}/>
                 <View style={styleShoppingCartPage.shoppingCartInfoView}>
                     <View style={styleShoppingCartPage.dishNamePriceView}>
                       <View style={styleShoppingCartPage.dishNameView}>
@@ -104,9 +104,11 @@ class ShoppingCartPage extends Component {
                     </View> 
                      
                     <View style={styleShoppingCartPage.dishIngredientView}>
-                       <Text style={styleShoppingCartPage.dishIngredientText}>{this.getTextLengthLimited(dish.ingredients,43)}</Text>
+                       <Text style={styleShoppingCartPage.dishIngredientText}>{this.getTextLengthLimited(dish.ingredients,28)}</Text>
                     </View>  
-                    {actualQuantityView}                                        
+                    <View style={styleShoppingCartPage.actualQuantityView}>
+                       {actualQuantityText}
+                    </View>                                        
                     <View style={styleShoppingCartPage.quantityTotalPriceView}>
                       <View style={styleShoppingCartPage.quantityView}>
                         <TouchableHighlight style={styleShoppingCartPage.plusIconView} underlayColor={'transparent'}
@@ -209,10 +211,10 @@ class ShoppingCartPage extends Component {
                     promotionDeductionView,
                     (<View key={'deliveryFeeView'} style={styleShoppingCartPage.deliveryFeeView}>
                         <View style={styleShoppingCartPage.priceTitleView}>
-                            <Text style={styleShoppingCartPage.priceTitleText}>Delivery</Text>
+                            <Text style={styleShoppingCartPage.priceTitleText}>Surcharge</Text>
                         </View>
                         <View style={styleShoppingCartPage.priceNumberView}>
-                            <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.deliveryFee}</Text>
+                            <Text style={styleShoppingCartPage.priceNumberText}>${(parseFloat(this.state.quotedOrder.price.deliveryFee) + parseFloat(this.state.quotedOrder.price.serviceFee)).toFixed(2)}</Text>
                         </View>
                     </View>),
                     (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
@@ -266,7 +268,7 @@ class ShoppingCartPage extends Component {
         if(!this.state.priceIsConfirmed){
            var payNowButtonView = <TouchableOpacity activeOpacity={1}>
                                     <View style={styleShoppingCartPage.checkOutButtonGreyView}>
-                                        <Text style={styleShoppingCartPage.bottomButtonText}>Pay Now</Text>
+                                        <Text style={styleShoppingCartPage.bottomButtonTextGreyed}>Pay Now</Text>
                                     </View>
                                  </TouchableOpacity>;
         }else{
@@ -311,7 +313,6 @@ class ShoppingCartPage extends Component {
     
     _onLayout(event) {
         this.y = event.nativeEvent.layout.y;
-        console.log("_UnConfirmed: "+this.y);
     }
     
     _onFocus() {
@@ -331,9 +332,8 @@ class ShoppingCartPage extends Component {
         if(this.state.quotedOrder && this.state.quotedOrder.price && this.state.quotedOrder.price.couponValue){
            listViewLength +=0.075*windowHeight;
         }
-        console.log("listViewLength "+listViewLength);
         let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        if(listViewBottomToScreenBottom < 0){
+        if(listViewBottomToScreenBottom < 0 && this.state.priceIsConfirmed){
            this.refs.listView.scrollTo({x:0, y:windowHeight*0.075-listViewBottomToScreenBottom, animated: true})
         }
     }
@@ -358,7 +358,7 @@ class ShoppingCartPage extends Component {
             return;  
         }
         if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity <= 0){
-            Alert.alert( 'Warning', 'No more available',[ { text: 'OK' }]);
+            Alert.alert( 'Warning', 'No more ' + dish.dishName +' available',[ { text: 'OK' }]);
             return;          
         }    
         this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity-=1;
@@ -418,6 +418,9 @@ class ShoppingCartPage extends Component {
     }
     
     onPressAddCoupon(){
+        if(!this.state.promotionCode || !this.state.promotionCode.trim()){
+          return;
+        }
         this.setState({showPromotionCodeInput:true});
         if(this.state.priceIsConfirmed){
            this.getPrice();
@@ -471,6 +474,7 @@ class ShoppingCartPage extends Component {
                    console.log(response.data.detail);
                    let detailError = response.data.detail;
                    if(detailError.type==='NoAvailableDishQuantityException'){
+                       Alert.alert('Warning', 'Ops, you have one or more dishes that are not available anymore. Please update your shopping cart', [{ text: 'OK' }]);  
                        this.handleDishNotAvailable(detailError.deliverTimestamp,  detailError.quantityFact);
                    }else if(detailError.type==='PaymentException'){
                        Alert.alert('Warning', 'Payment failed. ' + detailError.message, [{ text: 'OK' }]);  
@@ -497,12 +501,13 @@ class ShoppingCartPage extends Component {
     handleDishNotAvailable(deliverTimestamp, quantityFact){
         let dishUnavailableSet = {};
         for(let fact of quantityFact){
-            this.state.scheduleMapping[deliverTimestamp][fact.dishId].leftQuantity = fact.actualLeftQuantity - fact.orderQuantity;
+            this.state.scheduleMapping[new Date(deliverTimestamp).toString()][fact.dishId].leftQuantity = fact.actualLeftQuantity - fact.orderQuantity;
             dishUnavailableSet[fact.dishId] = {
                 actualLeftQuantity: fact.actualLeftQuantity
             };
-        }                
-        this.setState({priceIsConfirmed:false, dishUnavailableSet : dishUnavailableSet});             
+        }  
+        let newShoppingCart = JSON.parse(JSON.stringify(this.state.shoppingCart));              
+        this.setState({priceIsConfirmed:false, dishUnavailableSet : dishUnavailableSet, dataSource:this.state.dataSource.cloneWithRows(newShoppingCart[this.state.selectedTime])});             
     }
     
     async navigateToPaymentPage(){
@@ -555,7 +560,8 @@ class ShoppingCartPage extends Component {
             name: 'PaymentPage', 
             passProps:{
                 orderDetail: order,
-                eater: this.state.eater
+                eater: this.state.eater,
+                context:this
             }
         });    
     }
@@ -582,6 +588,7 @@ class ShoppingCartPage extends Component {
                     this.state.scheduleMapping[this.state.selectedTime][dishId].leftQuantity = this.state.dishUnavailableSet[dishId].actualLeftQuantity;
                 }
                 delete this.state.shoppingCart[this.state.selectedTime];
+                this.props.navigator.pop();              
             }}, {text:'Cancel'}]);
             return;
         }
@@ -839,23 +846,30 @@ var styleShoppingCartPage = StyleSheet.create({
         color:'#9B9B9B',
     },
     dishIngredientView:{
-        height:windowHeight*0.0968,  
+        height:windowHeight*0.065,  
     },
     dishIngredientText:{
         fontSize:windowHeight/47.33,
         color:'#9B9B9B',
+    },
+    actualQuantityView:{
+        height:windowHeight*0.032,  
+    },
+    actualQuantityText:{
+        fontSize:windowHeight/47.33,
+        color:'#FF6347',
     },
     quantityTotalPriceView:{
         flex:1,
         flexDirection:'row', 
     },
     quantityView:{
-        flex:0.2,
+        flex:0.5,
         flexDirection:'row', 
         alignItems:'flex-start',
     },
     totalPriceView:{
-        flex:0.4,
+        flex:0.5,
         alignItems:'flex-end',
     },
     totalPriceText:{
@@ -914,8 +928,14 @@ var styleShoppingCartPage = StyleSheet.create({
     }, 
     bottomButtonText:{
         fontSize:windowHeight/30.6,
-        fontWeight:'300',
+        fontWeight:'400',
         color:'#fff',
+        alignSelf:'center', 
+    },
+    bottomButtonTextGreyed:{
+        fontSize:windowHeight/30.6,
+        fontWeight:'400',
+        color:'#D5D5D5',
         alignSelf:'center', 
     },
 });

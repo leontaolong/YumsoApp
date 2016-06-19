@@ -98,6 +98,7 @@ class PaymentOptionPage extends Component {
         return this.client.getWithAuth(config.getPaymentList+this.state.eaterId)
             .then((res) => {
                 if (res.statusCode != 200) {
+                    this.setState({showProgress:false});
                     return this.responseHandler(res);
                 }
                 let paymentList = res.data.paymentList;
@@ -256,6 +257,7 @@ class PaymentOptionPage extends Component {
         client.getWithAuth(config.paymentTokenEndpoint)
             .then((res) => {
                 if (res.statusCode != 200) {
+                    this.setState({showProgress:false});              
                     return this.responseHandler(res);
                 }
                 var clientToken = res.data.clientToken;
@@ -266,6 +268,7 @@ class PaymentOptionPage extends Component {
                                 return client.postWithAuth(config.addAPayment, { payment_method_nonce: nonce, userId: this.state.eaterId })
                                 .then((res)=>{
                                     if (res.statusCode != 200) {
+                                        this.setState({ showProgress: false });
                                         return this.responseHandler(res);
                                     }                                  
                                     this.fetchPaymentOptions();                                 
@@ -284,6 +287,7 @@ class PaymentOptionPage extends Component {
         return client.postWithAuth(config.deletePayment, { last4: card.last4, userId: this.state.eaterId })
             .then((res) => {
                 if (res.statusCode != 200) {
+                    this.setState({showProgress:false});                  
                     return this.responseHandler(res);
                 }      
                 this.fetchPaymentOptions();

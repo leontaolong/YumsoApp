@@ -374,7 +374,18 @@ class ChefListPage extends Component {
     }
     
     showFavoriteChefs(){
-        if(!this.state.eater) return; //todo: redirect to login page.
+        if(!this.state.eater){
+            this.props.navigator.push({
+                name: 'LoginPage',
+                passProps: {
+                    callback: function(eater){
+                        this.setState({eater:eater})
+                        this.showFavoriteChefs();
+                    }.bind(this)
+                }
+            }); 
+            return
+        } 
         this.state.showFavoriteChefsOnly = !this.state.showFavoriteChefsOnly;
         let displayChefs = [];
         if(this.state.showFavoriteChefsOnly==true){
