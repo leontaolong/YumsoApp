@@ -435,7 +435,7 @@ class EaterPage extends Component {
         eater.lastname = this.state.lastname.trim();
         eater.eaterAlias = this.state.eaterAlias.trim();
         eater.gender = this.state.gender;
-        eater.phoneNumber = this.state.phoneNumber
+        eater.phoneNumber = this.state.phoneNumber.trim()
         eater.homeAddress = this.state.homeAddress;
         eater.workAddress = this.state.workAddress;
         eater.addressList = this.state.addressList;

@@ -152,18 +152,28 @@ class resetPasswordPage extends Component {
     }
     
     async onUpdatePressed(){        
-        if(!this.state.email || !this.state.oldPassword){
-            Alert.alert( 'Warning', 'No email or password',[ { text: 'OK' }]);
+        if(!this.state.email || !this.state.email.trim()){
+            Alert.alert( 'Warning', 'Please enter your login email',[ { text: 'OK' }]);
+            return;
+        }
+
+        if(!this.state.oldPassword){
+            Alert.alert( 'Warning', 'Please enter your current password',[ { text: 'OK' }]);
             return;
         }
         
+        if(!this.state.newPassword){
+            Alert.alert( 'Warning', 'Please create your new password' ,[ { text: 'OK' }]);
+            return; 
+        }
+
         if(!this.state.newPassword_re){
-            Alert.alert( 'Warning', 'Enter password again.' ,[ { text: 'OK' }]);
+            Alert.alert( 'Warning', 'Please enter your new password again.' ,[ { text: 'OK' }]);
             return; 
         }
         
         if(this.state.newPassword_re !== this.state.newPassword){
-            Alert.alert( 'Warning', 'Two password entries are different' ,[ { text: 'OK' }]);
+            Alert.alert( 'Warning', 'The two password entries do not match' ,[ { text: 'OK' }]);
             return;
         }   
         
@@ -173,7 +183,7 @@ class resetPasswordPage extends Component {
         }
            
         this.setState({showProgress:true});
-        let result = await AuthService.resetPassword(this.state.email, this.state.oldPassword, this.state.newPassword) 
+        let result = await AuthService.resetPassword(this.state.email.trim(), this.state.oldPassword, this.state.newPassword) 
         if(result==false){
             return;
         }

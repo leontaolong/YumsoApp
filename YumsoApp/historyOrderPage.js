@@ -179,7 +179,7 @@ class HistoryOrderPage extends Component {
             if (res.statusCode != 200) {
                 return this.responseHandler(res);
             }
-            Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
+            Alert.alert('Success','Review is left for this order',[{ text: 'OK' }]);    
             this.state.orderTheCommentIsFor.comment={
                         eaterComment:comment,
                         starRating: data.starRating,

@@ -423,7 +423,7 @@ class MapPage extends Component {
                 this.setState({showApartmentNumber: true, apartmentNumber: this.props.initialLoc? this.props.initialLoc.apartmentNumber:undefined});
                 return;
             }
-            if(!this.usedSavedAddress) this.state.selectedAddress.apartmentNumber = this.state.apartmentNumber; //todo: state management will add the apt and save next time in edit profile.
+            if(!this.usedSavedAddress) this.state.selectedAddress.apartmentNumber = this.state.apartmentNumber.trim(); //todo: state management will add the apt and save next time in edit profile.
         }
         
         if (this.state.selectedAddress) {
@@ -496,10 +496,11 @@ class MapPage extends Component {
     
     searchAddress(){
         var address = this.state.searchAddress;
-        if(!address){
-            Alert.alert( 'Warning', 'Enter a address',[ { text: 'OK' }]);
+        if(!address || !address.trim()){
+            Alert.alert( 'Warning', 'Please enter an address',[ { text: 'OK' }]);
             return;
         }
+        address = address.trim();
         address = address.replace(/\s/g, "%20");
         this.googleClient.getWithoutAuth(config.searchAddress+address+'&key='+config.googleApiKey)
            .then((res)=>{

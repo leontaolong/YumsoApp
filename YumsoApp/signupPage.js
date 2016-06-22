@@ -154,18 +154,28 @@ class SignUpPage extends Component {
     }
             
     async onSignUpPressed(){
-        if(!this.state.firstname || !this.state.lastname){
-            Alert.alert( 'Warning', 'Missing first name or last name',[ { text: 'OK' }]);
+        if(!this.state.firstname || !this.state.firstname.trim()){
+            Alert.alert( 'Warning', 'Please enter your first name',[ { text: 'OK' }]);
             return;
         }
         
-        if(!this.state.email || !this.state.password){
-            Alert.alert( 'Warning', 'No email or password',[ { text: 'OK' }]);
+        if(!this.state.lastname || !this.state.lastname.trim()){
+            Alert.alert( 'Warning', 'Please enter your last name',[ { text: 'OK' }]);
+            return;
+        }
+
+        if(!this.state.email || !this.state.email.trim()){
+            Alert.alert( 'Warning', 'Please enter your email',[ { text: 'OK' }]);
             return;
         }
         
+        if(!this.state.password){
+            Alert.alert( 'Warning', 'Please set your password',[ { text: 'OK' }]);
+            return;
+        }
+
         if(!this.state.password_re){
-            Alert.alert( 'Warning', 'Enter password again.' ,[ { text: 'OK' }]);
+            Alert.alert( 'Warning', 'Please re-enter your password' ,[ { text: 'OK' }]);
             return; 
         }
         
@@ -175,11 +185,11 @@ class SignUpPage extends Component {
         }
         
         if(this.state.password_re !== this.state.password){
-            Alert.alert( 'Warning', 'Two password inputs do not match' ,[ { text: 'OK' }]);
+            Alert.alert( 'Warning', 'The two password entries do not match' ,[ { text: 'OK' }]);
             return;
         }
         this.setState({showProgress:true});
-        let result = await AuthService.registerWithEmail(this.state.firstname, this.state.lastname,this.state.email, this.state.password, this.state.password_re);
+        let result = await AuthService.registerWithEmail(this.state.firstname.trim(), this.state.lastname.trim(),this.state.email.trim(), this.state.password, this.state.password_re);
         if(result==false){
             return;
         }

@@ -143,7 +143,7 @@ class ShoppingCartPage extends Component {
        }else{
           console.log("showPromotionCodeInput false");
           var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}> 
-                                           <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text})} 
+                                           <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text.trim()})} 
                                             maxLength={20} onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
                                         </View>),
                                        (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressAddCoupon()}>
@@ -450,7 +450,7 @@ class ShoppingCartPage extends Component {
             }            
         }
         if(!this.state.shoppingCart  || !this.state.shoppingCart[this.state.selectedTime] || Object.keys(this.state.shoppingCart[this.state.selectedTime]).length===0){
-            Alert.alert('Warning','You do not have any items',[{ text: 'OK' }]);         
+            Alert.alert('Warning','You do not have any item in shopping cart',[{ text: 'OK' }]);         
             return; 
         }
         this.setState({showProgress:true});
@@ -476,10 +476,10 @@ class ShoppingCartPage extends Component {
                    console.log(response.data.detail);
                    let detailError = response.data.detail;
                    if(detailError.type==='NoAvailableDishQuantityException'){
-                       Alert.alert('Warning', 'Ops, you have one or more dishes that are not available anymore. Please update your shopping cart', [{ text: 'OK' }]);  
+                       Alert.alert('Warning', 'Oops, one or more ordered items in your shopping cart has just been sold out. Please update your shopping cart', [{ text: 'OK' }]);  
                        this.handleDishNotAvailable(detailError.deliverTimestamp,  detailError.quantityFact);
                    }else if(detailError.type==='PaymentException'){
-                       Alert.alert('Warning', 'Payment failed. ' + detailError.message, [{ text: 'OK' }]);  
+                       Alert.alert('Warning', 'Payment failed.' + detailError.message, [{ text: 'OK' }]);  
                    }else if(detailError.type==='NoDeliveryRouteFoundException'){
                        Alert.alert('Warning', 'Delivery address is not reachable. ' + detailError.message, [{ text: 'OK' }]);   
                    }else{

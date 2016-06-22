@@ -133,12 +133,18 @@ class LoginPage extends Component {
     }
     
     async onLoginPressed(){
-        if(!this.state.email || !this.state.password){
-            Alert.alert( 'Warning', 'No email or password',[ { text: 'OK' }]);
+        if(!this.state.email || !this.state.email.trim()){
+            Alert.alert( 'Warning', 'Please enter your email',[ { text: 'OK' }]);
             return;
         }
+     
+        if(!this.state.password){
+            Alert.alert( 'Warning', 'Please enter your password',[ { text: 'OK' }]);
+            return;
+        }
+        
         this.setState({showProgress:true});
-        let eater = await AuthService.loginWithEmail(this.state.email, this.state.password);
+        let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password);
         this.setState({ showProgress: false });        
         if(!eater){
             return;
@@ -152,12 +158,12 @@ class LoginPage extends Component {
         }
     }
     async onPressForgotPassword(){ 
-        if(!this.state.email){
+        if(!this.state.email || !this.state.email.trim()){
             Alert.alert( 'Warning', 'Please enter your email',[ { text: 'OK' }]);
             return;
         }           
         this.setState({showProgress:true});
-        let result = await AuthService.forgotPasswordWithEmail(this.state.email);
+        let result = await AuthService.forgotPasswordWithEmail(this.state.email.trim());
         if(result==false){
             return;
         }
