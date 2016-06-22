@@ -138,7 +138,7 @@ class PaymentOptionPage extends Component {
             );
         }else{
             return (
-                <Swipeout backgroundColor={'#FFFFFF'} right={swipeoutBtns}>
+                <Swipeout backgroundColor={'#FFFFFF'} close={true} right={swipeoutBtns}>
                     <View style={stylePaymentOptionPage.paymentMethodView}>         
                         <View  style={stylePaymentOptionPage.paymentMethodIconView}>
                             {this.renderPaymentMethodType(card)}
