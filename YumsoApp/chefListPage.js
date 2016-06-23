@@ -240,8 +240,7 @@ class ChefListPage extends Component {
         const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} principal={this.state.principal} caller = {this}/>;
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+            loadingSpinnerView =<View style={styles.listLoadingView}>
                                 </View>;  
         }
         
@@ -333,17 +332,21 @@ class ChefListPage extends Component {
                         </View>
                     </View> 
 
-                    <RefreshableListView style={styles.dishListView}
+                    <RefreshableListView ref="listView"
                         dataSource = {this.state.dataSource}
                         renderRow={this.renderRow.bind(this) }
                         loadData={this.searchChef.bind(this)}
-                        refreshDescription = "Loading.."/>
+                        refreshDescription = "Loading..."/>
                     {loadingSpinnerView}
                 </View>
             </SideMenu>
         );
     }
     
+    onRefreshDone(){
+        this.refs.listView.scrollTo({x:0, y:0, animated: true})
+    }
+
     clickDollarSign(priceLevel){
         this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];
         switch(priceLevel){
@@ -442,7 +445,9 @@ class ChefListPage extends Component {
                         if (res.statusCode === 200) {
                             var chefs = res.data.chefs;
                             this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs) })
+                            // this.onRefreshDone();
                         } else {
+                            // this.onRefreshDone();
                             //todo: handle failure.
                         }
                         this.setState({ showChefSearch: false, showProgress: false, isMenuOpen: false });
