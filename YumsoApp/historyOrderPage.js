@@ -76,9 +76,11 @@ class HistoryOrderPage extends Component {
         let pastOneWeekOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+start+'&'+end);
         let pastOneWeekComment = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+start+'&'+end);
         if (pastOneWeekOrder.statusCode != 200) {
+            this.setState({showProgress:false});
             return this.responseHandler(pastOneWeekOrder);
         }
         if (pastOneWeekComment.statusCode != 200) {
+            this.setState({showProgress:false});  
             return this.responseHandler(pastOneWeekOrder);
         }
         let orders = pastOneWeekOrder.data.orders;
@@ -156,38 +158,6 @@ class HistoryOrderPage extends Component {
                {loadingSpinnerView}                   
             </View>
         );
-    }
-    
-    submitComment(){
-        var self = this;
-        var comment = this.state.comment;
-        var orderTheCommentIsFor = this.state.orderTheCommentIsFor;
-        var starRating = this.state.starRating;
-        if (!starRating) {
-            Alert.alert('','Please rate the order',[{ text: 'OK' }]);
-            return;
-        }
-        var data = {
-            chefId: orderTheCommentIsFor.chefId,
-            orderId: orderTheCommentIsFor.orderId,
-            eaterId: orderTheCommentIsFor.eaterId,
-            commentText: comment,
-            starRating: Number(starRating)
-        };
-        return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
-        .then((res)=>{
-            if (res.statusCode != 200) {
-                return this.responseHandler(res);
-            }
-            Alert.alert('Success','Review is left for this order',[{ text: 'OK' }]);    
-            this.state.orderTheCommentIsFor.comment={
-                        eaterComment:comment,
-                        starRating: data.starRating,
-                        eaterCommentTime:new Date().getTime(),
-                    };
-            var orders = this.state.orders;       
-            self.setState({showCommentBox:false, dataSource: this.state.dataSource.cloneWithRows(orders), orders:orders, comment:undefined, starRating:undefined, orderTheCommentIsFor:undefined});
-        });
     }
 
     navigateBackToChefList() {

@@ -300,6 +300,7 @@ class OrderDetailPage extends Component {
         return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
         .then((res)=>{
             if (res.statusCode != 200) {
+                this.setState({showProgress:false});
                 return this.responseHandler(res);
             }
             this.state.order.comment = {starRating:data.starRating, eaterComment:data.commentText, eaterCommentTime:new Date().getTime()}

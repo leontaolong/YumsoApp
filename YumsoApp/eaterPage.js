@@ -445,8 +445,8 @@ class EaterPage extends Component {
         this.setState({showProgress:true});
         return this.client.postWithAuth(config.eaterUpdateEndpoint, { eater: eater })
             .then((res) => {
-                this.setState({ showProgress: false });
                 if (res.statusCode != 200) {
+                    this.setState({ showProgress: false });                
                     return this.responseHandler(res);
                 }
                 return AuthService.updateCacheEater(this.state.eater)
