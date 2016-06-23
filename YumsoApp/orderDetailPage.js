@@ -292,7 +292,7 @@ class OrderDetailPage extends Component {
             chefId: this.state.order.chefId,
             orderId: this.state.order.orderId,
             eaterId: this.state.order.eaterId,
-            commentText: this.state.comment,
+            commentText: this.state.comment ? this.state.comment.trim():'',
             starRating: Number(this.state.starRating)
         };
         this.setState({showProgress:true});

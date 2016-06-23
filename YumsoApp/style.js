@@ -25,6 +25,14 @@ module.exports = StyleSheet.create({
       height:windowHeight,
       opacity:0.3,
     },
+    listLoadingView:{
+      backgroundColor:'transparent', 
+      position:'absolute',
+      top:0,
+      left:0,
+      right:0, 
+      height:windowHeight,
+    },
     loader:{
       alignSelf:'center',
       marginTop:windowHeight*0.3,
