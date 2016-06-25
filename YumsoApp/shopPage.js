@@ -74,7 +74,6 @@ class ShopPage extends Component {
          this.client = new HttpsClient(config.baseUrl, true);
          await this.fetchDishesAndSchedules();
          if (this.state.eater) {
-             if (!this.state.eater.favoriteChefs) this.state.eater.favoriteChefs = []; //todo: remove this.
              this.setState({ like: this.state.eater.favoriteChefs.indexOf(this.state.chefId) !== -1 });
          }
          this.setState({ showProgress: false });
@@ -410,7 +409,7 @@ class ShopPage extends Component {
                     Alert.alert( 'Warning', res.data,[ { text: 'OK' }]);              
                 }else if (res.statusCode === 200) {
                     isAdd ? eater.favoriteChefs.push(_this.state.chefId) : eater.favoriteChefs.splice(eater.favoriteChefs.indexOf(_this.state.chefId), 1);
-                    return AuthService.updateCacheEater(eater)
+                    return AuthService.updateCacheEater(eater) //todo: perhaps return the eater oject everytime update it.
                         .then(() => {
                             _this.setState({ like: isAdd });
                             Alert.alert('Success', isAdd ? 'Added to favorite list' : 'Removed from favorite list', [{ text: 'OK' }]);
