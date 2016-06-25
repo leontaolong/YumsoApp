@@ -310,7 +310,7 @@ class ChefListPage extends Component {
                         </TouchableHighlight>
                         <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.titleView}>
-                            <Text style={styles.titleText}>{this.state.city}</Text>
+                            <Text style={styles.titleText}>{this.state.city?this.state.city:'unknow'}</Text>
                         </View>
                         </TouchableHighlight>
                         <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>

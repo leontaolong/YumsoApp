@@ -42,6 +42,9 @@ class OrderConfirmation extends Component {
     navigateBackToChefList(){
         this.props.navigator.push({
             name: 'ChefListPage',
+            passProps:{
+                eater:this.eater
+            }
         });
     }
     
