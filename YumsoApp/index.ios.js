@@ -28,6 +28,8 @@ import React, {
 } from 'react-native';
 
 console.disableYellowBox = true; 
+let sceneConfig = Navigator.SceneConfigs.FloatFromRight;
+sceneConfig.gestures.pop = {};
 
 class YumsoApp extends Component {
     
