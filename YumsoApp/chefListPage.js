@@ -118,7 +118,9 @@ class ChefListPage extends Component {
     }
 
     async fetchChefDishes() {
-        this.setState({showProgress:true});
+        if(Object.values(this.state.chefsDictionary).length==0){
+          this.setState({showProgress:true});
+        }
         var query=''; //todo: should include seattle if no lat lng provided
         if(this.state.GPSproxAddress){
             query = '?lat='+this.state.GPSproxAddress.lat+'&lng='+this.state.GPSproxAddress.lng;
@@ -241,6 +243,7 @@ class ChefListPage extends Component {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
             loadingSpinnerView =<View style={styles.listLoadingView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                 </View>;  
         }
         
@@ -293,7 +296,7 @@ class ChefListPage extends Component {
                        </View>
                     </View>
                     {loadingSpinnerView}
-                    <TouchableOpacity activeOpacity={0.7} style={styleFilterPage.applySearchButtonView} onPress={() => this.searchChef()}>
+                    <TouchableOpacity activeOpacity={0.7} style={styleFilterPage.applySearchButtonView} onPress={() => this.onPressApplySearchButton()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply and Search</Text>
                     </TouchableOpacity>                
                </View>                    
@@ -411,8 +414,14 @@ class ChefListPage extends Component {
          this.setState({showLocSearch:false, isMenuOpen: false});
     }
     
-    searchChef(){
-        this.setState({ showProgress: true });
+    onPressApplySearchButton(){
+        this.searchChef(true);
+    }
+
+    searchChef(isApplySearchButtonPressed){
+        if(isApplySearchButtonPressed==true){
+           this.setState({showProgress:true});
+        }
         return this.applySearchSettings()
             .then((settings) => {//todo: add these filter, make sure not logged in able to get as well.
                 let url = config.chefListEndpoint+'?'
