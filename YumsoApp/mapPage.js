@@ -84,7 +84,7 @@ class MapPage extends Component {
         }
         
         this.state = {
-            showProgress:true,
+            showProgress:false,
             showMapView:true,
             showAddNewAddressInputView:false,
             markers:mark?[mark]:[],
@@ -100,6 +100,12 @@ class MapPage extends Component {
     }
    
     render() {  
+            var loadingSpinnerView = null;
+            if (this.state.showProgress) {
+                loadingSpinnerView =<View style={styles.loaderView}>
+                                        <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                    </View>;  
+            }
             let aptView = <View></View>;
             if(this.state.showApartmentNumber){
                aptView = (<View key={'aptView'} style={{backgroundColor:'#fff', position:'absolute', flexDirection:'row', justifyContent:'center', 
@@ -184,7 +190,8 @@ class MapPage extends Component {
                     </TouchableOpacity>
                     {searchAddressResultViewWrapper}
                     {addressSelectionView}
-                    {aptView}   
+                    {aptView}
+                    {loadingSpinnerView}   
                 </View>
             );                      
     }
@@ -266,7 +273,7 @@ class MapPage extends Component {
     }
     
     //Get current location
-    getLocation(){
+    getLocation(callback){
         var self = this;
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -316,6 +323,9 @@ class MapPage extends Component {
                                                             postal:postal,                                                          
                                                            }
                                          });
+                            callback(self.state.GPSproxAddress);
+                        }else{
+                            callback();
                         }
                         self.setState({ city: city, state: state });
                     });       
@@ -486,11 +496,17 @@ class MapPage extends Component {
         this.usedSavedAddress = false;
         if(this.state.GPSproxAddress){
            this.useAddress(this.state.GPSproxAddress);
-        }else{//is this correct? need to asynchronize?
-           this.getLocation();
-           if(this.state.GPSproxAddress){
-              this.useAddress(this.state.GPSproxAddress);
-           }    
+        }else{
+           this.setState({showProgress:true});
+           this.getLocation(function(address){
+               this.setState({showProgress:false});
+               if(address){
+                   this.useAddress(address);
+               }else{
+                   Alert.alert('Warning','Current location not available',[{text:'OK'}]);
+                   return;
+               }
+           }.bind(this));
         }
     }
     
