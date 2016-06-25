@@ -16,14 +16,14 @@ var menuIcon = require('./icons/icon-menu.webp');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
 var backIcon = require('./icons/icon-back.png');
-var dollarSign1_Grey = require('./icons/icon-dollar1-grey.png');
-var dollarSign2_Grey = require('./icons/icon-dollar2-grey.png');
-var dollarSign3_Grey = require('./icons/icon-dollar3-grey.png');
-var dollarSign1_Orange = require('./icons/icon-dollar1-orange.png');
-var dollarSign2_Orange = require('./icons/icon-dollar2-orange.png');
-var dollarSign3_Orange = require('./icons/icon-dollar3-orange.png');
-var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.png');
-var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.png');
+var dollarSign1_Grey = require('./icons/icon-dollar1-grey.webp');
+var dollarSign2_Grey = require('./icons/icon-dollar2-grey.webp');
+var dollarSign3_Grey = require('./icons/icon-dollar3-grey.webp');
+var dollarSign1_Orange = require('./icons/icon-dollar1-orange.webp');
+var dollarSign2_Orange = require('./icons/icon-dollar2-orange.webp');
+var dollarSign3_Orange = require('./icons/icon-dollar3-orange.webp');
+var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.webp');
+var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.webp');
 var RefreshableListView = require('react-native-refreshable-listview')
 
 import Dimensions from 'Dimensions';
