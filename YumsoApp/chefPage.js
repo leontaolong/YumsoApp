@@ -8,9 +8,9 @@ var backIcon = require('./icons/icon-back.png');
 var ratingIconGrey = require('./icons/icon-rating-grey.png');
 var ratingIconOrange = require('./icons/icon-rating-orange.png');
 var deleteBannerIcon = require('./icons/icon-x.png');
-var yumsoVerifiedIcon = require('./icons/icon-YumsoVerified.png');
-var chefQualificationIcon = require('./icons/icon-ChefQualification.png');
-var bestReviewedIcon = require('./icons/icon-BestReviewed.png');
+var yumsoVerifiedIcon = require('./icons/icon-YumsoVerified.webp');
+var chefQualificationIcon = require('./icons/icon-ChefQualification.webp');
+var bestReviewedIcon = require('./icons/icon-BestReviewed.webp');
 import Dimensions from 'Dimensions';
 
 

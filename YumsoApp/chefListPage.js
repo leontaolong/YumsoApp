@@ -16,14 +16,14 @@ var menuIcon = require('./icons/icon-menu.webp');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
 var backIcon = require('./icons/icon-back.png');
-var dollarSign1_Grey = require('./icons/icon-dollar1-grey.png');
-var dollarSign2_Grey = require('./icons/icon-dollar2-grey.png');
-var dollarSign3_Grey = require('./icons/icon-dollar3-grey.png');
-var dollarSign1_Orange = require('./icons/icon-dollar1-orange.png');
-var dollarSign2_Orange = require('./icons/icon-dollar2-orange.png');
-var dollarSign3_Orange = require('./icons/icon-dollar3-orange.png');
-var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.png');
-var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.png');
+var dollarSign1_Grey = require('./icons/icon-dollar1-grey.webp');
+var dollarSign2_Grey = require('./icons/icon-dollar2-grey.webp');
+var dollarSign3_Grey = require('./icons/icon-dollar3-grey.webp');
+var dollarSign1_Orange = require('./icons/icon-dollar1-orange.webp');
+var dollarSign2_Orange = require('./icons/icon-dollar2-orange.webp');
+var dollarSign3_Orange = require('./icons/icon-dollar3-orange.webp');
+var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.webp');
+var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.webp');
 var RefreshableListView = require('react-native-refreshable-listview')
 
 import Dimensions from 'Dimensions';
@@ -118,7 +118,9 @@ class ChefListPage extends Component {
     }
 
     async fetchChefDishes() {
-        this.setState({showProgress:true});
+        if(Object.values(this.state.chefsDictionary).length==0){
+          this.setState({showProgress:true});
+        }
         var query=''; //todo: should include seattle if no lat lng provided
         if(this.state.GPSproxAddress){
             query = '?lat='+this.state.GPSproxAddress.lat+'&lng='+this.state.GPSproxAddress.lng;
@@ -241,6 +243,7 @@ class ChefListPage extends Component {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
             loadingSpinnerView =<View style={styles.listLoadingView}>
+                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                 </View>;  
         }
         
@@ -293,7 +296,7 @@ class ChefListPage extends Component {
                        </View>
                     </View>
                     {loadingSpinnerView}
-                    <TouchableOpacity activeOpacity={0.7} style={styleFilterPage.applySearchButtonView} onPress={() => this.searchChef()}>
+                    <TouchableOpacity activeOpacity={0.7} style={styleFilterPage.applySearchButtonView} onPress={() => this.onPressApplySearchButton()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply and Search</Text>
                     </TouchableOpacity>                
                </View>                    
@@ -411,8 +414,14 @@ class ChefListPage extends Component {
          this.setState({showLocSearch:false, isMenuOpen: false});
     }
     
-    searchChef(){
-        this.setState({ showProgress: true });
+    onPressApplySearchButton(){
+        this.searchChef(true);
+    }
+
+    searchChef(isApplySearchButtonPressed){
+        if(isApplySearchButtonPressed==true){
+           this.setState({showProgress:true});
+        }
         return this.applySearchSettings()
             .then((settings) => {//todo: add these filter, make sure not logged in able to get as well.
                 let url = config.chefListEndpoint+'?'
