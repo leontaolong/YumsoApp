@@ -69,6 +69,11 @@ class ChefListPage extends Component {
             chefsDictionary: {},
             city:'Seattle',
             state:'WA',
+            dollarSign1: dollarSign1_Grey,
+            dollarSign2: dollarSign2_Grey,
+            dollarSign3: dollarSign3_Grey,
+            priceRankFilter:{},
+            sortCriteriaIcon:sortCriteriaIconGrey,
         };
         this.responseHandler = function (response, msg) {
              if(response.statusCode==400){
@@ -351,9 +356,6 @@ class ChefListPage extends Component {
     }
 
     clickDollarSign(priceLevel){
-        if(!this.state.priceRankFilter){
-           return;
-        }
         this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];
         switch(priceLevel){
             case 1:
