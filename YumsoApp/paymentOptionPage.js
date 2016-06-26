@@ -283,7 +283,7 @@ class PaymentOptionPage extends Component {
     removeAPayment(card) {
         this.setState({showProgress:true});
         var client = new HttpsClient(config.baseUrl, true);
-        return client.postWithAuth(config.deletePayment, { last4: card.last4, cardType:card.cardType, userId: this.state.eaterId })
+        return client.postWithAuth(config.deletePayment, { token: card.token, userId: this.state.eaterId })
             .then((res) => {
                 if (res.statusCode != 200) {
                     this.setState({showProgress:false});                  
