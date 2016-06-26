@@ -69,6 +69,11 @@ class ChefListPage extends Component {
             chefsDictionary: {},
             city:'Seattle',
             state:'WA',
+            dollarSign1: dollarSign1_Grey,
+            dollarSign2: dollarSign2_Grey,
+            dollarSign3: dollarSign3_Grey,
+            priceRankFilter:{},
+            sortCriteriaIcon:sortCriteriaIconGrey,
         };
         this.responseHandler = function (response, msg) {
              if(response.statusCode==400){
@@ -511,6 +516,55 @@ class ChefListPage extends Component {
 
 var Menu = React.createClass({
 
+    render: function() {
+        let isAuthenticated = this.props.eater!=undefined;
+        var profileImg = profileImgNoSignIn;
+        if(isAuthenticated && this.props.eater.eaterProfilePic){
+            profileImg = {uri:this.props.eater.eaterProfilePic};
+        }else{
+            
+        }
+        var profile;
+        if(!isAuthenticated){
+            profile = <Image source={profileImg} style={sideMenuStyle.chefPhoto}/>;
+        }else{
+            profile = <TouchableHighlight style = {styles.chefProfilePic} onPress={()=>this.goToEaterPage()}>
+                        <Image source={profileImg} style={sideMenuStyle.chefPhoto}/>
+                     </TouchableHighlight>;
+        }
+        return (
+            <View style={sideMenuStyle.sidemenu}>
+                {profile}
+                <View style={{height:windowHeight*0.07}}></View>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={()=>{if(isAuthenticated){this.goToEaterPage();}}} >
+                   <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
+                </TouchableOpacity>
+                <View style={{height:windowHeight*0.035}}></View>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
+                   <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    },
+
     goToOrderHistory: function() {
         this.props.caller.setState({ isMenuOpen: false });
         if(!this.props.eater){
@@ -570,54 +624,12 @@ var Menu = React.createClass({
             }
         });
     },
-    
-    render: function() {
-        let isAuthenticated = this.props.eater!=undefined;
-        var profileImg = profileImgNoSignIn;
-        if(isAuthenticated && this.props.eater.eaterProfilePic){
-            profileImg = {uri:this.props.eater.eaterProfilePic};
-        }else{
-            
-        }
-        var profile;
-        if(!isAuthenticated){
-            profile = <Image source={profileImg} style={sideMenuStyle.chefPhoto}/>;
-        }else{
-            profile = <TouchableHighlight style = {styles.chefProfilePic} onPress={()=>this.goToEaterPage()}>
-                        <Image source={profileImg} style={sideMenuStyle.chefPhoto}/>
-                     </TouchableHighlight>;
-        }
-        return (
-            <View style={sideMenuStyle.sidemenu}>
-                {profile}
-                <View style={{height:windowHeight*0.07}}></View>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={()=>{if(isAuthenticated){this.goToEaterPage();}}} >
-                   <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
-                </TouchableOpacity>
-                <View style={{height:windowHeight*0.035}}></View>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView}>
-                   <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
-                </TouchableOpacity>
-            </View>
-        );
+   
+    navigateToAboutPage: function () {
+        this.props.caller.setState({ isMenuOpen: false });
+        this.props.navigator.push({
+            name: 'AboutPage',
+        });
     }
 });
 

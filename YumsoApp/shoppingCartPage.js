@@ -557,6 +557,7 @@ class ShoppingCartPage extends Component {
         order.quotedGrandTotal = this.state.quotedOrder.price.grandTotal;
         order.eaterId = eater.eaterId;
         order.notesToChef = 'Please put less salt';
+        order.phoneNumber = this.state.phoneNumber;
         console.log(order);
         this.props.navigator.push({
             name: 'PaymentPage', 
