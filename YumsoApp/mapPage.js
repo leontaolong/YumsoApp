@@ -308,7 +308,7 @@ class MapPage extends Component {
                                 } 
                             }
                             if((streetName==='unknown' || streetNumber==='unknown' || city=='unknown' || state=='unknown' || postal=='unknown') && this.isSpecific){
-                                this.setState({selectedAddress:undefined});
+                                this.setState({selectedAddress:undefined,showProgress:false});
                                 Alert.alert( 'Warning', 'Cannot find enough information about this location',[ { text: 'OK' }]); 
                                 return;         
                             }                         
