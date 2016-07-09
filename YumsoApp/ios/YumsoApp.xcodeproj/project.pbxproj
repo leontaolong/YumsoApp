@@ -880,7 +880,7 @@
 					"-ObjC",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = YumsoIOSApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yumso.yumsoeater;
 				PRODUCT_NAME = YumsoApp;
 				PROVISIONING_PROFILE = "";
 			};
@@ -896,10 +896,12 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK",
 				);
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -913,7 +915,7 @@
 					"-ObjC",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = YumsoIOSApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yumso.yumsoeater;
 				PRODUCT_NAME = YumsoApp;
 				PROVISIONING_PROFILE = "";
 			};
