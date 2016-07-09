@@ -373,6 +373,7 @@ class EaterPage extends Component {
                      <View style={styleEaterPage.eaterPageRowView}>
                          <Text style={styleEaterPage.eaterPageClickableText} onPress={this.selectPayment.bind(this) }>Payment Options</Text>
                      </View>
+                     {loadingSpinnerView}
                  </ScrollView>
              </View>);
      }
@@ -423,10 +424,12 @@ class EaterPage extends Component {
             return;            
         }        
         if (!this.state.lastname || this.state.lastname === '' || this.state.lastname.trim().includes(' ')) {
-            Alert.alert('Warning', 'Missing last name or last name is invalid', [{ text: 'OK' }]);                
+            Alert.alert('Warning', 'Missing last name or last name is invalid', [{ text: 'OK' }]);
+            return;                
         }
         if (!this.state.eaterAlias || this.state.eaterAlias === '') {
-            Alert.alert('Warning', 'Missing alias name. This will be displayed publicly to chef and other users', [{ text: 'OK' }]);                
+            Alert.alert('Warning', 'Missing alias name. This will be displayed publicly to chef and other users', [{ text: 'OK' }]);   
+            return;             
         }
         var _this = this;
         let eater = {};
@@ -435,9 +438,9 @@ class EaterPage extends Component {
         eater.lastname = this.state.lastname.trim();
         eater.eaterAlias = this.state.eaterAlias.trim();
         eater.gender = this.state.gender;
-        eater.phoneNumber = this.state.phoneNumber.trim()
-        eater.homeAddress = this.state.homeAddress;
-        eater.workAddress = this.state.workAddress;
+        eater.phoneNumber = this.state.phoneNumber ? this.state.phoneNumber : null;
+        eater.homeAddress = this.state.homeAddress ? this.state.homeAddress : null;
+        eater.workAddress = this.state.workAddress ? this.state.workAddress : null;
         eater.addressList = this.state.addressList;
         for(let prop in eater){
             this.state.eater[prop] = eater[prop];

@@ -125,7 +125,7 @@ class MapPage extends Component {
             }                       
 
             var searchAddressResultViewWrapper=null;
-            if(this.state.searchAddressResultView){
+            if(this.state.searchAddressResultView && this.state.searchAddressResultView.length>0){
                searchAddressResultViewWrapper=(<View key={'searchAddressResultView'} style={{backgroundColor:'#fff', position:'absolute', top: this.state.mapViewYposition,left:0,right:0, height:windowHeight-this.state.mapViewYposition,opacity:0.8}}> 
                                                  {this.state.searchAddressResultView}
                                                </View>);  

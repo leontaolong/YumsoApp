@@ -41,6 +41,13 @@ class SignUpPage extends Component {
             //                                 Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
             //                                </Text>;
             // }
+
+            var loadingSpinnerView = null;
+            if (this.state.showProgress) {
+                loadingSpinnerView =<View style={styles.loaderView}>
+                                        <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
+                                    </View>;  
+            }
             
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
@@ -88,17 +95,14 @@ class SignUpPage extends Component {
                             </View>
                             <View style={styleSignUpPage.legalView}>
                                 <Text style={styleSignUpPage.legalText}>By signing up, I agree with the </Text>
-                                <Text style={styleSignUpPage.legalTextClickable}>Terms & Conditions</Text>
+                                <Text style={styleSignUpPage.legalTextClickable} onPress = {()=>this.navigateToTermsPage()}>Terms & Conditions</Text>
                             </View>
                         </ScrollView>
                     </Image> 
                     <TouchableOpacity activeOpacity={0.7} style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
                          <Text style={styleSignUpPage.signUpButtonText}>Sign up</Text>
                     </TouchableOpacity>
-                    <ActivityIndicatorIOS
-                            animating={this.state.showProgress}
-                            size="large"
-                            style={styles.loader} />           
+                    {loadingSpinnerView}       
                 </View>
             );
     }
@@ -190,7 +194,8 @@ class SignUpPage extends Component {
         this.setState({showProgress:true});
         let result = await AuthService.registerWithEmail(this.state.firstname.trim(), this.state.lastname.trim(),this.state.email.trim(), this.state.password, this.state.password_re);
         if(result==false){
-            return;
+           this.setState({ showProgress: false });
+           return;
         }
         this.setState({ showProgress: false });
         this.props.navigator.push({
@@ -200,6 +205,12 @@ class SignUpPage extends Component {
     
     navigateBack() {
         this.props.navigator.pop();
+    }
+
+    navigateToTermsPage () {
+        this.props.navigator.push({
+            name: 'TermsPage',
+        });
     }
 }
 

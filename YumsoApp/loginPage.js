@@ -165,6 +165,7 @@ class LoginPage extends Component {
         this.setState({showProgress:true});
         let result = await AuthService.forgotPasswordWithEmail(this.state.email.trim());
         if(result==false){
+            this.setState({ showProgress: false });
             return;
         }
         this.setState({ showProgress: false });

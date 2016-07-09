@@ -185,9 +185,9 @@ class resetPasswordPage extends Component {
         this.setState({showProgress:true});
         let result = await AuthService.resetPassword(this.state.email.trim(), this.state.oldPassword, this.state.newPassword) 
         if(result==false){
+            this.setState({ showProgress: false });
             return;
         }
-
         this.setState({ showProgress: false });
         this.routeStack = [];                        
         this.props.navigator.push({

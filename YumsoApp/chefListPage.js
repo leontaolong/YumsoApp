@@ -536,9 +536,6 @@ var Menu = React.createClass({
             <View style={sideMenuStyle.sidemenu}>
                 {profile}
                 <View style={{height:windowHeight*0.07}}></View>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
-                </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
                    <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
                 </TouchableOpacity>
@@ -546,13 +543,16 @@ var Menu = React.createClass({
                    <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
+                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>
+                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
+                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
                    <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
