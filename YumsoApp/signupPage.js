@@ -31,18 +31,17 @@ class SignUpPage extends Component {
         super(props);
         this.state = {
             showProgress: false,
-            showPasswordRequirment:false,
         };
     }
     
     render() {
-            if(this.state.showPasswordRequirment){
-              var passwordRequirmentText = <Text style={styles.passwordRequirementText}>
-                                            Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
-                                           </Text>;
-            }
+            var passwordRequirmentText = null;
+            // if(this.state.showPasswordRequirment){
+            //   var passwordRequirmentText = <Text style={styles.passwordRequirementText}>
+            //                                 Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
+            //                                </Text>;
+            // }
             
-        
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
@@ -109,14 +108,14 @@ class SignUpPage extends Component {
     }
     
     _onFocus() {
-        this.setState({showPasswordRequirment:true});
+        // this.setState({showPasswordRequirment:true});
         let scrollViewLength = this.y;
         let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
         this.refs.scrollView.scrollTo({x:0, y:keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
     }
 
     onKeyBoardDonePressed(){
-        this.setState({showPasswordRequirment:false});
+        // this.setState({showPasswordRequirment:false});
         this.refs.scrollView.scrollTo({x:0, y:0, animated: true})
     }
     
@@ -180,7 +179,7 @@ class SignUpPage extends Component {
         }
         
         if(!this.isPasswordStrong()){
-            Alert.alert( 'Warning', 'Your password does not meet the complexity requirment' ,[ { text: 'OK' }]);
+            Alert.alert( 'Warning', 'Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter' ,[ { text: 'OK' }]);
             return;  
         }
         

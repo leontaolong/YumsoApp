@@ -35,7 +35,6 @@ class resetPasswordPage extends Component {
         this.state = {
             showProgress: false,
             email:this.userEmail,
-            showPasswordRequirment:false,
         };
     }
     
@@ -47,11 +46,12 @@ class resetPasswordPage extends Component {
                                     </View>;  
             }
             
-            if(this.state.showPasswordRequirment){
-              var passwordRequirmentText = <Text style={styles.passwordRequirementText}>
-                                            Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
-                                           </Text>;
-            }
+            var passwordRequirmentText = null;
+            // if(this.state.showPasswordRequirment){
+            //   passwordRequirmentText = <Text style={styles.passwordRequirementText}>
+            //                                 Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
+            //                                </Text>;
+            // }
             
             
             return (//TODO: i agree terms and conditions.
@@ -107,14 +107,14 @@ class resetPasswordPage extends Component {
     }
     
     _onFocus() {
-        this.setState({showPasswordRequirment:true});
+        // this.setState({showPasswordRequirment:true});
         let scrollViewLength = this.y;
         let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
         this.refs.scrollView.scrollTo({x:0, y:keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
     }
 
     onKeyBoardDonePressed(){
-        this.setState({showPasswordRequirment:false});
+        // this.setState({showPasswordRequirment:true});
         this.refs.scrollView.scrollTo({x:0, y:0, animated: true})
     }
     
@@ -178,7 +178,7 @@ class resetPasswordPage extends Component {
         }   
         
         if(!this.isPasswordStrong()){
-            Alert.alert( 'Warning', 'Your new password does not meet the complexity requirment' ,[ { text: 'OK' }]);
+            Alert.alert( 'Warning', 'Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter.' ,[ { text: 'OK' }]);
             return;
         }
            

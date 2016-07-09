@@ -240,7 +240,7 @@ var styleLoginPage = StyleSheet.create({
     forgotPasswordView:{
       height:windowHeight/25,
       flexDirection:'row',
-      width:windowWidth*0.634,
+      width:windowWidth*0.8,
       marginBottom:windowWidth/49.2,
       justifyContent:'flex-end',
       marginTop:6,
