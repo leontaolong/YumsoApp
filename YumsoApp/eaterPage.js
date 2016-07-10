@@ -380,8 +380,8 @@ class EaterPage extends Component {
 
 
     uploadPic(){
-           this.setState({showProgress:true});
            ImageCamera.PickImage((source)=>{
+                this.setState({showProgress:true});
                 this.state.eater.eaterProfilePic = source.uri;
                 this.setState({eater:this.state.eater});
                 var photo = {
