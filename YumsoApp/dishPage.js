@@ -91,7 +91,7 @@ class DishPage extends Component {
                     <View style={styleDishPage.priceTextView}>
                         <Text style={styleDishPage.priceText}>${this.state.dish.price}</Text>
                         <Text style={styleDishPage.orderStatusText}>
-                        {this.state.selectedTime === 'All Schedules' ? '' : (this.state.scheduleMapping[this.state.selectedTime][this.state.dish.dishId].leftQuantity)+' orders left'} 
+                        {this.state.selectedTime === 'All Dishes' ? '' : (this.state.scheduleMapping[this.state.selectedTime][this.state.dish.dishId].leftQuantity)+' orders left'} 
                         </Text>
                         <Text style={styleDishPage.orderStatusText}>
                         {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity + ' ordered ' : ''} 
@@ -131,7 +131,7 @@ class DishPage extends Component {
     }  
     
    addToShoppingCart(dish){
-        if(this.state.selectedTime==='All Schedules'){
+        if(this.state.selectedTime==='All Dishes'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;  
         }
@@ -152,7 +152,7 @@ class DishPage extends Component {
     }
     
     removeFromShoppingCart(dish){
-        if(this.state.selectedTime==='All Schedules'){
+        if(this.state.selectedTime==='All Dishes'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;  
         }

@@ -355,7 +355,7 @@ class ShoppingCartPage extends Component {
     }
     
     addToShoppingCart(dish){
-        if(this.state.selectedTime==='All Schedules'){
+        if(this.state.selectedTime==='All Dishes'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;  
         }
@@ -376,7 +376,7 @@ class ShoppingCartPage extends Component {
     }
     
     removeFromShoppingCart(dish){
-        if(this.state.selectedTime==='All Schedules'){
+        if(this.state.selectedTime==='All Dishes'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;  
         }
