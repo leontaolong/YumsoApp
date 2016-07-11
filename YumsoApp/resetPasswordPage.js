@@ -73,7 +73,7 @@ class resetPasswordPage extends Component {
                         <View style={styleSignUpPage.logoView}>
                         </View>                        
                         <View style={styles.loginInputView}>                      
-                            <TextInput value={this.userEmail} placeholder="email" style={styles.loginInput} autoCapitalize={'none'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
+                            <TextInput defaultValue={this.userEmail} style={styles.loginInput} autoCapitalize={'none'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onFocus={(()=>this._onFocus()).bind(this)} 
                             maxLength={40} placeholderTextColor='#fff' clearButtonMode={'while-editing'} autoCorrect={false} onChangeText = {(text)=>this.setState({email: text})}/>
                         </View>
                         <View style={styles.loginInputView}>
@@ -229,7 +229,7 @@ var styleSignUpPage = StyleSheet.create({
     signUpButtonText:{
       color:'#fff',
       fontSize:windowHeight/30.6,
-      fontWeight:'300',
+      fontWeight:'400',
       alignSelf:'center',
     },
 });
