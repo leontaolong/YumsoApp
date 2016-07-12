@@ -21,6 +21,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		20F5CAF81D30E07A00D33A51 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F5CAF71D30E07A00D33A51 /* Default-568h@2x.png */; };
 		5821B6D11CD1F5F00073AD2C /* RNBraintree.m in Sources */ = {isa = PBXBuildFile; fileRef = 5821B6D01CD1F5F00073AD2C /* RNBraintree.m */; };
 		586A2A471CF1B9A5004B0E07 /* libActivityView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 586A2A461CF1B99E004B0E07 /* libActivityView.a */; };
 		586A2A501CF265C6004B0E07 /* signInBackground.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 586A2A4F1CF265C5004B0E07 /* signInBackground.jpg */; };
@@ -169,6 +170,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = YumsoApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = YumsoApp/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		20F5CAF71D30E07A00D33A51 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		5821B6CF1CD1F5F00073AD2C /* RNBraintree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNBraintree.h; path = YumsoApp/RNBraintree.h; sourceTree = "<group>"; };
 		5821B6D01CD1F5F00073AD2C /* RNBraintree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNBraintree.m; path = YumsoApp/RNBraintree.m; sourceTree = "<group>"; };
 		586A2A411CF1B99D004B0E07 /* ActivityView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ActivityView.xcodeproj; path = "../node_modules/react-native-activity-view/ActivityView.xcodeproj"; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				20F5CAF71D30E07A00D33A51 /* Default-568h@2x.png */,
 				13B07FAE1A68108700A75B9A /* YumsoApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* YumsoAppTests */,
@@ -498,7 +501,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = UJTY38LWA5;
+						DevelopmentTeam = 294EH8XH6D;
 					};
 				};
 			};
@@ -704,6 +707,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				20F5CAF81D30E07A00D33A51 /* Default-568h@2x.png in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				586A2A501CF265C6004B0E07 /* signInBackground.jpg in Resources */,
 			);
@@ -876,7 +880,7 @@
 					"-ObjC",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = YumsoIOSApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yumso.yumsoeater;
 				PRODUCT_NAME = YumsoApp;
 				PROVISIONING_PROFILE = "";
 			};
@@ -892,10 +896,12 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK",
 				);
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(SRCROOT)/../node_modules/react-native-facebook-login/FacebookSDK",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -909,7 +915,7 @@
 					"-ObjC",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = YumsoIOSApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yumso.yumsoeater;
 				PRODUCT_NAME = YumsoApp;
 				PROVISIONING_PROFILE = "";
 			};

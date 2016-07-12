@@ -64,7 +64,7 @@ class ShopPage extends Component {
             chef:chef,
             timeData:[],
             shoppingCart:{},  
-            selectedTime:'All Schedules',
+            selectedTime:'All Dishes',
             totalPrice:0,
             eater:eater
         };            
@@ -97,8 +97,8 @@ class ShopPage extends Component {
             for(var dish of dishes){
                 allDishSet[dish.dishId] = -1;
             }
-            scheduleMapping['All Schedules']= allDishSet;
-            timeData.push({ key: index++, label: 'All Schedules' })
+            scheduleMapping['All Dishes']= allDishSet;
+            timeData.push({ key: index++, label: 'All Dishes' })
         }   
         for(var schedule of schedules){
             var time = new Date(schedule.deliverTimestamp).toString();   
@@ -131,8 +131,8 @@ class ShopPage extends Component {
                if(this.state.timeData.length > 0){
                  let deliveryTimeRendered = [];
                  for(var oneTimeString of this.state.timeData){
-                   if(oneTimeString.label=='All Schedules'){
-                     deliveryTimeRendered.push({key:oneTimeString.label, label: 'All Schedules'});
+                   if(oneTimeString.label=='All Dishes'){
+                     deliveryTimeRendered.push({key:oneTimeString.label, label: 'All Dishes'});
                    }else{
                      deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
                    }
@@ -250,7 +250,7 @@ class ShopPage extends Component {
                <View style={styleShopPage.priceView}>
                     <View style={styleShopPage.priceTextView}>
                         <Text style={styleShopPage.priceText}>${dish.price}</Text>
-                        <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Schedules' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' orders left'} 
+                        <Text style={styleShopPage.orderStatusText}>{this.state.selectedTime === 'All Dishes' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' orders left'} 
                         </Text>
                         <Text style={styleShopPage.orderStatusText}>
                         {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity + ' ordered ' : ''} 
@@ -282,7 +282,7 @@ class ShopPage extends Component {
                                 </View>;  
         }
 
-        if(this.state.selectedTime!='All Schedules'){
+        if(this.state.selectedTime!='All Dishes'){
            var selectedDeliverTimeView = <View style={styleShopPage.selectedDeliverTimeView}>
                                                <Text style={styleShopPage.selectedDeliverTimeText}>{dateRender.renderDate2(this.state.selectedTime)}</Text>
                                          </View>;
@@ -316,7 +316,7 @@ class ShopPage extends Component {
                         {loadingSpinnerView}
                         <View style={styleShopPage.footerView}>          
                           <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Schedules'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Dishes'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
                           </View>
                           <TouchableOpacity style={styleShopPage.checkoutButtonView} activeOpacity={0.7} onPress={() => this.navigateToShoppingCart()}> 
                              <View style={styleShopPage.checkoutButtonWrapper}>
@@ -338,7 +338,7 @@ class ShopPage extends Component {
     }  
     
     displayDish(selectedTime){
-        if(selectedTime==='All Schedules'){
+        if(selectedTime==='All Dishes'){
             this.setState({dataSource:this.state.dataSource.cloneWithRows(this.state.dishes), showProgress:false, selectedTime:selectedTime});
             return;       
         }
@@ -356,7 +356,7 @@ class ShopPage extends Component {
     }
    
     addToShoppingCart(dish){
-        if(this.state.selectedTime==='All Schedules'){
+        if(this.state.selectedTime==='All Dishes'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;  
         }
@@ -377,7 +377,7 @@ class ShopPage extends Component {
     }
     
     removeFromShoppingCart(dish){
-        if(this.state.selectedTime==='All Schedules'){
+        if(this.state.selectedTime==='All Dishes'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;  
         }
@@ -457,7 +457,7 @@ class ShopPage extends Component {
     }
     
     navigateToShoppingCart(){
-        if(this.state.selectedTime =='All Schedules'){
+        if(this.state.selectedTime =='All Dishes'){
             Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
             return;
         }     

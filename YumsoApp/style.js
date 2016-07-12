@@ -150,7 +150,7 @@ module.exports = StyleSheet.create({
       opacity:0.8,
     },
     loginInputView:{
-      width:windowWidth*0.634,
+      width:windowWidth*0.8,
       flexDirection:'row',
       justifyContent:'center',
       borderBottomWidth:2,
@@ -158,7 +158,7 @@ module.exports = StyleSheet.create({
       alignSelf:'center'
     },
     loginInput:{
-      width:windowWidth*0.634,
+      width:windowWidth*0.8,
       height:windowHeight*0.08,
       fontSize:20,
       fontWeight:'bold',

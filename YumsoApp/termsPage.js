@@ -20,20 +20,20 @@ import React, {
 } from 'react-native';
 
 
-class AboutPage extends Component {
+class TermsPage extends Component {
       
     render() {
-        var aboutUsPageUrl = config.baseUrl+"/aboutus";         
+        var aboutUsPageUrl = config.baseUrl+"/terms";         
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefListPage()}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToSignUpPage()}>
                        <View style={styles.backButtonView}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
                        </View>
                     </TouchableHighlight>    
                     <View style={styles.titleView}>
-                       <Text style={styles.titleText}>About</Text>
+                       <Text style={styles.titleText}>Terms and Privacy</Text>
                     </View>
                     <View style={styles.headerRightView}>            
                     </View>
@@ -49,14 +49,14 @@ class AboutPage extends Component {
         );
     }
     
-    navigateBackToChefListPage(){
+    navigateBackToSignUpPage(){
         this.props.navigator.pop();
     }
 }
 
-var styleAboutPage = StyleSheet.create({
+var stylTermsPage = StyleSheet.create({
     
 });
 
-module.exports = AboutPage;
+module.exports = TermsPage;
 

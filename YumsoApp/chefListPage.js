@@ -536,23 +536,23 @@ var Menu = React.createClass({
             <View style={sideMenuStyle.sidemenu}>
                 {profile}
                 <View style={{height:windowHeight*0.07}}></View>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Notification</Text>
-                </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
                    <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={()=>{if(isAuthenticated){this.goToEaterPage();}}} >
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
                    <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
+                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Promotion</Text>
+                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
+                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
                    <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
@@ -585,6 +585,37 @@ var Menu = React.createClass({
         });
     },
 
+    goToEaterPage: function() {
+        this.props.caller.setState({ isMenuOpen: false });
+        if(!this.props.eater){
+            this.props.navigator.push({
+                name: 'LoginPage',
+                passProps:{
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
+                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
+                }
+            });  
+            return;
+        }
+        this.props.navigator.push({
+            name: 'EaterPage',
+            passProps:{
+                eater:this.props.eater,
+                principal:this.props.principal,
+                callback: function(eater){
+                    this.props.caller.setState({eater:eater});
+                }.bind(this)
+            }
+        });
+    },
+   
+    navigateToAboutPage: function () {
+        this.props.caller.setState({ isMenuOpen: false });
+        this.props.navigator.push({
+            name: 'AboutPage',
+        });
+    },
+
     logOut: function(){
         return AuthService.logOut()
         .then(()=>{
@@ -610,27 +641,6 @@ var Menu = React.createClass({
             }            
         }); 
     },
-    
-    goToEaterPage: function() {
-        this.props.caller.setState({ isMenuOpen: false });
-        this.props.navigator.push({
-            name: 'EaterPage',
-            passProps:{
-                eater:this.props.eater,
-                principal:this.props.principal,
-                callback: function(eater){
-                    this.props.caller.setState({eater:eater});
-                }.bind(this)
-            }
-        });
-    },
-   
-    navigateToAboutPage: function () {
-        this.props.caller.setState({ isMenuOpen: false });
-        this.props.navigator.push({
-            name: 'AboutPage',
-        });
-    }
 });
 
 var sideMenuStyle = StyleSheet.create({

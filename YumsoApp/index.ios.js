@@ -15,6 +15,7 @@ var LoginPage = require('./loginPage');
 var SignUpPage = require('./signupPage');
 var OrderDetailPage = require('./orderDetailPage');
 var AboutPage = require('./aboutPage');
+var TermsPage = require('./termsPage');
 var styles = require('./style');
 var AuthService = require('./authService');
 
@@ -75,6 +76,8 @@ class YumsoApp extends Component {
             return <ChefPage navigator={navigator}/>
         }else if (route.name==='AboutPage'){
             return <AboutPage navigator={navigator}/>
+        }else if (route.name==='TermsPage'){
+            return <TermsPage navigator={navigator}/>
         }
     } 
 }
