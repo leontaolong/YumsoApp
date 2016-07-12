@@ -1,6 +1,10 @@
 package com.yumsoapp;
 
 import com.facebook.react.ReactActivity;
+import com.theweflex.react.WeChatPackage;
+import com.AirMaps.AirPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.magus.fblogin.FacebookLoginPackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
@@ -34,7 +38,11 @@ public class MainActivity extends ReactActivity {
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new MainReactPackage()
+            new MainReactPackage(),
+            new WeChatPackage(),
+            new AirPackage(),
+            new ImagePickerPackage(),
+            new FacebookLoginPackage()
         );
     }
 }

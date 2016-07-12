@@ -4,7 +4,6 @@ var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var Swiper = require('react-native-swiper');
-var shareIcon = require('./icons/icon-share.png');
 var backIcon = require('./icons/icon-back.png');
 var notlikedIcon = require('./icons/icon-unliked-onheader.png')
 var likedIcon = require('./icons/icon-liked-onheader.png');
