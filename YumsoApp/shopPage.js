@@ -573,7 +573,7 @@ var styleShopPage = StyleSheet.create({
     }, 
     oneShopNameText:{
        fontSize:windowHeight/37.06,
-       fontWeight:'bold',
+       fontWeight:'500',
        color:'#4A4A4A',
     },
     likeIconView:{
