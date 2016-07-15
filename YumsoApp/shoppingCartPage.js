@@ -212,10 +212,10 @@ class ShoppingCartPage extends Component {
                     promotionDeductionView,
                     (<View key={'deliveryFeeView'} style={styleShoppingCartPage.deliveryFeeView}>
                         <View style={styleShoppingCartPage.priceTitleView}>
-                            <Text style={styleShoppingCartPage.priceTitleText}>Surcharge</Text>
+                            <Text style={styleShoppingCartPage.priceTitleText}>Delivery Fee</Text>
                         </View>
                         <View style={styleShoppingCartPage.priceNumberView}>
-                            <Text style={styleShoppingCartPage.priceNumberText}>${(parseFloat(this.state.quotedOrder.price.deliveryFee) + parseFloat(this.state.quotedOrder.price.serviceFee)).toFixed(2)}</Text>
+                            <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.deliveryFee}</Text>
                         </View>
                     </View>),
                     (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
