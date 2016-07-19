@@ -196,6 +196,23 @@ module.exports = StyleSheet.create({
       marginTop:windowHeight*0.28,
       marginHorizontal:15,
     },
+    networkUnavailableView:{
+      flex:1,
+      flexDirection:'column',
+      justifyContent:'center',
+    },
+    networkUnavailableText:{
+      fontSize:16,
+      color:'#9B9B9B',
+      justifyContent:'center',
+      textAlign:'center',
+    },
+    clickToReloadClickable:{
+      fontSize:16,
+      color:'#FFCC33',
+      justifyContent:'center',
+      textAlign:'center',
+    },
     passwordRequirementView:{
       height:windowHeight*0.08,
       width:windowWidth*0.88,

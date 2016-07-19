@@ -63,6 +63,7 @@ class ChefListPage extends Component {
             dataSource: ds.cloneWithRows([]),
             showProgress: false,
             showChefSearch:false,
+            showNetworkUnavailableScreen:false,
             showLocSearch:false,
             showFavoriteChefsOnly:false,
             chefView: {},
@@ -93,14 +94,14 @@ class ChefListPage extends Component {
                         });                     
                     });
             } else {
-                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
             }
         };
     }
 
     async componentDidMount() {
         if(!this.state.pickedAddress){
-           await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
+           await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined; alert("Location services not accessible")});//todo: really wait??
         }
         let eater = this.state.eater;
         if(!eater){
@@ -133,15 +134,22 @@ class ChefListPage extends Component {
         if(this.state.pickedAddress){
             query = '?lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng; 
         }
-        let response = await this.client.getWithoutAuth(config.chefListEndpoint+query);
-        var chefs = response.data.chefs;
-        var chefView = {};
-        var chefsDictionary = {};
-        for (var chef of chefs) {
-            chefView[chef.chefId] = chef.starDishPictures;
-            chefsDictionary[chef.chefId] = chef;
+        try{
+            let response = await this.client.getWithoutAuth(config.chefListEndpoint+query);
+            var chefs = response.data.chefs;
+            var chefView = {};
+            var chefsDictionary = {};
+            for (var chef of chefs) {
+                chefView[chef.chefId] = chef.starDishPictures;
+                chefsDictionary[chef.chefId] = chef;
+            }
+            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
+        }catch(err){
+            this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+            alert('Network connection is not available');
+            return;
         }
-        this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, chefView: chefView, chefsDictionary: chefsDictionary });
+        
     }
     
     getLocation(){
@@ -170,7 +178,7 @@ class ChefListPage extends Component {
                                 self.setState({ GPSproxAddress: { formatted_address: address, lat: position.coords.latitude, lng: position.coords.longitude, state: state, city: city }, city: city, state: state });
                             }
                             resolve();
-                        });
+                        })/*.catch(err)( reject(err))*/;
                 },
                 (err) => reject(err),
                 { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
@@ -200,7 +208,7 @@ class ChefListPage extends Component {
                                         onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}/>
                                 </TouchableHighlight>
                             );
-                        }) }
+                        })}
                     </Swiper>
                 </View>
                 <View style={styleChefListPage.shopInfoView}>
@@ -252,6 +260,20 @@ class ChefListPage extends Component {
                                 </View>;  
         }
         
+        var cheflistView = <RefreshableListView ref="listView"
+                            dataSource = {this.state.dataSource}
+                            renderRow={this.renderRow.bind(this)}
+                            loadData={this.searchChef.bind(this)}
+                            refreshDescription = "Loading..."/>
+        var networkUnavailableView = null;
+        if(this.state.showNetworkUnavailableScreen){
+           networkUnavailableView = <View style={styles.networkUnavailableView}>
+                                       <Text style={styles.networkUnavailableText}>Network connection is not available</Text>
+                                       <Text style={styles.clickToReloadClickable} onPress={()=>this.fetchChefDishes()}>tap to reload</Text>
+                                    </View>
+           cheflistView = null;
+        }
+
         if(this.state.showLocSearch){
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} showHouseIcon={true}/>);   
         }else if(this.state.showChefSearch){
@@ -339,12 +361,8 @@ class ChefListPage extends Component {
                            </TouchableHighlight>
                         </View>
                     </View> 
-
-                    <RefreshableListView ref="listView"
-                        dataSource = {this.state.dataSource}
-                        renderRow={this.renderRow.bind(this) }
-                        loadData={this.searchChef.bind(this)}
-                        refreshDescription = "Loading..."/>
+                    {networkUnavailableView}
+                    {cheflistView}
                     {loadingSpinnerView}
                 </View>
             </SideMenu>
@@ -463,8 +481,11 @@ class ChefListPage extends Component {
                         } else {
                             // this.onRefreshDone();
                             //todo: handle failure.
+                            return self.responseHandler(res);
                         }
                         this.setState({ showChefSearch: false, showProgress: false, isMenuOpen: false });
+                    }).catch((err)=>{
+                        alert('Network connection is not available');
                     });
             });
     }
