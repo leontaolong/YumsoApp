@@ -225,13 +225,12 @@ class PaymentOptionPage extends Component {
         this.setState({chosenCard:card});
         var _paymentList = JSON.parse(JSON.stringify(this.state.paymentList));
         this.setState({dataSource:this.state.dataSource.cloneWithRows(_paymentList)});
-        
-        if(this.onPaymentSelected){
-           this.onPaymentSelected(card);
-        }
     }
     
     confirmSelection(){
+        if(this.onPaymentSelected){
+           this.onPaymentSelected(this.state.chosenCard);
+        }
         this.props.navigator.pop();
     }
     
