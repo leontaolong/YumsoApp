@@ -101,7 +101,12 @@ class ChefListPage extends Component {
 
     async componentDidMount() {
         if(!this.state.pickedAddress){
-           await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined; alert("Location services not accessible")});//todo: really wait??
+           this.setState({showProgress:true});
+           await this.getLocation().catch((err)=>{
+                 this.setState({GPSproxAddress:undefined,showProgress:false}); 
+                 Alert.alert( 'Cannot get your location', 'Please enable network connection and location service',[ { text: 'OK' }]);
+           });//todo: really wait??
+           this.setState({showProgress:false})
         }
         let eater = this.state.eater;
         if(!eater){
@@ -125,29 +130,32 @@ class ChefListPage extends Component {
 
     async fetchChefDishes() {
         if(Object.values(this.state.chefsDictionary).length==0){
-          this.setState({showProgress:true});
+           this.setState({showProgress:true});
         }
         var query=''; //todo: should include seattle if no lat lng provided
         if(this.state.GPSproxAddress){
-            query = '?lat='+this.state.GPSproxAddress.lat+'&lng='+this.state.GPSproxAddress.lng;
+            query = '?lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
         }
         if(this.state.pickedAddress){
             query = '?lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng; 
         }
         try{
-            let response = await this.client.getWithoutAuth(config.chefListEndpoint+query);
-            var chefs = response.data.chefs;
-            var chefView = {};
-            var chefsDictionary = {};
-            for (var chef of chefs) {
+            var response = await this.client.getWithoutAuth(config.chefListEndpoint + query);
+        }catch(err){
+            this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+            Alert.alert( 'Network request failed', '',[ { text: 'OK' }]);
+            return;
+        }
+
+        if(response && response.data){
+           var chefs = response.data.chefs;
+           var chefView = {};
+           var chefsDictionary = {};
+           for (var chef of chefs) {
                 chefView[chef.chefId] = chef.starDishPictures;
                 chefsDictionary[chef.chefId] = chef;
             }
             this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
-        }catch(err){
-            this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-            alert('Network connection is not available');
-            return;
         }
         
     }
@@ -178,9 +186,13 @@ class ChefListPage extends Component {
                                 self.setState({ GPSproxAddress: { formatted_address: address, lat: position.coords.latitude, lng: position.coords.longitude, state: state, city: city }, city: city, state: state });
                             }
                             resolve();
-                        })/*.catch(err)( reject(err))*/;
+                        }).catch((err)=>{      
+                            reject(err)
+                        });
                 },
-                (err) => reject(err),
+                (err) => {
+                    reject(err);
+                },
                 { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
             );
         });
@@ -269,7 +281,7 @@ class ChefListPage extends Component {
         if(this.state.showNetworkUnavailableScreen){
            networkUnavailableView = <View style={styles.networkUnavailableView}>
                                        <Text style={styles.networkUnavailableText}>Network connection is not available</Text>
-                                       <Text style={styles.clickToReloadClickable} onPress={()=>this.fetchChefDishes()}>tap to reload</Text>
+                                       <Text style={styles.clickToReloadClickable} onPress={()=>this.componentDidMount()}>tap to reload</Text>
                                     </View>
            cheflistView = null;
         }

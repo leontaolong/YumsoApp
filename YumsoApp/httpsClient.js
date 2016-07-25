@@ -117,12 +117,9 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                     statusCode:status,
                     data:result
                 };
-            }).catch((err)=>{
-                //throw err;
-                return {
-                    statusCode:status,
-                    err:err
-                };
+            })
+            .catch((err)=>{
+                throw err;
             });
     };
 };
