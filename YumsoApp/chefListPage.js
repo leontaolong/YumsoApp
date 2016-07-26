@@ -31,6 +31,8 @@ import Dimensions from 'Dimensions';
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 console.log(windowHeight+" "+windowWidth);
+var NetworkErrTitle = 'Network Error';
+var NetworkErrText = 'Please check your network connection';
 
 import React, {
     Component,
@@ -104,7 +106,7 @@ class ChefListPage extends Component {
            this.setState({showProgress:true});
            await this.getLocation().catch((err)=>{
                  this.setState({GPSproxAddress:undefined,showProgress:false}); 
-                 Alert.alert( 'Cannot get your location', 'Please enable network connection and location service',[ { text: 'OK' }]);
+                 Alert.alert( 'Location Unavailable', err,[ { text: 'OK' }]);
            });//todo: really wait??
            this.setState({showProgress:false})
         }
@@ -143,7 +145,7 @@ class ChefListPage extends Component {
             var response = await this.client.getWithoutAuth(config.chefListEndpoint + query);
         }catch(err){
             this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-            Alert.alert( 'Network request failed', '',[ { text: 'OK' }]);
+            Alert.alert( NetworkErrTitle, NetworkErrText,[ { text: 'OK' }]);
             return;
         }
 
@@ -187,11 +189,11 @@ class ChefListPage extends Component {
                             }
                             resolve();
                         }).catch((err)=>{      
-                            reject(err)
+                            reject('GoogleMapApi call failed')
                         });
                 },
                 (err) => {
-                    reject(err);
+                    reject('Location can not be retrieved. Please enable network connection and location service');
                 },
                 { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
             );
@@ -276,7 +278,7 @@ class ChefListPage extends Component {
                             dataSource = {this.state.dataSource}
                             renderRow={this.renderRow.bind(this)}
                             loadData={this.searchChef.bind(this)}
-                            refreshDescription = "Loading..."/>
+                            refreshDescription = " "/>
         var networkUnavailableView = null;
         if(this.state.showNetworkUnavailableScreen){
            networkUnavailableView = <View style={styles.networkUnavailableView}>
@@ -497,7 +499,7 @@ class ChefListPage extends Component {
                         }
                         this.setState({ showChefSearch: false, showProgress: false, isMenuOpen: false });
                     }).catch((err)=>{
-                        alert('Network connection is not available');
+                        Alert.alert( NetworkErrTitle, NetworkErrText,[ { text: 'OK' }]);
                     });
             });
     }
