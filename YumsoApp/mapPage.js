@@ -330,7 +330,7 @@ class MapPage extends Component {
                         self.setState({ city: city, state: state });
                     });       
             },
-            (error) => Alert.alert( 'Warning', error.message,[ { text: 'OK' }]),
+            (error) => {this.setState({selectedAddress:undefined,showProgress:false}); Alert.alert( 'Warning', error.message,[ { text: 'OK' }])},
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
         );   
     }

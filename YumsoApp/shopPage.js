@@ -59,7 +59,7 @@ class ShopPage extends Component {
         let eater = routeStack[routeStack.length-1].passProps.eater;      
         this.state = {
             dataSource: ds.cloneWithRows([]),
-            showProgress:true,
+            showProgress:false,
             chefId: chef.chefId,
             chef:chef,
             timeData:[],
@@ -72,6 +72,7 @@ class ShopPage extends Component {
     
      async componentDidMount() {
          this.client = new HttpsClient(config.baseUrl, true);
+         this.setState({ showProgress: true });
          await this.fetchDishesAndSchedules();
          if (this.state.eater) {
              this.setState({ like: this.state.eater.favoriteChefs.indexOf(this.state.chefId) !== -1 });
@@ -161,7 +162,7 @@ class ShopPage extends Component {
                             <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={false}
                                 dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
                                 {this.state.chef.shopPictures.map((shopPicture) => {
-                                    return <Image key={shopPicture} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
+                                    return <Image key={'shopPicture'} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
                                 }) }
                             </Swiper>
                         </View>),                        

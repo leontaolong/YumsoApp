@@ -31,6 +31,8 @@ import Dimensions from 'Dimensions';
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 console.log(windowHeight+" "+windowWidth);
+var NetworkErrTitle = 'Network Error';
+var NetworkErrText = 'Please check your network connection';
 
 import React, {
     Component,
@@ -63,6 +65,7 @@ class ChefListPage extends Component {
             dataSource: ds.cloneWithRows([]),
             showProgress: false,
             showChefSearch:false,
+            showNetworkUnavailableScreen:false,
             showLocSearch:false,
             showFavoriteChefsOnly:false,
             chefView: {},
@@ -93,14 +96,19 @@ class ChefListPage extends Component {
                         });                     
                     });
             } else {
-                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
             }
         };
     }
 
     async componentDidMount() {
         if(!this.state.pickedAddress){
-           await this.getLocation().catch((err)=>{this.state.GPSproxAddress=undefined});//todo: really wait??
+           this.setState({showProgress:true});
+           await this.getLocation().catch((err)=>{
+                 this.setState({GPSproxAddress:undefined,showProgress:false}); 
+                 Alert.alert( 'Location Unavailable', err,[ { text: 'OK' }]);
+           });//todo: really wait??
+           this.setState({showProgress:false})
         }
         let eater = this.state.eater;
         if(!eater){
@@ -124,24 +132,34 @@ class ChefListPage extends Component {
 
     async fetchChefDishes() {
         if(Object.values(this.state.chefsDictionary).length==0){
-          this.setState({showProgress:true});
+           this.setState({showProgress:true});
         }
         var query=''; //todo: should include seattle if no lat lng provided
         if(this.state.GPSproxAddress){
-            query = '?lat='+this.state.GPSproxAddress.lat+'&lng='+this.state.GPSproxAddress.lng;
+            query = '?lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
         }
         if(this.state.pickedAddress){
             query = '?lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng; 
         }
-        let response = await this.client.getWithoutAuth(config.chefListEndpoint+query);
-        var chefs = response.data.chefs;
-        var chefView = {};
-        var chefsDictionary = {};
-        for (var chef of chefs) {
-            chefView[chef.chefId] = chef.starDishPictures;
-            chefsDictionary[chef.chefId] = chef;
+        try{
+            var response = await this.client.getWithoutAuth(config.chefListEndpoint + query);
+        }catch(err){
+            this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+            Alert.alert( NetworkErrTitle, NetworkErrText,[ { text: 'OK' }]);
+            return;
         }
-        this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, chefView: chefView, chefsDictionary: chefsDictionary });
+
+        if(response && response.data){
+           var chefs = response.data.chefs;
+           var chefView = {};
+           var chefsDictionary = {};
+           for (var chef of chefs) {
+                chefView[chef.chefId] = chef.starDishPictures;
+                chefsDictionary[chef.chefId] = chef;
+            }
+            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
+        }
+        
     }
     
     getLocation(){
@@ -170,9 +188,13 @@ class ChefListPage extends Component {
                                 self.setState({ GPSproxAddress: { formatted_address: address, lat: position.coords.latitude, lng: position.coords.longitude, state: state, city: city }, city: city, state: state });
                             }
                             resolve();
+                        }).catch((err)=>{      
+                            reject('GoogleMapApi call failed')
                         });
                 },
-                (err) => reject(err),
+                (err) => {
+                    reject('Location can not be retrieved. Please enable network connection and location service');
+                },
                 { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
             );
         });
@@ -200,7 +222,7 @@ class ChefListPage extends Component {
                                         onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}/>
                                 </TouchableHighlight>
                             );
-                        }) }
+                        })}
                     </Swiper>
                 </View>
                 <View style={styleChefListPage.shopInfoView}>
@@ -252,6 +274,20 @@ class ChefListPage extends Component {
                                 </View>;  
         }
         
+        var cheflistView = <RefreshableListView ref="listView"
+                            dataSource = {this.state.dataSource}
+                            renderRow={this.renderRow.bind(this)}
+                            loadData={this.searchChef.bind(this)}
+                            refreshDescription = " "/>
+        var networkUnavailableView = null;
+        if(this.state.showNetworkUnavailableScreen){
+           networkUnavailableView = <View style={styles.networkUnavailableView}>
+                                       <Text style={styles.networkUnavailableText}>Network connection is not available</Text>
+                                       <Text style={styles.clickToReloadClickable} onPress={()=>this.componentDidMount()}>tap to reload</Text>
+                                    </View>
+           cheflistView = null;
+        }
+
         if(this.state.showLocSearch){
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} showHouseIcon={true}/>);   
         }else if(this.state.showChefSearch){
@@ -339,12 +375,8 @@ class ChefListPage extends Component {
                            </TouchableHighlight>
                         </View>
                     </View> 
-
-                    <RefreshableListView ref="listView"
-                        dataSource = {this.state.dataSource}
-                        renderRow={this.renderRow.bind(this) }
-                        loadData={this.searchChef.bind(this)}
-                        refreshDescription = "Loading..."/>
+                    {networkUnavailableView}
+                    {cheflistView}
                     {loadingSpinnerView}
                 </View>
             </SideMenu>
@@ -463,8 +495,11 @@ class ChefListPage extends Component {
                         } else {
                             // this.onRefreshDone();
                             //todo: handle failure.
+                            return self.responseHandler(res);
                         }
                         this.setState({ showChefSearch: false, showProgress: false, isMenuOpen: false });
+                    }).catch((err)=>{
+                        Alert.alert( NetworkErrTitle, NetworkErrText,[ { text: 'OK' }]);
                     });
             });
     }
