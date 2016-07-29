@@ -52,8 +52,8 @@ class ChefCommentsPage extends Component {
     
     fetchComments() {
         this.setState({showProgress:true});
-        const start = 'start=' + new Date().setDate(new Date().getDate() - 100);
-        const end = 'end=9999999999999999';
+        const start = 'start=0';
+        const end = 'end='+ new Date().getTime();
         return this.client.getWithoutAuth(config.chefCommentsEndpoint + this.state.chefId + '?' + start + '&' + end)
             .then((res) => {
                 if (res.statusCode != 200) {

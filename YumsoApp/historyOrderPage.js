@@ -74,7 +74,7 @@ class HistoryOrderPage extends Component {
     
     async fetchOrderAndComments() {
         this.setState({showProgress: true});
-        const start = 'start='+new Date().setDate(new Date().getDate()-30);
+        const start = 'start=0';
         const end = 'end='+ new Date().getTime();
         let eater = await AuthService.getPrincipalInfo();
         try{

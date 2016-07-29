@@ -189,7 +189,7 @@ class ChefListPage extends Component {
                             }
                             resolve();
                         }).catch((err)=>{      
-                            reject('Cannot get your city name')
+                            reject('Cannot get city name')
                         });
                 },
                 (err) => {

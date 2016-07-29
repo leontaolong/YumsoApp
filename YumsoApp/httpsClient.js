@@ -108,18 +108,17 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
             .then((response)=>{
                 status = response.status;
                 var contentType = response.headers.get("content-type");
-                if(response.status!==200 || !contentType || contentType.indexOf("application/json") === -1){//todo:handle other type?
-                    return response.text();
+                if(response.status == 200 && contentType && contentType.indexOf("application/json") != -1){//todo:handle other type?
+                   return response.json();
                 }else{
-                    return response.json();
+                   return response.text(); 
                 }
             }).then((result)=>{
                 return {
                     statusCode:status,
                     data:result
                 };
-            })
-            .catch((err)=>{
+            }).catch((err)=>{
                 throw err;
             });
     };
