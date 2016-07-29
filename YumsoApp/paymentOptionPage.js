@@ -13,7 +13,9 @@ var plusIcon = require('./icons/icon-add.png');
 var backIcon = require('./icons/icon-back.png');
 var checkedIcon = require('./icons/icon-checkBox-checked.jpeg');
 var uncheckedIcon = require('./icons/icon-checkBox-unchecked.jpeg');
-var Swipeout = require('react-native-swipeout')
+var Swipeout = require('react-native-swipeout');
+var commonAlert = require('./commonModules/commonAlert');
+var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 
 import Dimensions from 'Dimensions';
 
@@ -47,7 +49,8 @@ class PaymentOptionPage extends Component {
         this.onPaymentSelected = routeStack[routeStack.length-1].passProps.onPaymentSelected;
         this.state = {
             dataSource: ds.cloneWithRows([]),
-            showProgress:true,
+            showProgress:false,
+            showNetworkUnavailableScreen:false,
             isFromCheckOutPage:isFromCheckOutPage,
             eaterId:eater?eater.eaterId: undefined,
             checkBoxesState:{},
@@ -94,6 +97,7 @@ class PaymentOptionPage extends Component {
                 }
             });
         }
+        this.setState({showProgress:true});
         return this.client.getWithAuth(config.getPaymentList+this.state.eaterId)
             .then((res) => {
                 if (res.statusCode != 200) {
@@ -101,7 +105,10 @@ class PaymentOptionPage extends Component {
                     return this.responseHandler(res);
                 }
                 let paymentList = res.data.paymentList;
-                this.setState({ dataSource: this.state.dataSource.cloneWithRows(paymentList),paymentList:paymentList, showProgress: false });
+                this.setState({ dataSource: this.state.dataSource.cloneWithRows(paymentList),paymentList:paymentList, showProgress: false, showNetworkUnavailableScreen:false});
+            }).catch((err)=>{
+                this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+                commonAlert.networkError();
             });
     }
 
@@ -192,6 +199,16 @@ class PaymentOptionPage extends Component {
                                                     </View>
                                               </TouchableOpacity>);
         }
+
+        var paymentListView = <ListView style={styles.dishListView}
+                                dataSource = {this.state.dataSource}
+                                renderRow={this.renderRow.bind(this)}
+                                renderFooter={this.renderFooter.bind(this)}/>
+        var networkUnavailableView = null;
+        if(this.state.showNetworkUnavailableScreen){
+           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchPaymentOptions.bind(this)} />
+           paymentListView = null;
+        }
         
         return (
             <View style={styles.container}>
@@ -207,10 +224,8 @@ class PaymentOptionPage extends Component {
                          <View style={styles.headerRightView}>
                          </View>
                </View>
-               <ListView style={styles.dishListView}
-                    dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this)}
-                    renderFooter={this.renderFooter.bind(this)}/>  
+               {networkUnavailableView}
+               {paymentListView}
                {paymentSelectionConfirmButton}
                {loadingSpinnerView}                    
             </View>
@@ -276,6 +291,9 @@ class PaymentOptionPage extends Component {
                                 this.setState({showProgress:false});
                             });
                     });
+            }).catch((err)=>{
+                this.setState({showProgress: false});
+                commonAlert.networkError();
             });
     }
     
@@ -289,19 +307,12 @@ class PaymentOptionPage extends Component {
                     return this.responseHandler(res);
                 }      
                 this.fetchPaymentOptions();
+            }).catch((err)=>{
+                this.setState({showProgress: false});
+                commonAlert.networkError();
             });
     }
 }
-
-                        // return BTClient.getCardNonce("4111111111111111", "10", "20").then(function(nonce) {
-                        // //payment succeeded, pass nonce to server
-                        //     console.log(nonce);
-                        //     return client.postWithoutAuth(config.braintreeCheckout, { payment_method_nonce: nonce })
-                        // })
-                        // .catch(function(err) {
-                        // //error handling
-                        // console.log(err);
-                        // });  
                         
 var stylePaymentOptionPage = StyleSheet.create({
     paymentMethodView:{

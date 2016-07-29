@@ -9,8 +9,8 @@ var ratingIconGrey = require('./icons/icon-rating-grey.png');
 var ratingIconOrange = require('./icons/icon-rating-orange.png');
 var deleteBannerIcon = require('./icons/icon-x.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
+var commonAlert = require('./commonModules/commonAlert');
 import Dimensions from 'Dimensions';
-import {KeyboardAwareListView} from 'react-native-keyboard-aware-scroll-view';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
@@ -306,6 +306,9 @@ class OrderDetailPage extends Component {
             this.state.order.comment = {starRating:data.starRating, eaterComment:data.commentText, eaterCommentTime:new Date().getTime()}
             Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
             self.setState({ratingSucceed:true, showProgress:false, starRating:data.starRating});     
+        }).catch((err)=>{
+            this.setState({showProgress: false});
+            commonAlert.networkError();
         });
     }
     

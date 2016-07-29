@@ -4,7 +4,9 @@ var config = require('./config');
 var AuthService = require('./authService');
 var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
+var commonAlert = require('./commonModules/commonAlert');
 var backIcon = require('./icons/icon-back.png');
+var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -16,7 +18,6 @@ import React, {
   Text,
   View,
   Image,
-
   ListView,
   TouchableHighlight,
   ActivityIndicatorIOS,
@@ -36,8 +37,9 @@ class ChefCommentsPage extends Component {
         var chefProfilePic = routeStack[routeStack.length-1].passProps.chefProfilePic;
         this.state = {
             dataSource: ds.cloneWithRows([]),
-            showProgress:true,
+            showProgress:false,
             showCommentBox:false,
+            showNetworkUnavailableScreen:false,
             chefId: chefId,
             chefProfilePic:chefProfilePic,
         };
@@ -49,7 +51,8 @@ class ChefCommentsPage extends Component {
     }
     
     fetchComments() {
-        const start = 'start=' + new Date().setDate(new Date().getDate() - 7);
+        this.setState({showProgress:true});
+        const start = 'start=' + new Date().setDate(new Date().getDate() - 100);
         const end = 'end=9999999999999999';
         return this.client.getWithoutAuth(config.chefCommentsEndpoint + this.state.chefId + '?' + start + '&' + end)
             .then((res) => {
@@ -57,7 +60,10 @@ class ChefCommentsPage extends Component {
                     throw new Error('Fail getting past comments');
                 }
                 let comments = res.data.comments;
-                this.setState({ dataSource: this.state.dataSource.cloneWithRows(comments), showProgress: false,comments:comments });
+                this.setState({ dataSource: this.state.dataSource.cloneWithRows(comments), showProgress:false, showNetworkUnavailableScreen:false, comments:comments });
+            }).catch((err)=>{
+                this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+                commonAlert.networkError();
             });
     }
 
@@ -111,6 +117,15 @@ class ChefCommentsPage extends Component {
            var  noReviewText = <Text style={styles.listViewEmptyText}>This chef does not have any review left</Text>
         }
         
+        var commentListView = <ListView style={styles.dishListView}
+                               dataSource = {this.state.dataSource}
+                               renderRow={this.renderRow.bind(this)}/>
+        var networkUnavailableView = null;
+        if(this.state.showNetworkUnavailableScreen){
+           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchComments.bind(this)} />
+           commentListView = null;
+        }
+
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -126,9 +141,8 @@ class ChefCommentsPage extends Component {
                    </View>
                </View>
                {noReviewText}
-               <ListView style={styles.dishListView}
-                    dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this) }/>
+               {networkUnavailableView}
+               {commentListView}
                {loadingSpinnerView}                  
             </View>
         );

@@ -11,6 +11,7 @@ var backIcon = require('./icons/icon-back.png');
 var addPromoCodeIcon = require('./icons/icon-add.png');
 var removePromoCodeIcon = require('./icons/icon-cancel.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
+var commonAlert = require('./commonModules/commonAlert');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -496,8 +497,10 @@ class ShoppingCartPage extends Component {
             }
             this.scrollToShowTotalPrice(); 
             this.setState({showProgress:false});     
+        }).catch((err)=>{
+            this.setState({showProgress: false});
+            commonAlert.networkError();
         });
-
     }
     
     handleDishNotAvailable(deliverTimestamp, quantityFact){

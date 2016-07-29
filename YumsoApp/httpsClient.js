@@ -106,8 +106,9 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
         //console.log(options);
         return fetch(url, options)
             .then((response)=>{
-                status = response.status
-                if(response.status!==200){
+                status = response.status;
+                var contentType = response.headers.get("content-type");
+                if(response.status!==200 || !contentType || contentType.indexOf("application/json") === -1){//todo:handle other type?
                     return response.text();
                 }else{
                     return response.json();

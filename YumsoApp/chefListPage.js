@@ -8,6 +8,8 @@ var Swiper = require('react-native-swiper');
 var MapPage = require('./mapPage');
 var rating = require('./rating');
 var dollarSign = require('./commonModules/dollarIconRender');
+var commonAlert = require('./commonModules/commonAlert');
+var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
 var ballonIcon = require('./icons/icon-location-white.png');
 var favoriteIcon = require('./icons/icon-liked-white.png');
@@ -31,8 +33,6 @@ import Dimensions from 'Dimensions';
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 console.log(windowHeight+" "+windowWidth);
-var NetworkErrTitle = 'Network Error';
-var NetworkErrText = 'Please check your network connection';
 
 import React, {
     Component,
@@ -145,7 +145,7 @@ class ChefListPage extends Component {
             var response = await this.client.getWithoutAuth(config.chefListEndpoint + query);
         }catch(err){
             this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-            Alert.alert( NetworkErrTitle, NetworkErrText,[ { text: 'OK' }]);
+            commonAlert.networkError();
             return;
         }
 
@@ -189,7 +189,7 @@ class ChefListPage extends Component {
                             }
                             resolve();
                         }).catch((err)=>{      
-                            reject('GoogleMapApi call failed')
+                            reject('Cannot get your city name')
                         });
                 },
                 (err) => {
@@ -281,10 +281,7 @@ class ChefListPage extends Component {
                             refreshDescription = " "/>
         var networkUnavailableView = null;
         if(this.state.showNetworkUnavailableScreen){
-           networkUnavailableView = <View style={styles.networkUnavailableView}>
-                                       <Text style={styles.networkUnavailableText}>Network connection is not available</Text>
-                                       <Text style={styles.clickToReloadClickable} onPress={()=>this.componentDidMount()}>tap to reload</Text>
-                                    </View>
+           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.componentDidMount.bind(this)} />
            cheflistView = null;
         }
 
@@ -499,7 +496,7 @@ class ChefListPage extends Component {
                         }
                         this.setState({ showChefSearch: false, showProgress: false, isMenuOpen: false });
                     }).catch((err)=>{
-                        Alert.alert( NetworkErrTitle, NetworkErrText,[ { text: 'OK' }]);
+                        commonAlert.networkError();
                     });
             });
     }
@@ -524,7 +521,10 @@ class ChefListPage extends Component {
                             self.state.withBestRatedSortOrigin = self.state.withBestRatedSort;
                             return self.state.eater.chefFilterSettings;
                         });
-                });                      
+                }).catch((err)=>{
+                    this.setState({showProgress: false});
+                    commonAlert.networkError();
+                });                     
         }
         this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
         this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;      
