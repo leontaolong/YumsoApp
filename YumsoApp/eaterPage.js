@@ -2,6 +2,7 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
+var commonAlert = require('./commonModules/commonAlert');
 var AuthService = require('./authService');
 var ImageCamera = require('./imageCamera');
 var MapPage = require('./mapPage');
@@ -11,7 +12,6 @@ var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/icon-grey-house.png');
 var paypalIcon = require('./icons/icon-paypal.png');
 var ResetPasswordPage = require('./resetPasswordPage');
-
 
 import Dimensions from 'Dimensions';
 
@@ -457,7 +457,13 @@ class EaterPage extends Component {
                     Alert.alert('Success', 'Successfully updated your profile', [{ text: 'OK' }]);
                     this.setState({ eater: this.state.eater, edit: false, showProgress: false });
                     this.state.callback(this.state.eater);
+                }).catch((err)=>{
+                    this.setState({showProgress: false});
+                    alert(err.message);
                 });
+        }).catch((err)=>{
+            this.setState({showProgress: false});
+            commonAlert.networkError();
         });
     }
     

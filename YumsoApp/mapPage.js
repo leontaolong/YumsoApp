@@ -5,7 +5,6 @@ var config = require('./config');
 var AuthService = require('./authService');
 var MapView = require('react-native-maps');
 var RCTUIManager = require('NativeModules').UIManager;
-var ballonIcon = null;
 var searchIcon = require('./icons/icon-search.png');
 var houseIconOrange = require('./icons/icon-home-orange.png');
 var backIcon = require('./icons/icon-back.png');
@@ -328,9 +327,16 @@ class MapPage extends Component {
                             callback();
                         }
                         self.setState({ city: city, state: state });
+                    }).catch((err)=>{      
+                       self.setState({selectedAddress:undefined,showProgress:false});
+                       Alert.alert( 'Location Unavailable', 'Cannot get your street number. Please enable network connection.',[ { text: 'OK' }]);
+                       return;
                     });       
             },
-            (error) => {this.setState({selectedAddress:undefined,showProgress:false}); Alert.alert( 'Warning', error.message,[ { text: 'OK' }])},
+            (error) => {
+                self.setState({selectedAddress:undefined,showProgress:false}); 
+                Alert.alert( 'Location Unavailable', 'Location can not be retrieved. Please enable network connection and location service.',[ { text: 'OK' }])
+            },
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
         );   
     }
@@ -385,6 +391,8 @@ class MapPage extends Component {
                }
             }).then(()=>{
                 this.setState({ showApartmentNumber: false });
+            }).catch((err)=>{      
+                Alert.alert( 'Location Unavailable', 'Please check network connection.',[ { text: 'OK' }]);
             }); 
     } 
 
@@ -498,15 +506,15 @@ class MapPage extends Component {
            this.useAddress(this.state.GPSproxAddress);
         }else{
            this.setState({showProgress:true});
-           this.getLocation(function(address){
-               this.setState({showProgress:false});
-               if(address){
-                   this.useAddress(address);
-               }else{
-                   Alert.alert('Warning','Current location not available',[{text:'OK'}]);
-                   return;
-               }
-           }.bind(this));
+               this.getLocation(function(address){
+                    this.setState({showProgress:false});
+                    if(address){
+                        this.useAddress(address);
+                    }else{
+                        Alert.alert('Warning','Current location not available',[{text:'OK'}]);
+                        return;
+                    }
+               }.bind(this));
         }
     }
     
@@ -518,8 +526,10 @@ class MapPage extends Component {
         }
         address = address.trim();
         address = address.replace(/\s/g, "%20");
+        this.setState({showProgress:true});
         this.googleClient.getWithoutAuth(config.searchAddress+address+'&key='+config.googleApiKey)
            .then((res)=>{
+                this.setState({showProgress:false});
                 if(res.statusCode===200 && res.data.status==='OK'){
                     var addresses = [];
                     let showWarningForSpecific = false;
@@ -573,7 +583,10 @@ class MapPage extends Component {
                 }else if(res.data.status==='ZERO_RESULTS'){
                     Alert.alert( 'Warning', 'No possible address found',[ { text: 'OK' }]);            
                 }
-           })
+           }).catch((err)=>{      
+              this.setState({showProgress:false});
+              Alert.alert( 'Search Failed', 'Please check network connection.',[ { text: 'OK' }]);
+           });
            
            //Get the position of the MapView in order to make the dropdown panel perfectly floating on the Map
            var view = this.refs['MapView'];

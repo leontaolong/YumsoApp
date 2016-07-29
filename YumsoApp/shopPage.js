@@ -21,6 +21,8 @@ var dollarSign = require('./commonModules/dollarIconRender');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var ActivityView = require('react-native-activity-view');
 var Swiper = require('react-native-swiper');
+var commonAlert = require('./commonModules/commonAlert');
+var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 // import * as WeChat from 'react-native-wechat';
 // var result = await  WeChat.shareToTimeline({type: 'text', description: 'I\'m Wechat, :)'});
 
@@ -71,8 +73,8 @@ class ShopPage extends Component {
     }
     
      async componentDidMount() {
-         this.client = new HttpsClient(config.baseUrl, true);
          this.setState({ showProgress: true });
+         this.client = new HttpsClient(config.baseUrl, true);
          await this.fetchDishesAndSchedules();
          if (this.state.eater) {
              this.setState({ like: this.state.eater.favoriteChefs.indexOf(this.state.chefId) !== -1 });
@@ -81,50 +83,67 @@ class ShopPage extends Component {
      }
 
     async fetchDishesAndSchedules() {
+        this.setState({ showProgress: true });
         let chefId = this.state.chefId;
         const start = 'start='+new Date().getTime();
         const end = 'end='+new Date().setDate(new Date().getDate()+6);
-        let getDishesTask = this.client.getWithoutAuth(config.chefDishesEndpoint+chefId);
-        let getScheduleTask = this.client.getWithoutAuth(config.chefSchedulesEndpoint+chefId+'?'+start+'&'+end);
-        let responseDish = await getDishesTask;
-        let responseSchedule = await getScheduleTask;
+        
+        try{
+          var responseDish = await this.client.getWithoutAuth(config.chefDishesEndpoint+chefId);
+          this.setState({showProgress:false,showNetworkUnavailableScreen:false})
+        }catch(err){
+          this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+          commonAlert.networkError();
+          return;
+        }
+
+        try{
+          var responseSchedule = await this.client.getWithoutAuth(config.chefSchedulesEndpoint+chefId+'?'+start+'&'+end);
+          this.setState({showProgress:false,showNetworkUnavailableScreen:false})
+        }catch(err){
+          this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+          commonAlert.networkError();
+          return;
+        }
+
         let dishes = responseDish.data.dishes;
         let schedules = responseSchedule.data.schedules;
         let scheduleMapping = {};
         let timeData = [];
         let index = 0;
         if(schedules.length!=0){
-            var allDishSet = {};
-            for(var dish of dishes){
-                allDishSet[dish.dishId] = -1;
-            }
-            scheduleMapping['All Dishes']= allDishSet;
-            timeData.push({ key: index++, label: 'All Dishes' })
-        }   
+           var allDishSet = {};
+           for(var dish of dishes){
+               allDishSet[dish.dishId] = -1;
+           }
+           scheduleMapping['All Dishes']= allDishSet;
+           timeData.push({ key: index++, label: 'All Dishes' })
+        }
+
         for(var schedule of schedules){
             var time = new Date(schedule.deliverTimestamp).toString();   
             if(!scheduleMapping[time]){
-                scheduleMapping[time] = {
-                    [schedule.dishId]: {
-                        leftQuantity: schedule.leftQuantity,
-                        quantity: schedule.quantity
-                    }
-                };
-                timeData.push({ key: index++, label: time });
+               scheduleMapping[time] = {
+                   [schedule.dishId]: {
+                       leftQuantity: schedule.leftQuantity,
+                       quantity: schedule.quantity
+                   }
+               };
+               timeData.push({ key: index++, label: time });
             }else{
-                scheduleMapping[time][schedule.dishId] = {
-                        leftQuantity: schedule.leftQuantity,
-                        quantity: schedule.quantity
-                    };
+               scheduleMapping[time][schedule.dishId] = {
+                       leftQuantity: schedule.leftQuantity,
+                       quantity: schedule.quantity
+               };
             }
         }
-        
+
         this.setState({
-                dishes:dishes, 
-                dataSource:this.state.dataSource.cloneWithRows(dishes), 
-                scheduleMapping:scheduleMapping, 
-                timeData:timeData
-                });
+            dishes:dishes, 
+            dataSource:this.state.dataSource.cloneWithRows(dishes), 
+            scheduleMapping:scheduleMapping, 
+            timeData:timeData
+        });
     }
     
     renderHeader(){
@@ -288,6 +307,30 @@ class ShopPage extends Component {
                                                <Text style={styleShopPage.selectedDeliverTimeText}>{dateRender.renderDate2(this.state.selectedTime)}</Text>
                                          </View>;
         }
+
+        
+        var networkUnavailableView = null;
+        var dishListView = null;
+        var footerView = null;
+        if(this.state.showNetworkUnavailableScreen){
+           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchDishesAndSchedules.bind(this)} />
+        }else{
+           dishListView = <ListView style={styles.dishListView}
+                           dataSource = {this.state.dataSource}
+                           renderRow={this.renderRow.bind(this) } 
+                           renderHeader={this.renderHeader.bind(this)}
+                           loadData={this.fetchDishesAndSchedules.bind(this)}/>
+           footerView = <View style={styleShopPage.footerView}>          
+                          <View style={styleShopPage.shoppingCartTimeView}>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Dishes'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
+                          </View>
+                          <TouchableOpacity style={styleShopPage.checkoutButtonView} activeOpacity={0.7} onPress={() => this.navigateToShoppingCart()}> 
+                             <View style={styleShopPage.checkoutButtonWrapper}>
+                                <Text style={styleShopPage.checkoutButton}>SHOPPING CART</Text>
+                             </View>
+                          </TouchableOpacity>
+                       </View>
+        }
             
         return (<View style={styles.container}>
                         <View style={styles.headerBannerView}>    
@@ -307,24 +350,11 @@ class ShopPage extends Component {
                                 </View>
                             </TouchableHighlight>
                         </View>
-                        
-                        <ListView style={styles.dishListView}
-                                dataSource = {this.state.dataSource}
-                                renderRow={this.renderRow.bind(this) } 
-                                renderHeader={this.renderHeader.bind(this)}
-                                loadData={this.fetchDishesAndSchedules.bind(this)}/>           
+                        {networkUnavailableView}
+                        {dishListView}
                         {selectedDeliverTimeView}
                         {loadingSpinnerView}
-                        <View style={styleShopPage.footerView}>          
-                          <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Dishes'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
-                          </View>
-                          <TouchableOpacity style={styleShopPage.checkoutButtonView} activeOpacity={0.7} onPress={() => this.navigateToShoppingCart()}> 
-                             <View style={styleShopPage.checkoutButtonWrapper}>
-                                <Text style={styleShopPage.checkoutButton}>SHOPPING CART</Text>
-                             </View>
-                          </TouchableOpacity>
-                       </View>
+                        {footerView}
                 </View>);
     }
 
@@ -429,9 +459,12 @@ class ShopPage extends Component {
                             });
                         });
                 } else {
-                    Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                    Alert.alert( 'Failed adding to favorite', 'Network or server side error. Please try again later',[ { text: 'OK' }]);   
                 }
-            });
+            }).catch((err)=>{
+               this.setState({showProgress: false});
+               commonAlert.networkError();
+            }); 
         } else {
             _this.props.navigator.push({
                 name: 'LoginPage',

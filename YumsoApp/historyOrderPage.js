@@ -7,8 +7,9 @@ var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
 var backIcon = require('./icons/icon-back.png');
 var defaultShopPic = require('./icons/defaultAvatar.jpg');
-import Dimensions from 'Dimensions';
-var RefreshableListView = require('react-native-refreshable-listview')
+var RefreshableListView = require('react-native-refreshable-listview');
+var commonAlert = require('./commonModules/commonAlert');
+var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 
 import React, {
   Component,
@@ -24,6 +25,7 @@ import React, {
   Picker
 } from 'react-native';
 
+import Dimensions from 'Dimensions';
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
@@ -37,8 +39,9 @@ class HistoryOrderPage extends Component {
         let eater = routeStack[routeStack.length-1].passProps.eater;      
         this.state = {
             dataSource: ds.cloneWithRows([]),
-            showProgress:true,
+            showProgress:false,
             showCommentBox:false,
+            showNetworkUnavailableScreen:false,
             eater:eater
         };
         this.responseHandler = function (response, msg) {
@@ -70,30 +73,51 @@ class HistoryOrderPage extends Component {
     }
     
     async fetchOrderAndComments() {
-        const start = 'start='+new Date().setDate(new Date().getDate()-30);
+        this.setState({showProgress: true});
+        const start = 'start=0';
         const end = 'end='+ new Date().getTime();
         let eater = await AuthService.getPrincipalInfo();
-        let pastOneWeekOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+start+'&'+end);
-        let pastOneWeekComment = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+start+'&'+end);
-        if (pastOneWeekOrder.statusCode != 200) {
+        try{
+          var pastOneWeekOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+start+'&'+end);
+          this.setState({showProgress:false,showNetworkUnavailableScreen:false})
+        }catch(err){
+          this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+          commonAlert.networkError();
+          return;
+        }
+
+        try{
+          var pastOneWeekComment = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+start+'&'+end);
+          this.setState({showProgress:false,showNetworkUnavailableScreen:false})
+        }catch(err){
+          this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+          commonAlert.networkError();
+          return;
+        }
+    
+        if (pastOneWeekOrder && pastOneWeekOrder.statusCode != 200) {
             this.setState({showProgress:false});
             return this.responseHandler(pastOneWeekOrder);
         }
-        if (pastOneWeekComment.statusCode != 200) {
+        if (pastOneWeekComment && pastOneWeekComment.statusCode != 200) {
             this.setState({showProgress:false});  
             return this.responseHandler(pastOneWeekOrder);
         }
-        let orders = pastOneWeekOrder.data.orders;
-        let comments = pastOneWeekComment.data.comments;
-        console.log(orders); console.log(comments);
-        for(var comment of comments){
-            for(var order of orders){
-                if(order.orderId==comment.orderId){
-                    order.comment = comment;
+
+        if (pastOneWeekOrder && pastOneWeekOrder.data && pastOneWeekComment && pastOneWeekComment.data){
+            let orders = pastOneWeekOrder.data.orders;
+            let comments = pastOneWeekComment.data.comments;
+            console.log(orders); 
+            console.log(comments);
+            for(var comment of comments){
+                for(var order of orders){
+                    if(order.orderId==comment.orderId){
+                        order.comment = comment;
+                    }
                 }
             }
+            this.setState({dataSource: this.state.dataSource.cloneWithRows(orders), showProgress:false, orders:orders});
         }
-        this.setState({dataSource: this.state.dataSource.cloneWithRows(orders), showProgress:false, orders:orders});
     }
      
     
@@ -135,6 +159,17 @@ class HistoryOrderPage extends Component {
         if(this.state.orders && this.state.orders.length==0){
           var  noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order recently, come and order some!</Text>
         }
+
+        var networkUnavailableView = null;
+        var commentListView = null;
+        if(this.state.showNetworkUnavailableScreen){
+           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchOrderAndComments.bind(this)} />
+        }else{
+           commentListView = <RefreshableListView
+                              dataSource = {this.state.dataSource}
+                              renderRow={this.renderRow.bind(this) }
+                              loadData={this.fetchOrderAndComments.bind(this)}/>
+        }
         
         return (
             <View style={styles.container}>
@@ -150,11 +185,9 @@ class HistoryOrderPage extends Component {
                    <View style={styles.headerRightView}>
                    </View>
                </View>
+               {networkUnavailableView}
                {noOrderText}
-               <RefreshableListView
-                    dataSource = {this.state.dataSource}
-                    renderRow={this.renderRow.bind(this) }
-                    loadData={this.fetchOrderAndComments.bind(this)}/>
+               {commentListView}
                {loadingSpinnerView}                   
             </View>
         );

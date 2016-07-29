@@ -3,6 +3,7 @@ var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var backIcon = require('./icons/icon-back.png');
+var commonAlert = require('./commonModules/commonAlert');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -151,19 +152,22 @@ class PaymentPage extends Component {
                         Alert.alert('Warning', 'Oops, you have one or more dishes that are not available anymore. Please update your shopping cart', [{ text: 'OK' }]);
                         this.shoppingCartContext.handleDishNotAvailable(detailError.deliverTimestamp,  detailError.quantityFact);
                     } else if (detailError.type === 'PaymentException') {
-                        Alert.alert('Warning', 'Payment failed. ' + detailError.message, [{ text: 'OK' }]);
+                        Alert.alert('Payment failed', detailError.message, [{ text: 'OK' }]);
                     } else if (detailError.type === 'NoDeliveryRouteFoundException') {
-                        Alert.alert('Warning', 'Delivery address is not reachable. ' + detailError.message, [{ text: 'OK' }]);
+                        Alert.alert('Failed creating order', 'Delivery address is not reachable. ' + detailError.message, [{ text: 'OK' }]);
                     } else {
-                        Alert.alert('Warning', 'Failed creating order. Please try again later.'[{ text: 'OK' }]);
+                        Alert.alert('Failed creating order', 'Please try again later.'[{ text: 'OK' }]);
                     }
                     this.shoppingCartContext.setState({priceIsConfirmed:false});
                 }                    
             }else{
                 this.setState({showProgress:false});
-                Alert.alert('Network or Server Error','Failed creating order',[{ text: 'OK' }]);            
+                Alert.alert('Failed creating order','Network or server Error',[{ text: 'OK' }]);            
             }
-         });   
+         }).catch((err)=>{
+               this.setState({showProgress: false});
+               commonAlert.networkError();
+         });    
     }
     
     navigateBackToShoppingCartPage(){
