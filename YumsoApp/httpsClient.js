@@ -103,24 +103,33 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
     var request = function (partialUrl, options) {    
         var url = self.host+partialUrl;
         var status;
-        //console.log(options);
-        return fetch(url, options)
-            .then((response)=>{
-                status = response.status;
-                var contentType = response.headers.get("content-type");
-                if(response.status == 200 && contentType && contentType.indexOf("application/json") != -1){//todo:handle other type?
-                   return response.json();
-                }else{
-                   return response.text(); 
-                }
-            }).then((result)=>{
-                return {
-                    statusCode:status,
-                    data:result
-                };
+        var timeout = new Promise(function (resolve, reject) {
+                setTimeout(()=>reject(new Error('Request timeout. Please try again later.')),5000);
             }).catch((err)=>{
                 throw err;
             });
+
+        var p = Promise.race([
+                fetch(url, options).then((response)=>{
+                    status = response.status;
+                    var contentType = response.headers.get("content-type");
+                    if(response.status == 200 && contentType && contentType.indexOf("application/json") != -1){
+                       return response.json();
+                    }else{
+                      return response.text(); 
+                    }
+                }).then((result)=>{
+                    return {
+                        statusCode:status,
+                        data:result
+                    };
+                }).catch((err)=>{
+                    throw new Error('Please check your network connection');
+                }),
+                timeout
+            ])
+
+        return p;
     };
 };
 

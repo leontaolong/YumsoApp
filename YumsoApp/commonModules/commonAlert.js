@@ -7,10 +7,16 @@ import React, {
 
 class CommonAlert {
     //Network Error
-    networkError(){
-        var networkErrTitle = 'Network Error';
-        var networkErrText = 'Please check your network connection.';
-        Alert.alert( networkErrTitle, networkErrText,[ { text: 'OK' }]);
+    networkError(err){
+        var title = 'Network Error';
+        var text = err.message;
+        Alert.alert(title, text,[ { text: 'OK' }]);
+    }
+    //Location Error
+    locationError(err){
+        var title = 'Location Unavailable';
+        var text = err.message;
+        Alert.alert(title, text,[ { text: 'OK' }]);
     }
 }
 

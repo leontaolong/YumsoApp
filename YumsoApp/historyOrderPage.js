@@ -69,11 +69,11 @@ class HistoryOrderPage extends Component {
 
     componentDidMount(){
         this.client = new HttpsClient(config.baseUrl, true);
+        this.setState({showProgress: true});
         return this.fetchOrderAndComments(); 
     }
     
     async fetchOrderAndComments() {
-        this.setState({showProgress: true});
         const start = 'start=0';
         const end = 'end='+ new Date().getTime();
         let eater = await AuthService.getPrincipalInfo();
@@ -82,7 +82,7 @@ class HistoryOrderPage extends Component {
           this.setState({showProgress:false,showNetworkUnavailableScreen:false})
         }catch(err){
           this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-          commonAlert.networkError();
+          commonAlert.networkError(err);
           return;
         }
 
@@ -91,7 +91,7 @@ class HistoryOrderPage extends Component {
           this.setState({showProgress:false,showNetworkUnavailableScreen:false})
         }catch(err){
           this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-          commonAlert.networkError();
+          commonAlert.networkError(err);
           return;
         }
     

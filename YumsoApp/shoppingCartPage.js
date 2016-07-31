@@ -499,7 +499,7 @@ class ShoppingCartPage extends Component {
             this.setState({showProgress:false});     
         }).catch((err)=>{
             this.setState({showProgress: false});
-            commonAlert.networkError();
+            commonAlert.networkError(err);
         });
     }
     

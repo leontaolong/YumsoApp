@@ -166,7 +166,7 @@ class PaymentPage extends Component {
             }
          }).catch((err)=>{
                this.setState({showProgress: false});
-               commonAlert.networkError();
+               commonAlert.networkError(err);
          });    
     }
     
@@ -224,6 +224,7 @@ var stylePaymentPage = StyleSheet.create({
     },
     selectedPaymentTextView:{
       flexDirection:'column',
+      width:windowWidth*0.95,
     },
     selectedPaymentText:{
       color:'#A0A0A0',

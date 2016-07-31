@@ -106,7 +106,7 @@ class ChefListPage extends Component {
            this.setState({showProgress:true});
            await this.getLocation().catch((err)=>{
                  this.setState({GPSproxAddress:undefined,showProgress:false}); 
-                 Alert.alert( 'Location Unavailable', err,[ { text: 'OK' }]);
+                 commonAlert.locationError(err);
            });//todo: really wait??
            this.setState({showProgress:false})
         }
@@ -145,7 +145,7 @@ class ChefListPage extends Component {
             var response = await this.client.getWithoutAuth(config.chefListEndpoint + query);
         }catch(err){
             this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-            commonAlert.networkError();
+            commonAlert.networkError(err);
             return;
         }
 
@@ -156,8 +156,8 @@ class ChefListPage extends Component {
            for (var chef of chefs) {
                 chefView[chef.chefId] = chef.starDishPictures;
                 chefsDictionary[chef.chefId] = chef;
-            }
-            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
+           }
+           this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
         }
         
     }
@@ -189,11 +189,11 @@ class ChefListPage extends Component {
                             }
                             resolve();
                         }).catch((err)=>{      
-                            reject('Cannot get city name')
+                            reject(new Error('Cannot get city name'));
                         });
                 },
                 (err) => {
-                    reject('Location can not be retrieved. Please enable network connection and location service');
+                    reject(new Error('Location can not be retrieved. Please enable network connection and location service'));
                 },
                 { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
             );
@@ -496,7 +496,7 @@ class ChefListPage extends Component {
                         }
                         this.setState({ showChefSearch: false, showProgress: false, isMenuOpen: false });
                     }).catch((err)=>{
-                        commonAlert.networkError();
+                        commonAlert.networkError(err);
                     });
             });
     }
@@ -523,7 +523,7 @@ class ChefListPage extends Component {
                         });
                 }).catch((err)=>{
                     this.setState({showProgress: false});
-                    commonAlert.networkError();
+                    commonAlert.networkError(err);
                 });                     
         }
         this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
