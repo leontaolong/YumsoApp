@@ -6,6 +6,7 @@ var FBLogin = require('react-native-facebook-login');
 var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
+var commonAlert = require('./commonModules/commonAlert');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -144,17 +145,22 @@ class LoginPage extends Component {
         }
         
         this.setState({showProgress:true});
-        let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password);
-        this.setState({ showProgress: false });        
-        if(!eater){
-            return;
-        }
-        this.props.navigator.pop();  
-        if(this.props.onLogin){
-            this.props.onLogin();
-        }
-        if(this.state.callback){
-            this.state.callback(eater);
+        try{
+           let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password);
+           this.setState({ showProgress: false });
+           if(!eater){
+              return;
+           }
+           this.props.navigator.pop();  
+           if(this.props.onLogin){
+              this.props.onLogin();
+           }
+           if(this.state.callback){
+              this.state.callback(eater);
+           }
+        }catch(err){
+           this.setState({ showProgress: false });
+           commonAlert.networkError(err);
         }
     }
     async onPressForgotPassword(){ 
@@ -162,28 +168,38 @@ class LoginPage extends Component {
             Alert.alert( 'Warning', 'Please enter your email',[ { text: 'OK' }]);
             return;
         }           
-        this.setState({showProgress:true});
-        let result = await AuthService.forgotPasswordWithEmail(this.state.email.trim());
-        if(result==false){
-            this.setState({ showProgress: false });
-            return;
+        this.setState({showProgress:true});        
+        try{
+           let result = await AuthService.forgotPasswordWithEmail(this.state.email.trim());
+           if(result==false){
+              this.setState({ showProgress: false });
+              return;
+           }
+           this.setState({ showProgress: false });
+        }catch(err){
+           this.setState({ showProgress: false });
+           commonAlert.networkError(err);
         }
-        this.setState({ showProgress: false });
     }
     async onGettingFbToken(credentials){
         let token  = credentials.token;
         this.setState({showProgress:true});
-        let eater = await AuthService.loginWithFbToken(token);
-        this.setState({ showProgress: false });   
-        if(!eater){
-            return;
-        }
-        this.props.navigator.pop();  
-        if(this.props.onLogin){
-            this.props.onLogin();
-        }
-        if(this.state.callback){
-            this.state.callback(eater);
+        try{
+           let eater = await AuthService.loginWithFbToken(token);
+           this.setState({ showProgress: false });
+           if(!eater){
+              return;
+           }
+           this.props.navigator.pop();  
+           if(this.props.onLogin){
+              this.props.onLogin();
+           }
+           if(this.state.callback){
+              this.state.callback(eater);
+           }
+        }catch(err){//todo:login failed but still shows "log out" icon
+           this.setState({ showProgress: false });
+           commonAlert.networkError(err);
         }
     }
     

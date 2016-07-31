@@ -5,6 +5,7 @@ var styles = require('./style');
 var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
+var commonAlert = require('./commonModules/commonAlert');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -183,16 +184,22 @@ class resetPasswordPage extends Component {
         }
            
         this.setState({showProgress:true});
-        let result = await AuthService.resetPassword(this.state.email.trim(), this.state.oldPassword, this.state.newPassword) 
-        if(result==false){
-            this.setState({ showProgress: false });
-            return;
-        }
-        this.setState({ showProgress: false });
-        this.routeStack = [];                        
-        this.props.navigator.push({
+        try{
+          let result = await AuthService.resetPassword(this.state.email.trim(), this.state.oldPassword, this.state.newPassword) 
+          if(result==false){
+             this.setState({ showProgress: false });
+             return;
+          }
+          this.setState({ showProgress: false });
+          this.routeStack = [];                        
+          this.props.navigator.push({
             name: 'ChefListPage',
-        });   
+          });
+        }catch(err){
+          this.setState({ showProgress: false });
+          commonAlert.networkError(err);
+        }
+           
     }
     
     navigateBack() {
