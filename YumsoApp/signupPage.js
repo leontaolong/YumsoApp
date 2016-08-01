@@ -91,16 +91,13 @@ class SignUpPage extends Component {
                                 returnKeyType = {'done'} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} onChangeText = {(text)=>this.setState({password_re: text})} secureTextEntry={true}/>
                             </View>
                             <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
-                            <View style={styles.passwordRequirementView}>
-                               {passwordRequirmentText}
-                            </View>
                             <View style={styleSignUpPage.legalView}>
                                 <Text style={styleSignUpPage.legalText}>By signing up, I agree with the </Text>
                                 <Text style={styleSignUpPage.legalTextClickable} onPress = {()=>this.navigateToTermsPage()}>Terms & Conditions</Text>
                             </View>
                         </ScrollView>
                     </Image> 
-                    <TouchableOpacity activeOpacity={0.7} style={styleSignUpPage.signUpButtonView} onPress = {this.onSignUpPressed.bind(this)}>
+                    <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress = {this.onSignUpPressed.bind(this)}>
                          <Text style={styleSignUpPage.signUpButtonText}>Sign up</Text>
                     </TouchableOpacity>
                     {loadingSpinnerView}       
@@ -237,6 +234,7 @@ var styleSignUpPage = StyleSheet.create({
       flexDirection:'row',
       justifyContent: 'center',
       backgroundColor:'transparent',
+      paddingTop:15,
     },
     legalText:{
       fontSize:windowHeight/47.64,
@@ -245,15 +243,6 @@ var styleSignUpPage = StyleSheet.create({
     legalTextClickable:{
       fontSize:windowHeight/47.64,
       color:'#FFCC33',
-    },
-    signUpButtonView:{
-      position:'absolute',
-      left: 0, 
-      right: 0,
-      top:windowHeight-windowHeight/13.38,
-      height:windowHeight/13.38,
-      backgroundColor:'#FFCC33',
-      justifyContent: 'center',
     },
     signUpButtonText:{
       color:'#fff',

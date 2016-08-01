@@ -87,7 +87,9 @@ class PaymentPage extends Component {
                     <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>   
                  </View>
                  {selectPaymentMethodView}
-                 <TouchableOpacity activeOpacity={0.7} style={stylePaymentPage.placeOrderButtonWrapper} onPress={()=>this.confirm()}>
+                 <View style={{flex:1}}>
+                 </View>
+                 <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={()=>this.confirm()}>
                     <View style={stylePaymentPage.placeOrderButton}>
                         <Text style={stylePaymentPage.placeOrderButtonText}>Place Order</Text>
                     </View>
@@ -232,17 +234,6 @@ var stylePaymentPage = StyleSheet.create({
       marginTop:windowHeight*0.02,
       textAlign:'center',
       alignSelf:'center',
-    },
-    placeOrderButtonWrapper:{
-      flexDirection:'row',        
-      justifyContent: 'center',
-      backgroundColor:'#FFCC33',
-      position:'absolute',
-      left: 0, 
-      right: 0,
-      top:windowHeight-15-windowHeight*0.075,
-      height:windowHeight*0.075,
-      width:windowWidth,
     },
     placeOrderButton:{
       flexDirection:'row',        

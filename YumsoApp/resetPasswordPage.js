@@ -95,7 +95,7 @@ class resetPasswordPage extends Component {
                         <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
                     </ScrollView>                       
                     </Image> 
-                    <TouchableHighlight underlayColor={'#C0C0C0'} style={styleSignUpPage.signUpButtonView} onPress = {this.onUpdatePressed.bind(this)}>
+                    <TouchableHighlight underlayColor={'#C0C0C0'} style={styles.footerView} onPress = {this.onUpdatePressed.bind(this)}>
                         <Text style={styleSignUpPage.signUpButtonText}>Update</Text>
                     </TouchableHighlight>
                     {loadingSpinnerView}          
@@ -223,15 +223,6 @@ var styleSignUpPage = StyleSheet.create({
     logoIcon:{
       width:windowWidth*0.208,
       height:windowWidth*0.208,
-    },
-    signUpButtonView:{
-      position:'absolute',
-      left: 0, 
-      right: 0,
-      top:windowHeight-windowHeight/13.38,
-      height:windowHeight/13.38,
-      backgroundColor:'#FFCC33',
-      justifyContent: 'center',
     },
     signUpButtonText:{
       color:'#fff',

@@ -334,7 +334,9 @@ class ChefListPage extends Component {
                        </View>
                     </View>
                     {loadingSpinnerView}
-                    <TouchableOpacity activeOpacity={0.7} style={styleFilterPage.applySearchButtonView} onPress={() => this.onPressApplySearchButton()}>
+                    <View style={{flex:1}}>
+                    </View>
+                    <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.onPressApplySearchButton()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply and Search</Text>
                     </TouchableOpacity>                
                </View>                    
@@ -752,7 +754,9 @@ var styleChefListPage = StyleSheet.create({
     },
     oneShopListView:{
        alignSelf:'stretch',
-       backgroundColor:'#FFFFFF',  
+       backgroundColor:'#FFFFFF',
+       borderColor:'#F5F5F5',
+       borderTopWidth:5,
     },
     oneShopPhotoView:{
        height:windowHeight*0.388,
@@ -871,15 +875,6 @@ var styleFilterPage = StyleSheet.create({
         width:windowHeight*0.07,
         height:windowHeight*0.07,
         alignSelf:'center',
-    },
-    applySearchButtonView:{
-        position:'absolute',
-        left: 0, 
-        right: 0,
-        top:windowHeight-15-windowHeight/13.38,
-        height:windowHeight/13.38,
-        backgroundColor:'#FFCC33',
-        justifyContent: 'center',
     },
     applySearchButtonText:{
         color:'#fff',

@@ -219,15 +219,14 @@ class ShopPage extends Component {
                             </View>                       
                           </View>
                         </View>),
-                       (<TouchableHighlight key={'chefLivingAreaView'} underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
+                       (<View key={'chefLivingAreaView'}>
                          <View style={styleShopPage.chefDetailView}>
                             <Image source={mapIcon} style={styleShopPage.pickupAddressIcon}/>
                             <View style={styleShopPage.chefDetailTextView}>
                                 <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
                             </View>
-                            <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                           </View>
-                        </TouchableHighlight>), 
+                        </View>), 
                        (<TouchableHighlight key={'chefPageClickableView'}  underlayColor={'#ECECEC'} onPress={() => this.navigateToChefPage()}>
                             <View style={styleShopPage.chefDetailView}>
                                 <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
@@ -745,6 +744,8 @@ var styleShopPage = StyleSheet.create({
     },
     oneDishInListView:{
         marginBottom:0,
+        borderColor: '#F5F5F5',
+        borderBottomWidth: 5,
     },
     oneDishPicture:{
         width: windowWidth,
@@ -776,8 +777,6 @@ var styleShopPage = StyleSheet.create({
     priceView:{
         flex: 1,
         flexDirection: 'row',
-        borderColor: '#F5F5F5',
-        borderBottomWidth: 5,
         backgroundColor: '#fff',
         paddingHorizontal:windowWidth*0.07,
         paddingVertical:windowHeight*0.0352,

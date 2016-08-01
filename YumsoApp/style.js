@@ -152,7 +152,7 @@ module.exports = StyleSheet.create({
     pageBackgroundImage:{
       width:windowWidth,
       height:windowHeight,
-      alignItems:'center',
+      flex:1,
       opacity:0.8,
     },
     loginInputView:{
@@ -218,11 +218,6 @@ module.exports = StyleSheet.create({
       color:'#FFCC33',
       justifyContent:'center',
       textAlign:'center',
-    },
-    passwordRequirementView:{
-      height:windowHeight*0.08,
-      width:windowWidth*0.88,
-      backgroundColor:'transparent',
     },
     passwordRequirementText:{
       fontSize:12,

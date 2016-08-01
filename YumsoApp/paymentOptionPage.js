@@ -193,7 +193,7 @@ class PaymentOptionPage extends Component {
         }
         
         if(this.state.chosenCard && this.state.isFromCheckOutPage){
-          var paymentSelectionConfirmButton= (<TouchableOpacity activeOpacity={0.7} style={stylePaymentOptionPage.bottomButtonWrapper} onPress={()=>this.confirmSelection()}>
+          var paymentSelectionConfirmButton= (<TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={()=>this.confirmSelection()}>
                                                     <View style={stylePaymentOptionPage.bottomButton}>
                                                         <Text style={stylePaymentOptionPage.bottomButtonText}>Choose this Card</Text>
                                                     </View>
@@ -387,17 +387,7 @@ var stylePaymentOptionPage = StyleSheet.create({
         height:30,
         alignSelf:'center',
     },
-    bottomButtonWrapper:{
-      flexDirection:'row',        
-      justifyContent: 'center',
-      backgroundColor:'#FFCC33',
-      position:'absolute',
-      left: 0, 
-      right: 0,
-      top:windowHeight-windowHeight*0.075,
-      height:windowHeight*0.075,
-      width:windowWidth,
-    },
+
     bottomButton:{
       flexDirection:'row',        
       justifyContent: 'center',
