@@ -93,7 +93,7 @@ class ShopPage extends Component {
           this.setState({showProgress:false,showNetworkUnavailableScreen:false})
         }catch(err){
           this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-          commonAlert.networkError();
+          commonAlert.networkError(err);
           return;
         }
 
@@ -102,7 +102,7 @@ class ShopPage extends Component {
           this.setState({showProgress:false,showNetworkUnavailableScreen:false})
         }catch(err){
           this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-          commonAlert.networkError();
+          commonAlert.networkError(err);
           return;
         }
 
@@ -119,7 +119,7 @@ class ShopPage extends Component {
            scheduleMapping['All Dishes']= allDishSet;
            timeData.push({ key: index++, label: 'All Dishes' })
         }
-
+        console.log('schedules: '+JSON.stringify(schedules));
         for(var schedule of schedules){
             var time = new Date(schedule.deliverTimestamp).toString();   
             if(!scheduleMapping[time]){
@@ -137,7 +137,7 @@ class ShopPage extends Component {
                };
             }
         }
-
+        console.log('timeData '+JSON.stringify(timeData));
         this.setState({
             dishes:dishes, 
             dataSource:this.state.dataSource.cloneWithRows(dishes), 
@@ -167,7 +167,7 @@ class ShopPage extends Component {
                                           </View>);
                }else{
                  scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
-                                            <Text style={styleShopPage.openHourTitle}>This chef does not have any schedule now</Text>
+                                            <Text style={styleShopPage.openHourTitle}>Currently no dish avaliable to order</Text>
                                           </View>);
                }
                
@@ -432,10 +432,12 @@ class ShopPage extends Component {
         let _this = this;
         let eater = this.state.eater;
         if (eater) {
+            this.setState({showProgress: true});
             let isAdd = eater.favoriteChefs.indexOf(_this.state.chefId) === -1
             _this.client.postWithAuth(isAdd ? config.addFavoriteEndpoint : config.removeFavoriteEndpoint, {
                 info: { chefId: _this.state.chefId, eaterId: eater.eaterId }
             }).then((res) => {
+                this.setState({showProgress: false});
                 if(res.statusCode==400){
                     Alert.alert( 'Warning', res.data,[ { text: 'OK' }]);              
                 }else if (res.statusCode === 200) {
@@ -463,7 +465,7 @@ class ShopPage extends Component {
                 }
             }).catch((err)=>{
                this.setState({showProgress: false});
-               commonAlert.networkError();
+               commonAlert.networkError(err);
             }); 
         } else {
             _this.props.navigator.push({

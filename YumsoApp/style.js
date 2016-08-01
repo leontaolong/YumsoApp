@@ -60,6 +60,12 @@ module.exports = StyleSheet.create({
       justifyContent:'center',
       flexDirection:'column',
     },
+    footerView:{ 
+        flexDirection:'row', 
+        height:windowHeight*0.075, 
+        backgroundColor:'#FFCC33',
+        justifyContent:'center',
+    },
     backButtonIcon:{
       width:windowWidth*0.106,
       height:windowWidth*0.106,

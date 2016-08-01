@@ -382,8 +382,6 @@ class EaterPage extends Component {
     uploadPic(){
            ImageCamera.PickImage((source)=>{
                 this.setState({showProgress:true});
-                this.state.eater.eaterProfilePic = source.uri;
-                this.setState({eater:this.state.eater});
                 var photo = {
                     uri: source.uri,
                     type: 'image/jpeg',
@@ -401,10 +399,12 @@ class EaterPage extends Component {
                     }
 
                     if (request.status === 200) {
+                        this.state.eater.eaterProfilePic = source.uri;
+                        this.setState({eater:this.state.eater});
                         console.log('success', request.responseText);
                         Alert.alert( 'Success', 'Successfully upload your profile picture',[ { text: 'OK' }]);                        
                     } else {
-                        Alert.alert( 'Fail', 'Failed to upload your profile picture. Please retry again later',[ { text: 'OK' }]); 
+                        Alert.alert( 'Upload failed', 'Please try again later',[ { text: 'OK' }]); 
                     }
                     this.setState({showProgress:false});                  
                 };  
@@ -442,15 +442,15 @@ class EaterPage extends Component {
         eater.homeAddress = this.state.homeAddress ? this.state.homeAddress : null;
         eater.workAddress = this.state.workAddress ? this.state.workAddress : null;
         eater.addressList = this.state.addressList;
-        for(let prop in eater){
-            this.state.eater[prop] = eater[prop];
-        }
         this.setState({showProgress:true});
         return this.client.postWithAuth(config.eaterUpdateEndpoint, { eater: eater })
             .then((res) => {
                 if (res.statusCode != 200) {
                     this.setState({ showProgress: false });                
                     return this.responseHandler(res);
+                }
+                for(let prop in eater){
+                    this.state.eater[prop] = eater[prop];
                 }
                 return AuthService.updateCacheEater(this.state.eater)
                 .then(() => {
@@ -463,7 +463,7 @@ class EaterPage extends Component {
                 });
         }).catch((err)=>{
             this.setState({showProgress: false});
-            commonAlert.networkError();
+            commonAlert.networkError(err);
         });
     }
     

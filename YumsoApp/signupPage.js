@@ -5,6 +5,7 @@ var styles = require('./style');
 var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
+var commonAlert = require('./commonModules/commonAlert');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -192,15 +193,21 @@ class SignUpPage extends Component {
             return;
         }
         this.setState({showProgress:true});
-        let result = await AuthService.registerWithEmail(this.state.firstname.trim(), this.state.lastname.trim(),this.state.email.trim(), this.state.password, this.state.password_re);
-        if(result==false){
+
+        try{
+            var result = await AuthService.registerWithEmail(this.state.firstname.trim(), this.state.lastname.trim(),this.state.email.trim(), this.state.password, this.state.password_re);
+            if(result==false){
+               this.setState({ showProgress: false });
+               return;
+            }
+            this.setState({ showProgress: false });
+            this.props.navigator.push({
+                 name: 'ChefListPage'
+            });
+        }catch(err){
            this.setState({ showProgress: false });
-           return;
+           commonAlert.networkError(err);
         }
-        this.setState({ showProgress: false });
-        this.props.navigator.push({
-            name: 'ChefListPage'
-        });       
     }
     
     navigateBack() {

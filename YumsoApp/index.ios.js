@@ -18,7 +18,6 @@ var AboutPage = require('./aboutPage');
 var TermsPage = require('./termsPage');
 var styles = require('./style');
 var AuthService = require('./authService');
-var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 
 import React, {
   AppRegistry,
@@ -79,8 +78,6 @@ class YumsoApp extends Component {
             return <AboutPage navigator={navigator}/>
         }else if (route.name==='TermsPage'){
             return <TermsPage navigator={navigator}/>
-        }else if (route.name==='NetworkUnavailableScreen'){
-            return <NetworkUnavailableScreen navigator={navigator}/>
         }
     } 
 }

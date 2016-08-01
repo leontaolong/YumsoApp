@@ -308,7 +308,7 @@ class OrderDetailPage extends Component {
             self.setState({ratingSucceed:true, showProgress:false, starRating:data.starRating});     
         }).catch((err)=>{
             this.setState({showProgress: false});
-            commonAlert.networkError();
+            commonAlert.networkError(err);
         });
     }
     

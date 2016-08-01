@@ -108,7 +108,7 @@ class PaymentOptionPage extends Component {
                 this.setState({ dataSource: this.state.dataSource.cloneWithRows(paymentList),paymentList:paymentList, showProgress: false, showNetworkUnavailableScreen:false});
             }).catch((err)=>{
                 this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-                commonAlert.networkError();
+                commonAlert.networkError(err);
             });
     }
 
@@ -293,7 +293,7 @@ class PaymentOptionPage extends Component {
                     });
             }).catch((err)=>{
                 this.setState({showProgress: false});
-                commonAlert.networkError();
+                commonAlert.networkError(err);
             });
     }
     
@@ -309,7 +309,7 @@ class PaymentOptionPage extends Component {
                 this.fetchPaymentOptions();
             }).catch((err)=>{
                 this.setState({showProgress: false});
-                commonAlert.networkError();
+                commonAlert.networkError(err);
             });
     }
 }

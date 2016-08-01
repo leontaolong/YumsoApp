@@ -63,7 +63,7 @@ class ChefCommentsPage extends Component {
                 this.setState({ dataSource: this.state.dataSource.cloneWithRows(comments), showProgress:false, showNetworkUnavailableScreen:false, comments:comments });
             }).catch((err)=>{
                 this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-                commonAlert.networkError();
+                commonAlert.networkError(err);
             });
     }
 
