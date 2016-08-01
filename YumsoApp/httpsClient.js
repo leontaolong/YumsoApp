@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
 var AsyncStorage = require('react-native').AsyncStorage;
+const timeoutLength = 5000;
 
 var HttpsClient = function (host, useTokenFromStorage, username, password, authEndpoint) {    
     var self = this;
@@ -104,7 +105,7 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
         var url = self.host+partialUrl;
         var status;
         var timeout = new Promise(function (resolve, reject) {
-                setTimeout(()=>reject(new Error('Request timeout. Please try again later.')),5000);
+                setTimeout(()=>reject(new Error('Request timeout. Please try again later.')),timeoutLength);
             }).catch((err)=>{
                 throw err;
             });
@@ -116,7 +117,7 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                     if(response.status == 200 && contentType && contentType.indexOf("application/json") != -1){
                        return response.json();
                     }else{
-                      return response.text(); 
+                       return response.text(); 
                     }
                 }).then((result)=>{
                     return {

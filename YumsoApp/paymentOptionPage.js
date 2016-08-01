@@ -306,7 +306,7 @@ class PaymentOptionPage extends Component {
                     this.setState({showProgress:false});                  
                     return this.responseHandler(res);
                 }      
-                this.fetchPaymentOptions(err);
+                this.fetchPaymentOptions();
             }).catch((err)=>{
                 this.setState({showProgress: false});
                 commonAlert.networkError(err);

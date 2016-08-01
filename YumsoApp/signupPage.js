@@ -208,8 +208,6 @@ class SignUpPage extends Component {
            this.setState({ showProgress: false });
            commonAlert.networkError(err);
         }
-
-               
     }
     
     navigateBack() {
