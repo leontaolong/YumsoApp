@@ -12,6 +12,7 @@ var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/icon-grey-house.png');
 var paypalIcon = require('./icons/icon-paypal.png');
 var ResetPasswordPage = require('./resetPasswordPage');
+var validator = require('validator');
 
 import Dimensions from 'Dimensions';
 
@@ -429,6 +430,10 @@ class EaterPage extends Component {
         }
         if (!this.state.eaterAlias || this.state.eaterAlias === '') {
             Alert.alert('Warning', 'Missing alias name. This will be displayed publicly to chef and other users', [{ text: 'OK' }]);   
+            return;             
+        }
+        if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
+            Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
             return;             
         }
         var _this = this;

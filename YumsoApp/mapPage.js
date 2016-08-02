@@ -184,7 +184,7 @@ class MapPage extends Component {
                         ))}
                     </MapView>   
                   
-                    <TouchableOpacity activeOpacity={0.7} style={styleMapPage.confirmAddressButtonView} onPress={() => this.doneSelectAddress()}>
+                    <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.doneSelectAddress()}>
                         <Text style={styleMapPage.confirmAddressButtonText}>{this.isSpecific && !this.state.showApartmentNumber ? 'Next': 'Use this Address'}</Text>
                     </TouchableOpacity>
                     {searchAddressResultViewWrapper}
@@ -698,19 +698,9 @@ var styleMapPage = StyleSheet.create({
         color:'#696969',
         alignSelf:'center',
     },
-    confirmAddressButtonView:{
-        height:windowHeight*0.074,
-        flexDirection:'row',        
-        justifyContent: 'center',
-        backgroundColor:'#FFCC33',
-        position:'absolute',
-        left: 0, 
-        right: 0,
-        top:windowHeight-windowHeight*0.074,
-    }, 
     confirmAddressButtonText:{
         fontSize:windowHeight/30.6,
-        fontWeight:'300',
+        fontWeight:'400',
         color:'#fff',
         alignSelf:'center', 
     },

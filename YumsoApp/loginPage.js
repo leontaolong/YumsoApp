@@ -94,8 +94,7 @@ class LoginPage extends Component {
                         <Text onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpText}>Sign up now!</Text>
                     </View>
                  </ScrollView>
-              </Image>
-              
+              </Image>              
               <View style={styleLoginPage.fbSignInButtonView}>
                     <FBLogin style={styleLoginPage.fbSignInButton}
                         permissions={facebookPermissions}
@@ -268,14 +267,10 @@ var styleLoginPage = StyleSheet.create({
       backgroundColor:'transparent',
     },
     fbSignInButtonView:{
+      flexDirection:'row', 
+      height:windowHeight*0.075, 
       justifyContent:'center',
-      flexDirection:'row',
-      height:windowHeight/13.38,
       backgroundColor:'#3b5998',
-      position:'absolute',
-      left: 0, 
-      right: 0,
-      top:windowHeight-windowHeight/13.38,
     },
     fbSignInButton:{
       alignSelf:'center',
