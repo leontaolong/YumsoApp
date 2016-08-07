@@ -1,5 +1,5 @@
 module.exports={
-    baseUrl: 'http://www.yumso.com',
+    baseUrl: 'https://www.yumso.com',
     googleApiName:'yumsoIOS	',
     googleApiKey:'AIzaSyBQdKxM-ZRQ2r95bkQLPlY10joKJeC6slw',
     googleGeoBaseUrl: 'https://maps.googleapis.com',
