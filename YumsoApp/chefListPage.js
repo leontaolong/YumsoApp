@@ -44,6 +44,7 @@ import React, {
     TouchableHighlight,
     TouchableOpacity,
     ActivityIndicatorIOS,
+    PushNotificationIOS,
     Alert
 } from 'react-native';
 
@@ -77,6 +78,7 @@ class ChefListPage extends Component {
             dollarSign3: dollarSign3_Grey,
             priceRankFilter:{},
             sortCriteriaIcon:sortCriteriaIconGrey,
+            deviceToken: null
         };
         this.responseHandler = function (response, msg) {
              if(response.statusCode==400){
@@ -104,10 +106,10 @@ class ChefListPage extends Component {
     async componentDidMount() {
         if(!this.state.pickedAddress){
            this.setState({showProgress:true});
-           await this.getLocation().catch((err)=>{
-                 this.setState({GPSproxAddress:undefined,showProgress:false}); 
-                 commonAlert.locationError(err);
-           });//todo: really wait??
+        //    await this.getLocation().catch((err)=>{
+        //          this.setState({GPSproxAddress:undefined,showProgress:false}); 
+        //          commonAlert.locationError(err);
+        //    });//todo: really wait??
            this.setState({showProgress:false})
         }
         let eater = this.state.eater;
@@ -128,6 +130,36 @@ class ChefListPage extends Component {
         }
         this.setState({ principal: principal, eater:eater });
         this.fetchChefDishes();
+        PushNotificationIOS.requestPermissions();
+        var self = this;
+        this.registerNotification().then(function(token){
+            self.setState({ deviceToken: token });
+        });
+
+        PushNotificationIOS.checkPermissions((permissions) => {
+            console.log(permissions);
+        });
+    
+        PushNotificationIOS.addEventListener('notification', function(notification){
+           console.log('You have received a new notification!', notification);
+           Alert.alert( 'Notification', notification.getMessage(),[ { text: 'OK' }]);
+           PushNotificationIOS.getApplicationIconBadgeNumber(function(count){
+                PushNotificationIOS.setApplicationIconBadgeNumber(count+notification.getBadgeCount());
+           });
+        });
+    }
+
+    registerNotification() {
+        return new Promise((resolve,reject) => {
+            PushNotificationIOS.addEventListener('register', function(token){
+               if(token){
+                  console.log('You are registered and the device token is: ',token);
+                  resolve(token);
+               }else{
+                  reject(new Error)
+               }  
+            })
+        });
     }
 
     async fetchChefDishes() {
@@ -671,10 +703,12 @@ var Menu = React.createClass({
     
     logIn: function(){
         this.props.caller.setState({ isMenuOpen: false });
+        console.log('sidemenu login: '+this.props.caller.state.deviceToken);
         this.props.navigator.push({
             name: 'LoginPage',
             passProps: {
-                callback: this.props.caller.componentDidMount.bind(this.props.caller)
+                callback: this.props.caller.componentDidMount.bind(this.props.caller),
+                deviceToken: this.props.caller.state.deviceToken
             }            
         }); 
     },
