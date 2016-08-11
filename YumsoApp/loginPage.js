@@ -149,7 +149,7 @@ class LoginPage extends Component {
         
         this.setState({showProgress:true});
         try{
-           let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password);
+           let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password, this.state.deviceToken);
            this.setState({ showProgress: false });
            if(!eater){
               return;

@@ -80,10 +80,11 @@ class AuthService {
         }
     }
         
-    async loginWithEmail(email, password){
+    async loginWithEmail(email, password,deviceToken){
         let response = await this.client.postWithoutAuth(config.authEndpointEmail, {
             email: email,
-            password: password
+            password: password,
+            deviceToken: deviceToken
         });
         if(response.statusCode!=200){
             Alert.alert( 'Warning', response.data,[ { text: 'OK' }]); 
