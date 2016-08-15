@@ -30,9 +30,21 @@ class AuthService {
         }   
         return JSON.parse(eaterStr);   
     }
+
+    async getDeviceTokenFromCache(){
+        let deviceToken = await AsyncStorage.getItem('deviceToken');
+        if(!deviceToken){
+            return 'No_Device_Token';
+        }   
+        return deviceToken;   
+    }
     
     async updateCacheEater(eater){
         await AsyncStorage.multiSet([[eaterKey, JSON.stringify(eater)]]);
+    }
+
+    async updateCacheDeviceToken(deviceToken) {
+        await AsyncStorage.setItem('deviceToken', deviceToken);
     }
     
     async registerWithEmail(firstname, lastname, email, password, password_re){
@@ -107,6 +119,7 @@ class AuthService {
     }
     
     async loginWithFbToken(token,deviceToken){
+        console.log("loginWithDeviceToken: " + deviceToken);
         let response = await this.client.postWithoutAuth(config.authEndpointFacebook, {
             token:token,
             deviceToken:deviceToken
