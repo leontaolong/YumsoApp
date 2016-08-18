@@ -196,7 +196,13 @@ class ChefListPage extends Component {
            var chefView = {};
            var chefsDictionary = {};
            for (var chef of chefs) {
-                chefView[chef.chefId] = chef.starDishPictures;
+                let starDishPictures=[];
+                if(chef.highLightDishIds){
+                   for(var dishId in chef.highLightDishIds){
+                       starDishPictures.push(chef.highLightDishIds[dishId]);
+                   }
+                }
+                chefView[chef.chefId] = starDishPictures;
                 chefsDictionary[chef.chefId] = chef;
            }
            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
