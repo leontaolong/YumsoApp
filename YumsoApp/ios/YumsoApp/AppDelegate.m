@@ -8,7 +8,7 @@
  */
 
 #import "AppDelegate.h"
-
+#import "RCTPushNotificationManager.h"
 #import "RCTRootView.h"
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
@@ -34,7 +34,7 @@
    * on the same Wi-Fi network.
    */
 
-  jsCodeLocation = [NSURL URLWithString:@"http://10.104.201.116:8081/index.ios.bundle?platform=ios&dev=false"];
+  jsCodeLocation = [NSURL URLWithString:@"http://10.0.0.242:8081/index.ios.bundle?platform=ios&dev=true"];
 
   /**
    * OPTION 2
@@ -71,5 +71,18 @@
                                               sourceApplication:sourceApplication
                                                      annotation:annotation];
 }
+
+// Required to register for notifications
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+   [RCTPushNotificationManager didRegisterUserNotificationSettings:notificationSettings]; 
+}
+// Required for the register event.
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken { 
+  [RCTPushNotificationManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken]; 
+}
+// Required for the notification event.
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)notification {
+  [RCTPushNotificationManager didReceiveRemoteNotification:notification];
+}   
 
 @end

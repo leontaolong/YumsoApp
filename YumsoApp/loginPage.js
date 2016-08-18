@@ -33,6 +33,7 @@ class LoginPage extends Component {
         super(props);
         this.state = {
             showProgress: false,
+            deviceToken:null,
         };
         var routeStack = this.props.navigator.state.routeStack;
         if(routeStack && routeStack.length>0){
@@ -40,6 +41,7 @@ class LoginPage extends Component {
             if(passProps){
                 this.state.callback = passProps.callback;
                 this.state.backCallback = passProps.backCallback;
+                this.state.deviceToken = passProps.deviceToken;
             }
         }
     }
@@ -53,6 +55,8 @@ class LoginPage extends Component {
                                     <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                </View>;  
       }
+
+      console.log('LoginPage deviceToken '+this.state.deviceToken);
       
       return (
             <View style={styles.container}>
@@ -99,7 +103,7 @@ class LoginPage extends Component {
                     <FBLogin style={styleLoginPage.fbSignInButton}
                         permissions={facebookPermissions}
                         onLogin={function(data) {
-                            _this.onGettingFbToken(data.credentials);
+                            _this.onGettingFbToken(data.credentials,_this.state.deviceToken);
                             _this.setState({ user: data.credentials });
                         } }
                         onLogout={function() {
@@ -145,7 +149,7 @@ class LoginPage extends Component {
         
         this.setState({showProgress:true});
         try{
-           let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password);
+           let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password, this.state.deviceToken);
            this.setState({ showProgress: false });
            if(!eater){
               return;
@@ -180,11 +184,11 @@ class LoginPage extends Component {
            commonAlert.networkError(err);
         }
     }
-    async onGettingFbToken(credentials){
+    async onGettingFbToken(credentials,deviceToken){
         let token  = credentials.token;
         this.setState({showProgress:true});
         try{
-           let eater = await AuthService.loginWithFbToken(token);
+           let eater = await AuthService.loginWithFbToken(token,deviceToken);
            this.setState({ showProgress: false });
            if(!eater){
               return;

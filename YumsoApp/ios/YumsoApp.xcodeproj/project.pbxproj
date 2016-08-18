@@ -21,6 +21,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		20AA4F5E1D51F71300530A9C /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 20AA4F5D1D51F61D00530A9C /* libRCTPushNotification.a */; };
 		20F5CAF81D30E07A00D33A51 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 20F5CAF71D30E07A00D33A51 /* Default-568h@2x.png */; };
 		5821B6D11CD1F5F00073AD2C /* RNBraintree.m in Sources */ = {isa = PBXBuildFile; fileRef = 5821B6D01CD1F5F00073AD2C /* RNBraintree.m */; };
 		586A2A471CF1B9A5004B0E07 /* libActivityView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 586A2A461CF1B99E004B0E07 /* libActivityView.a */; };
@@ -99,6 +100,13 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
+		20AA4F5C1D51F61D00530A9C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20AA4F581D51F61D00530A9C /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
 		586A2A451CF1B99E004B0E07 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 586A2A411CF1B99D004B0E07 /* ActivityView.xcodeproj */;
@@ -170,6 +178,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = YumsoApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = YumsoApp/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		20AA4F581D51F61D00530A9C /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		20F5CAF71D30E07A00D33A51 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		5821B6CF1CD1F5F00073AD2C /* RNBraintree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RNBraintree.h; path = YumsoApp/RNBraintree.h; sourceTree = "<group>"; };
 		5821B6D01CD1F5F00073AD2C /* RNBraintree.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNBraintree.m; path = YumsoApp/RNBraintree.m; sourceTree = "<group>"; };
@@ -201,6 +210,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20AA4F5E1D51F71300530A9C /* libRCTPushNotification.a in Frameworks */,
 				586A2A471CF1B9A5004B0E07 /* libActivityView.a in Frameworks */,
 				58F91AFD1CCD50EF00F73877 /* libAirMaps.a in Frameworks */,
 				58F91AEC1CCB603300F73877 /* libRNImagePicker.a in Frameworks */,
@@ -326,6 +336,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		20AA4F591D51F61D00530A9C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				20AA4F5D1D51F61D00530A9C /* libRCTPushNotification.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		27F83914C392F2CBD850FAB0 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -394,6 +412,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				20AA4F581D51F61D00530A9C /* RCTPushNotification.xcodeproj */,
 				586A2A481CF25441004B0E07 /* RCTWeChat.xcodeproj */,
 				586A2A411CF1B99D004B0E07 /* ActivityView.xcodeproj */,
 				58F91AF71CCD50D800F73877 /* AirMaps.xcodeproj */,
@@ -502,6 +521,11 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 294EH8XH6D;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -548,6 +572,10 @@
 				{
 					ProductGroup = 00C302D41ABCB9D200DB3ED1 /* Products */;
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
+				},
+				{
+					ProductGroup = 20AA4F591D51F61D00530A9C /* Products */;
+					ProjectRef = 20AA4F581D51F61D00530A9C /* RCTPushNotification.xcodeproj */;
 				},
 				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
@@ -641,6 +669,13 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		20AA4F5D1D51F61D00530A9C /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = 20AA4F5C1D51F61D00530A9C /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		586A2A461CF1B99E004B0E07 /* libActivityView.a */ = {
@@ -874,6 +909,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 				);
 				INFOPLIST_FILE = YumsoApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -910,6 +946,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../../react-native/Libraries/Image/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 				);
 				INFOPLIST_FILE = YumsoApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -940,6 +977,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

@@ -80,10 +80,11 @@ class AuthService {
         }
     }
         
-    async loginWithEmail(email, password){
+    async loginWithEmail(email, password,deviceToken){
         let response = await this.client.postWithoutAuth(config.authEndpointEmail, {
             email: email,
-            password: password
+            password: password,
+            deviceToken: deviceToken
         });
         if(response.statusCode!=200){
             Alert.alert( 'Warning', response.data,[ { text: 'OK' }]); 
@@ -105,9 +106,10 @@ class AuthService {
         return res.data.eater;
     }
     
-    async loginWithFbToken(token){
+    async loginWithFbToken(token,deviceToken){
         let response = await this.client.postWithoutAuth(config.authEndpointFacebook, {
-            token:token
+            token:token,
+            deviceToken:deviceToken
         });
         if(response.statusCode!==200){
             Alert.alert( 'Warning', 'Failed login to facebook with its token',[ { text: 'OK' }]); 
