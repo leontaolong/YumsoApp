@@ -26,7 +26,7 @@ var dollarSign2_Orange = require('./icons/icon-dollar2-orange.webp');
 var dollarSign3_Orange = require('./icons/icon-dollar3-orange.webp');
 var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.webp');
 var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.webp');
-var RefreshableListView = require('react-native-refreshable-listview')
+var RefreshableListView = require('react-native-refreshable-listview');
 
 import Dimensions from 'Dimensions';
 
@@ -45,7 +45,9 @@ import React, {
     TouchableOpacity,
     ActivityIndicatorIOS,
     PushNotificationIOS,
-    Alert
+    Alert,
+    AsyncStorage,
+    AppState
 } from 'react-native';
 
 class ChefListPage extends Component {
@@ -104,6 +106,31 @@ class ChefListPage extends Component {
     }
 
     async componentDidMount() {
+        // AppState.addEventListener('change', this._handleAppStateChange);
+        // PushNotificationIOS.setApplicationIconBadgeNumber(0);
+        PushNotificationIOS.requestPermissions();
+        var self = this;
+        this.registerNotification().then(function (token) {
+            return AuthService.updateCacheDeviceToken(token);
+        });
+
+        PushNotificationIOS.checkPermissions((permissions) => {
+            console.log(permissions);
+        });
+
+        var notifId = '';
+        PushNotificationIOS.addEventListener('notification', function(notification){
+           console.log('You have received a new notification!', notification);
+           if(notifId!=notification.getData().notifId){
+              Alert.alert( 'Notification', notification.getMessage(),[ { text: 'OK' }]);
+           }
+           console.log('notifId: ' + notification.getData().notifId);
+           notifId = notification.getData().notifId;
+           
+        //    PushNotificationIOS.getApplicationIconBadgeNumber(function(count){
+        //         PushNotificationIOS.setApplicationIconBadgeNumber(count+notification.getBadgeCount());
+        //    });
+        });
         if(!this.state.pickedAddress){
            this.setState({showProgress:true});
         //    await this.getLocation().catch((err)=>{
@@ -128,25 +155,8 @@ class ChefListPage extends Component {
                 withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort,
                 sortCriteriaIcon:eater.chefFilterSettings.withBestRatedSort ? sortCriteriaIconOrange:sortCriteriaIconGrey});            
         }
-        this.setState({ principal: principal, eater:eater });
+        this.setState({ principal: principal, eater: eater });
         this.fetchChefDishes();
-        PushNotificationIOS.requestPermissions();
-        var self = this;
-        this.registerNotification().then(function(token){
-            self.setState({ deviceToken: token });
-        });
-
-        PushNotificationIOS.checkPermissions((permissions) => {
-            console.log(permissions);
-        });
-    
-        PushNotificationIOS.addEventListener('notification', function(notification){
-           console.log('You have received a new notification!', notification);
-           Alert.alert( 'Notification', notification.getMessage(),[ { text: 'OK' }]);
-           PushNotificationIOS.getApplicationIconBadgeNumber(function(count){
-                PushNotificationIOS.setApplicationIconBadgeNumber(count+notification.getBadgeCount());
-           });
-        });
     }
 
     registerNotification() {
@@ -156,7 +166,7 @@ class ChefListPage extends Component {
                   console.log('You are registered and the device token is: ',token);
                   resolve(token);
                }else{
-                  reject(new Error)
+                  reject(new Error('Failed registering notification service'))
                }  
             })
         });
@@ -186,7 +196,13 @@ class ChefListPage extends Component {
            var chefView = {};
            var chefsDictionary = {};
            for (var chef of chefs) {
-                chefView[chef.chefId] = chef.starDishPictures;
+                let starDishPictures=[];
+                if(chef.highLightDishIds){
+                   for(var dishId in chef.highLightDishIds){
+                       starDishPictures.push(chef.highLightDishIds[dishId]);
+                   }
+                }
+                chefView[chef.chefId] = starDishPictures;
                 chefsDictionary[chef.chefId] = chef;
            }
            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
@@ -634,6 +650,10 @@ var Menu = React.createClass({
         );
     },
 
+    // _handleAppStateChange: function(appState) {
+    //     var LastAppState = ; 
+    // },
+
     goToOrderHistory: function() {
         this.props.caller.setState({ isMenuOpen: false });
         if(!this.props.eater){
@@ -703,12 +723,10 @@ var Menu = React.createClass({
     
     logIn: function(){
         this.props.caller.setState({ isMenuOpen: false });
-        console.log('sidemenu login: '+this.props.caller.state.deviceToken);
         this.props.navigator.push({
             name: 'LoginPage',
             passProps: {
                 callback: this.props.caller.componentDidMount.bind(this.props.caller),
-                deviceToken: this.props.caller.state.deviceToken
             }            
         }); 
     },

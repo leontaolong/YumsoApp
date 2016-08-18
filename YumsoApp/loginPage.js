@@ -33,7 +33,6 @@ class LoginPage extends Component {
         super(props);
         this.state = {
             showProgress: false,
-            deviceToken:null,
         };
         var routeStack = this.props.navigator.state.routeStack;
         if(routeStack && routeStack.length>0){
@@ -41,7 +40,6 @@ class LoginPage extends Component {
             if(passProps){
                 this.state.callback = passProps.callback;
                 this.state.backCallback = passProps.backCallback;
-                this.state.deviceToken = passProps.deviceToken;
             }
         }
     }
@@ -103,7 +101,7 @@ class LoginPage extends Component {
                     <FBLogin style={styleLoginPage.fbSignInButton}
                         permissions={facebookPermissions}
                         onLogin={function(data) {
-                            _this.onGettingFbToken(data.credentials,_this.state.deviceToken);
+                            _this.onGettingFbToken(data.credentials);
                             _this.setState({ user: data.credentials });
                         } }
                         onLogout={function() {
@@ -148,8 +146,9 @@ class LoginPage extends Component {
         }
         
         this.setState({showProgress:true});
+        let deviceToken = await AuthService.getDeviceTokenFromCache();
         try{
-           let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password, this.state.deviceToken);
+           let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password, deviceToken);
            this.setState({ showProgress: false });
            if(!eater){
               return;
@@ -184,9 +183,10 @@ class LoginPage extends Component {
            commonAlert.networkError(err);
         }
     }
-    async onGettingFbToken(credentials,deviceToken){
+    async onGettingFbToken(credentials){
         let token  = credentials.token;
         this.setState({showProgress:true});
+        let deviceToken = await AuthService.getDeviceTokenFromCache();
         try{
            let eater = await AuthService.loginWithFbToken(token,deviceToken);
            this.setState({ showProgress: false });

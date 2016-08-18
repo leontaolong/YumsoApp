@@ -83,12 +83,12 @@ class ShopPage extends Component {
      }
 
     async fetchDishesAndSchedules() {
-        this.setState({ showProgress: true });
         let chefId = this.state.chefId;
         const start = 'start='+new Date().getTime();
         const end = 'end='+new Date().setDate(new Date().getDate()+6);
         
         try{
+          this.setState({ showProgress: true });
           var responseDish = await this.client.getWithoutAuth(config.chefDishesEndpoint+chefId);
           this.setState({showProgress:false,showNetworkUnavailableScreen:false})
         }catch(err){
@@ -98,6 +98,7 @@ class ShopPage extends Component {
         }
 
         try{
+          this.setState({ showProgress: true });
           var responseSchedule = await this.client.getWithoutAuth(config.chefSchedulesEndpoint+chefId+'?'+start+'&'+end);
           this.setState({showProgress:false,showNetworkUnavailableScreen:false})
         }catch(err){
