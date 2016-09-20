@@ -447,7 +447,7 @@ class ShopPage extends Component {
                             _this.setState({ like: isAdd });
                             Alert.alert('Success', isAdd ? 'Added to favorite list' : 'Removed from favorite list', [{ text: 'OK' }]);
                         });
-                } else if (res.statusCode === 401) {
+                }else if (res.statusCode === 401) {
                     return AuthService.logOut()
                         .then(() => {
                             delete _this.state.eater;

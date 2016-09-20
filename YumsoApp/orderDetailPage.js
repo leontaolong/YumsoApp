@@ -102,7 +102,7 @@ class OrderDetailPage extends Component {
     renderHeader(){
         //Render 'Delivered' status
         if(this.state.showDeliverStatusView){  
-            if(this.state.order.orderStatus=='Delivered'){
+            if(this.state.order.orderStatus.toLowerCase()=='delivered'){
             var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
                                         <Text style={styleOrderDetailPage.deliverTimeText}>Your order was delivered at {dateRender.renderDate2(this.state.order.orderStatusModifiedTime)}</Text>
                                         <TouchableHighlight style={styleOrderDetailPage.deleteBannerIconView} underlayColor={'transparent'} onPress={()=>this.setState({showDeliverStatusView:false})}>
@@ -116,10 +116,10 @@ class OrderDetailPage extends Component {
                 var newStatusTextColor = "#FFFFFF";
                 var cookingStatusTextColor = "#b89467";
                 var DeliveringStatusTextColor = "#b89467";
-                if(currentTime > this.state.order.orderDeliverTime - 2*60*60*1000 && currentTime < this.state.order.orderDeliverTime){
+                if(currentTime > this.state.order.orderDeliverTime - 0.5*60*60*1000 && currentTime < this.state.order.orderDeliverTime){
                     cookingStatusTextColor = "#FFFFFF";
                 }
-            }else if(this.state.order.orderStatus == 'Delivering'){
+            }else if(this.state.order.orderStatus.toLowerCase() == 'delivering'){
                 var newStatusTextColor = "#FFFFFF";
                 var cookingStatusTextColor = "#FFFFFF";
                 var DeliveringStatusTextColor = "#FFFFFF";
@@ -150,7 +150,7 @@ class OrderDetailPage extends Component {
     }
     
     renderFooter(){
-      if(this.state.order.orderStatus=='Delivered'){
+      if(this.state.order.orderStatus.toLowerCase() == 'delivered'){
         if(this.state.order.comment && this.state.order.comment.starRating){
            if(this.state.order.comment.chefComment && this.state.order.comment.chefComment.trim()){
              var  chefReplyView = <View key={'chefReplyView'} style={styleOrderDetailPage.chefReplyBox}>

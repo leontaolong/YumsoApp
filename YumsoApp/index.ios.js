@@ -26,7 +26,10 @@ import React, {
   Text,
   View,
   Image,
-  Navigator
+  Navigator,
+  PushNotificationIOS,
+  AppStateIOS,
+  Alert
 } from 'react-native';
 
 console.disableYellowBox = true; 
@@ -34,6 +37,78 @@ let sceneConfig = Navigator.SceneConfigs.FloatFromRight;
 sceneConfig.gestures.pop = {};
 
 class YumsoApp extends Component {
+    registerNotification() {
+        return new Promise((resolve,reject) => {
+            PushNotificationIOS.addEventListener('register', function(token){
+               if(token){
+                  console.log('You are registered and the device token is: ',token);
+                  resolve(token);
+               }else{
+                  reject(new Error('Failed registering notification service'))
+               }  
+            })
+        });
+    }
+
+    // appOpenedByNotificationTap(notification) {
+    //         // This is your handler. The tapped notification gets passed in here.
+    //         // Do whatever you like with it.
+    //         console.log("By Tap! : " + notification);
+    // }
+
+    componentWillMount(){
+        this.registerNotification().then(function (token) {
+            return AuthService.updateCacheDeviceToken(token);
+        });
+
+        console.log("addEventListeners!");
+        PushNotificationIOS.setApplicationIconBadgeNumber(0);
+        // PushNotificationIOS.getInitialNotification();
+        // .then(function (notification) {
+        //        if (notification != null) {
+        //            this.appOpenedByNotificationTap(notification);
+        //        }
+        // });
+        //let backgroundNotification;
+        PushNotificationIOS.addEventListener('notification', function(notification){
+           console.log('You have received a new notification!', notification);
+        //    if (React.AppStateIOS.currentState === 'background') {
+        //        backgroundNotification = notification;
+        //    }
+           PushNotificationIOS.setApplicationIconBadgeNumber(notification.getBadgeCount());
+           Alert.alert( 'Notification', notification.getMessage(),[ { text: 'OK'}]);
+        });
+
+        // PushNotificationIOS.addEventListener('notification', function(notification){
+        //    if (React.AppStateIOS.currentState === 'background') {
+        //         backgroundNotification = notification;
+        //    }
+
+        // PushNotificationIOS.getApplicationIconBadgeNumber(function(count){
+        //        if('Your order is out for delivery'==notification.getMessage()){
+        //           console.log('Out-for-delivery count: '+count);
+        //           console.log('getBadgeCount: '+notification.getBadgeCount())
+        //           PushNotificationIOS.setApplicationIconBadgeNumber(count+notification.getBadgeCount());
+        //        }   
+        //    });
+        // });
+
+        // PushNotificationIOS.addEventListener('notification', function(notification){
+        //    PushNotificationIOS.getApplicationIconBadgeNumber(function(count){
+        //        if('Your order is delivered'==notification.getMessage()){
+        //            console.log('delivered count: '+count);
+        //            console.log('getBadgeCount: '+notification.getBadgeCount())
+        //            PushNotificationIOS.setApplicationIconBadgeNumber(count+notification.getBadgeCount());
+        //        }
+        //    });
+        // });
+
+        AppStateIOS.addEventListener('change', function (new_state) {
+            if (new_state === 'active') {
+                PushNotificationIOS.setApplicationIconBadgeNumber(0);
+            }
+        });
+    }
     
     render() {
         return (

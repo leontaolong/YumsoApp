@@ -1,1 +1,3 @@
-pod 'Braintree'
+target ‘YumsoApp' do
+  pod 'Braintree'
+end

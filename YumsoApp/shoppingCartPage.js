@@ -12,7 +12,7 @@ var addPromoCodeIcon = require('./icons/icon-add.png');
 var removePromoCodeIcon = require('./icons/icon-cancel.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var commonAlert = require('./commonModules/commonAlert');
-var validator = require('validator');
+//var validator = require('validator');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -552,10 +552,10 @@ class ShoppingCartPage extends Component {
             Alert.alert('Warning','Please add a phone number',[{ text: 'OK' }]);
             return;
         }
-        if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
-            Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
-            return;             
-        }
+        // if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
+        //     Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
+        //     return;             
+        // }
         var orderList ={};
         for(var cartItemKey in this.state.shoppingCart[this.state.selectedTime]){
             var dishItem=this.state.shoppingCart[this.state.selectedTime][cartItemKey];

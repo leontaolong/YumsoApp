@@ -33,7 +33,7 @@
 		58F91AEC1CCB603300F73877 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58F91AEB1CCB5F8200F73877 /* libRNImagePicker.a */; };
 		58F91AFD1CCD50EF00F73877 /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58F91AFC1CCD50D900F73877 /* libAirMaps.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		D2CB9CEC0E10771989BB47E7 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8015C0E573A2855AF8FD9A8A /* libPods.a */; };
+		BA099E0D263EE6D7FE6F7A06 /* libPods-YumsoApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CAEA5EB83104715BC71AA33A /* libPods-YumsoApp.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -192,10 +192,10 @@
 		58F91AE61CCB5F8000F73877 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		58F91AF71CCD50D800F73877 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
-		8015C0E573A2855AF8FD9A8A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
-		C6F7FD6F28EA58B6249434A2 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		F1E6B9CE986FCE33C320523F /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		906FA785B3EC400E6E63347C /* Pods-YumsoApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YumsoApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-YumsoApp/Pods-YumsoApp.debug.xcconfig"; sourceTree = "<group>"; };
+		CAEA5EB83104715BC71AA33A /* libPods-YumsoApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-YumsoApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F59B6EF498E43C49C3EE3084 /* Pods-YumsoApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YumsoApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-YumsoApp/Pods-YumsoApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,7 +228,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				D2CB9CEC0E10771989BB47E7 /* libPods.a in Frameworks */,
+				BA099E0D263EE6D7FE6F7A06 /* libPods-YumsoApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,19 +344,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		27F83914C392F2CBD850FAB0 /* Pods */ = {
+		55EE7AA0B7AEC50A1652B371 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C6F7FD6F28EA58B6249434A2 /* Pods.debug.xcconfig */,
-				F1E6B9CE986FCE33C320523F /* Pods.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		4165E4F4E368E3CA753F2512 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				8015C0E573A2855AF8FD9A8A /* libPods.a */,
+				CAEA5EB83104715BC71AA33A /* libPods-YumsoApp.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -448,8 +439,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* YumsoAppTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
-				27F83914C392F2CBD850FAB0 /* Pods */,
-				4165E4F4E368E3CA753F2512 /* Frameworks */,
+				B183609E1517EDCE8B2B1FCC /* Pods */,
+				55EE7AA0B7AEC50A1652B371 /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -462,6 +453,15 @@
 				00E356EE1AD99517003FC87E /* YumsoAppTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B183609E1517EDCE8B2B1FCC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				906FA785B3EC400E6E63347C /* Pods-YumsoApp.debug.xcconfig */,
+				F59B6EF498E43C49C3EE3084 /* Pods-YumsoApp.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -489,13 +489,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "YumsoApp" */;
 			buildPhases = (
-				030FCC2EA7D3CFC95FA14B8C /* Check Pods Manifest.lock */,
+				57C8C8E1C91905C195C21490 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				B63E78A7382AC99FCBC4CE3F /* Embed Pods Frameworks */,
-				7AD0F04C79C59622B2EF410A /* Copy Pods Resources */,
+				E2884CBB3754F9136B134A4F /* [CP] Embed Pods Frameworks */,
+				504F39F5FA406869B0B6A1B6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -765,49 +765,49 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/packager/react-native-xcode.sh";
 		};
-		030FCC2EA7D3CFC95FA14B8C /* Check Pods Manifest.lock */ = {
+		504F39F5FA406869B0B6A1B6 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-YumsoApp/Pods-YumsoApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7AD0F04C79C59622B2EF410A /* Copy Pods Resources */ = {
+		57C8C8E1C91905C195C21490 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		B63E78A7382AC99FCBC4CE3F /* Embed Pods Frameworks */ = {
+		E2884CBB3754F9136B134A4F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-YumsoApp/Pods-YumsoApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -893,7 +893,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C6F7FD6F28EA58B6249434A2 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 906FA785B3EC400E6E63347C /* Pods-YumsoApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -912,6 +912,7 @@
 					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 				);
 				INFOPLIST_FILE = YumsoApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -925,7 +926,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F1E6B9CE986FCE33C320523F /* Pods.release.xcconfig */;
+			baseConfigurationReference = F59B6EF498E43C49C3EE3084 /* Pods-YumsoApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -949,6 +950,7 @@
 					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 				);
 				INFOPLIST_FILE = YumsoApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"-ObjC",
