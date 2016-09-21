@@ -172,10 +172,10 @@ class ShoppingCartPage extends Component {
                     </View>),
                     (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
                         <View style={styleShoppingCartPage.addressTextView}>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.formatted_address !=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.city !=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.postal !=undefined ? this.state.deliveryAddress.postal:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber !=undefined ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
                         </View>
                         <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonView} underlayColor={'transparent'} onPress={()=>this.setState({selectDeliveryAddress:true})}>
                             <View style={styleShoppingCartPage.addressChangeButtonWrapper}>
@@ -222,10 +222,10 @@ class ShoppingCartPage extends Component {
                     </View>),
                     (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
                         <View style={styleShoppingCartPage.addressTextView}>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.formatted_address!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.city!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.postal!=undefined ? this.state.deliveryAddress.postal:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber!=undefined ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
                             <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
                             <View style={styleShoppingCartPage.phoneNumberInputView}>                       
                                 <TextInput style={styleShoppingCartPage.phoneNumberInput} placeholder={this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'} 
