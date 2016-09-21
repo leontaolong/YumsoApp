@@ -55,6 +55,14 @@ class LoginPage extends Component {
       }
 
       console.log('LoginPage deviceToken '+this.state.deviceToken);
+
+      var skipLoginView = null;
+      if(this.props.navigator.getCurrentRoutes() && this.props.navigator.getCurrentRoutes().length==1 && this.props.navigator.getCurrentRoutes()[0].name == "LoginPage"){
+         skipLoginView = <View style={styleLoginPage.askToSignUpView}>
+                            <Text style={styleLoginPage.askToSignUpText}>Just take a look?</Text>
+                            <Text onPress={() => this.jumpToChefList()} style={styleLoginPage.signUpText}>Skip login</Text>
+                         </View>  
+      }
       
       return (
             <View style={styles.container}>
@@ -95,6 +103,7 @@ class LoginPage extends Component {
                         <Text style={styleLoginPage.askToSignUpText}>Do not have an account? </Text>
                         <Text onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpText}>Sign up now!</Text>
                     </View>
+                    {skipLoginView}
                  </ScrollView>
               </Image>              
               <View style={styleLoginPage.fbSignInButtonView}>
@@ -153,7 +162,12 @@ class LoginPage extends Component {
            if(!eater){
               return;
            }
-           this.props.navigator.pop();  
+           var currentRoutes = this.props.navigator.getCurrentRoutes();
+           if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "LoginPage"){
+              this.jumpToChefList();
+           }else{
+              this.props.navigator.pop();
+           }  
            if(this.props.onLogin){
               this.props.onLogin();
            }
@@ -193,7 +207,16 @@ class LoginPage extends Component {
            if(!eater){
               return;
            }
-           this.props.navigator.pop();  
+
+           console.log("current routes(before): "+JSON.stringify(this.props.navigator.getCurrentRoutes()));
+           var currentRoutes = this.props.navigator.getCurrentRoutes();
+           if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "LoginPage"){
+              this.jumpToChefList();
+           }else{
+              this.props.navigator.pop();
+           }
+           console.log("current routes(after): "+JSON.stringify(this.props.navigator.getCurrentRoutes()));
+
            if(this.props.onLogin){
               this.props.onLogin();
            }
@@ -209,6 +232,16 @@ class LoginPage extends Component {
     navigateToSignUp(){
         this.props.navigator.push({
             name: 'SignUpPage'
+        });    
+    }
+
+    jumpToChefList(){
+       this.props.navigator.resetTo({name:'ChefListPage'});
+    }
+
+    navigateToChefList(){
+        this.props.navigator.push({
+            name: 'ChefListPage'
         });    
     }
     

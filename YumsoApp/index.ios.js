@@ -113,7 +113,7 @@ class YumsoApp extends Component {
     render() {
         return (
                 <Navigator
-                    initialRoute={{ name: 'ChefListPage' }}
+                    initialRoute={{ name: 'LoginPage' }}
                     renderScene={ this.renderScene } />     
         );
     }
