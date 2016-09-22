@@ -485,16 +485,17 @@ class ChefListPage extends Component {
 
     searchChef(isApplySearchButtonPressed){
         if(isApplySearchButtonPressed==true){
-           if(!this.props.eater){
-                this.props.navigator.push({
+           if(!this.state.eater){
+              this.props.navigator.push({
                     name: 'LoginPage',
-                    passProps:{
-                        callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
-                        backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
+                    passProps: {
+                        callback: function(eater){
+                            this.setState({eater:eater})
+                        }.bind(this)
                     }
-                });  
-                return;
-           }
+             }); 
+             return
+          } 
            this.setState({showProgress:true});
         }
         return this.applySearchSettings()
