@@ -17,7 +17,6 @@ var OrderDetailPage = require('./orderDetailPage');
 var AboutPage = require('./aboutPage');
 var TermsPage = require('./termsPage');
 var styles = require('./style');
-var AuthService = require('./authService');
 
 import React, {
   AppRegistry,
@@ -37,6 +36,10 @@ let sceneConfig = Navigator.SceneConfigs.FloatFromRight;
 sceneConfig.gestures.pop = {};
 
 class YumsoApp extends Component {
+    constructor(props){
+        super(props);
+        this.state={eater:undefined}
+    }
     registerNotification() {
         return new Promise((resolve,reject) => {
             PushNotificationIOS.addEventListener('register', function(token){
@@ -56,7 +59,7 @@ class YumsoApp extends Component {
     //         console.log("By Tap! : " + notification);
     // }
 
-    componentWillMount(){
+    async componentWillMount(){
         this.registerNotification().then(function (token) {
             return AuthService.updateCacheDeviceToken(token);
         });
@@ -108,14 +111,25 @@ class YumsoApp extends Component {
                 PushNotificationIOS.setApplicationIconBadgeNumber(0);
             }
         });
+        let eaterStr = await AuthService.getEater();
+        this.setState({eater:eaterStr,doneGettingEater:true});
+    }
+
+    getInitialState(){
+        this.setState({doneGettingEater:false});
     }
     
     render() {
-        return (
-                <Navigator
-                    initialRoute={{ name: 'LoginPage' }}
-                    renderScene={ this.renderScene } />     
-        );
+        if(!this.state.doneGettingEater){
+           //return <Image style={styles.pageBackgroundImage} source={backgroundImage}></Image> 
+           return <View style={{flex:1,backgroundColor:"#FFFFFF"}}></View> 
+        }else{
+           if(!this.state.eater){
+              return (<Navigator initialRoute={{ name: 'LoginPage' }}  renderScene={ this.renderScene } />);
+           }else{
+              return (<Navigator initialRoute={{ name: 'ChefListPage' }}  renderScene={ this.renderScene } />);
+           } 
+        }
     }
     
     renderScene(route, navigator) {

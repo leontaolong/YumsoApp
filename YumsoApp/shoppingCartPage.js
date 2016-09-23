@@ -446,8 +446,9 @@ class ShoppingCartPage extends Component {
             return;         
         }else{
             let address = this.state.deliveryAddress; //todo: do this or should just make a disapear? which better UX?
-            if (address.streetName === 'unknown' || address.streetNumber === 'unknown' || address.city == 'unknown' || address.state == 'unknown' || address.postal == 'unknown') {
-                Alert.alert('Warning', 'Pleas set a specific location for delivery. The current address is only approximate', [{ text: 'OK' }]);
+            if (!address.streetName || address.streetName == 'unknown' || !address.streetNumber || address.streetNumber == 'unknown' 
+            || !address.city || address.city == 'unknown' || !address.state || address.state == 'unknown' || !address.postal || address.postal == 'unknown') {
+                Alert.alert('Warning', 'Pleas set a specific address for delivery', [{ text: 'OK' }]);
                 return;
             }            
         }

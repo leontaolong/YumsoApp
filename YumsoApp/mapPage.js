@@ -408,9 +408,8 @@ class MapPage extends Component {
             }
             if(this.state.showApartmentNumber && (!this.state.apartmentNumber || !this.state.apartmentNumber.trim())){
                 Alert.alert( 'Warning', 
-                             'Wouldn\'t you specify your Apt./Suite# ?',
-                             [ { text: 'OK'} ,
-                               { text: 'Not Applicable', onPress:()=>{
+                             'Wouldn\'t you specify your Apt./Suite number ?',
+                             [ { text: 'Not Applicable', onPress:()=>{
                                         this.state.selectedAddress.apartmentNumber = null;
                                         if (this.state.selectedAddress) {
                                             if (this.state.eater) {
@@ -432,7 +431,8 @@ class MapPage extends Component {
                                             }
                                        }
                                    }
-                               }
+                               },
+                               { text: 'Set Apt./Suite number'} ,
                               ]
                            );
                 return;

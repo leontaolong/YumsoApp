@@ -921,6 +921,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yumso.yumsoeater;
 				PRODUCT_NAME = YumsoApp;
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -959,6 +960,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.yumso.yumsoeater;
 				PRODUCT_NAME = YumsoApp;
 				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};
