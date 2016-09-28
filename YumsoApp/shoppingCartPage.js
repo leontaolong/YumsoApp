@@ -159,7 +159,7 @@ class ShoppingCartPage extends Component {
                             <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
                         </View>
                         <View style={styleShoppingCartPage.priceNumberView}>
-                            <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice}</Text>
+                            <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice ? Number(this.state.totalPrice.toFixed(2)) : '0'}</Text>
                         </View>
                     </View>),
                     (<View key={'promotionCodeView'} style={styleShoppingCartPage.promotionCodeView}>

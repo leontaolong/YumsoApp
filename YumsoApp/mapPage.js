@@ -262,7 +262,9 @@ class MapPage extends Component {
     renderSearchResult(addressList){
         var addressesView = []
         for(let address of addressList){
-            addressesView.push(<View style={styleMapPage.possibleAddressView}><Text style={styleMapPage.possibleAddressText} key={address.formatted_address} onPress={()=>{this.usedSavedAddress=false; this.useAddress(address)}}>  {address.formatted_address}</Text></View>);
+            addressesView.push(<View style={styleMapPage.possibleAddressView}>
+                                  <Text style={styleMapPage.possibleAddressText} key={address.formatted_address} onPress={()=>{this.usedSavedAddress=false; this.useAddress(address)}}>  {address.formatted_address}</Text>
+                               </View>);
         }
         return addressesView;
     }
@@ -675,7 +677,7 @@ var styleMapPage = StyleSheet.create({
         alignSelf:'center', 
     },
     possibleAddressView:{
-        height:40,
+        height:50,
         justifyContent:'center',
     },
     dismissButtonView:{

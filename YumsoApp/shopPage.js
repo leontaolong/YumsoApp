@@ -320,9 +320,9 @@ class ShopPage extends Component {
                            renderRow={this.renderRow.bind(this) } 
                            renderHeader={this.renderHeader.bind(this)}
                            loadData={this.fetchDishesAndSchedules.bind(this)}/>
-           footerView = <View style={styleShopPage.footerView}>          
+           footerView = <View style={styleShopPage.footerView}>
                           <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Dishes'? '' : 'Subtotal: $'+this.state.totalPrice}</Text>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Dishes'? '' : 'Subtotal: $'+Number(this.state.totalPrice.toFixed(2))}</Text>
                           </View>
                           <TouchableOpacity style={styleShopPage.checkoutButtonView} activeOpacity={0.7} onPress={() => this.navigateToShoppingCart()}> 
                              <View style={styleShopPage.checkoutButtonWrapper}>
