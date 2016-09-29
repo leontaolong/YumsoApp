@@ -122,7 +122,7 @@ class HistoryOrderPage extends Component {
      
     
     renderRow(order){
-        if(order.orderStatus == 'Delivered'){
+        if(order.orderStatus.toLowerCase() == 'delivered'){
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
         }else{
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Will be out for delivery at {dateRender.renderDate2(order.orderDeliverTime)}</Text>

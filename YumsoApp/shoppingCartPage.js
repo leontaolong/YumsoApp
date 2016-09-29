@@ -12,7 +12,7 @@ var addPromoCodeIcon = require('./icons/icon-add.png');
 var removePromoCodeIcon = require('./icons/icon-cancel.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var commonAlert = require('./commonModules/commonAlert');
-//var validator = require('validator');
+var validator = require('validator');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -45,7 +45,9 @@ class ShoppingCartPage extends Component {
         let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;        
         this.deliverTimestamp = routeStack[routeStack.length-1].passProps.deliverTimestamp;        
         let chefId = routeStack[routeStack.length-1].passProps.chefId;        
-        let eater = routeStack[routeStack.length-1].passProps.eater;        
+        let eater = routeStack[routeStack.length-1].passProps.eater;
+        let currentLocation = routeStack[routeStack.length-1].passProps.currentLocation;
+        console.log("currentLocation3: "+currentLocation)        
         let scheduleMapping = routeStack[routeStack.length-1].passProps.scheduleMapping;        
         this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
@@ -56,6 +58,7 @@ class ShoppingCartPage extends Component {
             scheduleMapping: scheduleMapping,           
             shoppingCart:shoppingCart,
             selectedTime:selectedTime,
+            currentLocation:currentLocation,
             deliveryAddress: Object.keys(this.defaultDeliveryAddress).length===0?undefined:this.defaultDeliveryAddress,
             chefId:chefId,
             selectDeliveryAddress:false,
@@ -265,7 +268,7 @@ class ShoppingCartPage extends Component {
                                 </View>;  
         }
         if(this.state.selectDeliveryAddress){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true} showHouseIcon={true}/>);   
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true} currentAddress={this.state.currentLocation} showHouseIcon={true}/>);   
         }
         
         if(!this.state.priceIsConfirmed){
@@ -553,10 +556,10 @@ class ShoppingCartPage extends Component {
             Alert.alert('Warning','Please add a phone number',[{ text: 'OK' }]);
             return;
         }
-        // if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
-        //     Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
-        //     return;             
-        // }
+        if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
+            Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
+            return;             
+        }
         var orderList ={};
         for(var cartItemKey in this.state.shoppingCart[this.state.selectedTime]){
             var dishItem=this.state.shoppingCart[this.state.selectedTime][cartItemKey];

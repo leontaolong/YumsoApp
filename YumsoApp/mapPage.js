@@ -41,8 +41,8 @@ class MapPage extends Component {
         let city;
         if(this.props.navigator){
            routeStack = this.props.navigator.state.routeStack;
-        }    
-        let mark = undefined;
+        }
+        let mark = undefined;    
         if(this.props.initialLoc){
             mark = {
                 id :'saved',
@@ -52,6 +52,13 @@ class MapPage extends Component {
             this.initialRegion = {
                 latitude: this.props.initialLoc.lat,
                 longitude: this.props.initialLoc.lng,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            };
+        }else if(this.props.currentAddress && this.props.currentAddress!=null){
+            this.initialRegion = {
+                latitude: this.props.currentAddress.lat,
+                longitude: this.props.currentAddress.lng,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
             };

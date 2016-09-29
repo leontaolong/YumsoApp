@@ -56,16 +56,19 @@ class ShopPage extends Component {
         });
         var routeStack = this.props.navigator.state.routeStack;
         let chef = routeStack[routeStack.length-1].passProps.chef;      
-        this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress==undefined?{}:routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;      
+        this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress==undefined?{}:routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;
+        let currentLocation = routeStack[routeStack.length-1].passProps.currentLocation;
         this.callback = routeStack[routeStack.length-1].passProps.callback;      
-        let eater = routeStack[routeStack.length-1].passProps.eater;      
+        let eater = routeStack[routeStack.length-1].passProps.eater;    
+        console.log("currentLocation2: "+currentLocation)  
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:false,
             chefId: chef.chefId,
             chef:chef,
             timeData:[],
-            shoppingCart:{},  
+            shoppingCart:{}, 
+            currentLocation:currentLocation, 
             selectedTime:'All Dishes',
             totalPrice:0,
             eater:eater
@@ -507,6 +510,7 @@ class ShopPage extends Component {
                 shoppingCart:this.state.shoppingCart,
                 selectedTime:this.state.selectedTime,
                 deliverTimestamp:Date.parse(this.state.selectedTime),
+                currentLocation:this.state.currentLocation,
                 defaultDeliveryAddress: this.defaultDeliveryAddress,
                 chefId:this.state.chefId,
                 eater:this.state.eater,

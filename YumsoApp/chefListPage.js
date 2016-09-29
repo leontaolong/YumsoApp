@@ -75,7 +75,7 @@ class ChefListPage extends Component {
             chefsDictionary: {},
             city:'Seattle',
             state:'WA',
-            pickedAddress:{lat:47.6062095, lng:-122.3320708},
+            pickedAddress:undefined,
             dollarSign1: dollarSign1_Grey,
             dollarSign2: dollarSign2_Grey,
             dollarSign3: dollarSign3_Grey,
@@ -114,10 +114,10 @@ class ChefListPage extends Component {
         });
         if(!this.state.pickedAddress){
            this.setState({showProgress:true});
-        //    await this.getLocation().catch((err)=>{
-        //          this.setState({GPSproxAddress:undefined,showProgress:false}); 
-        //          commonAlert.locationError(err);
-        //    });//todo: really wait??
+           await this.getLocation().catch((err)=>{
+                 this.setState({GPSproxAddress:undefined,showProgress:false,pickedAddress:{lat:47.6062095, lng:-122.3320708}}); 
+                 commonAlert.locationError(err);
+           });//todo: really wait??
            this.setState({showProgress:false})
         }
         let eater = this.state.eater;
@@ -295,7 +295,7 @@ class ChefListPage extends Component {
     }
     
     render() {
-        const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} principal={this.state.principal} caller = {this}/>;
+        const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
             loadingSpinnerView =<View style={styles.listLoadingView}>
@@ -315,7 +315,7 @@ class ChefListPage extends Component {
         }
 
         if(this.state.showLocSearch){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} showHouseIcon={true}/>);   
+            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);   
         }else if(this.state.showChefSearch){
             return <View style={styles.greyContainer}>
                        <View style={styles.headerBannerView}>    
@@ -578,11 +578,13 @@ class ChefListPage extends Component {
     
     navigateToShopPage(chef){
         this.setState({ isMenuOpen: false });
+        console.log('GPSproxAddress: '+this.state.GPSproxAddress)
         this.props.navigator.push({
             name: 'ShopPage', 
             passProps:{
                 chef:chef,
                 eater:this.state.eater,
+                currentLocation:this.state.GPSproxAddress,
                 defaultDeliveryAddress: this.state.pickedAddress,//todo: this is not really the pickaddress
                 callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
             }
@@ -682,6 +684,7 @@ var Menu = React.createClass({
             name: 'EaterPage',
             passProps:{
                 eater:this.props.eater,
+                currentLocation:this.props.currentLocation,
                 principal:this.props.principal,
                 callback: function(eater){
                     this.props.caller.setState({eater:eater});
