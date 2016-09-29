@@ -10,6 +10,7 @@ var ratingIconOrange = require('./icons/icon-rating-orange.png');
 var deleteBannerIcon = require('./icons/icon-x.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var commonAlert = require('./commonModules/commonAlert');
+var RefreshableListView = require('react-native-refreshable-listview');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -102,7 +103,7 @@ class OrderDetailPage extends Component {
     renderHeader(){
         //Render 'Delivered' status
         if(this.state.showDeliverStatusView){  
-            if(this.state.order.orderStatus=='Delivered'){
+            if(this.state.order.orderStatus.toLowerCase()=='delivered'){
             var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
                                         <Text style={styleOrderDetailPage.deliverTimeText}>Your order was delivered at {dateRender.renderDate2(this.state.order.orderStatusModifiedTime)}</Text>
                                         <TouchableHighlight style={styleOrderDetailPage.deleteBannerIconView} underlayColor={'transparent'} onPress={()=>this.setState({showDeliverStatusView:false})}>
@@ -116,10 +117,10 @@ class OrderDetailPage extends Component {
                 var newStatusTextColor = "#FFFFFF";
                 var cookingStatusTextColor = "#b89467";
                 var DeliveringStatusTextColor = "#b89467";
-                if(currentTime > this.state.order.orderDeliverTime - 2*60*60*1000 && currentTime < this.state.order.orderDeliverTime){
+                if(currentTime > this.state.order.orderDeliverTime - 0.5*60*60*1000 && currentTime < this.state.order.orderDeliverTime){
                     cookingStatusTextColor = "#FFFFFF";
                 }
-            }else if(this.state.order.orderStatus == 'Delivering'){
+            }else if(this.state.order.orderStatus.toLowerCase() == 'delivering'){
                 var newStatusTextColor = "#FFFFFF";
                 var cookingStatusTextColor = "#FFFFFF";
                 var DeliveringStatusTextColor = "#FFFFFF";
@@ -150,7 +151,67 @@ class OrderDetailPage extends Component {
     }
     
     renderFooter(){
-      if(this.state.order.orderStatus=='Delivered'){
+      var costBreakDownView = [(<View key={'orderIdView'} style={styleShoppingCartPage.subtotalView}>
+                                    <View style={styleShoppingCartPage.priceTitleView}>
+                                        <Text style={styleShoppingCartPage.priceTitleText}>Order#</Text>
+                                    </View>
+                                    <View style={styleShoppingCartPage.priceNumberView}>
+                                        <Text style={styleShoppingCartPage.priceNumberText}>{this.state.order.orderId.substring(0,this.state.order.orderId.indexOf('-'))}</Text>
+                                    </View>
+                                </View>),
+                               (<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
+                                    <View style={styleShoppingCartPage.priceTitleView}>
+                                        <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
+                                    </View>
+                                    <View style={styleShoppingCartPage.priceNumberView}>
+                                        <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.subTotal}</Text>
+                                    </View>
+                                </View>),
+                                (<View key={'deliveryFeeView'} style={styleShoppingCartPage.deliveryFeeView}>
+                                    <View style={styleShoppingCartPage.priceTitleView}>
+                                        <Text style={styleShoppingCartPage.priceTitleText}>Delivery Fee</Text>
+                                    </View>
+                                    <View style={styleShoppingCartPage.priceNumberView}>
+                                        <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.deliveryFee}</Text>
+                                    </View>
+                                </View>),
+                                (<View key={'taxView'} style={styleShoppingCartPage.taxView}>
+                                    <View style={styleShoppingCartPage.priceTitleView}>
+                                        <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
+                                    </View>
+                                    <View style={styleShoppingCartPage.priceNumberView}>
+                                        <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.tax}</Text>
+                                    </View>
+                                </View>),
+                                (<View key={'totalView'} style={styleShoppingCartPage.taxView}>
+                                    <View style={styleShoppingCartPage.priceTitleView}>
+                                        <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
+                                    </View>
+                                    <View style={styleShoppingCartPage.priceNumberView}>
+                                        <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.order.price.grandTotal}</Text>
+                                    </View>
+                                </View>),
+                                (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
+                                    <View style={styleShoppingCartPage.addressTitleView}>
+                                        <Text style={styleShoppingCartPage.addressTitleText}>Deliver To</Text>
+                                    </View>
+                                    <View style={styleShoppingCartPage.addressTextView}>
+                                        <Text style={styleShoppingCartPage.addressLine}>{this.state.order.shippingAddress.formatted_address}</Text>
+                                    </View>
+                                </View>)];
+      if(!this.state.order.price.couponValue && this.state.order.price.couponValue > 0){
+          promotionDeductionView=(<View key={'promotionDeductionView'} style={styleShoppingCartPage.promotionDeductionView}>
+                                                <View style={styleShoppingCartPage.couponTitleView}>
+                                                    <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
+                                                </View>
+                                                <View style={styleShoppingCartPage.couponNumberView}>
+                                                    <Text style={styleShoppingCartPage.priceNumberText}>-${this.state.order.price.couponValue}</Text>
+                                                </View>
+                                        </View>);
+         costBreakDownView.splice(3,0,promotionDeductionView);
+      }
+      var commentBoxView = [];
+      if(this.state.order.orderStatus.toLowerCase() == 'delivered'){
         if(this.state.order.comment && this.state.order.comment.starRating){
            if(this.state.order.comment.chefComment && this.state.order.comment.chefComment.trim()){
              var  chefReplyView = <View key={'chefReplyView'} style={styleOrderDetailPage.chefReplyBox}>
@@ -162,7 +223,7 @@ class OrderDetailPage extends Component {
                                     </View>
                                   </View>
            }
-           var commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
+           commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
                                     <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
                                             <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
@@ -179,7 +240,7 @@ class OrderDetailPage extends Component {
                                  </View>),
                                  chefReplyView];
         }else if(this.state.ratingSucceed){
-          var commentBoxView = <View style={styleOrderDetailPage.commentBox}>
+            commentBoxView = <View style={styleOrderDetailPage.commentBox}>
                                   <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                     <View style={styleOrderDetailPage.ratingView}>
                                         <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
@@ -193,9 +254,9 @@ class OrderDetailPage extends Component {
                                     </View>
                                   </View>
                                   <Text style={styleOrderDetailPage.commentText}>{this.state.comment.trim() ? this.state.comment :'No comment'}</Text>
-                               </View>
+                            </View>
         }else if(new Date().getTime()-this.state.order.orderDeliverTime < 7*24*60*60*1000){
-           var commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
+            commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
                                     <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
                                             <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(1)}>
@@ -223,9 +284,8 @@ class OrderDetailPage extends Component {
                                  </View>),
                                 (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
         }
-                
-        return commentBoxView;
-      }                                               
+      }
+      return costBreakDownView.concat(commentBoxView);                                             
     }
      
     
@@ -251,14 +311,45 @@ class OrderDetailPage extends Component {
                     <View style={styles.headerRightView}>
                     </View>
                </View>
-               <ListView style={styleOrderDetailPage.dishListView} ref="listView" 
+               <RefreshableListView style={styleOrderDetailPage.dishListView} ref="listView" 
                             dataSource = {this.state.dataSource}
                             renderHeader={this.renderHeader.bind(this)}
                             renderRow={this.renderRow.bind(this) } 
-                            renderFooter={this.renderFooter.bind(this)}/>
+                            renderFooter={this.renderFooter.bind(this)}
+                            loadData={this.getOneOrder.bind(this)}
+                            refreshDescription = " "/>
                {loadingSpinnerView}
             </View>
         );
+    }
+
+    async getOneOrder(){
+        const start = 'start=0';
+        const end = 'end='+ new Date().getTime();
+        var eaterId = this.state.order.eaterId;
+        console.log("eaterId: "+eaterId);
+        try{
+          var allOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eaterId+'?'+start+'&'+end);
+          this.setState({showProgress:false,showNetworkUnavailableScreen:false})
+        }catch(err){
+          this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+          commonAlert.networkError(err);
+          return;
+        }
+
+        if (allOrder && allOrder.statusCode != 200) {
+            this.setState({showProgress:false});
+            return this.responseHandler(allOrder);
+        }
+
+        if (allOrder && allOrder.data){
+            for(var thisOrder of allOrder.data.orders){
+                if(thisOrder.orderId == this.state.order.orderId){
+                   this.setState({showProgress:false, order:thisOrder});
+                   break;
+                }
+            }
+        }
     }
     
     _onLayout(event) {
@@ -525,6 +616,343 @@ var styleOrderDetailPage = StyleSheet.create({
         color:'#9B9B9B',
         fontWeight:'600',
     }
+});
+
+var styleShoppingCartPage = StyleSheet.create({
+    chefShopNameView:{
+        flexDirection:'row',
+        justifyContent:'center',
+        height:windowHeight/14.72,
+        borderBottomWidth:1,
+        borderColor:'#F5F5F5',
+    },
+    chefShopNameText:{
+        color:'#FFCC33',
+        fontSize:windowHeight/36.8,
+        fontWeight:'500',
+        marginTop:windowHeight/73.6,
+    },
+    deliverTimeView:{
+        flexDirection:'row',
+        justifyContent:'center',
+        height:windowHeight/18.4,
+    },
+    deliverTimeText:{
+        color:'#4A4A4A',
+        fontSize:windowHeight/49.06,
+        marginTop:windowHeight/73.6,
+    },
+    subtotalView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        borderTopWidth:1,
+        borderBottomWidth:1,
+        borderColor:'#F5F5F5',
+        justifyContent:'center'
+    },
+    taxView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        borderTopWidth:1,
+        borderBottomWidth:1,
+        borderColor:'#F5F5F5',
+        justifyContent:'center',
+    },
+    promotionDeductionView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        borderBottomWidth:1,
+        borderColor:'#F5F5F5',
+        justifyContent:'center',
+    },
+    deliveryFeeView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        justifyContent:'center'
+    },
+    addressView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        borderTopWidth:1,
+        borderBottomWidth:1,
+        borderColor:'#F5F5F5',
+        justifyContent:'center',
+    },
+    addressTitleView:{
+        flex:0.4,
+        width:windowWidth*0.4,
+        alignItems:'flex-start',
+        alignSelf:'center',
+    },
+    addressTitleText:{ 
+        fontSize:windowHeight/36.8,
+        fontWeight:'500',
+        color:'#4A4A4A',
+    },
+    addressTextView:{
+        flex:0.6,
+        width:windowWidth*0.6,
+        alignItems:'flex-end',
+        alignSelf:'center',
+    },
+    promotionCodeView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingHorizontal:windowWidth/27.6,
+        borderBottomWidth:1,
+        borderColor:'#F5F5F5',
+        justifyContent:'center'
+    },
+    totalView:{
+        flexDirection:'row',
+        height:windowHeight/10,
+        paddingHorizontal:windowWidth/27.6,
+        paddingTop:windowHeight/20.0,
+        borderColor:'#F5F5F5',
+        justifyContent:'center',
+        marginBottom:20,
+    },
+    totalPriceTitleText:{ 
+        fontSize:windowHeight/36.8,
+        fontWeight:'500',
+        color:'#4A4A4A',
+    },
+    totalPriceNumberText:{
+        fontSize:windowHeight/36.66,
+        fontWeight:'500',
+        color:'#4A4A4A',
+    },
+    addressLine:{
+        color:'#4A4A4A',
+        fontSize:windowHeight/49.06,
+        marginTop:windowHeight/147.2,
+    },
+    addressChangeButtonWrapper:{
+        width:windowWidth*0.34375,
+        height:windowWidth*0.34375*3.0/13.0,
+        borderColor:'#ffcc33',
+        borderWidth:1,
+        borderRadius:6, 
+        overflow: 'hidden', 
+        alignSelf:'flex-start',
+        justifyContent:'center',
+        marginRight:windowWidth*0.003,
+    },
+    addressChangeButtonText:{
+        fontSize:windowHeight/49.06,
+        color:'#ffcc33',
+        fontWeight:'500',
+        alignSelf:'center',  
+    },
+    removeCouponText:{
+        fontSize:windowHeight/49.06,
+        color:'#ffcc33',
+        fontWeight:'500',
+        alignSelf:'center',
+        paddingLeft:10,
+    },
+    addressChangeButtonView:{
+        flex:0.43,
+        flexDirection:'row',
+        alignItems:'flex-end',     
+    },
+    priceTitleView:{
+        flex:1/2.0,
+        alignItems:'flex-start',
+        alignSelf:'center',
+    },
+    couponTitleView:{
+        flex:0.75,
+        flexDirection:'row',
+        alignItems:'flex-start',
+        alignSelf:'center',
+    },
+    couponNumberView:{
+        flex:0.25,
+        alignItems:'flex-end',
+        alignSelf:'center',
+    },
+    priceTitleText:{ 
+        fontSize:windowHeight/40.89,
+        fontWeight:'500',
+        color:'#4A4A4A',
+    },
+    priceNumberView:{
+        flex:1/2.0,
+        alignItems:'flex-end',
+        alignSelf:'center',
+    },
+    promotionCodeTitleView:{
+        flex:0.375,
+        alignItems:'flex-start',
+        alignSelf:'center',
+    },
+    showPromoCodeView:{
+        flexDirection:'row',
+        width:windowWidth*0.5,
+        justifyContent:'center',
+    },
+    showPromoCodeText:{
+        fontSize:windowHeight/47.33,
+        color:'#9B9B9B',
+        alignSelf:'center',
+    },
+    promoCodeInputView:{
+        height:28,
+        flexDirection:'row',
+        borderColor:'#F2F2F2',
+        borderWidth:1,
+        borderRadius:5,
+        flex:0.53,
+        alignSelf:'center',
+    },
+    AddRemoveCouponButtonView:{
+        flex:0.095,
+        alignItems:'flex-end',
+        alignSelf:'center',
+    },
+    priceNumberText:{
+        fontSize:windowHeight/33.45,
+        fontWeight:'500',
+        color:'#4A4A4A',
+    },
+    oneListingView:{
+        backgroundColor:'#FFFFFF',  
+        flexDirection:'row',
+        flex:1,
+    },
+    dishPhoto:{
+        width:windowWidth/2.76,
+        height:windowWidth/2.76,
+    },
+    shoppingCartInfoView:{
+        flex:1,
+        height:windowWidth/2.76,
+        flexDirection:'column',
+        paddingLeft:windowWidth/20.7,
+        paddingRight:windowWidth/27.6,
+        paddingVertical:windowHeight/73.6,
+    },
+    dishNamePriceView:{
+        height:20,
+        flexDirection:'row', 
+    },
+    dishNameView:{
+        flex:0.7,   
+        alignItems:'flex-start',     
+    },
+    dishNameText:{
+        fontSize:windowHeight/40.89,
+        fontWeight:'500',
+        color:'#4A4A4A'
+    },
+    dishPriceView:{
+        flex:0.3,
+        alignItems:'flex-end',
+    },
+    dishPriceText:{
+        fontSize:windowHeight/40.89,
+        fontWeight:'600',
+        color:'#9B9B9B',
+    },
+    dishIngredientView:{
+        height:windowHeight*0.065,  
+    },
+    dishIngredientText:{
+        fontSize:windowHeight/47.33,
+        color:'#9B9B9B',
+    },
+    actualQuantityView:{
+        height:windowHeight*0.032,  
+    },
+    actualQuantityText:{
+        fontSize:windowHeight/47.33,
+        color:'#FF6347',
+    },
+    quantityTotalPriceView:{
+        flex:1,
+        flexDirection:'row', 
+    },
+    quantityView:{
+        flex:0.5,
+        flexDirection:'row', 
+        alignItems:'flex-start',
+    },
+    totalPriceView:{
+        flex:0.5,
+        alignItems:'flex-end',
+    },
+    totalPriceText:{
+        fontSize:windowHeight/33.45,
+        fontWeight:'500',
+        color:'#4A4A4A'
+    },
+    plusMinusIcon:{
+        width: windowHeight/27.6, 
+        height: windowHeight/27.6,
+    },
+    plusIconView:{
+        marginRight:windowWidth/27.6,
+    },
+    minusIconView:{
+        marginLeft:windowWidth/27.6,
+    },
+    quantityText:{
+        marginTop:windowHeight/147.2,
+        fontSize:windowHeight/46.0,
+        fontWeight:'500',
+        color:'#ffcc33',
+    },
+    addPromoCodeIcon:{
+        width: windowHeight/24.53, 
+        height: windowHeight/24.53,
+    }, 
+    removePromoCodeIcon:{
+        width: windowHeight/24.53, 
+        height: windowHeight/24.53,
+    }, 
+    footerView:{ 
+        flexDirection:'row', 
+        height:windowHeight*0.075, 
+    },
+    getPriceButtonView:{
+        width:windowWidth*0.5,
+        flex:1,
+        flexDirection:'row',        
+        justifyContent: 'center',
+        backgroundColor:'#FF9933',
+    },
+    checkOutButtonView:{
+        width:windowWidth*0.5,
+        flex:1,
+        flexDirection:'row',        
+        justifyContent: 'center',
+        backgroundColor:'#FFCC33',
+    }, 
+    checkOutButtonGreyView:{
+        width:windowWidth*0.5,
+        flex:1,
+        flexDirection:'row',        
+        justifyContent: 'center',
+        backgroundColor:'#9B9B9B',
+    }, 
+    bottomButtonText:{
+        fontSize:windowHeight/30.6,
+        fontWeight:'400',
+        color:'#fff',
+        alignSelf:'center', 
+    },
+    bottomButtonTextGreyed:{
+        fontSize:windowHeight/30.6,
+        fontWeight:'400',
+        color:'#D5D5D5',
+        alignSelf:'center', 
+    },
 });
 
 module.exports = OrderDetailPage;

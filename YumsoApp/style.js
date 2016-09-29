@@ -212,9 +212,10 @@ module.exports = StyleSheet.create({
       color:'#9B9B9B',
       justifyContent:'center',
       textAlign:'center',
+      marginBottom:20,
     },
     clickToReloadClickable:{
-      fontSize:16,
+      fontSize:18,
       color:'#FFCC33',
       justifyContent:'center',
       textAlign:'center',

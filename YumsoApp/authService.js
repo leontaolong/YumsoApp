@@ -4,8 +4,8 @@ var authTokenKey = 'token';
 var eaterKey = 'eater';
 var AsyncStorage = require('react-native').AsyncStorage;
 var config = require('./config');
-var FBLoginManager = require('NativeModules').FBLoginManager;
 
+import {FBLoginManager} from 'react-native-facebook-login';
 import React, {
   Alert
 } from 'react-native';

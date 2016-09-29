@@ -75,6 +75,7 @@ class ChefListPage extends Component {
             chefsDictionary: {},
             city:'Seattle',
             state:'WA',
+            pickedAddress:{lat:47.6062095, lng:-122.3320708},
             dollarSign1: dollarSign1_Grey,
             dollarSign2: dollarSign2_Grey,
             dollarSign3: dollarSign3_Grey,
@@ -82,11 +83,12 @@ class ChefListPage extends Component {
             sortCriteriaIcon:sortCriteriaIconGrey,
             deviceToken: null
         };
+
         this.responseHandler = function (response, msg) {
-             if(response.statusCode==400){
-                 Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
+            if(response.statusCode==400){
+               Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
             }else if (response.statusCode === 401) {
-                return AuthService.logOut()
+               return AuthService.logOut()
                     .then(()=>{
                         delete this.state.eater;
                         this.props.navigator.push({
@@ -106,30 +108,9 @@ class ChefListPage extends Component {
     }
 
     async componentDidMount() {
-        // AppState.addEventListener('change', this._handleAppStateChange);
-        // PushNotificationIOS.setApplicationIconBadgeNumber(0);
         PushNotificationIOS.requestPermissions();
-        var self = this;
-        this.registerNotification().then(function (token) {
-            return AuthService.updateCacheDeviceToken(token);
-        });
-
         PushNotificationIOS.checkPermissions((permissions) => {
             console.log(permissions);
-        });
-
-        var notifId = '';
-        PushNotificationIOS.addEventListener('notification', function(notification){
-           console.log('You have received a new notification!', notification);
-           if(notifId!=notification.getData().notifId){
-              Alert.alert( 'Notification', notification.getMessage(),[ { text: 'OK' }]);
-           }
-           console.log('notifId: ' + notification.getData().notifId);
-           notifId = notification.getData().notifId;
-           
-        //    PushNotificationIOS.getApplicationIconBadgeNumber(function(count){
-        //         PushNotificationIOS.setApplicationIconBadgeNumber(count+notification.getBadgeCount());
-        //    });
         });
         if(!this.state.pickedAddress){
            this.setState({showProgress:true});
@@ -178,10 +159,10 @@ class ChefListPage extends Component {
         }
         var query=''; //todo: should include seattle if no lat lng provided
         if(this.state.GPSproxAddress){
-            query = '?lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
+           query = '?lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
         }
         if(this.state.pickedAddress){
-            query = '?lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng; 
+           query = '?lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng; 
         }
         try{
             var response = await this.client.getWithoutAuth(config.chefListEndpoint + query);
@@ -504,6 +485,17 @@ class ChefListPage extends Component {
 
     searchChef(isApplySearchButtonPressed){
         if(isApplySearchButtonPressed==true){
+           if(!this.state.eater){
+              this.props.navigator.push({
+                    name: 'LoginPage',
+                    passProps: {
+                        callback: function(eater){
+                            this.setState({eater:eater})
+                        }.bind(this)
+                    }
+             }); 
+             return
+          } 
            this.setState({showProgress:true});
         }
         return this.applySearchSettings()

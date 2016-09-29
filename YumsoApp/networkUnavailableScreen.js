@@ -11,7 +11,7 @@ class NetworkUnavailableScreen extends Component {
     render() {  
         return (
             <View style={styles.networkUnavailableView}>
-                <Text style={styles.networkUnavailableText}>Network connection is not available</Text>
+                <Text style={styles.networkUnavailableText}>Error in Network Request</Text>
                 <Text style={styles.clickToReloadClickable} onPress={()=>this.props.onReload()}>Tap to reload</Text>
             </View>
         );

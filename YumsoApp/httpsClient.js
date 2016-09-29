@@ -1,6 +1,8 @@
 var Promise = require('bluebird');
 var AsyncStorage = require('react-native').AsyncStorage;
-const timeoutLength = 5000;
+const AppVersion = 1.4;
+const timeoutLength = 20000;
+var commonAlert = require('./commonModules/commonAlert');
 
 var HttpsClient = function (host, useTokenFromStorage, username, password, authEndpoint) {    
     var self = this;
@@ -60,7 +62,8 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'bearer ' + token
+                    'Authorization': 'bearer ' + token,
+                    'YumsoAppVersion': AppVersion
                 },
                 body: JSON.stringify(data)
             };
@@ -75,6 +78,7 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'YumsoAppVersion': AppVersion
             },
             body: JSON.stringify(data)
         };
@@ -87,7 +91,8 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                 var options = {
                     method: 'GET',
                     headers: {
-                        'Authorization': 'bearer ' + token
+                        'Authorization': 'bearer ' + token,
+                        'YumsoAppVersion': AppVersion
                     }
                 };
                 return request(partialUrl, options);
@@ -97,6 +102,9 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
     this.getWithoutAuth = function(partialUrl) {
         var options = {
             method: 'GET',
+            headers: {
+                        'YumsoAppVersion': AppVersion
+                     }
         };
         return request(partialUrl, options);
     };
@@ -116,6 +124,8 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                     var contentType = response.headers.get("content-type");
                     if(response.status == 200 && contentType && contentType.indexOf("application/json") != -1){
                        return response.json();
+                    }else if(response.status == 412){
+                       throw new Error('Deprecated App Version.Please update your Yumso App.');
                     }else{
                        return response.text(); 
                     }
@@ -125,7 +135,11 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                         data:result
                     };
                 }).catch((err)=>{
-                    throw new Error('Please check your network connection');
+                    if(err.message == 'Deprecated App Version.Please update your Yumso App.'){
+                      throw err;
+                    }else{
+                      throw new Error('Please check your network connection');
+                    }
                 }),
                 timeout
             ])

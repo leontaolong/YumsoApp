@@ -12,7 +12,7 @@ var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/icon-grey-house.png');
 var paypalIcon = require('./icons/icon-paypal.png');
 var ResetPasswordPage = require('./resetPasswordPage');
-var validator = require('validator');
+//var validator = require('validator');
 
 import Dimensions from 'Dimensions';
 
@@ -56,7 +56,7 @@ class EaterPage extends Component {
         };
         this.responseHandler = function (response, msg) {
             if(response.statusCode==400){
-                 Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
+               Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
             }else if (response.statusCode === 401) {
                 return AuthService.logOut()
                     .then(() => {
@@ -432,10 +432,10 @@ class EaterPage extends Component {
             Alert.alert('Warning', 'Missing alias name. This will be displayed publicly to chef and other users', [{ text: 'OK' }]);   
             return;             
         }
-        if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
-            Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
-            return;             
-        }
+        // if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
+        //     Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
+        //     return;             
+        // }
         var _this = this;
         let eater = {};
         eater.eaterId = this.state.eater.eaterId;

@@ -18,6 +18,12 @@ class CommonAlert {
         var text = err.message;
         Alert.alert(title, text,[ { text: 'OK' }]);
     }
+
+    appVersionError(){
+        var title = 'Deprecated App Version';
+        var text = 'Please update your Yumso App';
+        Alert.alert(title, text,[ { text: 'OK' }]);
+    }
 }
 
 module.exports = new CommonAlert();

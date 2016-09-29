@@ -12,7 +12,7 @@ var addPromoCodeIcon = require('./icons/icon-add.png');
 var removePromoCodeIcon = require('./icons/icon-cancel.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var commonAlert = require('./commonModules/commonAlert');
-var validator = require('validator');
+//var validator = require('validator');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -172,10 +172,10 @@ class ShoppingCartPage extends Component {
                     </View>),
                     (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
                         <View style={styleShoppingCartPage.addressTextView}>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.formatted_address !=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.city !=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.postal !=undefined ? this.state.deliveryAddress.postal:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber !=undefined ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
                         </View>
                         <TouchableHighlight style={styleShoppingCartPage.addressChangeButtonView} underlayColor={'transparent'} onPress={()=>this.setState({selectDeliveryAddress:true})}>
                             <View style={styleShoppingCartPage.addressChangeButtonWrapper}>
@@ -222,10 +222,10 @@ class ShoppingCartPage extends Component {
                     </View>),
                     (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
                         <View style={styleShoppingCartPage.addressTextView}>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined ? this.state.deliveryAddress.postal:''}</Text>
-                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.formatted_address!=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.city!=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.postal!=undefined ? this.state.deliveryAddress.postal:''}</Text>
+                            <Text style={styleShoppingCartPage.addressLine}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber!=undefined ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
                             <Text style={styleShoppingCartPage.addressLine}>Phone </Text>
                             <View style={styleShoppingCartPage.phoneNumberInputView}>                       
                                 <TextInput style={styleShoppingCartPage.phoneNumberInput} placeholder={this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'} 
@@ -446,8 +446,9 @@ class ShoppingCartPage extends Component {
             return;         
         }else{
             let address = this.state.deliveryAddress; //todo: do this or should just make a disapear? which better UX?
-            if (address.streetName === 'unknown' || address.streetNumber === 'unknown' || address.city == 'unknown' || address.state == 'unknown' || address.postal == 'unknown') {
-                Alert.alert('Warning', 'Pleas set a specific location for delivery. The current address is only approximate', [{ text: 'OK' }]);
+            if (!address.streetName || address.streetName == 'unknown' || !address.streetNumber || address.streetNumber == 'unknown' 
+            || !address.city || address.city == 'unknown' || !address.state || address.state == 'unknown' || !address.postal || address.postal == 'unknown') {
+                Alert.alert('Warning', 'Pleas set a specific address for delivery', [{ text: 'OK' }]);
                 return;
             }            
         }
@@ -552,10 +553,10 @@ class ShoppingCartPage extends Component {
             Alert.alert('Warning','Please add a phone number',[{ text: 'OK' }]);
             return;
         }
-        if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
-            Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
-            return;             
-        }
+        // if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
+        //     Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
+        //     return;             
+        // }
         var orderList ={};
         for(var cartItemKey in this.state.shoppingCart[this.state.selectedTime]){
             var dishItem=this.state.shoppingCart[this.state.selectedTime][cartItemKey];
