@@ -167,6 +167,12 @@ class LoginPage extends Component {
            if(!eater){
               return;
            }
+           let principal = await AuthService.getPrincipalInfo();
+           if(!eater.phoneNumber || !eater.phoneNumber.trim()|| !eater.email || !eater.email.trim() || !eater.eaterAlias || !eater.eaterAlias.trim()){
+              this.navigateToEaterPage(eater,principal);
+              return;
+           }
+
            var currentRoutes = this.props.navigator.getCurrentRoutes();
            if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "LoginPage"){
               this.jumpToChefList();
@@ -212,7 +218,12 @@ class LoginPage extends Component {
            if(!eater){
               return;
            }
-
+           let principal = await AuthService.getPrincipalInfo();
+           if(!eater.phoneNumber || !eater.phoneNumber.trim()|| !eater.email || !eater.email.trim() || !eater.eaterAlias || !eater.eaterAlias.trim()){
+              this.navigateToEaterPage(eater,principal);
+              return;
+           }
+           //If not logged in, direct to login page,if logged in direct to cheflist page
            console.log("current routes(before): "+JSON.stringify(this.props.navigator.getCurrentRoutes()));
            var currentRoutes = this.props.navigator.getCurrentRoutes();
            if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "LoginPage"){
@@ -238,6 +249,20 @@ class LoginPage extends Component {
         this.props.navigator.push({
             name: 'SignUpPage'
         });    
+    }
+
+    navigateToEaterPage(eater,principal){
+        this.props.navigator.push({
+            name: 'EaterPage',
+            passProps:{
+                eater: eater,
+                principal:principal,
+                backcallback:this.state.callback,
+                callback: function(eater){
+                    this.props.caller.setState({eater:eater, edit:true});
+                }.bind(this)
+            }
+        });
     }
 
     jumpToChefList(){

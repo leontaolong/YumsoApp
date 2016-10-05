@@ -118,10 +118,11 @@ class ChefListPage extends Component {
                  this.setState({GPSproxAddress:undefined,showProgress:false,pickedAddress:{lat:47.6062095, lng:-122.3320708}}); 
                  commonAlert.locationError(err);
            });//todo: really wait??
+           console.log("commonAlert.locationError");
            this.setState({showProgress:false})
         }
         let eater = this.state.eater;
-        if(!eater){
+        if(!eater || !eater.chefFilterSettings){
             eater = await AuthService.getEater();
         }
         let principal = await AuthService.getPrincipalInfo();
@@ -231,7 +232,7 @@ class ChefListPage extends Component {
 
     renderRow(chef) {
         var like = false;
-        if (this.state.eater) {
+        if (this.state.eater && this.state.eater.favoriteChefs) {
             like = this.state.eater.favoriteChefs.indexOf(chef.chefId) !== -1;
         }
         if (like==true) {
