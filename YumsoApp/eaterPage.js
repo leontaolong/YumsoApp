@@ -163,7 +163,6 @@ class EaterPage extends Component {
                                         <Image source={backIcon} style={styles.backButtonIcon}/>
                                     </View>
                                   </TouchableHighlight>
-                 backButtonView = <View style={styles.headerLeftView}></View>;                 
                  addAddressView =[ (<View key={'ADDRESS'} style={styleEaterPage.sectionTitleView}>
                                         <Text style={styleEaterPage.sectionTitleText}>ADDRESS</Text>
                                     </View>),
@@ -207,7 +206,7 @@ class EaterPage extends Component {
                      <View style={styles.headerBannerView}>
                          {backButtonView}
                          <View style={styles.titleView}>
-                             <Text style={styles.titleText}>Profile</Text>
+                             <Text style={styles.titleText}>My Profile</Text>
                          </View>
                          <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress = {this.submit.bind(this)}>
                              <View style={styles.headerRightTextButtonView}>

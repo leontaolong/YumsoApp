@@ -11,6 +11,7 @@ var deleteBannerIcon = require('./icons/icon-x.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var commonAlert = require('./commonModules/commonAlert');
 var RefreshableListView = require('react-native-refreshable-listview');
+var commonWidget = require('./commonModules/commonWidget');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -178,6 +179,17 @@ class OrderDetailPage extends Component {
                                         <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.subTotal}</Text>
                                     </View>
                                 </View>),
+                                (<View key={'noteView'} style={styleShoppingCartPage.noteView}>
+                                    <View style={styleShoppingCartPage.notesToChefTitleView}>
+                                        <Text style={styleShoppingCartPage.priceTitleText}>Note to Chef</Text>
+                                    </View>
+                                    <View style={styleShoppingCartPage.notesToChefTextView}>
+                                        <Text style={styleShoppingCartPage.notesToChefText}>{this.getTextLengthLimited(this.state.order.notesToChef,16)}</Text>
+                                    </View>
+                                    <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Note to Chef', this.state.order.notesToChef ,[ { text: 'Close' }])}>
+                                        <Text style={styleShoppingCartPage.notesToChefButtonText}>View</Text>
+                                    </TouchableHighlight>
+                                </View>),
                                 (<View key={'deliveryFeeView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
                                         <Text style={styleShoppingCartPage.priceTitleText}>Delivery Fee</Text>
@@ -203,13 +215,16 @@ class OrderDetailPage extends Component {
                                         <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.order.price.grandTotal}</Text>
                                     </View>
                                 </View>),
-                                (<View key={'addressView'} style={styleShoppingCartPage.addressView}>
-                                    <View style={styleShoppingCartPage.addressTitleView}>
-                                        <Text style={styleShoppingCartPage.addressTitleText}>Deliver To</Text>
+                                (<View key={'addressView'} style={styleShoppingCartPage.noteView}>
+                                    <View style={styleShoppingCartPage.notesToChefTitleView}>
+                                        <Text style={styleShoppingCartPage.priceTitleText}>Deliver To</Text>
                                     </View>
-                                    <View style={styleShoppingCartPage.addressTextView}>
-                                        <Text style={styleShoppingCartPage.addressLine}>{this.state.order.shippingAddress.formatted_address}</Text>
+                                    <View style={styleShoppingCartPage.notesToChefTextView}>
+                                        <Text style={styleShoppingCartPage.notesToChefText}>{this.getTextLengthLimited(this.state.order.shippingAddress.formatted_address,20)}</Text>
                                     </View>
+                                    <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Deliver Address', this.state.order.shippingAddress.formatted_address ,[ { text: 'Close' }])}>
+                                        <Text style={styleShoppingCartPage.notesToChefButtonText}>View</Text>
+                                    </TouchableHighlight>
                                 </View>)];
       var commentBoxView = [];
       if(this.state.order.orderStatus.toLowerCase() == 'delivered'){
@@ -677,6 +692,15 @@ var styleShoppingCartPage = StyleSheet.create({
         borderColor:'#F5F5F5',
         justifyContent:'center'
     },
+    noteView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingLeft:windowWidth/27.6,
+        borderTopWidth:1,
+        borderBottomWidth:1,
+        borderColor:'#F5F5F5',
+        justifyContent:'center'
+    },
     taxView:{
         flexDirection:'row',
         height:windowHeight/14.72,
@@ -792,10 +816,38 @@ var styleShoppingCartPage = StyleSheet.create({
         alignItems:'flex-start',
         alignSelf:'center',
     },
+    notesToChefTitleView:{
+        flex:0.35,
+        alignItems:'flex-start',
+        alignSelf:'center',
+    },
     couponTitleView:{
         flex:0.75,
         flexDirection:'row',
         alignItems:'flex-start',
+        alignSelf:'center',
+    },
+    notesToChefTextView:{
+        flex:0.5,
+        alignItems:'flex-start',
+        alignSelf:'center',
+    },
+    notesToChefText:{
+        fontSize:windowHeight/47.33,
+        color:'#9B9B9B',
+        alignSelf:'center',  
+    },
+    notesToChefButtonView:{
+        flex:0.15,
+        alignItems:'flex-end',
+        alignSelf:'stretch',
+        justifyContent:'center',
+        paddingHorizontal:windowWidth/27.6,
+    },
+    notesToChefButtonText:{
+        fontSize:windowHeight/36.8,
+        fontWeight:'500',
+        color:'#FFCC33',
         alignSelf:'center',
     },
     couponNumberView:{

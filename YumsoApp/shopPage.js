@@ -150,31 +150,7 @@ class ShopPage extends Component {
         });
     }
     
-    renderHeader(){
-               let scheduleSelectionView='';
-               if(this.state.timeData.length > 0){
-                 let deliveryTimeRendered = [];
-                 for(var oneTimeString of this.state.timeData){
-                   if(oneTimeString.label=='All Dishes'){
-                     deliveryTimeRendered.push({key:oneTimeString.label, label: 'All Dishes'});
-                   }else{
-                     deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
-                   }
-                 }
-                 scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
-                                            <Text style={styleShopPage.openHourTitle}>Open Hours</Text>
-                                            <ModalPicker
-                                            style={styleShopPage.modalPicker}
-                                            data={deliveryTimeRendered}
-                                            initValue={'Select a Delivery Time'}
-                                            onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
-                                          </View>);
-               }else{
-                 scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
-                                            <Text style={styleShopPage.openHourTitle}>Currently no dish avaliable to order</Text>
-                                          </View>);
-               }
-               
+    renderHeader(){               
                if(this.state.like){
                   var  likeIcon = likedIcon;
                }else{
@@ -248,8 +224,7 @@ class ShopPage extends Component {
                                 </View>
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                             </View>
-                        </TouchableHighlight>),      
-                        scheduleSelectionView                                
+                        </TouchableHighlight>)                                
                        ];
     }
 
@@ -305,12 +280,29 @@ class ShopPage extends Component {
                                 </View>;  
         }
 
-        if(this.state.selectedTime!='All Dishes'){
-           var selectedDeliverTimeView = <View style={styleShopPage.selectedDeliverTimeView}>
-                                               <Text style={styleShopPage.selectedDeliverTimeText}>{dateRender.renderDate2(this.state.selectedTime)}</Text>
-                                         </View>;
-        }
-
+        let scheduleSelectionView='';
+        if(this.state.timeData.length > 0){
+           let deliveryTimeRendered = [];
+           for(var oneTimeString of this.state.timeData){
+               if(oneTimeString.label=='All Dishes'){
+                  deliveryTimeRendered.push({key:oneTimeString.label, label: 'All Dishes'});
+               }else{
+                  deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
+               }
+           }
+           scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
+                                            <Text style={styleShopPage.openHourTitle}>Deliver Hours</Text>
+                                            <ModalPicker
+                                            style={styleShopPage.modalPicker}
+                                            data={deliveryTimeRendered}
+                                            initValue={'Select a Delivery Time'}
+                                            onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
+                                    </View>);
+          }else{
+            scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
+                                            <Text style={styleShopPage.openHourTitle}>Currently no dish avaliable to order</Text>
+                                    </View>);
+          }
         
         var networkUnavailableView = null;
         var dishListView = null;
@@ -353,9 +345,9 @@ class ShopPage extends Component {
                                 </View>
                             </TouchableHighlight>
                         </View>
+                        {scheduleSelectionView}
                         {networkUnavailableView}
                         {dishListView}
-                        {selectedDeliverTimeView}
                         {loadingSpinnerView}
                         {footerView}
                 </View>);
@@ -691,8 +683,7 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center', 
         borderColor:'#F5F5F5',
-        borderTopWidth:5,
-        borderBottomWidth:5,
+        borderBottomWidth:1,
         height:windowHeight*0.10,
     },
     openHourTitle:{
@@ -830,17 +821,6 @@ var styleShopPage = StyleSheet.create({
         fontSize:windowHeight/40.57,
         color:'#9B9B9B',
         marginTop:windowHeight*0.0035,
-    },
-    selectedDeliverTimeView:{
-        backgroundColor:'#4A4A4A',
-        flexDirection:'row', 
-        height:windowHeight*0.05,
-        paddingHorizontal:windowWidth/27.6,
-    },
-    selectedDeliverTimeText:{
-       fontSize:14,
-       color:'#F5F5F5',
-       alignSelf:'center',
     },
 });
 

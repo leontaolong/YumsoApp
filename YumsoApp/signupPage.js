@@ -199,7 +199,7 @@ class SignUpPage extends Component {
             }
             this.setState({ showProgress: false });
             this.props.navigator.push({
-                 name: 'ChefListPage'
+                 name: 'LoginPage'
             });
         }catch(err){
            this.setState({ showProgress: false });

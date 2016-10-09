@@ -337,7 +337,7 @@ var styleLoginPage = StyleSheet.create({
       flexDirection:'row', 
       height:windowHeight*0.075, 
       justifyContent:'center',
-      backgroundColor:'#3b5998',
+      backgroundColor:'#415DAE',
     },
     fbSignInButton:{
       alignSelf:'center',

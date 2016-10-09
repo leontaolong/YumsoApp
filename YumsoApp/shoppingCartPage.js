@@ -8,6 +8,7 @@ var MapPage = require('./mapPage');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
 var backIcon = require('./icons/icon-back.png');
+var addNoteIcon = require('./icons/icon-addNote.png');
 var addPromoCodeIcon = require('./icons/icon-add.png');
 var removePromoCodeIcon = require('./icons/icon-cancel.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
@@ -66,6 +67,7 @@ class ShoppingCartPage extends Component {
             eater:eater,
             priceIsConfirmed:false,
             showPromotionCodeInput:false,
+            showNoteInput:false,
             phoneNumber:eater? eater.phoneNumber:undefined,
         };
         this.client = new HttpsClient(config.baseUrl, true);
@@ -142,7 +144,7 @@ class ShoppingCartPage extends Component {
           var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.showPromoCodeView}>   
                                            <Text style={styleShoppingCartPage.showPromoCodeText}>{this.state.promotionCode}</Text>
                                         </View>),
-                                       (<TouchableHighlight key={'RemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressRemoveCoupon()}>
+                                       (<TouchableHighlight key={'RemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'F5F5F5'} onPress={()=>this.onPressRemoveCoupon()}>
                                            <Image source={removePromoCodeIcon} style={styleShoppingCartPage.removePromoCodeIcon}/>
                                         </TouchableHighlight>)];
        }else{
@@ -151,11 +153,36 @@ class ShoppingCartPage extends Component {
                                            <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text.trim()})} 
                                             maxLength={20} onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
                                         </View>),
-                                       (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'transparent'} onPress={()=>this.onPressAddCoupon()}>
+                                       (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'F5F5F5'} onPress={()=>this.onPressAddCoupon()}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
                                         </TouchableHighlight>)];
        }
-              
+
+      
+       var noteInputView = null;     
+       if(this.state.showNoteInput){
+          noteInputView = <View key={'noteInputView'} style={styleShoppingCartPage.commentBox}>
+                                <TextInput defaultValue={this.state.notesToChef} style={styleShoppingCartPage.commentInput} multiline={true} returnKeyType = {'default'} autoCorrect={false} 
+                                    maxLength={500} onChangeText = {(text) => this.setState({ notesToChef: text }) } onFocus={(()=>this._onFocusPromoCode()).bind(this)}/>                                     
+                                <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.submitCommentButton} onPress={()=>this.submitNote()}>
+                                            <Text style={styleShoppingCartPage.submitCommentButtonText}>Save</Text>    
+                                </TouchableHighlight>
+                          </View>;
+       }
+
+       var notesToChefView = [(<View key={'notesToChefView'} style={styleShoppingCartPage.notesToChefView}>
+                                <View style={styleShoppingCartPage.promotionCodeTitleView}>
+                                    <Text style={styleShoppingCartPage.priceTitleText}>Note to Chef</Text>
+                                </View>
+                                <View style={styleShoppingCartPage.showPromoCodeView}>
+                                    <Text style={styleShoppingCartPage.showPromoCodeText}>{this.getTextLengthLimited(this.state.notesToChef,15)}</Text>
+                                </View>
+                                <TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'F5F5F5'} onPress={()=>this.onPressAddNote()}>
+                                    <Image source={addNoteIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
+                                </TouchableHighlight>
+                               </View>),
+                               noteInputView];
+
        if(!this.state.priceIsConfirmed){//if price not quoted
             return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
                         <View style={styleShoppingCartPage.priceTitleView}>
@@ -165,6 +192,7 @@ class ShoppingCartPage extends Component {
                             <Text style={styleShoppingCartPage.priceNumberText}>${this.state.totalPrice ? Number(this.state.totalPrice.toFixed(2)) : '0'}</Text>
                         </View>
                     </View>),
+                    notesToChefView,
                     (<View key={'promotionCodeView'} style={styleShoppingCartPage.promotionCodeView}>
                         <View style={styleShoppingCartPage.promotionCodeTitleView}>
                             <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
@@ -208,6 +236,7 @@ class ShoppingCartPage extends Component {
                             <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.subTotal}</Text>
                         </View>
                     </View>),
+                    notesToChefView,
                     (<View key={'promotionCodeView'} style={styleShoppingCartPage.promotionCodeView}>
                         <View style={styleShoppingCartPage.promotionCodeTitleView}>
                             <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
@@ -424,6 +453,15 @@ class ShoppingCartPage extends Component {
         }        
     }
     
+    onPressAddNote(){
+        this.setState({showNoteInput:!this.state.showNoteInput});
+        this._onFocusPromoCode();
+    }
+    
+    submitNote(){
+         this.setState({showNoteInput:false});
+    }
+
     onPressAddCoupon(){
         if(!this.state.promotionCode || !this.state.promotionCode.trim()){
           return;
@@ -568,7 +606,7 @@ class ShoppingCartPage extends Component {
         var order = this.state.quotedOrder;
         order.quotedGrandTotal = this.state.quotedOrder.price.grandTotal;
         order.eaterId = eater.eaterId;
-        order.notesToChef = 'Please put less salt';
+        order.notesToChef = this.state.notesToChef;
         order.phoneNumber = this.state.phoneNumber;
         console.log(order);
         this.props.navigator.push({
@@ -582,7 +620,7 @@ class ShoppingCartPage extends Component {
     }
     
     getTextLengthLimited(text,lengthLimit){
-        if(text.length <=lengthLimit){
+        if(!text || text.length <=lengthLimit){
            return text;
         }else{
            var shortenedText = text.substr(0,lengthLimit-1);
@@ -647,6 +685,38 @@ var styleShoppingCartPage = StyleSheet.create({
         borderColor:'#F5F5F5',
         justifyContent:'center'
     },
+    notesToChefView:{
+        flexDirection:'row',
+        height:windowHeight/14.72,
+        paddingLeft:windowWidth/27.6,
+        justifyContent:'center'
+    },
+    commentBox:{
+        alignSelf:'center',
+        backgroundColor:'#F5F5F5',
+        width:windowWidth*0.93,
+        marginBottom:windowHeight*0.0224,
+    },
+    commentInput:{
+        height:90, 
+        padding:windowHeight*0.0224,
+        fontSize:14,       
+    },
+    commentText:{
+        padding:15,
+        fontSize:14,
+        color:'#4A4A4A',
+    },
+    submitCommentButton:{
+        backgroundColor:'#FFCC33',
+        height:windowHeight*0.058,
+        justifyContent:'center',
+    },
+    submitCommentButtonText:{
+        color:'#FFF',
+        fontWeight:'bold',
+        alignSelf:'center',
+    },
     taxView:{
         flexDirection:'row',
         height:windowHeight/14.72,
@@ -660,6 +730,7 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row',
         height:windowHeight/14.72,
         paddingHorizontal:windowWidth/27.6,
+        borderTopWidth:1,
         borderBottomWidth:1,
         borderColor:'#F5F5F5',
         justifyContent:'center',
@@ -701,7 +772,8 @@ var styleShoppingCartPage = StyleSheet.create({
     promotionCodeView:{
         flexDirection:'row',
         height:windowHeight/14.72,
-        paddingHorizontal:windowWidth/27.6,
+        paddingLeft:windowWidth/27.6,
+        borderTopWidth:1,
         borderBottomWidth:1,
         borderColor:'#F5F5F5',
         justifyContent:'center'
@@ -810,13 +882,14 @@ var styleShoppingCartPage = StyleSheet.create({
         borderColor:'#F2F2F2',
         borderWidth:1,
         borderRadius:5,
-        flex:0.53,
+        flex:0.52,
         alignSelf:'center',
     },
     AddRemoveCouponButtonView:{
-        flex:0.095,
+        flex:0.15,
         alignItems:'flex-end',
-        alignSelf:'center',
+        alignSelf:'stretch',
+        justifyContent:'center',
     },
     priceNumberText:{
         fontSize:windowHeight/33.45,
@@ -911,12 +984,14 @@ var styleShoppingCartPage = StyleSheet.create({
         color:'#ffcc33',
     },
     addPromoCodeIcon:{
-        width: windowHeight/24.53, 
-        height: windowHeight/24.53,
+        width: windowHeight/23.0, 
+        height: windowHeight/23.0,
+        alignSelf:'center',
     }, 
     removePromoCodeIcon:{
-        width: windowHeight/24.53, 
-        height: windowHeight/24.53,
+        width: windowHeight/21.64, 
+        height: windowHeight/21.64,
+        alignSelf:'center',
     }, 
     footerView:{ 
         flexDirection:'row', 

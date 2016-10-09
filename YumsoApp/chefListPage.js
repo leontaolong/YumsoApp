@@ -8,6 +8,7 @@ var Swiper = require('react-native-swiper');
 var MapPage = require('./mapPage');
 var rating = require('./rating');
 var dollarSign = require('./commonModules/dollarIconRender');
+var dateRender = require('./commonModules/dateRender');
 var commonAlert = require('./commonModules/commonAlert');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
@@ -178,14 +179,16 @@ class ChefListPage extends Component {
            var chefView = {};
            var chefsDictionary = {};
            for (var chef of chefs) {
-                let starDishPictures=[];
-                if(chef.highLightDishIds){
-                   for(var dishId in chef.highLightDishIds){
-                       starDishPictures.push(chef.highLightDishIds[dishId]);
-                   }
+                if(chef){//Todo:undefined check for all
+                    let starDishPictures=[];
+                    if(chef.highLightDishIds){
+                      for(var dishId in chef.highLightDishIds){
+                          starDishPictures.push(chef.highLightDishIds[dishId]);
+                      }
+                    }
+                    chefView[chef.chefId] = starDishPictures;
+                    chefsDictionary[chef.chefId] = chef;
                 }
-                chefView[chef.chefId] = starDishPictures;
-                chefsDictionary[chef.chefId] = chef;
            }
            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
         }
@@ -231,6 +234,9 @@ class ChefListPage extends Component {
     }
 
     renderRow(chef) {
+        if(!chef){
+           return null;
+        }
         var like = false;
         if (this.state.eater && this.state.eater.favoriteChefs) {
             like = this.state.eater.favoriteChefs.indexOf(chef.chefId) !== -1;
@@ -240,6 +246,20 @@ class ChefListPage extends Component {
         } else {
             var likeIcon = notlikedIcon;
         }
+        console.log(chef);
+        var nextDeliverTimeView = null;
+        var currentTime = new Date().getTime();
+        var EOD = new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000;
+        if(chef.nextDeliverTime && chef.nextDeliverTime>currentTime && chef.nextDeliverTime<EOD){
+           nextDeliverTimeView = <View style={styleChefListPage.nextDeliverTimeView}>
+                                      <Text style={styleChefListPage.nextDeliverTimeText}>Next: {dateRender.formatTime2String(chef.nextDeliverTime)}</Text>
+                                 </View>;
+        }else{
+           nextDeliverTimeView = <View style={styleChefListPage.nextDeliverTimeView}>
+                                      <Text style={styleChefListPage.nextDeliverTimeText}>Next: None</Text>
+                                 </View>;
+        }
+
         return (
             <View style={styleChefListPage.oneShopListView}>
                 <View style={styleChefListPage.oneShopPhotoView}>
@@ -249,7 +269,9 @@ class ChefListPage extends Component {
                             return (
                                 <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef)} underlayColor='#C0C0C0'>
                                     <Image source={{ uri: picture }} style={styleChefListPage.chefListViewChefShopPic}
-                                        onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}/>
+                                        onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}>
+                                        {nextDeliverTimeView}
+                                    </Image>
                                 </TouchableHighlight>
                             );
                         })}
@@ -902,7 +924,26 @@ var styleChefListPage = StyleSheet.create({
         color:'#FFCC33',
         marginLeft:windowWidth/82.8,
         alignSelf:'center',
-    },    
+    },
+    nextDeliverTimeView:{
+        width:windowWidth*0.27,
+        height:windowWidth*0.06,
+        flexDirection: 'column',
+        alignItems:'center',
+        justifyContent:'center',
+        alignSelf:'flex-end',
+        borderRadius: 8, 
+        borderWidth: 0, 
+        overflow: 'hidden',
+        opacity:0.75,
+        backgroundColor:'#FFFFFF',
+        marginTop:7,
+        marginRight:7,
+    },
+    nextDeliverTimeText:{
+        color:'#4A4A4A',
+        fontSize:12
+    }    
 });
 
 var styleFilterPage = StyleSheet.create({
