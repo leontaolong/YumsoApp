@@ -157,6 +157,7 @@ class EaterPage extends Component {
              
              var addAddressView = null;
              var backButtonView = <View style={styles.headerLeftView}></View>
+             var profilePageTitle = "Tell us about yourself";
              if(!this.state.fromLoginPage){
                  backButtonView = <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress = {() => { this.setState({ edit: false })}}>
                                     <View style={styles.backButtonView}>
@@ -199,7 +200,8 @@ class EaterPage extends Component {
                                     otherAddressListRendered,
                                    (<View key={'AddNewAddress'} style={styleEaterPage.addNewAddressClickableView}>
                                         <Text onPress = {() => this.setState({ addMoreAddress: true }) } style={styleEaterPage.addNewAddressClickableText}>+ Add a new address</Text>
-                                    </View>)]
+                                    </View>)];
+                 profilePageTitle = "ABOUT";
              }
              return (
                  <View style={styles.container}>
@@ -217,7 +219,7 @@ class EaterPage extends Component {
                      <ScrollView style={{backgroundColor:'#F5F5F5'}}>
 
                          <View style={styleEaterPage.sectionTitleView}>
-                             <Text style={styleEaterPage.sectionTitleText}>ABOUT</Text>
+                             <Text style={styleEaterPage.sectionTitleText}>{profilePageTitle}</Text>
                          </View>
                          <View style={styleEaterPage.nameInputView}>
                              <View style={styleEaterPage.nameInputTitleView}>
