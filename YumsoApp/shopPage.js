@@ -504,12 +504,14 @@ class ShopPage extends Component {
                 deliverTimestamp:Date.parse(this.state.selectedTime),
                 currentLocation:this.state.currentLocation,
                 defaultDeliveryAddress: this.defaultDeliveryAddress,
+                notesToChef:this.state.notesToChef,
+                promotionCode:this.state.promotionCode,
                 chefId:this.state.chefId,
                 eater:this.state.eater,
                 shopName:this.state.chef.shopname,
                 scheduleMapping: this.state.scheduleMapping,
-                backCallback: function(totalPrice){
-                    this.setState({totalPrice: totalPrice})
+                backCallback: function(totalPrice,notesToChef,promotionCode){
+                    this.setState({totalPrice: totalPrice,notesToChef:notesToChef,promotionCode:promotionCode})
                 }.bind(this)
             }
         });    
