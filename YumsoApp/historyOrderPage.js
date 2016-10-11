@@ -62,7 +62,8 @@ class HistoryOrderPage extends Component {
                         });
                     });
             } else {
-                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]); 
+                 this.setState({showProgress: false,showNetworkUnavailableScreen:true});  
             }
         };
     }
