@@ -48,10 +48,11 @@ class ShoppingCartPage extends Component {
         let chefId = routeStack[routeStack.length-1].passProps.chefId;        
         let eater = routeStack[routeStack.length-1].passProps.eater;
         let currentLocation = routeStack[routeStack.length-1].passProps.currentLocation;
-        console.log("currentLocation3: "+currentLocation)        
         let scheduleMapping = routeStack[routeStack.length-1].passProps.scheduleMapping;        
         this.defaultDeliveryAddress = routeStack[routeStack.length-1].passProps.defaultDeliveryAddress;
         let shopName = routeStack[routeStack.length-1].passProps.shopName;
+        let notesToChef = routeStack[routeStack.length-1].passProps.notesToChef;
+        let promotionCode = routeStack[routeStack.length-1].passProps.promotionCode;
         this.backCallback = routeStack[routeStack.length-1].passProps.backCallback;
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(shoppingCart[selectedTime])),
@@ -61,11 +62,13 @@ class ShoppingCartPage extends Component {
             selectedTime:selectedTime,
             currentLocation:currentLocation,
             deliveryAddress: Object.keys(this.defaultDeliveryAddress).length===0?undefined:this.defaultDeliveryAddress,
+            notesToChef:notesToChef, 
             chefId:chefId,
             selectDeliveryAddress:false,
             shopName:shopName,
             eater:eater,
             priceIsConfirmed:false,
+            promotionCode:promotionCode,
             showPromotionCodeInput:false,
             showNoteInput:false,
             phoneNumber:eater? eater.phoneNumber:undefined,
@@ -140,20 +143,18 @@ class ShoppingCartPage extends Component {
     
     renderFooter(){
        if(this.state.showPromotionCodeInput){
-          console.log("showPromotionCodeInput true");
           var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.showPromoCodeView}>   
                                            <Text style={styleShoppingCartPage.showPromoCodeText}>{this.state.promotionCode}</Text>
                                         </View>),
-                                       (<TouchableHighlight key={'RemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'F5F5F5'} onPress={()=>this.onPressRemoveCoupon()}>
+                                       (<TouchableHighlight key={'RemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'#F5F5F5'} onPress={()=>this.onPressRemoveCoupon()}>
                                            <Image source={removePromoCodeIcon} style={styleShoppingCartPage.removePromoCodeIcon}/>
                                         </TouchableHighlight>)];
        }else{
-          console.log("showPromotionCodeInput false");
           var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}> 
-                                           <TextInput style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text.trim()})} 
+                                           <TextInput defaultValue={this.state.promotionCode} style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text.trim()})} 
                                             maxLength={20} onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
                                         </View>),
-                                       (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'F5F5F5'} onPress={()=>this.onPressAddCoupon()}>
+                                       (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'#F5F5F5'} onPress={()=>this.onPressAddCoupon()}>
                                            <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
                                         </TouchableHighlight>)];
        }
@@ -163,10 +164,7 @@ class ShoppingCartPage extends Component {
        if(this.state.showNoteInput){
           noteInputView = <View key={'noteInputView'} style={styleShoppingCartPage.commentBox}>
                                 <TextInput defaultValue={this.state.notesToChef} style={styleShoppingCartPage.commentInput} multiline={true} returnKeyType = {'default'} autoCorrect={false} 
-                                    maxLength={500} onChangeText = {(text) => this.setState({ notesToChef: text }) } onFocus={(()=>this._onFocusPromoCode()).bind(this)}/>                                     
-                                <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.submitCommentButton} onPress={()=>this.submitNote()}>
-                                            <Text style={styleShoppingCartPage.submitCommentButtonText}>Save</Text>    
-                                </TouchableHighlight>
+                                    maxLength={500} onChangeText = {(text) => this.setState({ notesToChef: text }) } onFocus={(()=>this._onFocusPromoCode()).bind(this)}/> 
                           </View>;
        }
 
@@ -177,7 +175,7 @@ class ShoppingCartPage extends Component {
                                 <View style={styleShoppingCartPage.showPromoCodeView}>
                                     <Text style={styleShoppingCartPage.showPromoCodeText}>{this.getTextLengthLimited(this.state.notesToChef,15)}</Text>
                                 </View>
-                                <TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'F5F5F5'} onPress={()=>this.onPressAddNote()}>
+                                <TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'#F5F5F5'} onPress={()=>this.onPressAddNote()}>
                                     <Image source={addNoteIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
                                 </TouchableHighlight>
                                </View>),
@@ -457,10 +455,6 @@ class ShoppingCartPage extends Component {
         this.setState({showNoteInput:!this.state.showNoteInput});
         this._onFocusPromoCode();
     }
-    
-    submitNote(){
-         this.setState({showNoteInput:false});
-    }
 
     onPressAddCoupon(){
         if(!this.state.promotionCode || !this.state.promotionCode.trim()){
@@ -635,20 +629,22 @@ class ShoppingCartPage extends Component {
                 this.defaultDeliveryAddress[key] = this.state.deliveryAddress[key];
             }
         }
+
         if(this.state.dishUnavailableSet && Object.keys(this.state.dishUnavailableSet).length!=0){
-            Alert.alert('Warning','You have invalid order currently. Your cart will be clear if conitune go back',[{ text: 'OK', onPress:()=>{ 
+            Alert.alert('Warning','You have invalid order currently. Your cart will be cleared if conitune go back',[{ text: 'OK', onPress:()=>{ 
                 for(let dishId in this.state.dishUnavailableSet){
                     this.state.scheduleMapping[this.state.selectedTime][dishId].leftQuantity = this.state.dishUnavailableSet[dishId].actualLeftQuantity;
                 }
                 delete this.state.shoppingCart[this.state.selectedTime];
                 this.props.navigator.pop();
-                this.backCallback(this.state.totalPrice);                              
+                this.backCallback(this.state.totalPrice,this.state.notesToChef,this.state.promotionCode);                              
             }}, {text:'Cancel'}]);
             return;
         }
 
         this.props.navigator.pop();
-        this.backCallback(this.state.totalPrice);     
+        console.log(this.state.promotionCode);
+        this.backCallback(this.state.totalPrice,this.state.notesToChef,this.state.promotionCode);     
     }
 }
 
@@ -749,9 +745,9 @@ var styleShoppingCartPage = StyleSheet.create({
         justifyContent:'flex-end'
     },
     phoneNumberInputView:{
-        height:25,
+        height:30,
         flexDirection:'row',
-        borderColor:'#F5F5F5',
+        borderColor:'#9B9B9B',
         borderWidth:1,
         borderRadius:5,
         marginTop:windowHeight/147.2,
@@ -767,7 +763,7 @@ var styleShoppingCartPage = StyleSheet.create({
         paddingLeft:3,
         fontSize:14,
         color:'#4A4A4A', 
-        width:windowWidth*0.5,     
+        width:windowWidth*0.5,    
     },
     promotionCodeView:{
         flexDirection:'row',
