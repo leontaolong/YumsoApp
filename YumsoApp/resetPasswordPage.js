@@ -6,6 +6,7 @@ var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
 var commonAlert = require('./commonModules/commonAlert');
+var validator = require('validator');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -155,6 +156,11 @@ class resetPasswordPage extends Component {
     async onUpdatePressed(){        
         if(!this.state.email || !this.state.email.trim()){
             Alert.alert( 'Warning', 'Please enter your login email',[ { text: 'OK' }]);
+            return;
+        }
+
+        if(this.state.email && !validator.isEmail(this.state.email)){
+            Alert.alert( 'Warning', 'Invalid email.',[ { text: 'OK' }]);
             return;
         }
 

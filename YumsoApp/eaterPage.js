@@ -444,6 +444,12 @@ class EaterPage extends Component {
             Alert.alert('Warning', 'Missing email address.', [{ text: 'OK' }]);   
             return;             
         }
+        
+        if(this.state.email && !validator.isEmail(this.state.email)){
+            Alert.alert( 'Warning', 'Invalid email.',[ { text: 'OK' }]);
+            return;
+        }
+
         var _this = this;
         let eater = {};
         eater.eaterId = this.state.eater.eaterId;
