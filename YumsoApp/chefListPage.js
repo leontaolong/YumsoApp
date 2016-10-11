@@ -109,10 +109,6 @@ class ChefListPage extends Component {
     }
 
     async componentDidMount() {
-        PushNotificationIOS.requestPermissions();
-        PushNotificationIOS.checkPermissions((permissions) => {
-            console.log(permissions);
-        });
         if(!this.state.pickedAddress){
            this.setState({showProgress:true});
            await this.getLocation().catch((err)=>{
@@ -140,19 +136,6 @@ class ChefListPage extends Component {
         }
         this.setState({ principal: principal, eater: eater });
         this.fetchChefDishes();
-    }
-
-    registerNotification() {
-        return new Promise((resolve,reject) => {
-            PushNotificationIOS.addEventListener('register', function(token){
-               if(token){
-                  console.log('You are registered and the device token is: ',token);
-                  resolve(token);
-               }else{
-                  reject(new Error('Failed registering notification service'))
-               }  
-            })
-        });
     }
 
     async fetchChefDishes() {
@@ -252,13 +235,27 @@ class ChefListPage extends Component {
         var EOD = new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000;
         if(chef.nextDeliverTime && chef.nextDeliverTime>currentTime && chef.nextDeliverTime<EOD){
            nextDeliverTimeView = <View style={styleChefListPage.nextDeliverTimeView}>
-                                      <Text style={styleChefListPage.nextDeliverTimeText}>Next: {dateRender.formatTime2String(chef.nextDeliverTime)}</Text>
+                                      <Text style={styleChefListPage.nextDeliverTimeText}>Today's Next: {dateRender.formatTime2StringShort(chef.nextDeliverTime)}</Text>
                                  </View>;
         }else{
            nextDeliverTimeView = <View style={styleChefListPage.nextDeliverTimeView}>
-                                      <Text style={styleChefListPage.nextDeliverTimeText}>Next: None</Text>
+                                      <Text style={styleChefListPage.nextDeliverTimeText}>Today's Next: None</Text>
                                  </View>;
         }
+
+        // var swiperView = null
+        // if(this.state.chefView[chef.chefId]){
+        //    swiperView = this.state.chefView[chef.chefId].map((picture) => {
+        //                     return (
+        //                         <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef)} underlayColor='#C0C0C0'>
+        //                             <Image source={{ uri: picture }} style={styleChefListPage.chefListViewChefShopPic}
+        //                                 onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}>
+        //                                 {nextDeliverTimeView}
+        //                             </Image>
+        //                         </TouchableHighlight>
+        //                     );
+        //                   });
+        // }
 
         return (
             <View style={styleChefListPage.oneShopListView}>
@@ -270,12 +267,13 @@ class ChefListPage extends Component {
                                 <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef)} underlayColor='#C0C0C0'>
                                     <Image source={{ uri: picture }} style={styleChefListPage.chefListViewChefShopPic}
                                         onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}>
-                                        {nextDeliverTimeView}
+                                        
                                     </Image>
                                 </TouchableHighlight>
                             );
-                        })}
+                          })}
                     </Swiper>
+                    {nextDeliverTimeView}
                 </View>
                 <View style={styleChefListPage.shopInfoView}>
                     <TouchableHighlight style={styleChefListPage.chefPhotoView} underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
@@ -644,8 +642,8 @@ var Menu = React.createClass({
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
                    <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
                    <Text style={sideMenuStyle.paddingMenuItem}></Text>
@@ -716,6 +714,27 @@ var Menu = React.createClass({
         });
     },
    
+    goToPaymentOptionPage:function() {
+        this.props.caller.setState({ isMenuOpen: false });
+        if(!this.props.eater){
+            this.props.navigator.push({
+                name: 'LoginPage',
+                passProps:{
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
+                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
+                }
+            });  
+            return;
+        }
+
+        this.props.navigator.push({
+            name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
+            passProps:{
+                eater:this.props.eater
+            }
+        });
+    },
+
     navigateToAboutPage: function () {
         this.props.caller.setState({ isMenuOpen: false });
         this.props.navigator.push({
@@ -926,8 +945,9 @@ var styleChefListPage = StyleSheet.create({
         alignSelf:'center',
     },
     nextDeliverTimeView:{
-        width:windowWidth*0.27,
-        height:windowWidth*0.06,
+        marginTop:-windowHeight*0.388+7,
+        paddingHorizontal:7,
+        paddingVertical:3,
         flexDirection: 'column',
         alignItems:'center',
         justifyContent:'center',
@@ -937,7 +957,6 @@ var styleChefListPage = StyleSheet.create({
         overflow: 'hidden',
         opacity:0.75,
         backgroundColor:'#FFFFFF',
-        marginTop:7,
         marginRight:7,
     },
     nextDeliverTimeText:{
