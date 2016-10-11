@@ -163,6 +163,22 @@ class OrderDetailPage extends Component {
                                                 </View>
                                    </View>);
       }
+
+      var notesToChefView = null;
+      if(this.state.order.notesToChef && this.state.order.notesToChef.trim()){
+        notesToChefView = (<View key={'noteView'} style={styleShoppingCartPage.noteView}>
+                                    <View style={styleShoppingCartPage.notesToChefTitleView}>
+                                        <Text style={styleShoppingCartPage.priceTitleText}>Note to Chef</Text>
+                                    </View>
+                                    <View style={styleShoppingCartPage.notesToChefTextView}>
+                                        <Text style={styleShoppingCartPage.notesToChefText}>{this.getTextLengthLimited(this.state.order.notesToChef,16)}</Text>
+                                    </View>
+                                    <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Note to Chef', this.state.order.notesToChef ,[ { text: 'Close' }])}>
+                                        <Text style={styleShoppingCartPage.notesToChefButtonText}>View</Text>
+                                    </TouchableHighlight>
+                          </View>);
+      }
+
       var costBreakDownView = [(<View key={'orderIdView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
                                         <Text style={styleShoppingCartPage.priceTitleText}>Order#</Text>
@@ -179,17 +195,7 @@ class OrderDetailPage extends Component {
                                         <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.subTotal}</Text>
                                     </View>
                                 </View>),
-                                (<View key={'noteView'} style={styleShoppingCartPage.noteView}>
-                                    <View style={styleShoppingCartPage.notesToChefTitleView}>
-                                        <Text style={styleShoppingCartPage.priceTitleText}>Note to Chef</Text>
-                                    </View>
-                                    <View style={styleShoppingCartPage.notesToChefTextView}>
-                                        <Text style={styleShoppingCartPage.notesToChefText}>{this.getTextLengthLimited(this.state.order.notesToChef,16)}</Text>
-                                    </View>
-                                    <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Note to Chef', this.state.order.notesToChef ,[ { text: 'Close' }])}>
-                                        <Text style={styleShoppingCartPage.notesToChefButtonText}>View</Text>
-                                    </TouchableHighlight>
-                                </View>),
+                                notesToChefView,
                                 (<View key={'deliveryFeeView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
                                         <Text style={styleShoppingCartPage.priceTitleText}>Delivery Fee</Text>
