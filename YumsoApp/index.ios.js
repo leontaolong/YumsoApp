@@ -75,10 +75,9 @@ class YumsoApp extends Component {
         //let backgroundNotification;
         PushNotificationIOS.addEventListener('notification', function(notification){
            console.log('You have received a new notification!', notification);
-        //    if (React.AppStateIOS.currentState === 'background') {
-        //        backgroundNotification = notification;
-        //    }
-           PushNotificationIOS.setApplicationIconBadgeNumber(notification.getBadgeCount());
+           if(AppStateIOS.currentState !== 'active'){
+              PushNotificationIOS.setApplicationIconBadgeNumber(notification.getBadgeCount());
+           }
            Alert.alert( 'Notification', notification.getMessage(),[ { text: 'OK'}]);
         });
 

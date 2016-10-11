@@ -22,6 +22,7 @@ import React, {
   TouchableHighlight,
   TouchableOpacity,
   ActivityIndicatorIOS,
+  PushNotificationIOS,
   AsyncStorage,
   Alert
 } from 'react-native';
@@ -42,6 +43,11 @@ class LoginPage extends Component {
                 this.state.backCallback = passProps.backCallback;
             }
         }
+
+        PushNotificationIOS.requestPermissions();
+        PushNotificationIOS.checkPermissions((permissions) => {
+            console.log(permissions);
+        });
     }
     
     render() {
