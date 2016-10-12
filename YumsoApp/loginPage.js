@@ -57,22 +57,27 @@ class LoginPage extends Component {
       console.log('LoginPage deviceToken '+this.state.deviceToken);
 
       var skipLoginView = null;
+      var backButtonView = null;
       if(this.props.navigator.getCurrentRoutes() && this.props.navigator.getCurrentRoutes().length==1 && this.props.navigator.getCurrentRoutes()[0].name == "LoginPage"){
          skipLoginView = <View style={styleLoginPage.askToSignUpView}>
                             <Text style={styleLoginPage.askToSignUpText}>Just take a look?</Text>
-                            <Text onPress={() => this.jumpToChefList()} style={styleLoginPage.signUpText}>Skip login</Text>
-                         </View>  
+                            <Text onPress={() => this.jumpToChefList()} style={styleLoginPage.signUpText}> Skip login</Text>
+                         </View> 
+         backButtonView =  <View style={styles.headerLeftView}>
+                           </View>  
+      }else{
+          backButtonView =  <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                                <View style={styles.backButtonView}>
+                                <Image source={backIcon} style={styles.backButtonIcon}/>
+                                </View>
+                           </TouchableHighlight>
       }
       
       return (
             <View style={styles.container}>
               <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                   <View style={styles.headerBannerView}>    
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                        <View style={styles.backButtonView}>
-                           <Image source={backIcon} style={styles.backButtonIcon}/>
-                        </View>
-                    </TouchableHighlight>    
+                    {backButtonView}  
                     <View style={styles.titleView}>
                         <Text style={styles.titleText}>Sign In</Text>
                     </View>

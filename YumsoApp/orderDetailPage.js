@@ -41,7 +41,7 @@ class OrderDetailPage extends Component {
         var routeStack = this.props.navigator.state.routeStack;
         let order = routeStack[routeStack.length-1].passProps.order;        
         let eater = routeStack[routeStack.length-1].passProps.eater;        
-        
+        this.callback = routeStack[routeStack.length-1].passProps.callback;
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(order.orderList)),
             showProgress:false,
@@ -151,6 +151,17 @@ class OrderDetailPage extends Component {
     }
     
     renderFooter(){
+      var promotionDeductionView = null;
+      if(this.state.order.price.couponValue){
+          promotionDeductionView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalView}>
+                                                <View style={styleShoppingCartPage.couponTitleView}>
+                                                    <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
+                                                </View>
+                                                <View style={styleShoppingCartPage.couponNumberView}>
+                                                    <Text style={styleShoppingCartPage.priceNumberText}>-${this.state.order.price.couponValue}</Text>
+                                                </View>
+                                   </View>);
+      }
       var costBreakDownView = [(<View key={'orderIdView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
                                         <Text style={styleShoppingCartPage.priceTitleText}>Order#</Text>
@@ -167,7 +178,7 @@ class OrderDetailPage extends Component {
                                         <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.subTotal}</Text>
                                     </View>
                                 </View>),
-                                (<View key={'deliveryFeeView'} style={styleShoppingCartPage.deliveryFeeView}>
+                                (<View key={'deliveryFeeView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
                                         <Text style={styleShoppingCartPage.priceTitleText}>Delivery Fee</Text>
                                     </View>
@@ -175,7 +186,8 @@ class OrderDetailPage extends Component {
                                         <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.deliveryFee}</Text>
                                     </View>
                                 </View>),
-                                (<View key={'taxView'} style={styleShoppingCartPage.taxView}>
+                                promotionDeductionView,
+                                (<View key={'taxView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
                                         <Text style={styleShoppingCartPage.priceTitleText}>Tax</Text>
                                     </View>
@@ -183,7 +195,7 @@ class OrderDetailPage extends Component {
                                         <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.tax}</Text>
                                     </View>
                                 </View>),
-                                (<View key={'totalView'} style={styleShoppingCartPage.taxView}>
+                                (<View key={'totalView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
                                         <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
                                     </View>
@@ -199,17 +211,6 @@ class OrderDetailPage extends Component {
                                         <Text style={styleShoppingCartPage.addressLine}>{this.state.order.shippingAddress.formatted_address}</Text>
                                     </View>
                                 </View>)];
-      if(!this.state.order.price.couponValue && this.state.order.price.couponValue > 0){
-          promotionDeductionView=(<View key={'promotionDeductionView'} style={styleShoppingCartPage.promotionDeductionView}>
-                                                <View style={styleShoppingCartPage.couponTitleView}>
-                                                    <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
-                                                </View>
-                                                <View style={styleShoppingCartPage.couponNumberView}>
-                                                    <Text style={styleShoppingCartPage.priceNumberText}>-${this.state.order.price.couponValue}</Text>
-                                                </View>
-                                        </View>);
-         costBreakDownView.splice(3,0,promotionDeductionView);
-      }
       var commentBoxView = [];
       if(this.state.order.orderStatus.toLowerCase() == 'delivered'){
         if(this.state.order.comment && this.state.order.comment.starRating){
@@ -255,7 +256,7 @@ class OrderDetailPage extends Component {
                                   </View>
                                   <Text style={styleOrderDetailPage.commentText}>{this.state.comment.trim() ? this.state.comment :'No comment'}</Text>
                             </View>
-        }else if(new Date().getTime()-this.state.order.orderDeliverTime < 7*24*60*60*1000){
+        }else if(new Date().getTime()-this.state.order.orderDeliverTime <= 7*24*60*60*1000){
             commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
                                     <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
@@ -283,6 +284,30 @@ class OrderDetailPage extends Component {
                                     </TouchableHighlight>
                                  </View>),
                                 (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
+        }else if(new Date().getTime()-this.state.order.orderDeliverTime > 7*24*60*60*1000){
+            commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
+                                    <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                        <View style={styleOrderDetailPage.ratingView}>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                        </View>
+                                    </View>
+                                    <TextInput placeholder="Order created 7 days ago cannot be reviewed" style={styleOrderDetailPage.commentInput} editable={false}/>                                     
+                                 </View>),
+                                (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
         }
       }
       return costBreakDownView.concat(commentBoxView);                                             
@@ -300,7 +325,7 @@ class OrderDetailPage extends Component {
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToDishList()}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
                        <View style={styles.backButtonView}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
                        </View>
@@ -311,13 +336,11 @@ class OrderDetailPage extends Component {
                     <View style={styles.headerRightView}>
                     </View>
                </View>
-               <RefreshableListView style={styleOrderDetailPage.dishListView} ref="listView" 
+               <ListView style={styleOrderDetailPage.dishListView} ref="listView" 
                             dataSource = {this.state.dataSource}
                             renderHeader={this.renderHeader.bind(this)}
                             renderRow={this.renderRow.bind(this) } 
-                            renderFooter={this.renderFooter.bind(this)}
-                            loadData={this.getOneOrder.bind(this)}
-                            refreshDescription = " "/>
+                            renderFooter={this.renderFooter.bind(this)}/>
                {loadingSpinnerView}
             </View>
         );
@@ -447,7 +470,10 @@ class OrderDetailPage extends Component {
        this.setState({ starRating: rating})
     }   
       
-    navigateBackToDishList(){
+    navigateBackToHistoryOrderPage(){
+        if(this.callback){
+           this.callback();
+        }
         this.props.navigator.pop();
     }
     

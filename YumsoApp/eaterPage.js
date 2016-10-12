@@ -12,8 +12,7 @@ var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/icon-grey-house.png');
 var paypalIcon = require('./icons/icon-paypal.png');
 var ResetPasswordPage = require('./resetPasswordPage');
-//var validator = require('validator');
-
+var validator = require('validator');
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -37,11 +36,14 @@ class EaterPage extends Component {
      constructor(props){
         super(props);
         var routeStack = this.props.navigator.state.routeStack;
-        let eater = routeStack[routeStack.length-1].passProps.eater;      
+        let eater = routeStack[routeStack.length-1].passProps.eater;
+        let currentLocation = routeStack[routeStack.length-1].passProps.currentLocation;  
+        console.log("currentLocation4 "+currentLocation)    
         let principal = routeStack[routeStack.length-1].passProps.principal;
         let callback = routeStack[routeStack.length-1].passProps.callback;
         this.state = {
             eater:eater,
+            currentLocation:currentLocation,
             principal:principal,
             showProgress:false,
             edit:false,
@@ -86,7 +88,7 @@ class EaterPage extends Component {
          }
          
          if (this.state.addMoreAddress) {
-             return (<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this) } onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
+             return (<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this) } currentAddress={this.state.currentLocation} onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
          }
          if (this.state.editHomeAddress) {
              return (<MapPage onSelectAddress={this.mapDoneForHomeAddress.bind(this) } initialLoc = {this.state.homeAddress} onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
@@ -432,10 +434,10 @@ class EaterPage extends Component {
             Alert.alert('Warning', 'Missing alias name. This will be displayed publicly to chef and other users', [{ text: 'OK' }]);   
             return;             
         }
-        // if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
-        //     Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
-        //     return;             
-        // }
+        if (this.state.phoneNumber && !validator.isMobilePhone(this.state.phoneNumber, 'en-US')) {
+            Alert.alert('Error', 'Phone number is not valid', [{ text: 'OK' }]);   
+            return;             
+        }
         var _this = this;
         let eater = {};
         eater.eaterId = this.state.eater.eaterId;

@@ -1,6 +1,6 @@
 var Promise = require('bluebird');
 var AsyncStorage = require('react-native').AsyncStorage;
-const AppVersion = 1.4;
+const AppVersion = 1.5;
 const timeoutLength = 20000;
 var commonAlert = require('./commonModules/commonAlert');
 
