@@ -6,7 +6,7 @@ import React, {
 
 class CommonWidget {
     getTextLengthLimited(text,lengthLimit){
-        if(text.length<=lengthLimit){
+        if(!text || text.length<=lengthLimit){
            return text;
         }else{
            var shortenedText = text.substr(0,lengthLimit-1);

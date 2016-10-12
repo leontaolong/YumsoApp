@@ -657,7 +657,10 @@ var Menu = React.createClass({
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
                    <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
                 </TouchableOpacity>
-                <View style={{height:windowHeight*0.035}}></View>
+                <View style={{height:windowHeight*0.02}}></View>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemContactUsView} onPress={this.navigateToContactUsPage}>
+                   <Text style={sideMenuStyle.paddingMenuItemAbout}>Contact Us</Text>
+                </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
                    <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
                 </TouchableOpacity>
@@ -742,6 +745,13 @@ var Menu = React.createClass({
         });
     },
 
+    navigateToContactUsPage: function () {
+        this.props.caller.setState({ isMenuOpen: false });
+        this.props.navigator.push({
+            name: 'ContactUsPage',
+        });
+    },
+
     logOut: function(){
         return AuthService.logOut()
         .then(()=>{
@@ -800,14 +810,19 @@ var sideMenuStyle = StyleSheet.create({
         fontSize:windowHeight/37.055,
     },
     paddingMenuItemAbout: {
-        paddingVertical: windowWidth*0.02,
+        paddingVertical: windowWidth*0.015,
         color:'#fff',
         borderTopWidth:1,
         borderColor:'#fff',
         fontSize:windowHeight/41.69,
     },
-    paddingMenuItemAboutView:{
+    paddingMenuItemContactUsView:{
         borderTopWidth:1,
+        borderColor:'#fff',
+        width:windowWidth*0.226,
+        marginLeft:windowWidth*0.064,
+    },
+    paddingMenuItemAboutView:{
         borderColor:'#fff',
         width:windowWidth*0.226,
         marginLeft:windowWidth*0.064,
