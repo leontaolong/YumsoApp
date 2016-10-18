@@ -291,11 +291,11 @@ class ShopPage extends Component {
                }
            }
            scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
-                                            <Text style={styleShopPage.openHourTitle}>Deliver Hours</Text>
+                                            <Text style={styleShopPage.openHourTitle}>Out for Delivery at</Text>
                                             <ModalPicker
                                             style={styleShopPage.modalPicker}
                                             data={deliveryTimeRendered}
-                                            initValue={'Select a Delivery Time'}
+                                            initValue={'Select Time'}
                                             onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
                                     </View>);
           }else{

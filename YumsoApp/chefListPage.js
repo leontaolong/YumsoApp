@@ -82,7 +82,8 @@ class ChefListPage extends Component {
             dollarSign3: dollarSign3_Grey,
             priceRankFilter:{},
             sortCriteriaIcon:sortCriteriaIconGrey,
-            deviceToken: null
+            deviceToken: null,
+            currentTime: new Date().getTime(),
         };
 
         this.responseHandler = function (response, msg) {
@@ -173,7 +174,7 @@ class ChefListPage extends Component {
                     chefsDictionary[chef.chefId] = chef;
                 }
            }
-           this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
+           this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary, currentTime: new Date().getTime()});
         }
         
     }
@@ -231,9 +232,8 @@ class ChefListPage extends Component {
         }
         console.log(chef);
         var nextDeliverTimeView = null;
-        var currentTime = new Date().getTime();
         var EOD = new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000;
-        if(chef.nextDeliverTime && chef.nextDeliverTime>currentTime && chef.nextDeliverTime<EOD){
+        if(chef.nextDeliverTime && chef.nextDeliverTime>this.state.currentTime && chef.nextDeliverTime<EOD){
            nextDeliverTimeView = <View style={styleChefListPage.nextDeliverTimeView}>
                                       <Text style={styleChefListPage.nextDeliverTimeText}>Today's Next: {dateRender.formatTime2StringShort(chef.nextDeliverTime)}</Text>
                                  </View>;
@@ -510,8 +510,8 @@ class ChefListPage extends Component {
               this.props.navigator.push({
                     name: 'LoginPage',
                     passProps: {
-                        callback: function(eater){
-                            this.setState({eater:eater})
+                        callback: function(eater,principal){
+                            this.setState({eater:eater,principal:principal})
                         }.bind(this)
                     }
              }); 
@@ -550,7 +550,7 @@ class ChefListPage extends Component {
                     .then((res) => {
                         if (res.statusCode === 200) {
                             var chefs = res.data.chefs;
-                            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs) })
+                            this.setState({currentTime:new Date().getTime(), dataSource: this.state.dataSource.cloneWithRows(chefs) })
                             // this.onRefreshDone();
                         } else {
                             // this.onRefreshDone();
@@ -589,6 +589,10 @@ class ChefListPage extends Component {
                     commonAlert.networkError(err);
                 });                     
         }
+        // if(!this.state.principal){
+        //    let principal = await AuthService.getPrincipalInfo();
+        //    this.setState({ principal: principal});
+        // }
         this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
         this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;      
         return Promise.resolve({

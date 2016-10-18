@@ -411,10 +411,10 @@ class MapPage extends Component {
                 Alert.alert( 'Warning', 'Please specify an address',[ { text: 'OK' }]);
                 return;
             }
-            if(!this.state.selectedAddress.streetNumber){ //todo: more validation on this.
-                Alert.alert( 'Warning', 'the street is not valid since it is not specific',[ { text: 'OK' }]); 
-                return;   
-            }
+            // if(!this.state.selectedAddress.streetNumber){ //todo: more validation on this.
+            //     Alert.alert( 'Warning', 'the street is not valid since it is not specific',[ { text: 'OK' }]); 
+            //     return;   
+            // }
             if(this.state.showApartmentNumber && (!this.state.apartmentNumber || !this.state.apartmentNumber.trim())){
                 Alert.alert( 'Warning', 
                              'Wouldn\'t you specify your Apt./Suite number ?',
@@ -563,10 +563,10 @@ class MapPage extends Component {
                                 }                
                             }
                         }
-                        if((streetNumber==undefined || streetName==undefined || city==undefined || state==undefined || postal==undefined) && this.isSpecific){
-                            showWarningForSpecific = true;
-                            continue; //todo: we don't need the result that does not have street number.
-                        }
+                        // if((streetNumber==undefined || streetName==undefined || city==undefined || state==undefined || postal==undefined) && this.isSpecific){
+                        //     showWarningForSpecific = true;
+                        //     continue; //todo: we don't need the result that does not have street number.
+                        // }
                         var onePossibility = {
                             formatted_address: possibleAddress.formatted_address,
                             lat: possibleAddress.geometry.location.lat,
@@ -579,9 +579,9 @@ class MapPage extends Component {
                         };
                         addresses.push(onePossibility);
                     }
-                    if(addresses.length==0 && showWarningForSpecific){
-                        Alert.alert( 'Warning', 'Please be more specific',[ { text: 'OK' }]);
-                    }
+                    // if(addresses.length==0 && showWarningForSpecific){
+                    //     Alert.alert( 'Warning', 'Please be more specific',[ { text: 'OK' }]);
+                    // }
                     let view = this.renderSearchResult(addresses);
                     //If only one possible address returned, locate it on the map
                     if(addresses.length==1){

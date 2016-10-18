@@ -118,7 +118,7 @@ class OrderDetailPage extends Component {
                 var newStatusTextColor = "#FFFFFF";
                 var cookingStatusTextColor = "#b89467";
                 var DeliveringStatusTextColor = "#b89467";
-                if(currentTime > this.state.order.orderDeliverTime - 0.5*60*60*1000 && currentTime < this.state.order.orderDeliverTime){
+                if(currentTime > this.state.order.orderDeliverTime - 0.3*60*60*1000){
                     cookingStatusTextColor = "#FFFFFF";
                 }
             }else if(this.state.order.orderStatus.toLowerCase() == 'delivering'){
@@ -179,6 +179,7 @@ class OrderDetailPage extends Component {
                           </View>);
       }
 
+      let fullDeliveryAddress = this.state.order.shippingAddress.apartmentNumber ? 'Apt/Suite '+this.state.order.shippingAddress.apartmentNumber+' '+this.state.order.shippingAddress.formatted_address:this.state.order.shippingAddress.formatted_address;
       var costBreakDownView = [(<View key={'orderIdView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
                                         <Text style={styleShoppingCartPage.priceTitleText}>Order#</Text>
@@ -226,15 +227,15 @@ class OrderDetailPage extends Component {
                                         <Text style={styleShoppingCartPage.priceTitleText}>Deliver To</Text>
                                     </View>
                                     <View style={styleShoppingCartPage.notesToChefTextView}>
-                                        <Text style={styleShoppingCartPage.notesToChefText}>{this.getTextLengthLimited(this.state.order.shippingAddress.formatted_address,20)}</Text>
+                                        <Text style={styleShoppingCartPage.notesToChefText}>{this.getTextLengthLimited(fullDeliveryAddress,20)}</Text>
                                     </View>
-                                    <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Deliver Address', this.state.order.shippingAddress.formatted_address ,[ { text: 'Close' }])}>
+                                    <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} 
+                                    onPress={()=> Alert.alert( 'Deliver Address', fullDeliveryAddress,[ { text: 'Close' }])}>
                                         <Text style={styleShoppingCartPage.notesToChefButtonText}>View</Text>
                                     </TouchableHighlight>
                                 </View>)];
-      var commentBoxView = [];
-      if(this.state.order.orderStatus.toLowerCase() == 'delivered'){
-        if(this.state.order.comment && this.state.order.comment.starRating){
+        var commentBoxView = [];
+        if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.order.comment && this.state.order.comment.starRating){
            if(this.state.order.comment.chefComment && this.state.order.comment.chefComment.trim()){
              var  chefReplyView = <View key={'chefReplyView'} style={styleOrderDetailPage.chefReplyBox}>
                                     <View style={styleOrderDetailPage.chefPhotoView}>
@@ -261,7 +262,7 @@ class OrderDetailPage extends Component {
                                     <Text style={styleOrderDetailPage.commentText}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
                                  </View>),
                                  chefReplyView];
-        }else if(this.state.ratingSucceed){
+        }else if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.ratingSucceed){
             commentBoxView = <View style={styleOrderDetailPage.commentBox}>
                                   <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                     <View style={styleOrderDetailPage.ratingView}>
@@ -277,7 +278,7 @@ class OrderDetailPage extends Component {
                                   </View>
                                   <Text style={styleOrderDetailPage.commentText}>{this.state.comment.trim() ? this.state.comment :'No comment'}</Text>
                             </View>
-        }else if(new Date().getTime()-this.state.order.orderDeliverTime <= 7*24*60*60*1000){
+        }else if(this.state.order.orderStatus.toLowerCase() == 'delivered' && new Date().getTime()-this.state.order.orderDeliverTime <= 7*24*60*60*1000){
             commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
                                     <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
@@ -329,9 +330,32 @@ class OrderDetailPage extends Component {
                                     <TextInput placeholder="Order created 7 days ago cannot be reviewed" style={styleOrderDetailPage.commentInput} editable={false}/>                                     
                                  </View>),
                                 (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
+        }else if(this.state.order.orderStatus.toLowerCase() != 'delivered'){
+            commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
+                                    <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                        <View style={styleOrderDetailPage.ratingView}>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
+                                            <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                            </TouchableHighlight>
+                                        </View>
+                                    </View>
+                                    <TextInput placeholder="Review this order after delivery" style={styleOrderDetailPage.commentInput} editable={false}/>                                     
+                                 </View>),
+                                (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
         }
-      }
-      return costBreakDownView.concat(commentBoxView);                                             
+        return costBreakDownView.concat(commentBoxView);                                             
     }
      
     
