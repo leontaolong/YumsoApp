@@ -15,6 +15,7 @@ var LoginPage = require('./loginPage');
 var SignUpPage = require('./signupPage');
 var OrderDetailPage = require('./orderDetailPage');
 var AboutPage = require('./aboutPage');
+var ContactUsPage = require('./contactUsPage');
 var TermsPage = require('./termsPage');
 var styles = require('./style');
 
@@ -75,10 +76,9 @@ class YumsoApp extends Component {
         //let backgroundNotification;
         PushNotificationIOS.addEventListener('notification', function(notification){
            console.log('You have received a new notification!', notification);
-        //    if (React.AppStateIOS.currentState === 'background') {
-        //        backgroundNotification = notification;
-        //    }
-           PushNotificationIOS.setApplicationIconBadgeNumber(notification.getBadgeCount());
+           if(AppStateIOS.currentState !== 'active'){
+              PushNotificationIOS.setApplicationIconBadgeNumber(notification.getBadgeCount());
+           }
            Alert.alert( 'Notification', notification.getMessage(),[ { text: 'OK'}]);
         });
 
@@ -163,6 +163,8 @@ class YumsoApp extends Component {
             return <OrderDetailPage navigator={navigator}/>
         }else if (route.name==='ChefPage'){
             return <ChefPage navigator={navigator}/>
+        }else if (route.name==='ContactUsPage'){
+            return <ContactUsPage navigator={navigator}/>
         }else if (route.name==='AboutPage'){
             return <AboutPage navigator={navigator}/>
         }else if (route.name==='TermsPage'){

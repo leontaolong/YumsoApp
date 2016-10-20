@@ -36,6 +36,28 @@ class DateRender {
         }
     }
 
+    formatTime2StringShort(time) {
+        if (time) {
+            var d = new Date(time);
+            var hh = d.getHours();
+            var m = d.getMinutes();
+            var dd = "AM";
+            var h = hh;
+            if (h >= 12) {
+                h = hh - 12;
+                dd = "PM";
+            }
+            if (h == 0) {
+                h = 12;
+            }
+            m = m < 10 ? "0" + m : m;
+            h = h < 10 ? "0" + h : h;
+            return h + ":" + m + dd;
+        } else {
+            return '';
+        }
+    }
+
     renderDate2(dateString) {
         var dateInMilliseconds = new Date(dateString).getTime();
         var todayInMillisecond = new Date().setHours(0, 0, 0, 0);

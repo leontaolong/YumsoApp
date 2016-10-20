@@ -6,6 +6,7 @@ var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
 var commonAlert = require('./commonModules/commonAlert');
+var validator = require('validator');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -170,6 +171,11 @@ class SignUpPage extends Component {
             return;
         }
         
+        if(this.state.email && !validator.isEmail(this.state.email)){
+            Alert.alert( 'Warning', 'Invalid email.',[ { text: 'OK' }]);
+            return;
+        }
+
         if(!this.state.password){
             Alert.alert( 'Warning', 'Please set your password',[ { text: 'OK' }]);
             return;
@@ -199,7 +205,7 @@ class SignUpPage extends Component {
             }
             this.setState({ showProgress: false });
             this.props.navigator.push({
-                 name: 'ChefListPage'
+                 name: 'LoginPage'
             });
         }catch(err){
            this.setState({ showProgress: false });

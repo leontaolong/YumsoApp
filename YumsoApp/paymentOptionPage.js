@@ -44,7 +44,9 @@ class PaymentOptionPage extends Component {
            rowHasChanged: (r1, r2) => r1!=r2 
         }); 
         var routeStack = this.props.navigator.state.routeStack;
+        console.log("paymentOptionPage RouteStack" + routeStack);
         let eater = routeStack[routeStack.length-1].passProps.eater;
+        
         var isFromCheckOutPage = routeStack[routeStack.length-1].passProps.isFromCheckOutPage;
         this.onPaymentSelected = routeStack[routeStack.length-1].passProps.onPaymentSelected;
         this.state = {
@@ -87,6 +89,7 @@ class PaymentOptionPage extends Component {
     
     fetchPaymentOptions() {
         if (!this.state.eaterId) {
+            console.log("No eaterId!!")
             this.props.navigator.push({
                 name: 'LoginPage',
                 passProps: {

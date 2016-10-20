@@ -7,6 +7,7 @@ var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
 var commonAlert = require('./commonModules/commonAlert');
+var validator = require('validator');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -22,6 +23,7 @@ import React, {
   TouchableHighlight,
   TouchableOpacity,
   ActivityIndicatorIOS,
+  PushNotificationIOS,
   AsyncStorage,
   Alert
 } from 'react-native';
@@ -42,6 +44,11 @@ class LoginPage extends Component {
                 this.state.backCallback = passProps.backCallback;
             }
         }
+
+        PushNotificationIOS.requestPermissions();
+        PushNotificationIOS.checkPermissions((permissions) => {
+            console.log(permissions);
+        });
     }
     
     render() {
@@ -153,6 +160,11 @@ class LoginPage extends Component {
             Alert.alert( 'Warning', 'Please enter your email',[ { text: 'OK' }]);
             return;
         }
+
+        if(this.state.email && !validator.isEmail(this.state.email)){
+            Alert.alert( 'Warning', 'Invalid email.',[ { text: 'OK' }]);
+            return;
+        }
      
         if(!this.state.password){
             Alert.alert( 'Warning', 'Please enter your password',[ { text: 'OK' }]);
@@ -167,6 +179,12 @@ class LoginPage extends Component {
            if(!eater){
               return;
            }
+           let principal = await AuthService.getPrincipalInfo();
+           if(!eater.phoneNumber || !eater.phoneNumber.trim()|| !eater.email || !eater.email.trim() || !eater.eaterAlias || !eater.eaterAlias.trim()){
+              this.navigateToEaterPage(eater,principal);
+              return;
+           }
+
            var currentRoutes = this.props.navigator.getCurrentRoutes();
            if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "LoginPage"){
               this.jumpToChefList();
@@ -188,7 +206,13 @@ class LoginPage extends Component {
         if(!this.state.email || !this.state.email.trim()){
             Alert.alert( 'Warning', 'Please enter your email',[ { text: 'OK' }]);
             return;
-        }           
+        }
+
+        if(this.state.email && !validator.isEmail(this.state.email)){
+            Alert.alert( 'Warning', 'Invalid email.',[ { text: 'OK' }]);
+            return;
+        }
+
         this.setState({showProgress:true});        
         try{
            let result = await AuthService.forgotPasswordWithEmail(this.state.email.trim());
@@ -212,7 +236,12 @@ class LoginPage extends Component {
            if(!eater){
               return;
            }
-
+           let principal = await AuthService.getPrincipalInfo();
+           if(!eater.phoneNumber || !eater.phoneNumber.trim()|| !eater.email || !eater.email.trim() || !eater.eaterAlias || !eater.eaterAlias.trim()){
+              this.navigateToEaterPage(eater,principal);
+              return;
+           }
+           //If not logged in, direct to login page,if logged in direct to cheflist page
            console.log("current routes(before): "+JSON.stringify(this.props.navigator.getCurrentRoutes()));
            var currentRoutes = this.props.navigator.getCurrentRoutes();
            if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "LoginPage"){
@@ -238,6 +267,20 @@ class LoginPage extends Component {
         this.props.navigator.push({
             name: 'SignUpPage'
         });    
+    }
+
+    navigateToEaterPage(eater,principal){
+        this.props.navigator.push({
+            name: 'EaterPage',
+            passProps:{
+                eater: eater,
+                principal:principal,
+                backcallback:this.state.callback,
+                callback: function(eater){
+                    this.props.caller.setState({eater:eater, edit:true});
+                }.bind(this)
+            }
+        });
     }
 
     jumpToChefList(){
@@ -312,7 +355,7 @@ var styleLoginPage = StyleSheet.create({
       flexDirection:'row', 
       height:windowHeight*0.075, 
       justifyContent:'center',
-      backgroundColor:'#3b5998',
+      backgroundColor:'#415DAE',
     },
     fbSignInButton:{
       alignSelf:'center',

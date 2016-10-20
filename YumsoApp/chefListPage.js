@@ -8,6 +8,7 @@ var Swiper = require('react-native-swiper');
 var MapPage = require('./mapPage');
 var rating = require('./rating');
 var dollarSign = require('./commonModules/dollarIconRender');
+var dateRender = require('./commonModules/dateRender');
 var commonAlert = require('./commonModules/commonAlert');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
@@ -108,20 +109,17 @@ class ChefListPage extends Component {
     }
 
     async componentDidMount() {
-        PushNotificationIOS.requestPermissions();
-        PushNotificationIOS.checkPermissions((permissions) => {
-            console.log(permissions);
-        });
         if(!this.state.pickedAddress){
            this.setState({showProgress:true});
            await this.getLocation().catch((err)=>{
                  this.setState({GPSproxAddress:undefined,showProgress:false,pickedAddress:{lat:47.6062095, lng:-122.3320708}}); 
                  commonAlert.locationError(err);
            });//todo: really wait??
+           console.log("commonAlert.locationError");
            this.setState({showProgress:false})
         }
         let eater = this.state.eater;
-        if(!eater){
+        if(!eater || !eater.chefFilterSettings){
             eater = await AuthService.getEater();
         }
         let principal = await AuthService.getPrincipalInfo();
@@ -138,19 +136,6 @@ class ChefListPage extends Component {
         }
         this.setState({ principal: principal, eater: eater });
         this.fetchChefDishes();
-    }
-
-    registerNotification() {
-        return new Promise((resolve,reject) => {
-            PushNotificationIOS.addEventListener('register', function(token){
-               if(token){
-                  console.log('You are registered and the device token is: ',token);
-                  resolve(token);
-               }else{
-                  reject(new Error('Failed registering notification service'))
-               }  
-            })
-        });
     }
 
     async fetchChefDishes() {
@@ -177,14 +162,16 @@ class ChefListPage extends Component {
            var chefView = {};
            var chefsDictionary = {};
            for (var chef of chefs) {
-                let starDishPictures=[];
-                if(chef.highLightDishIds){
-                   for(var dishId in chef.highLightDishIds){
-                       starDishPictures.push(chef.highLightDishIds[dishId]);
-                   }
+                if(chef){//Todo:undefined check for all
+                    let starDishPictures=[];
+                    if(chef.highLightDishIds){
+                      for(var dishId in chef.highLightDishIds){
+                          starDishPictures.push(chef.highLightDishIds[dishId]);
+                      }
+                    }
+                    chefView[chef.chefId] = starDishPictures;
+                    chefsDictionary[chef.chefId] = chef;
                 }
-                chefView[chef.chefId] = starDishPictures;
-                chefsDictionary[chef.chefId] = chef;
            }
            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary });
         }
@@ -230,8 +217,11 @@ class ChefListPage extends Component {
     }
 
     renderRow(chef) {
+        if(!chef){
+           return null;
+        }
         var like = false;
-        if (this.state.eater) {
+        if (this.state.eater && this.state.eater.favoriteChefs) {
             like = this.state.eater.favoriteChefs.indexOf(chef.chefId) !== -1;
         }
         if (like==true) {
@@ -239,6 +229,34 @@ class ChefListPage extends Component {
         } else {
             var likeIcon = notlikedIcon;
         }
+        console.log(chef);
+        var nextDeliverTimeView = null;
+        var currentTime = new Date().getTime();
+        var EOD = new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000;
+        if(chef.nextDeliverTime && chef.nextDeliverTime>currentTime && chef.nextDeliverTime<EOD){
+           nextDeliverTimeView = <View style={styleChefListPage.nextDeliverTimeView}>
+                                      <Text style={styleChefListPage.nextDeliverTimeText}>Today's Next: {dateRender.formatTime2StringShort(chef.nextDeliverTime)}</Text>
+                                 </View>;
+        }else{
+           nextDeliverTimeView = <View style={styleChefListPage.nextDeliverTimeView}>
+                                      <Text style={styleChefListPage.nextDeliverTimeText}>Today's Next: None</Text>
+                                 </View>;
+        }
+
+        // var swiperView = null
+        // if(this.state.chefView[chef.chefId]){
+        //    swiperView = this.state.chefView[chef.chefId].map((picture) => {
+        //                     return (
+        //                         <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef)} underlayColor='#C0C0C0'>
+        //                             <Image source={{ uri: picture }} style={styleChefListPage.chefListViewChefShopPic}
+        //                                 onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}>
+        //                                 {nextDeliverTimeView}
+        //                             </Image>
+        //                         </TouchableHighlight>
+        //                     );
+        //                   });
+        // }
+
         return (
             <View style={styleChefListPage.oneShopListView}>
                 <View style={styleChefListPage.oneShopPhotoView}>
@@ -248,11 +266,14 @@ class ChefListPage extends Component {
                             return (
                                 <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef)} underlayColor='#C0C0C0'>
                                     <Image source={{ uri: picture }} style={styleChefListPage.chefListViewChefShopPic}
-                                        onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}/>
+                                        onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}>
+                                        
+                                    </Image>
                                 </TouchableHighlight>
                             );
-                        })}
+                          })}
                     </Swiper>
+                    {nextDeliverTimeView}
                 </View>
                 <View style={styleChefListPage.shopInfoView}>
                     <TouchableHighlight style={styleChefListPage.chefPhotoView} underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
@@ -621,8 +642,8 @@ var Menu = React.createClass({
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
                    <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
                    <Text style={sideMenuStyle.paddingMenuItem}></Text>
@@ -636,7 +657,10 @@ var Menu = React.createClass({
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
                    <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
                 </TouchableOpacity>
-                <View style={{height:windowHeight*0.035}}></View>
+                <View style={{height:windowHeight*0.02}}></View>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemContactUsView} onPress={this.navigateToContactUsPage}>
+                   <Text style={sideMenuStyle.paddingMenuItemAbout}>Contact Us</Text>
+                </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
                    <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
                 </TouchableOpacity>
@@ -693,10 +717,38 @@ var Menu = React.createClass({
         });
     },
    
+    goToPaymentOptionPage:function() {
+        this.props.caller.setState({ isMenuOpen: false });
+        if(!this.props.eater){
+            this.props.navigator.push({
+                name: 'LoginPage',
+                passProps:{
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
+                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
+                }
+            });  
+            return;
+        }
+
+        this.props.navigator.push({
+            name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
+            passProps:{
+                eater:this.props.eater
+            }
+        });
+    },
+
     navigateToAboutPage: function () {
         this.props.caller.setState({ isMenuOpen: false });
         this.props.navigator.push({
             name: 'AboutPage',
+        });
+    },
+
+    navigateToContactUsPage: function () {
+        this.props.caller.setState({ isMenuOpen: false });
+        this.props.navigator.push({
+            name: 'ContactUsPage',
         });
     },
 
@@ -758,14 +810,19 @@ var sideMenuStyle = StyleSheet.create({
         fontSize:windowHeight/37.055,
     },
     paddingMenuItemAbout: {
-        paddingVertical: windowWidth*0.02,
+        paddingVertical: windowWidth*0.015,
         color:'#fff',
         borderTopWidth:1,
         borderColor:'#fff',
         fontSize:windowHeight/41.69,
     },
-    paddingMenuItemAboutView:{
+    paddingMenuItemContactUsView:{
         borderTopWidth:1,
+        borderColor:'#fff',
+        width:windowWidth*0.226,
+        marginLeft:windowWidth*0.064,
+    },
+    paddingMenuItemAboutView:{
         borderColor:'#fff',
         width:windowWidth*0.226,
         marginLeft:windowWidth*0.064,
@@ -901,7 +958,26 @@ var styleChefListPage = StyleSheet.create({
         color:'#FFCC33',
         marginLeft:windowWidth/82.8,
         alignSelf:'center',
-    },    
+    },
+    nextDeliverTimeView:{
+        marginTop:-windowHeight*0.388+7,
+        paddingHorizontal:7,
+        paddingVertical:3,
+        flexDirection: 'column',
+        alignItems:'center',
+        justifyContent:'center',
+        alignSelf:'flex-end',
+        borderRadius: 8, 
+        borderWidth: 0, 
+        overflow: 'hidden',
+        opacity:0.75,
+        backgroundColor:'#FFFFFF',
+        marginRight:7,
+    },
+    nextDeliverTimeText:{
+        color:'#4A4A4A',
+        fontSize:12
+    }    
 });
 
 var styleFilterPage = StyleSheet.create({

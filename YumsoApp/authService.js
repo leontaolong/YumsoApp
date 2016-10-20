@@ -58,7 +58,7 @@ class AuthService {
             }
         });
         if(response.statusCode==200){
-            Alert.alert( 'Success', 'Successfully registered. Please confirm your email. You will not be able to log in till your email is verified',[ { text: 'OK' }]); 
+            Alert.alert( 'Verify Your Email', 'Please click to verify through the email just sent to you. Check spam in case you do not find it in inbox',[ { text: 'OK' }]); 
             return true;
         }else{
             Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);
@@ -99,7 +99,11 @@ class AuthService {
             deviceToken: deviceToken
         });
         if(response.statusCode!=200){
-            Alert.alert( 'Warning', response.data,[ { text: 'OK' }]); 
+            if(response.data && response.data.includes('verify')){
+              Alert.alert( 'Email Not Verified', response.data,[ { text: 'OK' }]);
+            }else{
+              Alert.alert( 'Error', response.data,[ { text: 'OK' }]);
+            }
             return undefined;
         }
         await AsyncStorage.multiSet([
