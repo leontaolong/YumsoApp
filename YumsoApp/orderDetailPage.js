@@ -114,7 +114,7 @@ class OrderDetailPage extends Component {
             }else{
             //Render 'Order received' status 
             var currentTime = new Date().getTime();
-            if(this.state.order.orderStatus == 'new'){
+            if(this.state.order.orderStatus.toLowerCase() == 'new'){
                 var newStatusTextColor = "#FFFFFF";
                 var cookingStatusTextColor = "#b89467";
                 var DeliveringStatusTextColor = "#b89467";

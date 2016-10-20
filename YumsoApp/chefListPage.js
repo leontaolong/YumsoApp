@@ -243,20 +243,6 @@ class ChefListPage extends Component {
                                  </View>;
         }
 
-        // var swiperView = null
-        // if(this.state.chefView[chef.chefId]){
-        //    swiperView = this.state.chefView[chef.chefId].map((picture) => {
-        //                     return (
-        //                         <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef)} underlayColor='#C0C0C0'>
-        //                             <Image source={{ uri: picture }} style={styleChefListPage.chefListViewChefShopPic}
-        //                                 onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}>
-        //                                 {nextDeliverTimeView}
-        //                             </Image>
-        //                         </TouchableHighlight>
-        //                     );
-        //                   });
-        // }
-
         return (
             <View style={styleChefListPage.oneShopListView}>
                 <View style={styleChefListPage.oneShopPhotoView}>
@@ -550,6 +536,18 @@ class ChefListPage extends Component {
                     .then((res) => {
                         if (res.statusCode === 200) {
                             var chefs = res.data.chefs;
+                            for (var chef of chefs) {
+                                if(chef && !(this.state.chefView[chef.chefId] && this.state.chefsDictionary[chef.chefId])){
+                                   let starDishPictures=[];
+                                   if(chef.highLightDishIds){
+                                      for(var dishId in chef.highLightDishIds){
+                                          starDishPictures.push(chef.highLightDishIds[dishId]);
+                                      }
+                                   }
+                                   this.state.chefView[chef.chefId] = starDishPictures;
+                                   this.state.chefsDictionary[chef.chefId] = chef;
+                                }
+                            }
                             this.setState({currentTime:new Date().getTime(), dataSource: this.state.dataSource.cloneWithRows(chefs) })
                             // this.onRefreshDone();
                         } else {
