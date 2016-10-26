@@ -419,20 +419,20 @@ class EaterPage extends Component {
     }
     
     submit(){
-        if (!this.state.firstname || this.state.firstname === '' || this.state.firstname.trim().includes(' ')) {
+        if (!this.state.firstname || !this.state.firstname.trim()) {
             Alert.alert('Warning', 'Missing first name or first name is invalid', [{ text: 'OK' }]);    
             return;            
         }        
-        if (!this.state.lastname || this.state.lastname === '' || this.state.lastname.trim().includes(' ')) {
+        if (!this.state.lastname || !this.state.lastname.trim()) {
             Alert.alert('Warning', 'Missing last name or last name is invalid', [{ text: 'OK' }]);
             return;                
         }
-        if (!this.state.eaterAlias || this.state.eaterAlias === '') {
+        if (!this.state.eaterAlias) {
             Alert.alert('Warning', 'Missing alias name. This will be displayed publicly to chef and other users', [{ text: 'OK' }]);   
             return;             
         }
 
-        if (!this.state.phoneNumber || this.state.phoneNumber === '') {
+        if (!this.state.phoneNumber) {
             Alert.alert('Warning', 'Missing phone number.', [{ text: 'OK' }]);   
             return;             
         }
@@ -442,7 +442,7 @@ class EaterPage extends Component {
             return;             
         }
 
-        if (!this.state.email || this.state.email === '') {
+        if (!this.state.email) {
             Alert.alert('Warning', 'Missing email address.', [{ text: 'OK' }]);   
             return;             
         }
