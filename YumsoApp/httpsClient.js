@@ -1,8 +1,9 @@
 var Promise = require('bluebird');
 var AsyncStorage = require('react-native').AsyncStorage;
-const AppVersion = "1.5.5";
-const timeoutLength = 20000;
 var commonAlert = require('./commonModules/commonAlert');
+var config = require('./config');
+const AppVersion = config.AppVersion;
+const timeoutLength = 20000;
 
 var HttpsClient = function (host, useTokenFromStorage, username, password, authEndpoint) {    
     var self = this;
