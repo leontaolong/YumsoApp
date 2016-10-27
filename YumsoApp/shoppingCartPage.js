@@ -13,6 +13,7 @@ var addPromoCodeIcon = require('./icons/icon-add.png');
 var removePromoCodeIcon = require('./icons/icon-cancel.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var commonAlert = require('./commonModules/commonAlert');
+var commonWidget = require('./commonModules/commonWidget');
 var validator = require('validator');
 import Dimensions from 'Dimensions';
 
@@ -115,26 +116,24 @@ class ShoppingCartPage extends Component {
                     </View> 
                      
                     <View style={styleShoppingCartPage.dishIngredientView}>
-                       <Text style={styleShoppingCartPage.dishIngredientText}>{this.getTextLengthLimited(dish.ingredients,28)}</Text>
-                    </View>  
-                    <View style={styleShoppingCartPage.actualQuantityView}>
-                       {actualQuantityText}
-                    </View>                                        
+                       <Text style={styleShoppingCartPage.dishIngredientText}>{commonWidget.getTextLengthLimited(dish.ingredients,28)}</Text>
+                    </View>                                           
                     <View style={styleShoppingCartPage.quantityTotalPriceView}>
-                      <View style={styleShoppingCartPage.quantityView}>
-                        <TouchableHighlight style={styleShoppingCartPage.plusIconView} underlayColor={'transparent'}
-                            onPress={()=>this.addToShoppingCart(dish)}>
-                            <Image source={plusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
-                        </TouchableHighlight> 
-                        <Text style={styleShoppingCartPage.quantityText}>{this.state.shoppingCart[this.state.selectedTime][dish.dishId]?this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity:'  '}</Text>          
-                        <TouchableHighlight style={styleShoppingCartPage.minusIconView} underlayColor={'transparent'}
-                            onPress={()=>this.removeFromShoppingCart(dish)}>                
-                            <Image source={minusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
-                        </TouchableHighlight>
-                      </View>
-                      <View style={styleShoppingCartPage.totalPriceView}>
-                          <Text style={styleShoppingCartPage.totalPriceText}>${dish.price*quantity}</Text>
-                      </View>                              
+                        <View style={styleShoppingCartPage.quantityView}>
+                            <TouchableHighlight style={styleShoppingCartPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={()=>this.addToShoppingCart(dish)}>
+                                <Image source={plusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
+                            </TouchableHighlight> 
+                            <View style={styleShoppingCartPage.quantityTextView}>
+                                <Text style={styleShoppingCartPage.quantityText}>{this.state.shoppingCart[this.state.selectedTime][dish.dishId]?this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity:'  '}</Text>          
+                            </View>
+                            <TouchableHighlight style={styleShoppingCartPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={()=>this.removeFromShoppingCart(dish)}>                
+                                <Image source={minusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
+                            </TouchableHighlight>
+                        </View>
+                        <View style={styleShoppingCartPage.totalPriceView}>
+                             {actualQuantityText} 
+                             <Text style={styleShoppingCartPage.totalPriceText}>${dish.price*quantity}</Text>
+                        </View>                              
                     </View>                        
                 </View>
             </View>
@@ -173,7 +172,7 @@ class ShoppingCartPage extends Component {
                                     <Text style={styleShoppingCartPage.priceTitleText}>Note to Chef</Text>
                                 </View>
                                 <View style={styleShoppingCartPage.showPromoCodeView}>
-                                    <Text style={styleShoppingCartPage.showPromoCodeText}>{this.getTextLengthLimited(this.state.notesToChef,15)}</Text>
+                                    <Text style={styleShoppingCartPage.showPromoCodeText}>{commonWidget.getTextLengthLimited(this.state.notesToChef,15)}</Text>
                                 </View>
                                 <TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'#F5F5F5'} onPress={()=>this.onPressAddNote()}>
                                     <Image source={addNoteIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
@@ -612,17 +611,7 @@ class ShoppingCartPage extends Component {
             }
         });    
     }
-    
-    getTextLengthLimited(text,lengthLimit){
-        if(!text || text.length <=lengthLimit){
-           return text;
-        }else{
-           var shortenedText = text.substr(0,lengthLimit-1);
-           var betterShortenedText = shortenedText.substr(0,Math.max(shortenedText.lastIndexOf(' '),shortenedText.lastIndexOf(','),shortenedText.lastIndexOf(';'),shortenedText.lastIndexOf('|')));
-           return betterShortenedText ? betterShortenedText + '...' : shortenedText+'...';
-        }
-    }
-    
+        
     navigateBackToDishList(){
         if(this.state.deliveryAddress){
             for(var key in this.state.deliveryAddress){
@@ -910,17 +899,20 @@ var styleShoppingCartPage = StyleSheet.create({
         paddingVertical:windowHeight/73.6,
     },
     dishNamePriceView:{
-        height:20,
+        height:windowHeight/16.23,
         flexDirection:'row', 
     },
     dishNameView:{
         flex:0.7,   
-        alignItems:'flex-start',     
+        alignItems:'flex-start', 
+        flexDirection:'row',    
     },
     dishNameText:{
         fontSize:windowHeight/40.89,
         fontWeight:'500',
-        color:'#4A4A4A'
+        color:'#4A4A4A',
+        flex: 1, 
+        flexWrap: 'wrap',
     },
     dishPriceView:{
         flex:0.3,
@@ -947,15 +939,16 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     quantityTotalPriceView:{
         flex:1,
-        flexDirection:'row', 
+        flexDirection:'row',
     },
     quantityView:{
-        flex:0.5,
+        flex:0.6,
         flexDirection:'row', 
-        alignItems:'flex-start',
     },
     totalPriceView:{
-        flex:0.5,
+        flex:0.4,
+        flexDirection:'column',
+        justifyContent:'center',
         alignItems:'flex-end',
     },
     totalPriceText:{
@@ -967,17 +960,22 @@ var styleShoppingCartPage = StyleSheet.create({
         width: windowHeight/27.6, 
         height: windowHeight/27.6,
     },
-    plusIconView:{
-        marginRight:windowWidth/27.6,
-    },
-    minusIconView:{
-        marginLeft:windowWidth/27.6,
+    plusMinusIconView:{
+        flex:0.4,
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'center',
     },
     quantityText:{
-        marginTop:windowHeight/147.2,
-        fontSize:windowHeight/46.0,
+        fontSize:windowHeight/33.41,
         fontWeight:'500',
         color:'#ffcc33',
+    },
+    quantityTextView:{
+        flex:0.2,
+        justifyContent:'center',
+        alignItems:'center',
+        flexDirection:'column',
     },
     addPromoCodeIcon:{
         width: windowHeight/23.0, 
@@ -998,7 +996,7 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1,
         flexDirection:'row',        
         justifyContent: 'center',
-        backgroundColor:'#FF9933',
+        backgroundColor:'#7BCBBE',
     },
     checkOutButtonView:{
         width:windowWidth*0.5,
