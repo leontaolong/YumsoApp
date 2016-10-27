@@ -195,7 +195,7 @@ class LoginPage extends Component {
               this.props.onLogin();
            }
            if(this.state.callback){
-              this.state.callback(eater);
+              this.state.callback(eater,principal);
            }
         }catch(err){
            this.setState({ showProgress: false });
@@ -255,7 +255,7 @@ class LoginPage extends Component {
               this.props.onLogin();
            }
            if(this.state.callback){
-              this.state.callback(eater);
+              this.state.callback(eater,principal);
            }
         }catch(err){//todo:login failed but still shows "log out" icon
            this.setState({ showProgress: false });
