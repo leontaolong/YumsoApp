@@ -227,6 +227,32 @@ module.exports = StyleSheet.create({
       paddingTop:8,
       fontWeight:'600'
     },
+    infoBannerView:{
+        flexDirection:'row',   
+        alignItems:'center',     
+        justifyContent: 'center',
+        height:30,
+        backgroundColor:'#F5F5F5'
+    },
+    infoBannerText:{
+        fontSize:12,
+        fontWeight:'400',
+        color:'#4A4A4A',
+        alignSelf:'center', 
+    },
+    infoBannerLinkView:{
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'center',
+        height:30,
+        width:80,
+    },
+    infoBannerLink:{
+        fontSize:12,
+        fontWeight:'400',
+        color:'#FFCC33',
+        alignSelf:'center',
+    },
 
 
     logo:{

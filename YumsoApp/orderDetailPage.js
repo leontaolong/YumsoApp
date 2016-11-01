@@ -77,7 +77,7 @@ class OrderDetailPage extends Component {
                         });
                     });
             } else {
-                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Network or server error', 'Please try again later',[ { text: 'OK' }]);   
             }
         };
     }
@@ -93,7 +93,7 @@ class OrderDetailPage extends Component {
                 <View style={styleOrderDetailPage.orderInfoView}>
                     <Text style={styleOrderDetailPage.dishNameText}>{orderItem.dishName}</Text>                             
                     <View style={styleOrderDetailPage.dishIngredientView}>
-                       <Text style={styleOrderDetailPage.dishIngredientText}>{this.getTextLengthLimited(orderItem.dishDetail.ingredients,43)}</Text>
+                       <Text style={styleOrderDetailPage.dishIngredientText}>{commonWidget.getTextLengthLimited(orderItem.dishDetail.ingredients,43)}</Text>
                     </View>                  
                     <Text style={styleOrderDetailPage.dishPriceText}>${orderItem.price}</Text>                                          
                     <Text style={styleOrderDetailPage.dishIngredientText}>Quantity: {orderItem.quantity}</Text>                                        
@@ -104,89 +104,101 @@ class OrderDetailPage extends Component {
     
     renderHeader(){
         //Render 'delivered' status
+        var ETAView=null;
         if(this.state.showDeliverStatusView){  
-            if(this.state.order.orderStatus.toLowerCase()=='delivered'){
-            var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
+           if(this.state.order.orderStatus.toLowerCase()=='delivered'){
+              var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
                                         <Text style={styleOrderDetailPage.deliverTimeText}>Your order was delivered at {dateRender.renderDate2(this.state.order.orderStatusModifiedTime)}</Text>
                                         <TouchableHighlight style={styleOrderDetailPage.deleteBannerIconView} underlayColor={'transparent'} onPress={()=>this.setState({showDeliverStatusView:false})}>
-                                        <Image source={deleteBannerIcon} style={styleOrderDetailPage.deleteBannerIcon} />
+                                           <Image source={deleteBannerIcon} style={styleOrderDetailPage.deleteBannerIcon} />
                                         </TouchableHighlight>
-                                    </View>);
-            }else{
-            //Render 'Order received' status 
-            var currentTime = new Date().getTime();
-            if(this.state.order.orderStatus.toLowerCase() == 'new'){
-                var newStatusTextColor = "#FFFFFF";
-                var cookingStatusTextColor = "#b89467";
-                var DeliveringStatusTextColor = "#b89467";
-                if(currentTime > this.state.order.orderDeliverTime - 0.3*60*60*1000){
-                    cookingStatusTextColor = "#FFFFFF";
+                                     </View>);
+           }else if(this.state.order.orderStatus.toLowerCase()=='cancelled'){
+               var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
+                                        <Text style={styleOrderDetailPage.deliverTimeText}>Your order has been cancelled</Text>
+                                      </View>);
+           }else{
+                //Render 'Order received' status 
+               var currentTime = new Date().getTime();
+               if(this.state.order.orderStatus.toLowerCase() == 'new'){
+                  var newStatusTextColor = "#FFFFFF";
+                  var cookingStatusTextColor = "#b89467";
+                  var DeliveringStatusTextColor = "#b89467";
+                  if(currentTime > this.state.order.orderDeliverTime - 0.3*60*60*1000){
+                     cookingStatusTextColor = "#FFFFFF";
+                  }
+               }else if(this.state.order.orderStatus.toLowerCase() == 'delivering'){
+                  var newStatusTextColor = "#FFFFFF";
+                  var cookingStatusTextColor = "#FFFFFF";
+                  var DeliveringStatusTextColor = "#FFFFFF";
+               }
+                
+               var deliverTimeView = (<View style={styleOrderDetailPage.deliverStatusView}>
+                                            <View style={styleOrderDetailPage.oneStatusView}>
+                                                <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Order</Text>
+                                                <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Received</Text>
+                                            </View>
+                                            <View style={styleOrderDetailPage.oneStatusView}>
+                                                <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
+                                            </View>
+                                            <View style={styleOrderDetailPage.oneStatusView}>
+                                                <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Cooking</Text>
+                                            </View>
+                                            <View style={styleOrderDetailPage.oneStatusView}>
+                                                <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
+                                            </View>
+                                            <View style={styleOrderDetailPage.oneStatusView}>
+                                                <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Out For</Text>
+                                                <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Delivery</Text>
+                                            </View>
+                                       </View>);
+                if(this.state.order.estimatedDeliverTimeRange){
+                   ETAView = <View style={styleOrderDetailPage.ETAView}>
+                                <Text style={styleOrderDetailPage.ETAText}>
+                                    Estimated to arrive between {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.max)}
+                                </Text>
+                             </View>;
                 }
-            }else if(this.state.order.orderStatus.toLowerCase() == 'delivering'){
-                var newStatusTextColor = "#FFFFFF";
-                var cookingStatusTextColor = "#FFFFFF";
-                var DeliveringStatusTextColor = "#FFFFFF";
-            }
-            
-            var deliverTimeView = (<View style={styleOrderDetailPage.deliverStatusView}>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Order</Text>
-                                        <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Received</Text>
-                                    </View>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
-                                    </View>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Cooking</Text>
-                                    </View>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
-                                    </View>
-                                    <View style={styleOrderDetailPage.oneStatusView}>
-                                        <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Out For</Text>
-                                        <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Delivery</Text>
-                                    </View>
-                                </View>);
             }
 
-            var contactUsView = <View style={styleOrderDetailPage.contactUsView}>
-                                   <Text style={styleOrderDetailPage.contactUsText}>
+            var contactUsView = <View style={styles.infoBannerView}>
+                                   <Text style={styles.infoBannerText}>
                                       Got problem with your order? Call us at  
                                    </Text> 
-                                   <Text style={styleOrderDetailPage.contactUsTextPhoneNumber} onPress={()=>this.dialThisNumber('2066012584')}>
+                                   <Text style={styles.infoBannerLink} onPress={()=>this.dialThisNumber('2066012584')}>
                                       (206)601-2584
                                    </Text>
                                 </View>
-            return [deliverTimeView,contactUsView];
+            return [deliverTimeView,ETAView,contactUsView];
         }
     }
     
     renderFooter(){
       var promotionDeductionView = null;
       if(this.state.order.price.couponValue){
-          promotionDeductionView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalView}>
-                                                <View style={styleShoppingCartPage.couponTitleView}>
-                                                    <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
-                                                </View>
-                                                <View style={styleShoppingCartPage.couponNumberView}>
-                                                    <Text style={styleShoppingCartPage.priceNumberText}>-${this.state.order.price.couponValue}</Text>
-                                                </View>
-                                   </View>);
+         promotionDeductionView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalView}>
+                                         <View style={styleShoppingCartPage.couponTitleView}>
+                                             <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
+                                         </View>
+                                         <View style={styleShoppingCartPage.couponNumberView}>
+                                             <Text style={styleShoppingCartPage.priceNumberText}>-${this.state.order.price.couponValue}</Text>
+                                         </View>
+                                    </View>);
       }
 
       var notesToChefView = null;
       if(this.state.order.notesToChef && this.state.order.notesToChef.trim()){
-        notesToChefView = (<View key={'noteView'} style={styleShoppingCartPage.noteView}>
-                                    <View style={styleShoppingCartPage.notesToChefTitleView}>
-                                        <Text style={styleShoppingCartPage.priceTitleText}>Note to Chef</Text>
-                                    </View>
-                                    <View style={styleShoppingCartPage.notesToChefTextView}>
-                                        <Text style={styleShoppingCartPage.notesToChefText}>{this.getTextLengthLimited(this.state.order.notesToChef,16)}</Text>
-                                    </View>
-                                    <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Note to Chef', this.state.order.notesToChef ,[ { text: 'Close' }])}>
-                                        <Text style={styleShoppingCartPage.notesToChefButtonText}>View</Text>
-                                    </TouchableHighlight>
-                          </View>);
+         notesToChefView = (<View key={'noteView'} style={styleShoppingCartPage.noteView}>
+                                <View style={styleShoppingCartPage.notesToChefTitleView}>
+                                    <Text style={styleShoppingCartPage.priceTitleText}>Note to Chef</Text>
+                                </View>
+                                <View style={styleShoppingCartPage.notesToChefTextView}>
+                                    <Text style={styleShoppingCartPage.notesToChefText}>{commonWidget.getTextLengthLimited(this.state.order.notesToChef,16)}</Text>
+                                </View>
+                                <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Note to Chef', this.state.order.notesToChef ,[ { text: 'Close' }])}>
+                                    <Text style={styleShoppingCartPage.notesToChefButtonText}>View</Text>
+                                </TouchableHighlight>
+                            </View>);
       }
 
       let fullDeliveryAddress = this.state.order.shippingAddress.apartmentNumber ? 'Apt/Suite '+this.state.order.shippingAddress.apartmentNumber+' '+this.state.order.shippingAddress.formatted_address:this.state.order.shippingAddress.formatted_address;
@@ -214,7 +226,7 @@ class OrderDetailPage extends Component {
                                     <View style={styleShoppingCartPage.priceNumberView}>
                                         <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.deliveryFee}</Text>
                                     </View>
-                                </View>),
+                                 </View>),
                                 promotionDeductionView,
                                 (<View key={'taxView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
@@ -223,7 +235,7 @@ class OrderDetailPage extends Component {
                                     <View style={styleShoppingCartPage.priceNumberView}>
                                         <Text style={styleShoppingCartPage.priceNumberText}>${this.state.order.price.tax}</Text>
                                     </View>
-                                </View>),
+                                 </View>),
                                 (<View key={'totalView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
                                         <Text style={styleShoppingCartPage.totalPriceTitleText}>Total</Text>
@@ -231,23 +243,23 @@ class OrderDetailPage extends Component {
                                     <View style={styleShoppingCartPage.priceNumberView}>
                                         <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.order.price.grandTotal}</Text>
                                     </View>
-                                </View>),
+                                 </View>),
                                 (<View key={'addressView'} style={styleShoppingCartPage.noteView}>
                                     <View style={styleShoppingCartPage.notesToChefTitleView}>
                                         <Text style={styleShoppingCartPage.priceTitleText}>Deliver To</Text>
                                     </View>
                                     <View style={styleShoppingCartPage.notesToChefTextView}>
-                                        <Text style={styleShoppingCartPage.notesToChefText}>{this.getTextLengthLimited(fullDeliveryAddress,20)}</Text>
+                                        <Text style={styleShoppingCartPage.notesToChefText}>{commonWidget.getTextLengthLimited(fullDeliveryAddress,20)}</Text>
                                     </View>
                                     <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} 
                                     onPress={()=> Alert.alert( 'Deliver Address', fullDeliveryAddress,[ { text: 'Close' }])}>
                                         <Text style={styleShoppingCartPage.notesToChefButtonText}>View</Text>
                                     </TouchableHighlight>
-                                </View>)];
+                                 </View>)];
         var commentBoxView = [];
         if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.order.comment && this.state.order.comment.starRating){
            if(this.state.order.comment.chefComment && this.state.order.comment.chefComment.trim()){
-             var  chefReplyView = <View key={'chefReplyView'} style={styleOrderDetailPage.chefReplyBox}>
+              var chefReplyView = <View key={'chefReplyView'} style={styleOrderDetailPage.chefReplyBox}>
                                     <View style={styleOrderDetailPage.chefPhotoView}>
                                       <Image source={{uri:this.state.order.chefProfilePic}} style={styleOrderDetailPage.chefPhoto}/>
                                     </View>
@@ -257,7 +269,7 @@ class OrderDetailPage extends Component {
                                   </View>
            }
            commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
-                                    <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                  <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
                                             <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
                                             <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
@@ -268,29 +280,29 @@ class OrderDetailPage extends Component {
                                         <View style={styleOrderDetailPage.commentTimeView}>
                                             <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(this.state.order.comment.eaterCommentTime)}</Text>
                                         </View>
-                                    </View>
-                                    <Text style={styleOrderDetailPage.commentText}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
-                                 </View>),
-                                 chefReplyView];
+                                  </View>
+                                  <Text style={styleOrderDetailPage.commentText}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
+                              </View>),
+                              chefReplyView];
         }else if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.ratingSucceed){
             commentBoxView = <View style={styleOrderDetailPage.commentBox}>
                                   <View style={styleOrderDetailPage.ratingCommentTimeView}>
-                                    <View style={styleOrderDetailPage.ratingView}>
-                                        <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
-                                        <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
-                                        <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
-                                        <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
-                                        <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
-                                    </View>
-                                    <View style={styleOrderDetailPage.commentTimeView}>
-                                        <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(new Date().getTime())}</Text>
-                                    </View>
+                                        <View style={styleOrderDetailPage.ratingView}>
+                                            <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
+                                            <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
+                                            <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
+                                            <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
+                                            <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                        </View>
+                                        <View style={styleOrderDetailPage.commentTimeView}>
+                                            <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(new Date().getTime())}</Text>
+                                        </View>
                                   </View>
                                   <Text style={styleOrderDetailPage.commentText}>{this.state.comment.trim() ? this.state.comment :'No comment'}</Text>
-                            </View>
+                             </View>
         }else if(this.state.order.orderStatus.toLowerCase() == 'delivered' && new Date().getTime()-this.state.order.orderDeliverTime <= 7*24*60*60*1000){
             commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
-                                    <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                   <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
                                             <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(1)}>
                                             <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
@@ -361,14 +373,13 @@ class OrderDetailPage extends Component {
                                             </TouchableHighlight>
                                         </View>
                                     </View>
-                                    <TextInput placeholder="Review this order after delivery" style={styleOrderDetailPage.commentInput} editable={false}/>                                     
-                                 </View>),
-                                (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
+                                    <TextInput placeholder="Leave a comment for this order after delivery" style={styleOrderDetailPage.commentInput} editable={false}/>                                     
+                                </View>),
+                               (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
         }
         return costBreakDownView.concat(commentBoxView);                                             
     }
      
-    
     render() {        
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
@@ -377,35 +388,32 @@ class OrderDetailPage extends Component {
                                 </View>;  
         }
    
-        return (
-            <View style={styles.container}>
-               <View style={styles.headerBannerView}>    
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
-                       <View style={styles.backButtonView}>
-                          <Image source={backIcon} style={styles.backButtonIcon}/>
-                       </View>
-                    </TouchableHighlight>    
-                    <View style={styles.titleView}>
-                       <Text style={styles.titleText}>Order Details</Text>
+        return (<View style={styles.container}>
+                    <View style={styles.headerBannerView}>    
+                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
+                            <View style={styles.backButtonView}>
+                                <Image source={backIcon} style={styles.backButtonIcon}/>
+                            </View>
+                            </TouchableHighlight>    
+                            <View style={styles.titleView}>
+                            <Text style={styles.titleText}>Order Details</Text>
+                            </View>
+                            <View style={styles.headerRightView}>
+                            </View>
                     </View>
-                    <View style={styles.headerRightView}>
-                    </View>
-               </View>
-               <ListView style={styleOrderDetailPage.dishListView} ref="listView" 
-                            dataSource = {this.state.dataSource}
-                            renderHeader={this.renderHeader.bind(this)}
-                            renderRow={this.renderRow.bind(this) } 
-                            renderFooter={this.renderFooter.bind(this)}/>
-               {loadingSpinnerView}
-            </View>
-        );
+                    <ListView style={styleOrderDetailPage.dishListView} ref="listView" 
+                                    dataSource = {this.state.dataSource}
+                                    renderHeader={this.renderHeader.bind(this)}
+                                    renderRow={this.renderRow.bind(this) } 
+                                    renderFooter={this.renderFooter.bind(this)}/>
+                    {loadingSpinnerView}
+                </View>);
     }
 
     async getOneOrder(){
         const start = 'start=0';
         const end = 'end='+ new Date().getTime();
         var eaterId = this.state.order.eaterId;
-        console.log("eaterId: "+eaterId);
         try{
           var allOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eaterId+'?'+start+'&'+end);
           this.setState({showProgress:false,showNetworkUnavailableScreen:false})
@@ -415,7 +423,7 @@ class OrderDetailPage extends Component {
           return;
         }
 
-        if (allOrder && allOrder.statusCode != 200) {
+        if (allOrder && allOrder.statusCode != 200 && allOrder.statusCode != 202) {
             this.setState({showProgress:false});
             return this.responseHandler(allOrder);
         }
@@ -447,7 +455,7 @@ class OrderDetailPage extends Component {
         let listViewLength = this.y;
         let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
         if(listViewBottomToScreenBottom < 0){//Scroll down to near screen bottom only listViewBottomToScreenBottom excceed the screen
-          this.refs.listView.scrollTo({x:0, y:30 - listViewBottomToScreenBottom, animated: true})
+           this.refs.listView.scrollTo({x:0, y:30 - listViewBottomToScreenBottom, animated: true})
         }
     }
     
@@ -468,7 +476,7 @@ class OrderDetailPage extends Component {
         
         return this.client.postWithAuth(config.leaveEaterCommentEndpoint,data)
         .then((res)=>{
-            if (res.statusCode != 200) {
+            if (res.statusCode != 200 && res.statusCode != 202) {
                 this.setState({showProgress:false});
                 return this.responseHandler(res);
             }
@@ -479,16 +487,6 @@ class OrderDetailPage extends Component {
             this.setState({showProgress: false});
             commonAlert.networkError(err);
         });
-    }
-    
-    getTextLengthLimited(text,lengthLimit){
-        if(!text || text.length<=lengthLimit){
-           return text;
-        }else{
-           var shortenedText = text.substr(0,lengthLimit-1);
-           var betterShortenedText = shortenedText.substr(0,Math.max(shortenedText.lastIndexOf(' '),shortenedText.lastIndexOf(','),shortenedText.lastIndexOf(';'),shortenedText.lastIndexOf('|')));
-           return betterShortenedText ? betterShortenedText + '...' : shortenedText+'...';
-        }
     }
     
     pressedRatingIcon(rating){
@@ -535,7 +533,6 @@ class OrderDetailPage extends Component {
         }
         this.props.navigator.pop();
     }
-    
 }
 
 var styleOrderDetailPage = StyleSheet.create({
@@ -549,6 +546,18 @@ var styleOrderDetailPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         height:windowHeight*0.0974,
+        backgroundColor:'#FFCC33'
+    },
+    ETAText:{
+        color:'#FFFFFF',
+        fontWeight:'500',
+        fontSize:windowHeight/52.57,
+    },
+    ETAView:{
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:"flex-start",
+        height:20,
         backgroundColor:'#FFCC33'
     },
     oneStatusView:{
@@ -697,27 +706,6 @@ var styleOrderDetailPage = StyleSheet.create({
         color:'#9B9B9B',
         fontWeight:'600',
     },
-    contactUsView:{
-        flex:1,
-        flexDirection:'row',   
-        alignItems:'center',     
-        justifyContent: 'center',
-        height:30,
-        backgroundColor:'#F5F5F5'
-    },
-    contactUsText:{
-        fontSize:12,
-        fontWeight:'200',
-        color:'#4A4A4A',
-        alignSelf:'center', 
-    },
-    contactUsTextPhoneNumber:{
-        marginLeft:3,
-        fontSize:12,
-        fontWeight:'400',
-        color:'#FFCC33',
-        alignSelf:'center',
-    }
 });
 
 var styleShoppingCartPage = StyleSheet.create({

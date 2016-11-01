@@ -56,7 +56,7 @@ class ChefCommentsPage extends Component {
         const end = 'end='+ new Date().getTime();
         return this.client.getWithoutAuth(config.chefCommentsEndpoint + this.state.chefId + '?' + start + '&' + end)
             .then((res) => {
-                if (res.statusCode != 200) {
+                if (res.statusCode != 200 && res.statusCode!=202) {
                     throw new Error('Fail getting past comments');
                 }
                 let comments = res.data.comments;

@@ -134,7 +134,7 @@ class PaymentPage extends Component {
                             }
                         });
                     });
-            }else if(response.statusCode==200){
+            }else if(response.statusCode==200 || response.statusCode==202){
                 this.setState({showProgress:false});
                 if(response.data.result===true){
                     Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]); 
@@ -164,7 +164,7 @@ class PaymentPage extends Component {
                 }                    
             }else{
                 this.setState({showProgress:false});
-                Alert.alert('Failed creating order','Network or server Error',[{ text: 'OK' }]);            
+                Alert.alert('Failed creating order','Network or server error',[{ text: 'OK' }]);            
             }
          }).catch((err)=>{
                this.setState({showProgress: false});

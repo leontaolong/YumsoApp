@@ -62,7 +62,7 @@ class HistoryOrderPage extends Component {
                         });
                     });
             } else {
-                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]); 
+                 Alert.alert( 'Network or server error', 'Please try again later',[ { text: 'OK' }]); 
                  this.setState({showProgress: false,showNetworkUnavailableScreen:true});  
             }
         };
@@ -96,11 +96,11 @@ class HistoryOrderPage extends Component {
           return;
         }
     
-        if (pastOneWeekOrder && pastOneWeekOrder.statusCode != 200) {
+        if (pastOneWeekOrder && pastOneWeekOrder.statusCode != 200 && pastOneWeekOrder.statusCode != 202) {
             this.setState({showProgress:false});
             return this.responseHandler(pastOneWeekOrder);
         }
-        if (pastOneWeekComment && pastOneWeekComment.statusCode != 200) {
+        if (pastOneWeekComment && pastOneWeekOrder.statusCode != 200 && pastOneWeekOrder.statusCode != 202) {
             this.setState({showProgress:false});  
             return this.responseHandler(pastOneWeekOrder);
         }

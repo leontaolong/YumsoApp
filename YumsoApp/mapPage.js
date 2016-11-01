@@ -269,8 +269,8 @@ class MapPage extends Component {
     renderSearchResult(addressList){
         var addressesView = []
         for(let address of addressList){
-            addressesView.push(<View style={styleMapPage.possibleAddressView}>
-                                  <Text style={styleMapPage.possibleAddressText} key={address.formatted_address} onPress={()=>{this.usedSavedAddress=false; this.useAddress(address)}}>  {address.formatted_address}</Text>
+            addressesView.push(<View key={address.formatted_address} style={styleMapPage.possibleAddressView}>
+                                  <Text style={styleMapPage.possibleAddressText} onPress={()=>{this.usedSavedAddress=false; this.useAddress(address)}}>  {address.formatted_address}</Text>
                                </View>);
         }
         return addressesView;

@@ -49,7 +49,8 @@ import React, {
     PushNotificationIOS,
     Alert,
     AsyncStorage,
-    AppState
+    AppState,
+    Linking
 } from 'react-native';
 
 class ChefListPage extends Component {
@@ -85,6 +86,7 @@ class ChefListPage extends Component {
             sortCriteriaIcon:sortCriteriaIconGrey,
             deviceToken: null,
             currentTime: new Date().getTime(),
+            showUpdateAppBanner:false,
         };
 
         this.responseHandler = function (response, msg) {
@@ -190,7 +192,7 @@ class ChefListPage extends Component {
                         .then((res) => {
                             var city = 'unknown';
                             var state = 'unknown';
-                            if (res.statusCode === 200 && res.data.status === 'OK' && res.data.results.length > 0) {
+                            if ((res.statusCode === 200 || res.statusCode === 202) && res.data.status === 'OK' && res.data.results.length > 0) {
                                 var results = res.data.results;
                                 var address = results[0].formatted_address;
                                 for (var component of results[0].address_components) {
@@ -381,6 +383,20 @@ class ChefListPage extends Component {
                     </TouchableOpacity>                
                </View>                    
         }
+
+        var updateAppBannerView=null;
+        if(this.state.showUpdateAppBanner){
+           updateAppBannerView = <View style={styles.infoBannerView}>
+                                   <Text style={styles.infoBannerText}>
+                                      Yumso App has new version available.  
+                                   </Text> 
+                                   <TouchableHighlight style={styles.infoBannerLinkView} onPress={()=>this.linkToAppStore()} underlayColor={'#ECECEC'}>
+                                        <Text style={styles.infoBannerLink}>
+                                            Tap to update
+                                        </Text>
+                                    </TouchableHighlight>
+                                 </View>
+        }
         
         return (
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
@@ -414,6 +430,7 @@ class ChefListPage extends Component {
                            </TouchableHighlight>
                         </View>
                     </View> 
+                    {updateAppBannerView}
                     {networkUnavailableView}
                     {cheflistView}
                     {loadingSpinnerView}
@@ -494,6 +511,10 @@ class ChefListPage extends Component {
         this.searchChef(true);
     }
 
+    linkToAppStore(){
+        Linking.openURL('itms://itunes.apple.com/us/app/apple-store/id1125810059?mt=8')
+    }
+
     searchChef(isApplySearchButtonPressed){
         if(isApplySearchButtonPressed==true){
            if(!this.state.eater){
@@ -538,7 +559,7 @@ class ChefListPage extends Component {
                 }
                 return this.client.getWithoutAuth(url)
                     .then((res) => {
-                        if (res.statusCode === 200) {
+                        if (res.statusCode === 200 || res.statusCode === 202) {
                             var chefs = res.data.chefs;
                             for (var chef of chefs) {
                                 if(chef && !(this.state.chefView[chef.chefId] && this.state.chefsDictionary[chef.chefId])){
@@ -553,6 +574,10 @@ class ChefListPage extends Component {
                                 }
                             }
                             this.setState({currentTime:new Date().getTime(), dataSource: this.state.dataSource.cloneWithRows(chefs) })
+
+                            if(res.statusCode === 202){
+                               this.setState({showUpdateAppBanner:true});
+                            }
                             // this.onRefreshDone();
                         } else {
                             // this.onRefreshDone();
@@ -576,7 +601,7 @@ class ChefListPage extends Component {
             this.state.eater.chefFilterSettings['withBestRatedSort'] = this.state.withBestRatedSort;
             return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:{eaterId: this.state.eater.eaterId, chefFilterSettings: this.state.eater.chefFilterSettings}})
                 .then((res) => {
-                    if (res.statusCode != 200) {
+                    if (res.statusCode != 200 && res.statusCode!=202) {
                         this.setState({showProgress:false});                                 
                         return self.responseHandler(res);
                     }
@@ -612,6 +637,7 @@ class ChefListPage extends Component {
                 chef:chef,
                 eater:this.state.eater,
                 currentLocation:this.state.GPSproxAddress,
+                showUpdateAppBanner:this.state.showUpdateAppBanner,
                 defaultDeliveryAddress: this.state.pickedAddress,//todo: this is not really the pickaddress
                 callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
             }
@@ -866,7 +892,7 @@ var styleChefListPage = StyleSheet.create({
        alignSelf:'stretch',
        backgroundColor:'#FFFFFF',
        borderColor:'#F5F5F5',
-       borderTopWidth:5,
+       borderBottomWidth:5,
     },
     oneShopPhotoView:{
        height:windowHeight*0.388,

@@ -91,7 +91,7 @@ class EaterPage extends Component {
                         });
                     });
             } else {
-                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Network or server error', 'Please try again later',[ { text: 'OK' }]);   
             }
         };
         this.client = new HttpsClient(config.baseUrl, true);
@@ -398,7 +398,7 @@ class EaterPage extends Component {
                         return;
                     }
 
-                    if (request.status === 200) {
+                    if (request.status === 200 || request.status === 202) {
                         this.state.eater.eaterProfilePic = source.uri;
                         this.setState({eater:this.state.eater});
                         console.log('success', request.responseText);
@@ -467,7 +467,7 @@ class EaterPage extends Component {
         this.setState({showProgress:true});
         return this.client.postWithAuth(config.eaterUpdateEndpoint, { eater: eater })
             .then((res) => {
-                if (res.statusCode != 200) {
+                if (res.statusCode != 200 && res.statusCode != 202) {
                     this.setState({ showProgress: false });                
                     return this.responseHandler(res);
                 }

@@ -265,6 +265,11 @@ class ShoppingCartPage extends Component {
                             <TouchableHighlight underlayColor={'transparent'} style={styleShoppingCartPage.addressChangeButtonWrapper} onPress={()=>this.setState({selectDeliveryAddress:true})}>
                                 <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add delivery address': 'Change Address'}</Text>
                             </TouchableHighlight>
+                            <View style={styleShoppingCartPage.ETATextView}>
+                                <Text style={styleShoppingCartPage.ETAText}>
+                                   Estimated to arrive between {dateRender.formatTime2StringShort(this.state.quotedOrder.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(this.state.quotedOrder.estimatedDeliverTimeRange.max)}
+                                </Text>
+                            </View>
                         </View>                      
                     </View>),
                     (<View key={'taxView'} style={styleShoppingCartPage.taxView}>
@@ -472,29 +477,30 @@ class ShoppingCartPage extends Component {
     
     getPrice(){
         if(this.state.dishUnavailableSet && Object.keys(this.state.dishUnavailableSet).length!=0){
-            Alert.alert('Warning','Please fix your order items',[{ text: 'OK' }]);
-            return;           
+           Alert.alert('Warning','Please fix your order items',[{ text: 'OK' }]);
+           return;           
         }
         if(!this.state.deliveryAddress){
-            Alert.alert('Warning','You do not have a delivery address',[{ text: 'OK' }]);
-            return;         
-        }else{
-            let address = this.state.deliveryAddress; //todo: do this or should just make a disapear? which better UX?
-            if (!address.streetName || address.streetName == 'unknown' || !address.streetNumber || address.streetNumber == 'unknown' 
-            || !address.city || address.city == 'unknown' || !address.state || address.state == 'unknown' || !address.postal || address.postal == 'unknown') {
-                Alert.alert('Warning', 'Pleas set a specific address for delivery', [{ text: 'OK' }]);
-                return;
-            }            
+           Alert.alert('Warning','You do not have a delivery address',[{ text: 'OK' }]);
+           return;         
         }
-        if(!this.state.shoppingCart  || !this.state.shoppingCart[this.state.selectedTime] || Object.keys(this.state.shoppingCart[this.state.selectedTime]).length===0){
-            Alert.alert('Warning','You do not have any item in shopping cart',[{ text: 'OK' }]);         
-            return; 
+        // else{
+        //    let address = this.state.deliveryAddress; //todo: do this or should just make a disapear? which better UX?
+        //    if (!address.streetName || address.streetName == 'unknown' || !address.streetNumber || address.streetNumber == 'unknown' 
+        //    || !address.city || address.city == 'unknown' || !address.state || address.state == 'unknown' || !address.postal || address.postal == 'unknown') {
+        //         Alert.alert('Warning', 'Pleas set a specific address for delivery', [{ text: 'OK' }]);
+        //         return;
+        //    }            
+        // }
+        if(!this.state.shoppingCart || !this.state.shoppingCart[this.state.selectedTime] || Object.keys(this.state.shoppingCart[this.state.selectedTime]).length===0){
+           Alert.alert('Warning','You do not have any item in shopping cart',[{ text: 'OK' }]);         
+           return; 
         }
         this.setState({showProgress:true});
         var orderList = {};
         for (var cartItemKey in this.state.shoppingCart[this.state.selectedTime]) {
-            var dishItem = this.state.shoppingCart[this.state.selectedTime][cartItemKey];
-            orderList[cartItemKey] = { quantity: dishItem.quantity, price: dishItem.dish.price };
+             var dishItem = this.state.shoppingCart[this.state.selectedTime][cartItemKey];
+             orderList[cartItemKey] = { quantity: dishItem.quantity, price: dishItem.dish.price };
         }
         var orderQuote = {
             chefId: this.state.chefId,
@@ -505,7 +511,7 @@ class ShoppingCartPage extends Component {
         }; 
         return this.client.postWithoutAuth(config.priceQuoteEndpoint, {orderDetail:orderQuote})
         .then((response)=>{
-            if(response.statusCode==200){
+            if(response.statusCode==200 || response.statusCode==202){
                 if(response.data.result===true){
                     console.log(response.data.detail.orderQuote)
                     this.setState({quotedOrder:response.data.detail.orderQuote, priceIsConfirmed:true});
@@ -808,17 +814,27 @@ var styleShoppingCartPage = StyleSheet.create({
         fontWeight:'500',
         alignSelf:'center',  
     },
-    removeCouponText:{
-        fontSize:windowHeight/49.06,
-        color:'#ffcc33',
-        fontWeight:'500',
-        alignSelf:'center',
-        paddingLeft:10,
-    },
     addressChangeButtonView:{
         flex:0.43,
+        flexDirection:'column',
+        justifyContent:'flex-start',
+        alignItems:'flex-end',
+    },
+    ETAText:{
+        fontSize:windowHeight/49.06,
+        color:'#7BCBBE',
+        fontWeight:'500',
+        marginTop:10,
+        flexWrap: 'wrap',
+        flex:1,
+    },
+    ETATextView:{
+        flex:1,
+        width:windowWidth*8/9*0.43,
         flexDirection:'row',
-        alignItems:'flex-end',     
+        justifyContent:'flex-end',
+        alignItems:'flex-start',
+        paddingRight:windowWidth/27.6,
     },
     priceTitleView:{
         flex:1/2.0,

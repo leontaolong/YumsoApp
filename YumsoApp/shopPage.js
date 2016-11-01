@@ -43,7 +43,8 @@ import React, {
   AsyncStorage,
   Alert,
   Picker,
-  Modal
+  Modal,
+  Linking,
 } from 'react-native';
 
 var windowHeight = Dimensions.get('window').height;
@@ -61,7 +62,7 @@ class ShopPage extends Component {
         let currentLocation = routeStack[routeStack.length-1].passProps.currentLocation;
         this.callback = routeStack[routeStack.length-1].passProps.callback;      
         let eater = routeStack[routeStack.length-1].passProps.eater;    
-        console.log("currentLocation2: "+currentLocation)  
+        let showUpdateAppBanner = routeStack[routeStack.length-1].passProps.showUpdateAppBanner
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:false,
@@ -72,7 +73,8 @@ class ShopPage extends Component {
             currentLocation:currentLocation, 
             selectedTime:'All Dishes',
             totalPrice:0,
-            eater:eater
+            eater:eater,
+            showUpdateAppBanner:showUpdateAppBanner
         };            
     }
     
@@ -343,12 +345,26 @@ class ShopPage extends Component {
                                             initValue={'Select Time'}
                                             onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
                                     </View>);
-          }else{
-            scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
+        }else{
+           scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
                                             <Text style={styleShopPage.openHourTitle}>Currently no dish avaliable to order</Text>
                                     </View>);
-          }
+        }
         
+        var updateAppBannerView=null;
+        if(this.state.showUpdateAppBanner){
+           updateAppBannerView = <View style={styles.infoBannerView}>
+                                   <Text style={styles.infoBannerText}>
+                                      Yumso App has new version available.  
+                                   </Text> 
+                                   <TouchableHighlight style={styles.infoBannerLinkView} onPress={()=>this.linkToAppStore()} underlayColor={'#ECECEC'}>
+                                        <Text style={styles.infoBannerLink}>
+                                            Tap to update
+                                        </Text>
+                                   </TouchableHighlight>
+                                 </View>
+        }
+
         var networkUnavailableView = null;
         var dishListView = null;
         var footerView = null;
@@ -391,6 +407,7 @@ class ShopPage extends Component {
                             </TouchableHighlight>
                         </View>
                         {scheduleSelectionView}
+                        {updateAppBannerView}
                         {networkUnavailableView}
                         {dishListView}
                         {loadingSpinnerView}
@@ -482,6 +499,10 @@ class ShopPage extends Component {
         } 
         this.getTotalPrice();
     }
+
+    linkToAppStore(){
+        Linking.openURL('itms://itunes.apple.com/us/app/apple-store/id1125810059?mt=8')
+    }
     
     addToFavorite() {
         let _this = this;
@@ -495,7 +516,7 @@ class ShopPage extends Component {
                 this.setState({showProgress: false});
                 if(res.statusCode==400){
                     Alert.alert( 'Warning', res.data,[ { text: 'OK' }]);              
-                }else if (res.statusCode === 200) {
+                }else if (res.statusCode === 200 || res.statusCode === 202) {
                     isAdd ? eater.favoriteChefs.push(_this.state.chefId) : eater.favoriteChefs.splice(eater.favoriteChefs.indexOf(_this.state.chefId), 1);
                     return AuthService.updateCacheEater(eater) //todo: perhaps return the eater oject everytime update it.
                         .then(() => {
