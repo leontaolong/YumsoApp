@@ -14,11 +14,11 @@ var commonWidget = require('./commonModules/commonWidget');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
 var ballonIcon = require('./icons/icon-location-white.png');
-var favoriteIcon = require('./icons/icon-liked-white.png');
+var whiteLikeIcon = require('./icons/icon-liked-white.png');
 var labelIcon = require('./icons/icon-label.png');
 var menuIcon = require('./icons/icon-menu.webp');
 var notlikedIcon = require('./icons/icon-unliked.png')
-var likedIcon = require('./icons/icon-liked.png');
+var likedIcon = require('./icons/icon-liked-red.png');
 var backIcon = require('./icons/icon-back.png');
 var dollarSign1_Grey = require('./icons/icon-dollar1-grey.webp');
 var dollarSign2_Grey = require('./icons/icon-dollar2-grey.webp');
@@ -119,7 +119,6 @@ class ChefListPage extends Component {
                  this.setState({GPSproxAddress:undefined,showProgress:false,pickedAddress:{lat:47.6062095, lng:-122.3320708}}); 
                  commonAlert.locationError(err);
            });//todo: really wait??
-           console.log("commonAlert.locationError");
            this.setState({showProgress:false})
         }
         let eater = this.state.eater;
@@ -235,7 +234,7 @@ class ChefListPage extends Component {
                              <Image source={likedIcon} style={styleChefListPage.likeIcon}></Image>
                            </View>;
         } 
-        console.log(chef);
+        //console.log(chef);
         var nextDeliverTimeView = null;
         var EOD = new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000;
         if(chef.nextDeliverTime && chef.nextDeliverTime>this.state.currentTime && chef.nextDeliverTime<EOD){
@@ -266,10 +265,9 @@ class ChefListPage extends Component {
                     </Swiper>
                     {nextDeliverTimeView}
                 </View>
+                <TouchableHighlight underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
                 <View style={styleChefListPage.shopInfoView}>
-                    <TouchableHighlight style={styleChefListPage.chefPhotoView} underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
-                       <Image source={{ uri: chef.chefProfilePic }} style={styleChefListPage.chefPhoto}/>
-                    </TouchableHighlight>                   
+                    <Image source={{ uri: chef.chefProfilePic }} style={styleChefListPage.chefPhoto}/>
                     <View style={styleChefListPage.shopInfoSection}>
                        <View style={styleChefListPage.shopInfoRow1}>
                          <View style={styleChefListPage.shopNameView}>
@@ -303,6 +301,7 @@ class ChefListPage extends Component {
                        </View>                       
                     </View>
                 </View>
+                </TouchableHighlight>                   
             </View>
         );
     }
@@ -402,7 +401,7 @@ class ChefListPage extends Component {
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
                 <View style={styles.container}>                    
                     <View style={styleChefListPage.headerBannerView}>
-                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({ isMenuOpen: true }) }>
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
                           <View style={styles.menuButtonView}>
                             <Image source={menuIcon} style={styles.menuIcon}/>
                           </View>
@@ -426,7 +425,7 @@ class ChefListPage extends Component {
                         </View>
                         <View style={styleChefListPage.orangeTopBannerButtonView}>
                            <TouchableHighlight style={styleChefListPage.orangeTopBannerButtonWrapper} underlayColor={'transparent'}  onPress={() => this.showFavoriteChefs() }>
-                             <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={this.state.showFavoriteChefsOnly===true?likedIcon:favoriteIcon}/>
+                             <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={this.state.showFavoriteChefsOnly===true?likedIcon:whiteLikeIcon}/>
                            </TouchableHighlight>
                         </View>
                     </View> 
@@ -492,6 +491,12 @@ class ChefListPage extends Component {
             }
         }
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
+    }
+
+    async openSideMenu(){
+        this.setState({ isMenuOpen: true });
+        let eater = await AuthService.getEater();
+        this.setState({eater:eater});
     }
     
     mapDone(address){
@@ -653,29 +658,60 @@ var Menu = React.createClass({
         var profileImg = profileImgNoSignIn;
         if(isAuthenticated && this.props.eater.eaterProfilePic){
             profileImg = {uri:this.props.eater.eaterProfilePic};
-        }else{
-            
+            var eater = this.props.eater;
         }
-        var profile;
+
+        var eaterProfilePic;
         if(!isAuthenticated){
-            profile = <Image source={profileImg} style={sideMenuStyle.chefPhoto}/>;
+           eaterProfilePic = <Image source={profileImg} style={sideMenuStyle.eaterPhoto}/>;
         }else{
-            profile = <TouchableHighlight style = {styles.chefProfilePic} onPress={()=>this.goToEaterPage()}>
-                        <Image source={profileImg} style={sideMenuStyle.chefPhoto}/>
-                     </TouchableHighlight>;
+           eaterProfilePic = <Image source={profileImg} style={sideMenuStyle.eaterPhoto}/>        
         }
         return (
             <View style={sideMenuStyle.sidemenu}>
-                {profile}
-                <View style={{height:windowHeight*0.07}}></View>
+                <TouchableHighlight style = {sideMenuStyle.eaterPhotoView} onPress={()=>this.goToEaterPage()} underlayColor={'transparent'}>
+                {eaterProfilePic}
+                </TouchableHighlight>
+                <View style={sideMenuStyle.orderNumbersView}>
+                   <View style={sideMenuStyle.oneOrderStatView}>
+                        <Text style={sideMenuStyle.oneOrderStatNumberText}>
+                            {eater ? eater.orderOngoing : 0}
+                        </Text>
+                        <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
+                            Order
+                            Pending
+                        </Text>
+                   </View>
+                   <View style={sideMenuStyle.oneOrderStatView}>
+                        <Text style={sideMenuStyle.oneOrderStatNumberText}>
+                            {eater ? eater.orderCount : 0}
+                        </Text>
+                        <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
+                            Order
+                            Completed
+                        </Text>
+                   </View>
+                   <View style={sideMenuStyle.oneOrderStatView}>
+                        <Text style={sideMenuStyle.oneOrderStatNumberText}>
+                            {eater ? eater.orderNeedComments : 0}
+                        </Text>
+                        <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
+                            To be
+                            Reviewed
+                        </Text>
+                   </View>
+                </View>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
                    <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
                    <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.navigateToContactUsPage}>
+                   <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
                    <Text style={sideMenuStyle.paddingMenuItem}></Text>
@@ -688,10 +724,6 @@ var Menu = React.createClass({
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
                    <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
-                </TouchableOpacity>
-                <View style={{height:windowHeight*0.02}}></View>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemContactUsView} onPress={this.navigateToContactUsPage}>
-                   <Text style={sideMenuStyle.paddingMenuItemAbout}>Contact Us</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
                    <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
@@ -812,52 +844,79 @@ var Menu = React.createClass({
 });
 
 var sideMenuStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
     sidemenu: {
+        flexDirection:'column',
         height:windowHeight,
         width:windowWidth*2/3.0,
-        backgroundColor:'#7BCBBE',
+        backgroundColor:'#F5F5F5',
         marginTop:20,
+        alignItems:'center',
     },
-    chefPhoto:{
-        width:windowWidth*2/3.0,
-        height:windowWidth*2/3.0,
+    eaterPhoto:{
+        width:windowWidth/3.0,
+        height:windowWidth/3.0,
+        borderRadius:0.5*windowWidth/3.0, 
+        borderWidth: 0, 
+        overflow: 'hidden',
+    },
+    eaterPhotoView:{
+        width:windowWidth/3.0,
+        height:windowWidth/3.0,
+        marginTop:windowWidth/7.0,
+    },
+    orderNumbersView:{
+        flexDirection:'row',
+        width:windowWidth*0.6,
+        height:windowWidth/4.0,
+        borderColor:'#4A4A4A',
+        borderBottomWidth:1.5,
+        marginVertical:windowWidth/30.0,
+    },
+    oneOrderStatView:{
+        flex:1/3.0,
+        flexDirection:'column',
+        height:windowWidth/4.0,
+        alignItems:'center',
+        justifyContent:'space-around',
+    },
+    oneOrderStatNumberText:{
+        fontSize:20,
+        fontWeight:'500',
+        color:'#4A4A4A',
+    },
+    oneOrderStatNumberTitle:{
+        flexDirection:'row',
+        justifyContent:'center',
+        width:windowWidth*0.2,
+        fontSize:windowHeight/47.33,
+        fontWeight:'500',
+        color:'#4A4A4A',
+        textAlign:'center',
+        alignSelf:'center',
+        flexWrap:'wrap',
     },
     paddingMenuItemView:{
         paddingVertical:windowWidth*0.0227,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
     },
     paddingMenuItem: {
-        paddingLeft:windowWidth*0.064,        
-        color:'#fff',
         fontSize:windowHeight/37.055,
+        fontWeight:'500',
+        color:'#4A4A4A'
     },
     paddingMenuItemAbout: {
-        paddingVertical: windowWidth*0.015,
-        color:'#fff',
-        borderTopWidth:1,
-        borderColor:'#fff',
         fontSize:windowHeight/41.69,
-    },
-    paddingMenuItemContactUsView:{
-        borderTopWidth:1,
-        borderColor:'#fff',
-        width:windowWidth*0.226,
-        marginLeft:windowWidth*0.064,
+        color:'#4A4A4A'
     },
     paddingMenuItemAboutView:{
-        borderColor:'#fff',
+        borderTopWidth:1,
+        borderColor:'#4A4A4A',
         width:windowWidth*0.226,
-        marginLeft:windowWidth*0.064,
+        paddingVertical:windowWidth*0.0227,
+        justifyContent:'center',
+        alignItems:'center',
     },
 });
 
@@ -891,8 +950,8 @@ var styleChefListPage = StyleSheet.create({
     oneShopListView:{
        alignSelf:'stretch',
        backgroundColor:'#FFFFFF',
-       borderColor:'#F5F5F5',
-       borderBottomWidth:5,
+       borderColor:'#EBEBEB',
+       borderBottomWidth:7,
     },
     oneShopPhotoView:{
        height:windowHeight*0.388,
@@ -910,10 +969,8 @@ var styleChefListPage = StyleSheet.create({
        paddingBottom:windowHeight*0.02698,
        paddingHorizontal:windowWidth*0.032,
     },
-    chefPhotoView:{
-       marginRight:windowWidth*0.04, 
-    },
     chefPhoto:{
+       marginRight:windowWidth*0.04,
        height:windowWidth*0.16,
        width:windowWidth*0.16,
        borderRadius: 12, 
@@ -935,7 +992,7 @@ var styleChefListPage = StyleSheet.create({
        alignItems:'flex-start', 
     }, 
     oneShopNameText:{
-       fontSize:windowHeight/37.06,
+       fontSize:windowHeight/34.9,
        fontWeight:'500',
        color:'#4A4A4A',
     },
@@ -945,8 +1002,8 @@ var styleChefListPage = StyleSheet.create({
        alignItems:'flex-end', 
     }, 
     likeIcon:{
-       width:windowWidth*0.05,
-       height:windowWidth*0.05,
+       width:windowWidth*0.06,
+       height:windowWidth*0.06,
     },
     shopInfoRow2:{
        flexDirection:'row',

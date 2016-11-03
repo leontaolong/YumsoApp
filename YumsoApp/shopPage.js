@@ -823,8 +823,8 @@ var styleShopPage = StyleSheet.create({
     },
     oneDishInListView:{
         marginBottom:0,
-        borderColor: '#F5F5F5',
-        borderBottomWidth: 5,
+        borderColor: '#EBEBEB',
+        borderBottomWidth:7,
     },
     oneDishPicture:{
         width: windowWidth,
@@ -857,7 +857,7 @@ var styleShopPage = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         backgroundColor: '#fff',
-        height:50,
+        height:windowHeight/11.0,
     },
     priceTextView:{
         width: windowWidth/2.76,

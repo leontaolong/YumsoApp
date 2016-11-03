@@ -125,28 +125,38 @@ class HistoryOrderPage extends Component {
     renderRow(order){
         if(order.orderStatus.toLowerCase() == 'delivered'){
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
-        }else{
+          if(new Date().getTime()-order.orderDeliverTime <= 7*24*60*60*1000 && !order.comment){
+             var action = "Review Order >"
+          }else{
+             var action = "Order Details >"
+          }
+        }else if(order.orderStatus.toLowerCase() == 'new'){
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Will be out for delivery at {dateRender.renderDate2(order.orderDeliverTime)}</Text>
+          var action = "Track Order >"
+        }else if(order.orderStatus.toLowerCase() == 'delivering'){
+          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivering</Text>
+          var action = "Track Order >"
         }
+
         if(order.shopPictures && order.shopPictures[0]){
            var imageSrc = {uri:order.shopPictures[0]};
         }else{
            var imageSrc = defaultShopPic;
         }
      
-        return (<View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
-                    <TouchableHighlight onPress={()=>this.navigateToOrderDetailPage(order)}>
-                    <Image source={imageSrc} style={styleHistoryOrderPage.shopPhoto}/>
-                    </TouchableHighlight>
-                    <View style={styleHistoryOrderPage.orderInfoView}>
-                        <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
-                        {orderStatusText}           
-                        <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
-                        <TouchableHighlight style={styleHistoryOrderPage.orderDetailsClickableView} underlayColor={'transparent'} onPress={()=>this.navigateToOrderDetailPage(order)}>
-                           <Text style={styleHistoryOrderPage.orderDetailsClickable}>Order Details  ></Text>                                                                               
-                        </TouchableHighlight>
+        return  (<TouchableHighlight onPress={()=>this.navigateToOrderDetailPage(order)}> 
+                    <View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
+                        <Image source={imageSrc} style={styleHistoryOrderPage.shopPhoto}/>
+                        <View style={styleHistoryOrderPage.orderInfoView}>
+                            <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
+                            {orderStatusText}           
+                            <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
+                            <View style={styleHistoryOrderPage.orderDetailsClickableView}>
+                            <Text style={styleHistoryOrderPage.orderDetailsClickable}>{action}</Text>                                                                               
+                            </View>
+                        </View>
                     </View>
-                </View>);
+                 </TouchableHighlight>);
     }
         
     render() {

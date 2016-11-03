@@ -118,8 +118,8 @@ module.exports = StyleSheet.create({
       marginLeft:10,
     },
     menuIcon:{
-      width:windowHeight*0.0352,
-      height:windowHeight*0.0264,
+      width:windowHeight*0.0286,
+      height:windowHeight*0.0208,
     },
     searchIcon:{
       width:windowHeight/24.5,

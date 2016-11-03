@@ -64,8 +64,6 @@ class YumsoApp extends Component {
         this.registerNotification().then(function (token) {
             return AuthService.updateCacheDeviceToken(token);
         });
-
-        console.log("addEventListeners!");
         PushNotificationIOS.setApplicationIconBadgeNumber(0);
         // PushNotificationIOS.getInitialNotification();
         // .then(function (notification) {

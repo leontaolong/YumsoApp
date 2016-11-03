@@ -36,10 +36,8 @@ class EaterPage extends Component {
      constructor(props){
         super(props);
         var routeStack = this.props.navigator.state.routeStack;
-        console.log("routeStack: "+JSON.stringify(routeStack));
         let eater = routeStack[routeStack.length-1].passProps.eater;
         let currentLocation = routeStack[routeStack.length-1].passProps.currentLocation;  
-        console.log("currentLocation4 "+currentLocation)    
         let principal = routeStack[routeStack.length-1].passProps.principal;
         let callback = routeStack[routeStack.length-1].passProps.callback;
         let backcallback = routeStack[routeStack.length-1].passProps.backcallback;
