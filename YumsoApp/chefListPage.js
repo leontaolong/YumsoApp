@@ -107,7 +107,7 @@ class ChefListPage extends Component {
                         });                     
                     });
             } else {
-                 Alert.alert( 'Server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Internal Error', 'Server under maintenance. Please try again later',[ { text: 'OK' }]);   
             }
         };
     }
@@ -160,7 +160,7 @@ class ChefListPage extends Component {
             return;
         }
 
-        if(response && response.data){
+        if(response && (response.statusCode==200 || response.statusCode==202) && response.data){
            var chefs = response.data.chefs;
            var chefView = {};
            var chefsDictionary = {};
@@ -177,8 +177,10 @@ class ChefListPage extends Component {
                 }
            }
            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary, currentTime: new Date().getTime()});
+        }else{
+            this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+            commonAlert.serverSideError();
         }
-        
     }
     
     getLocation(){
@@ -307,7 +309,7 @@ class ChefListPage extends Component {
     }
     
     render() {
-        const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
+        var menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
             loadingSpinnerView =<View style={styles.listLoadingView}>
@@ -398,7 +400,7 @@ class ChefListPage extends Component {
         }
         
         return (
-            <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
+            <SideMenu menu={menu} isOpen={this.state.isMenuOpen} onChange={(isOpen) => this.openSideMenu(isOpen)}>
                 <View style={styles.container}>                    
                     <View style={styleChefListPage.headerBannerView}>
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
@@ -493,10 +495,13 @@ class ChefListPage extends Component {
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
     }
 
-    async openSideMenu(){
+    async openSideMenu(isOpen){
+        if(isOpen===false){return;}
         this.setState({ isMenuOpen: true });
-        let eater = await AuthService.getEater();
-        this.setState({eater:eater});
+        if(this.state.eater){
+            let res = await this.client.getWithAuth(config.eaterEndpoint);
+            this.setState({eater:res.data.eater});
+        }
     }
     
     mapDone(address){
@@ -656,9 +661,41 @@ var Menu = React.createClass({
     render: function() {
         let isAuthenticated = this.props.eater!=undefined;
         var profileImg = profileImgNoSignIn;
+        var orderNumbersView = null;
         if(isAuthenticated && this.props.eater.eaterProfilePic){
             profileImg = {uri:this.props.eater.eaterProfilePic};
             var eater = this.props.eater;
+            orderNumbersView = <View style={sideMenuStyle.orderNumbersView}>
+                                    <View style={sideMenuStyle.oneOrderStatView}>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>
+                                                {eater ? eater.orderOngoing : 0}
+                                            </Text>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
+                                                Order
+                                                Pending
+                                            </Text>
+                                    </View>
+                                    <View style={sideMenuStyle.oneOrderStatView}>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>
+                                                {eater ? eater.orderCount : 0}
+                                            </Text>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
+                                                Order
+                                                Completed
+                                            </Text>
+                                    </View>
+                                    <View style={sideMenuStyle.oneOrderStatView}>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>
+                                                {eater ? eater.orderNeedComments : 0}
+                                            </Text>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
+                                                To be
+                                                Reviewed
+                                            </Text>
+                                    </View>
+                               </View>
+        }else{
+            orderNumbersView = <View style={sideMenuStyle.orderNumbersView}></View>
         }
 
         var eaterProfilePic;
@@ -672,35 +709,7 @@ var Menu = React.createClass({
                 <TouchableHighlight style = {sideMenuStyle.eaterPhotoView} onPress={()=>this.goToEaterPage()} underlayColor={'transparent'}>
                 {eaterProfilePic}
                 </TouchableHighlight>
-                <View style={sideMenuStyle.orderNumbersView}>
-                   <View style={sideMenuStyle.oneOrderStatView}>
-                        <Text style={sideMenuStyle.oneOrderStatNumberText}>
-                            {eater ? eater.orderOngoing : 0}
-                        </Text>
-                        <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
-                            Order
-                            Pending
-                        </Text>
-                   </View>
-                   <View style={sideMenuStyle.oneOrderStatView}>
-                        <Text style={sideMenuStyle.oneOrderStatNumberText}>
-                            {eater ? eater.orderCount : 0}
-                        </Text>
-                        <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
-                            Order
-                            Completed
-                        </Text>
-                   </View>
-                   <View style={sideMenuStyle.oneOrderStatView}>
-                        <Text style={sideMenuStyle.oneOrderStatNumberText}>
-                            {eater ? eater.orderNeedComments : 0}
-                        </Text>
-                        <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
-                            To be
-                            Reviewed
-                        </Text>
-                   </View>
-                </View>
+                {orderNumbersView}
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
                    <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
                 </TouchableOpacity>
@@ -708,13 +717,13 @@ var Menu = React.createClass({
                    <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
+                   <Text style={sideMenuStyle.paddingMenuItem}>Address Book</Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
                    <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.navigateToContactUsPage}>
                    <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
                    <Text style={sideMenuStyle.paddingMenuItem}></Text>
@@ -867,15 +876,17 @@ var sideMenuStyle = StyleSheet.create({
     orderNumbersView:{
         flexDirection:'row',
         width:windowWidth*0.6,
-        height:windowWidth/4.0,
+        height:windowHeight/92.0 + windowWidth/5.0,
         borderColor:'#4A4A4A',
         borderBottomWidth:1.5,
         marginVertical:windowWidth/30.0,
+        paddingBottom:windowHeight/92.0,
+        marginBottom:windowHeight/36.8
     },
     oneOrderStatView:{
         flex:1/3.0,
         flexDirection:'column',
-        height:windowWidth/4.0,
+        height:windowWidth/5.0,
         alignItems:'center',
         justifyContent:'space-around',
     },
@@ -888,8 +899,8 @@ var sideMenuStyle = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         width:windowWidth*0.2,
-        fontSize:windowHeight/47.33,
-        fontWeight:'500',
+        fontSize:windowHeight/52.57,
+        fontWeight:'400',
         color:'#4A4A4A',
         textAlign:'center',
         alignSelf:'center',
