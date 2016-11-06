@@ -10,6 +10,7 @@ var rating = require('./rating');
 var dollarSign = require('./commonModules/dollarIconRender');
 var dateRender = require('./commonModules/dateRender');
 var commonAlert = require('./commonModules/commonAlert');
+var commonWidget = require('./commonModules/commonWidget');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
 var ballonIcon = require('./icons/icon-location-white.png');
@@ -225,11 +226,13 @@ class ChefListPage extends Component {
         if (this.state.eater && this.state.eater.favoriteChefs) {
             like = this.state.eater.favoriteChefs.indexOf(chef.chefId) !== -1;
         }
+
+        var likeIconView=null
         if (like==true) {
-            var likeIcon = likedIcon;
-        } else {
-            var likeIcon = notlikedIcon;
-        }
+            likeIconView = <View style={styleChefListPage.likeIconView}>
+                             <Image source={likedIcon} style={styleChefListPage.likeIcon}></Image>
+                           </View>;
+        } 
         console.log(chef);
         var nextDeliverTimeView = null;
         var EOD = new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000;
@@ -270,9 +273,7 @@ class ChefListPage extends Component {
                          <View style={styleChefListPage.shopNameView}>
                             <Text style={styleChefListPage.oneShopNameText}>{chef.shopname}</Text>
                          </View>
-                         <View style={styleChefListPage.likeIconView}>
-                            <Image source={likeIcon} style={styleChefListPage.likeIcon}></Image>
-                         </View>
+                         {likeIconView}
                        </View>
                        
                        <View style={styleChefListPage.shopInfoRow2}>
@@ -289,10 +290,13 @@ class ChefListPage extends Component {
                        
                        <View style={styleChefListPage.shopInfoRow3}>
                           <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{chef.styleTag}</Text>
+                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.styleTag,15)}</Text>
                           </View>
                           <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{chef.foodTag}</Text>
+                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.foodTag,15)}</Text>
+                          </View>
+                          <View style={styleChefListPage.distanceDollarSignView}>
+                            <Text style={styleChefListPage.distanceDollarSignText}>{chef.pickupAddressDetail.city}</Text>
                           </View>
                        </View>                       
                     </View>

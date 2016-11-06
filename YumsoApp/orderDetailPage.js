@@ -30,6 +30,7 @@ import React, {
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert,
+  Linking
 } from 'react-native';
 
 
@@ -102,7 +103,7 @@ class OrderDetailPage extends Component {
     }
     
     renderHeader(){
-        //Render 'Delivered' status
+        //Render 'delivered' status
         if(this.state.showDeliverStatusView){  
             if(this.state.order.orderStatus.toLowerCase()=='delivered'){
             var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
@@ -147,7 +148,16 @@ class OrderDetailPage extends Component {
                                     </View>
                                 </View>);
             }
-            return deliverTimeView;
+
+            var contactUsView = <View style={styleOrderDetailPage.contactUsView}>
+                                   <Text style={styleOrderDetailPage.contactUsText}>
+                                      Got problem with your order? Call us at  
+                                   </Text> 
+                                   <Text style={styleOrderDetailPage.contactUsTextPhoneNumber} onPress={()=>this.dialThisNumber('2066012584')}>
+                                      (206)601-2584
+                                   </Text>
+                                </View>
+            return [deliverTimeView,contactUsView];
         }
     }
     
@@ -515,6 +525,10 @@ class OrderDetailPage extends Component {
        this.setState({ starRating: rating})
     }   
       
+    dialThisNumber(phoneNumber){
+        Linking.openURL("tel:"+phoneNumber);
+    }
+
     navigateBackToHistoryOrderPage(){
         if(this.callback){
            this.callback();
@@ -529,16 +543,12 @@ var styleOrderDetailPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-around',
         height:windowHeight*0.0974,
-        borderColor:'#F5F5F5',
-        borderBottomWidth:5,
         backgroundColor:'#FFCC33'
     },
     deliverStatusView:{
         flexDirection:'row',
         justifyContent:'center',
         height:windowHeight*0.0974,
-        borderColor:'#F5F5F5',
-        borderBottomWidth:5,
         backgroundColor:'#FFCC33'
     },
     oneStatusView:{
@@ -686,6 +696,27 @@ var styleOrderDetailPage = StyleSheet.create({
         fontSize:12,
         color:'#9B9B9B',
         fontWeight:'600',
+    },
+    contactUsView:{
+        flex:1,
+        flexDirection:'row',   
+        alignItems:'center',     
+        justifyContent: 'center',
+        height:30,
+        backgroundColor:'#F5F5F5'
+    },
+    contactUsText:{
+        fontSize:12,
+        fontWeight:'200',
+        color:'#4A4A4A',
+        alignSelf:'center', 
+    },
+    contactUsTextPhoneNumber:{
+        marginLeft:3,
+        fontSize:12,
+        fontWeight:'400',
+        color:'#FFCC33',
+        alignSelf:'center',
     }
 });
 
@@ -1060,7 +1091,7 @@ var styleShoppingCartPage = StyleSheet.create({
         fontWeight:'400',
         color:'#D5D5D5',
         alignSelf:'center', 
-    },
+    }
 });
 
 module.exports = OrderDetailPage;
