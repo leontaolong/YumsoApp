@@ -66,6 +66,18 @@ module.exports = StyleSheet.create({
         backgroundColor:'#FFCC33',
         justifyContent:'center',
     },
+    footerButtonYellowView:{
+       flexDirection:'row',        
+       justifyContent: 'center',
+       height:windowHeight*0.075,
+       width:windowWidth,
+    },
+    footerButtonText:{
+       color:'#fff',
+       fontSize:windowHeight/37.056,
+       fontWeight:'bold',
+       alignSelf: 'center',
+    },
     backButtonIcon:{
       width:windowWidth*0.106,
       height:windowWidth*0.106,

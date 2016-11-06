@@ -716,7 +716,7 @@ var Menu = React.createClass({
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
                    <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
+                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToAddressBookPage} >
                    <Text style={sideMenuStyle.paddingMenuItem}>Address Book</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
@@ -779,6 +779,31 @@ var Menu = React.createClass({
         }
         this.props.navigator.push({
             name: 'EaterPage',
+            passProps:{
+                eater:this.props.eater,
+                currentLocation:this.props.currentLocation,
+                principal:this.props.principal,
+                callback: function(eater){
+                    this.props.caller.setState({eater:eater});
+                }.bind(this)
+            }
+        });
+    },
+
+    goToAddressBookPage:function() {
+        this.props.caller.setState({ isMenuOpen: false });
+        if(!this.props.eater){
+            this.props.navigator.push({
+                name: 'LoginPage',
+                passProps:{
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
+                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
+                }
+            });  
+            return;
+        }
+        this.props.navigator.push({
+            name: 'AddressBookPage',
             passProps:{
                 eater:this.props.eater,
                 currentLocation:this.props.currentLocation,
