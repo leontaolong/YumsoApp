@@ -80,6 +80,10 @@ class DateRender {
         var day = dateObj.getDate() < 10 ? "0" + dateObj.getDate().toString() : dateObj.getDate().toString();
         return month + "/" + day + "/" + year + " " + this.formatTime2String(dateInMilliseconds);
     }
+
+    renderTime1(timeInMilliseconds) {
+        return timeInMilliseconds/(60*1000)<60 ? timeInMilliseconds/(60*1000)+" min": timeInMilliseconds/(60*60*1000)+" hr";
+    }
 }
 
 module.exports = new DateRender();

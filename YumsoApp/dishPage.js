@@ -84,29 +84,6 @@ class DishPage extends Component {
                 <View style={styleDishPage.priceView}>
                     <View style={styleDishPage.priceTextView}>
                         <Text style={styleDishPage.priceText}>${this.state.dish.price}</Text>
-                        <Text style={styleDishPage.orderStatusText}>
-                        {this.state.selectedTime === 'All Dishes' ? '' : (this.state.scheduleMapping[this.state.selectedTime][this.state.dish.dishId].leftQuantity)+' orders left'} 
-                        </Text>
-                        <Text style={styleDishPage.orderStatusText}>
-                        {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity + ' ordered ' : ''} 
-                        </Text>
-                    </View>
-                    <View style={styleDishPage.chooseQuantityView}>
-                        <TouchableHighlight style={styleDishPage.minusIconView} underlayColor={'transparent'} onPress={() => this.removeFromShoppingCart(this.state.dish)}>
-                            <View>
-                                <Image source={minusIcon} style={styleDishPage.plusMinusIcon}/>
-                            </View>
-                        </TouchableHighlight>
-                        <View style={styleDishPage.quantityTextView}>
-                            <Text style={styleDishPage.quantityText}>
-                            {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][this.state.dish.dishId].quantity: ' '}
-                            </Text>
-                        </View>
-                        <TouchableHighlight style={styleDishPage.plusIconView} underlayColor={'transparent'} onPress={() => this.addToShoppingCart(this.state.dish) }>
-                            <View>
-                                <Image source={plusIcon} style={styleDishPage.plusMinusIcon}/>
-                            </View>
-                        </TouchableHighlight>                        
                     </View>
                 </View>
                 </ScrollView>

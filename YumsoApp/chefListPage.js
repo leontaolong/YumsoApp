@@ -283,7 +283,7 @@ class ChefListPage extends Component {
                              <View style={{flexDirection:'row',alignSelf:'center'}}>
                              {rating.renderRating(chef.rating)}
                              </View>
-                             <Text style={styleChefListPage.reviewNumberText}>{chef.reviewCount} reviews</Text>
+                             <Text style={styleChefListPage.reviewNumberText}>({chef.rating}) {chef.reviewCount} reviews</Text>
                           </View>
                           <View style={styleChefListPage.distanceDollarSignView}>
                              <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?(chef.distance>20?'>20':chef.distance)+' miles | ':''}{dollarSign.renderLevel(chef.priceLevel)}</Text>
@@ -689,8 +689,8 @@ var Menu = React.createClass({
                                                 {eater ? eater.orderNeedComments : 0}
                                             </Text>
                                             <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
-                                                To be
-                                                Reviewed
+                                                Need
+                                                Review
                                             </Text>
                                     </View>
                                </View>
@@ -710,33 +710,35 @@ var Menu = React.createClass({
                 {eaterProfilePic}
                 </TouchableHighlight>
                 {orderNumbersView}
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToAddressBookPage} >
-                   <Text style={sideMenuStyle.paddingMenuItem}>Address Book</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
-                   <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.navigateToContactUsPage}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
-                   <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
-                </TouchableOpacity>
+                <View style={sideMenuStyle.menuButtonList}>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                       <Text style={sideMenuStyle.paddingMenuItem}></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
+                       <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
+                       <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToAddressBookPage} >
+                       <Text style={sideMenuStyle.paddingMenuItem}>Address</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
+                       <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.navigateToContactUsPage}>
+                       <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                       <Text style={sideMenuStyle.paddingMenuItem}></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
+                       <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
+                       <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     },
@@ -904,9 +906,8 @@ var sideMenuStyle = StyleSheet.create({
         height:windowHeight/92.0 + windowWidth/5.0,
         borderColor:'#4A4A4A',
         borderBottomWidth:1.5,
-        marginVertical:windowWidth/30.0,
+        marginTop:windowWidth/30.0,
         paddingBottom:windowHeight/92.0,
-        marginBottom:windowHeight/36.8
     },
     oneOrderStatView:{
         flex:1/3.0,
@@ -951,7 +952,7 @@ var sideMenuStyle = StyleSheet.create({
         borderColor:'#4A4A4A',
         width:windowWidth*0.226,
         paddingVertical:windowWidth*0.0227,
-        justifyContent:'center',
+        flexDirection:'row',
         alignItems:'center',
     },
 });
