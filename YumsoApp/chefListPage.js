@@ -15,7 +15,7 @@ var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
 var ballonIcon = require('./icons/icon-location-white.png');
 var whiteLikeIcon = require('./icons/icon-liked-white.png');
-var labelIcon = require('./icons/icon-label.png');
+var labelIcon = require('./icons/icon-label-grey.png');
 var menuIcon = require('./icons/icon-menu.webp');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked-red.png');
@@ -283,7 +283,7 @@ class ChefListPage extends Component {
                              <View style={{flexDirection:'row',alignSelf:'center'}}>
                              {rating.renderRating(chef.rating)}
                              </View>
-                             <Text style={styleChefListPage.reviewNumberText}>({chef.rating}) {chef.reviewCount} reviews</Text>
+                             <Text style={styleChefListPage.reviewNumberText}>{chef.reviewCount} reviews</Text>
                           </View>
                           <View style={styleChefListPage.distanceDollarSignView}>
                              <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?(chef.distance>20?'>20':chef.distance)+' miles | ':''}{dollarSign.renderLevel(chef.priceLevel)}</Text>
@@ -292,10 +292,7 @@ class ChefListPage extends Component {
                        
                        <View style={styleChefListPage.shopInfoRow3}>
                           <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.styleTag,15)}</Text>
-                          </View>
-                          <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.foodTag,15)}</Text>
+                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.styleTag,15)}, {commonWidget.getTextLengthLimited(chef.foodTag,15)}</Text>
                           </View>
                           <View style={styleChefListPage.distanceDollarSignView}>
                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.pickupAddressDetail.city}</Text>
@@ -667,31 +664,25 @@ var Menu = React.createClass({
             var eater = this.props.eater;
             orderNumbersView = <View style={sideMenuStyle.orderNumbersView}>
                                     <View style={sideMenuStyle.oneOrderStatView}>
-                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>
-                                                {eater ? eater.orderOngoing : 0}
-                                            </Text>
-                                            <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
-                                                Order
-                                                Pending
-                                            </Text>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderOngoing : 0}</Text>
+                                            <View>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Order</Text>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Pending</Text>
+                                            </View>
                                     </View>
                                     <View style={sideMenuStyle.oneOrderStatView}>
-                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>
-                                                {eater ? eater.orderCount : 0}
-                                            </Text>
-                                            <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
-                                                Order
-                                                Completed
-                                            </Text>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderCount : 0}</Text>
+                                            <View>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Order</Text>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Completed</Text>
+                                            </View>
                                     </View>
                                     <View style={sideMenuStyle.oneOrderStatView}>
-                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>
-                                                {eater ? eater.orderNeedComments : 0}
-                                            </Text>
-                                            <Text style={sideMenuStyle.oneOrderStatNumberTitle}>
-                                                Need
-                                                Review
-                                            </Text>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderNeedComments : 0}</Text>
+                                            <View>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Need</Text>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Review</Text>
+                                            </View>
                                     </View>
                                </View>
         }else{
@@ -706,11 +697,10 @@ var Menu = React.createClass({
         }
         return (
             <View style={sideMenuStyle.sidemenu}>
-                <TouchableHighlight style = {sideMenuStyle.eaterPhotoView} onPress={()=>this.goToEaterPage()} underlayColor={'transparent'}>
-                {eaterProfilePic}
-                </TouchableHighlight>
-                {orderNumbersView}
-                <View style={sideMenuStyle.menuButtonList}>
+                   <TouchableHighlight style = {sideMenuStyle.eaterPhotoView} onPress={()=>this.goToEaterPage()} underlayColor={'transparent'}>
+                       {eaterProfilePic}
+                   </TouchableHighlight>
+                   {orderNumbersView}
                     <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
                        <Text style={sideMenuStyle.paddingMenuItem}></Text>
                     </TouchableOpacity>
@@ -738,7 +728,6 @@ var Menu = React.createClass({
                     <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
                        <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
                     </TouchableOpacity>
-                </View>
             </View>
         );
     },
@@ -917,7 +906,7 @@ var sideMenuStyle = StyleSheet.create({
         justifyContent:'space-around',
     },
     oneOrderStatNumberText:{
-        fontSize:20,
+        fontSize:windowHeight/37.055,
         fontWeight:'500',
         color:'#4A4A4A',
     },
@@ -933,10 +922,12 @@ var sideMenuStyle = StyleSheet.create({
         flexWrap:'wrap',
     },
     paddingMenuItemView:{
+        width:windowWidth*2/3.0,
         paddingVertical:windowWidth*0.0227,
         flexDirection:'row',
-        justifyContent:'center',
+        justifyContent:'flex-start',
         alignItems:'center',
+        paddingLeft:windowWidth/8.28,
     },
     paddingMenuItem: {
         fontSize:windowHeight/37.055,
@@ -953,7 +944,8 @@ var sideMenuStyle = StyleSheet.create({
         width:windowWidth*0.226,
         paddingVertical:windowWidth*0.0227,
         flexDirection:'row',
-        alignItems:'center',
+        alignSelf:'flex-start',
+        marginLeft:windowWidth/8.28,
     },
 });
 
@@ -1051,7 +1043,7 @@ var styleChefListPage = StyleSheet.create({
        alignItems:'flex-start',
     },
     reviewNumberText:{
-       fontSize:11,
+       fontSize:windowHeight/47.33,
        color:'#4A4A4A',
        marginLeft:windowWidth*0.0187,
        alignSelf:'center',
@@ -1062,7 +1054,7 @@ var styleChefListPage = StyleSheet.create({
         justifyContent:'flex-end',
     },
     distanceDollarSignText:{
-        fontSize:11,
+        fontSize:windowHeight/47.33,
         color:'#4A4A4A',
         textAlign:'left',
     },
@@ -1075,13 +1067,13 @@ var styleChefListPage = StyleSheet.create({
         marginRight:windowWidth*0.04,
     },   
     labelIcon:{
-        width:15, 
-        height:15,
+        width:1.5*windowHeight/71.0, 
+        height:windowHeight/71.0,
         alignSelf:'center',
     },
     labelText:{
-        fontSize:12,
-        color:'#FFCC33',
+        fontSize:windowHeight/47.33,
+        color:'#4A4A4A',
         marginLeft:windowWidth/82.8,
         alignSelf:'center',
     },

@@ -156,7 +156,7 @@ class EaterPage extends Component {
 
                             <View style={styleEaterPage.nameInputView}>
                                 <View style={styleEaterPage.nameInputTitleView}>
-                                    <Text style={styleEaterPage.nameInputTitleText}>Alias</Text>
+                                    <Text style={styleEaterPage.nameInputTitleText}>User Name</Text>
                                 </View>
                                 <View style={styleEaterPage.nameInputTextView}>
                                     <TextInput style={styleEaterPage.nameInputText} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'} returnKeyType = {'done'}
@@ -243,12 +243,12 @@ class EaterPage extends Component {
                             {photoNumberView}
                             {resetPasswordButton}
                         </View>
-                            <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.onPressEdit()}>
-                                <View style={styles.footerButtonYellowView}>
-                                    <Text style={styles.footerButtonText}>Edit Profile</Text>
-                                </View>
-                            </TouchableOpacity>
-                            {loadingSpinnerView}
+                        <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.onPressEdit()}>
+                            <View style={styles.footerButtonYellowView}>
+                                <Text style={styles.footerButtonText}>Edit Profile</Text>
+                            </View>
+                        </TouchableOpacity>
+                        {loadingSpinnerView}
                     </View>);   
            }
      }

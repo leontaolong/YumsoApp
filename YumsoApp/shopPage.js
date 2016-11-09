@@ -14,7 +14,7 @@ var forwardIcon = require('./icons/icon-forward.png');
 var mapIcon = require('./icons/icon-map.png');
 var chefPageIcon = require('./icons/icon-chefpage.png');
 var reviewIcon = require('./icons/icon-reviews.png');
-var labelIcon = require('./icons/icon-label.png');
+var labelIcon = require('./icons/icon-label-grey.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked.png');
 var dollarSign = require('./commonModules/dollarIconRender');
@@ -194,16 +194,13 @@ class ShopPage extends Component {
                                     <View style={{flexDirection:'row',alignSelf:'center'}}>
                                     {rating.renderRating(this.state.chef.rating)}
                                     </View>
-                                    <Text style={styleShopPage.reviewNumberText}>{dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
+                                    <Text style={styleShopPage.reviewNumberText}>({this.state.chef.rating}) {dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
                                 </View>
                             </View>
                             
                             <View style={styleShopPage.shopInfoRow3}>
                                 <View style={styleShopPage.labelView}>
-                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}</Text>
-                                </View>
-                                <View style={styleShopPage.labelView}>
-                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.foodTag}</Text>
+                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
                                 </View>
                             </View>                       
                           </View>
@@ -799,13 +796,13 @@ var styleShopPage = StyleSheet.create({
         marginRight:windowWidth*0.04,
     },   
     labelIcon:{
-        width:windowHeight*0.0264, 
-        height:windowHeight*0.0264,
+        width:1.5*windowHeight/71.0, 
+        height:windowHeight/71.0,
         alignSelf:'center',
     },
     labelText:{
         fontSize:windowHeight/47.33,
-        color:'#FFCC33',
+        color:'#4A4A4A',
         marginLeft:windowWidth/82.8,
         alignSelf:'center',
     },    
