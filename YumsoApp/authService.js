@@ -87,7 +87,7 @@ class AuthService {
             Alert.alert( 'Success', 'You password has been updated',[ { text: 'OK' }]); 
             return true;
         }else{
-            Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);
+            Alert.alert( 'Error', response.data,[ { text: 'OK' }]);
             return false; 
         }
     }
@@ -118,7 +118,7 @@ class AuthService {
         await AsyncStorage.multiSet([
             [eaterKey, JSON.stringify(res.data.eater)]
         ]); 
-        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
+        //Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
         return res.data.eater;
     }
     
@@ -144,7 +144,7 @@ class AuthService {
         await AsyncStorage.multiSet([
             [eaterKey, JSON.stringify(res.data.eater)]
         ]); 
-        Alert.alert( '', 'Successfully logged in through Facebook',[ { text: 'OK' }]);      
+        //Alert.alert( '', 'Successfully logged in through Facebook',[ { text: 'OK' }]);      
         return res.data.eater;   
     }
     

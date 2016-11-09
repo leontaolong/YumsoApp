@@ -271,11 +271,21 @@ class OrderDetailPage extends Component {
            commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
                                   <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
-                                            <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
-                                            <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
-                                            <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
-                                            <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
-                                            <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>
+                                                <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>
+                                                <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>                                    
+                                                <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>
+                                                <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>
+                                                <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
                                         </View>
                                         <View style={styleOrderDetailPage.commentTimeView}>
                                             <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(this.state.order.comment.eaterCommentTime)}</Text>
@@ -288,11 +298,21 @@ class OrderDetailPage extends Component {
             commentBoxView = <View style={styleOrderDetailPage.commentBox}>
                                   <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
-                                            <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
-                                            <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>                                    
-                                            <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
-                                            <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
-                                            <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>
+                                               <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>
+                                                <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>                                    
+                                                <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>
+                                                <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
+                                            <View style={styleOrderDetailPage.ratingIconWrapper}>
+                                                <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
+                                            </View>
                                         </View>
                                         <View style={styleOrderDetailPage.commentTimeView}>
                                             <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(new Date().getTime())}</Text>
@@ -481,7 +501,7 @@ class OrderDetailPage extends Component {
                 return this.responseHandler(res);
             }
             this.state.order.comment = {starRating:data.starRating, eaterComment:data.commentText, eaterCommentTime:new Date().getTime()}
-            Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
+            //Alert.alert('Success','Comment is left for this order',[{ text: 'OK' }]);    
             self.setState({ratingSucceed:true, showProgress:false, starRating:data.starRating});     
         }).catch((err)=>{
             this.setState({showProgress: false});
@@ -640,7 +660,7 @@ var styleOrderDetailPage = StyleSheet.create({
         alignSelf:'center',
     },
     ratingView:{
-        flex:0.5,
+        flex:0.6,
         justifyContent:'flex-start',
         flexDirection:'row',
         backgroundColor:'#FFFFFF',
@@ -648,7 +668,7 @@ var styleOrderDetailPage = StyleSheet.create({
     commentInput:{
         height:90, 
         padding:windowHeight*0.0224,
-        fontSize:14,       
+        fontSize:14,
     },
     commentText:{
         padding:15,
@@ -657,6 +677,8 @@ var styleOrderDetailPage = StyleSheet.create({
     },
     ratingIconWrapper:{
         alignSelf:'center',
+        marginRight:windowWidth/51.75,
+        marginBottom:windowHeight/49.6,
     },
     ratingIcon:{
         width:windowHeight*0.045,
@@ -695,7 +717,7 @@ var styleOrderDetailPage = StyleSheet.create({
         flex:1,
     },
     commentTimeView:{
-        flex:0.5,
+        flex:0.4,
         flexDirection:'row',
         justifyContent:'flex-end',
         backgroundColor:'#FFFFFF'

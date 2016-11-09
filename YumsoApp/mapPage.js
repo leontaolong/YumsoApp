@@ -640,9 +640,7 @@ var styleMapPage = StyleSheet.create({
         height:windowWidth*0.7/8,
         marginTop:windowHeight/36.8,
         marginBottom:windowHeight/147.2,
-        borderWidth:1,
         borderRadius:8,
-        borderColor:'#D9D9D9',
         backgroundColor:'#F5F5F5'
     },
     locationSearchIconView:{

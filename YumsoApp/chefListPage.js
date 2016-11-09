@@ -845,7 +845,7 @@ var Menu = React.createClass({
         return AuthService.logOut()
         .then(()=>{
             this.props.caller.setState({eater:undefined});
-            Alert.alert( '', 'You have successfully logged out',[ { text: 'OK' }]); 
+            //Alert.alert( '', 'You have successfully logged out',[ { text: 'OK' }]); 
             this.props.caller.setState({ isMenuOpen: false });
             this.props.navigator.push({
                 name: 'LoginPage',

@@ -276,7 +276,7 @@ class EaterPage extends Component {
                         this.state.eater.eaterProfilePic = source.uri;
                         this.setState({eater:this.state.eater});
                         console.log('success', request.responseText);
-                        Alert.alert( 'Success', 'Successfully upload your profile picture',[ { text: 'OK' }]);                        
+                        //Alert.alert( 'Success', 'Successfully upload your profile picture',[ { text: 'OK' }]);                        
                     } else {
                         Alert.alert( 'Upload failed', 'Please try again later',[ { text: 'OK' }]); 
                     }
@@ -350,8 +350,7 @@ class EaterPage extends Component {
                 }
                 return AuthService.updateCacheEater(this.state.eater)
                 .then(() => {
-                    Alert.alert('Success', 'Successfully updated your profile', [{ text: 'OK' }]);
-
+                    //Alert.alert('Success', 'Successfully updated your profile', [{ text: 'OK' }]);
                     var routeStack = this.props.navigator.state.routeStack;
                     if(routeStack.length >2 && routeStack[routeStack.length-2].name == "LoginPage" && routeStack[routeStack.length-3].name == "ShoppingCartPage"){
                        this.props.navigator.popToRoute(routeStack[routeStack.length-3]);

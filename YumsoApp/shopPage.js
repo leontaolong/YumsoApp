@@ -291,18 +291,23 @@ class ShopPage extends Component {
            }
 
            return (<View style={styleShopPage.oneDishInListView}>
-                        <TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7}>
-                               {shopPageDishImageView}
-                        </TouchableOpacity>
+                        <View style={styleShopPage.oneDishPicture}>
+                            <TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7}>
+                                {shopPageDishImageView}
+                            </TouchableOpacity>
+                            <View style={styleShopPage.chefRecommendLabelView}>
+                                    <Text style={styleShopPage.chefRecommendLabelText}>Chef's Special</Text>
+                            </View>
+                        </View>
                         <View style={styleShopPage.oneDishNameDiscriptionView}>                  
-                                <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
-                                <Text style={styleShopPage.oneDishIngredientText}>{dish.ingredients}</Text>
+                            <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
+                            <Text style={styleShopPage.oneDishIngredientText}>{dish.ingredients}</Text>
                         </View>
                         <View style={styleShopPage.priceView}>
-                                <View style={styleShopPage.priceTextView}>
-                                    <Text style={styleShopPage.priceText}>${dish.price}</Text>
-                                </View>
-                                {chooseQuantityView}
+                            <View style={styleShopPage.priceTextView}>
+                                <Text style={styleShopPage.priceText}>${dish.price}</Text>
+                            </View>
+                            {chooseQuantityView}
                         </View>
                     </View>);
         }else{
@@ -591,7 +596,7 @@ class ShopPage extends Component {
                     return AuthService.updateCacheEater(eater) //todo: perhaps return the eater oject everytime update it.
                         .then(() => {
                             _this.setState({ like: isAdd });
-                            Alert.alert('Success', isAdd ? 'Added to favorite list' : 'Removed from favorite list', [{ text: 'OK' }]);
+                            //Alert.alert('Success', isAdd ? 'Added to favorite list' : 'Removed from favorite list', [{ text: 'OK' }]);
                         });
                 }else if (res.statusCode === 401) {
                     return AuthService.logOut()
@@ -721,6 +726,22 @@ var styleShopPage = StyleSheet.create({
     shopPictureView:{
         height: windowHeight*0.4419,
     },
+    chefRecommendLabelView:{
+        marginTop:-windowHeight*0.4419+7,
+        paddingHorizontal:7,
+        paddingVertical:3,
+        flexDirection: 'column',
+        alignItems:'center',
+        justifyContent:'center',
+        alignSelf:'flex-end',
+        backgroundColor:'#ff5000',
+        marginRight:7,
+    },
+    chefRecommendLabelText:{
+        color:'#fff',
+        fontSize:12,
+        fontWeight:'500',
+    },  
     shopPicture:{
         width: windowWidth,
         height: windowHeight*0.4419,

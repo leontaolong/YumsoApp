@@ -1,7 +1,6 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
-var backgroundImage = require('./resourceImages/confirmationBackground.png');
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -27,7 +26,7 @@ class OrderConfirmation extends Component {
     
     render() {  
         return (
-            <View style={styles.container}>
+            <View style={styles.greyContainer}>
                 <View style={styles.headerBannerView}>    
                     <View style={styles.headerLeftView}>
                     </View>
@@ -37,15 +36,14 @@ class OrderConfirmation extends Component {
                     <View style={styles.headerRightView}>
                     </View>
                 </View>
-                <Image style={styleConfirmationPage.pageBackgroundImage} source={backgroundImage}>
-                    <View style={styleConfirmationPage.confirmTextView}>
-                       <Text style={styleConfirmationPage.enjoyYourMealText}>Enjoy Your Meal!</Text>
-                       <Text style={styleConfirmationPage.orderConfirmedText}>Your order is confirmed.</Text>   
-                    </View>
-                    <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.orderMoreMutton} onPress={()=>this.navigateBackToChefList()}>
-                       <Text style={styleConfirmationPage.orderMoreMuttonText}>Order More</Text>
-                    </TouchableOpacity>
-                </Image>           
+                <View style={styleConfirmationPage.confirmTextView}>
+                    <Text style={styleConfirmationPage.enjoyYourMealText}>Enjoy Your Meal!</Text>
+                    <Text style={styleConfirmationPage.orderConfirmedText}>Your order is confirmed.</Text>   
+                </View>
+                <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.orderMoreMutton} onPress={()=>this.navigateBackToChefList()}>
+                    <Text style={styleConfirmationPage.orderMoreMuttonText}>Order More</Text>
+                </TouchableOpacity>
+                <View style={{flex:1}}></View>
                 <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={()=>this.navigateToOrderList()}>
                     <Text style={styleConfirmationPage.orderMoreMuttonText}>Go to My Orders</Text>
                 </TouchableOpacity>     
@@ -80,15 +78,15 @@ var styleConfirmationPage = StyleSheet.create({
       backgroundColor:'transparent'
     },
     enjoyYourMealText:{
-      fontSize:windowHeight/18.4,
-      color:'#fff',
+      fontSize:windowHeight/20.44,
+      color:'#4A4A4A',
       fontWeight:'300',
       alignSelf:'center',
       marginBottom:windowHeight*0.05
     },
     orderConfirmedText:{
       fontSize:windowHeight/46.0,
-      color:'#fff',
+      color:'#4A4A4A',
       fontWeight:'200',
       alignSelf:'center',
     },    

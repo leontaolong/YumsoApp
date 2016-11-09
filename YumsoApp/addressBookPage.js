@@ -223,7 +223,7 @@ class addressBookPage extends Component {
                 }
                 return AuthService.updateCacheEater(this.state.eater)
                 .then(() => {
-                    Alert.alert('Success', 'Successfully updated your address', [{ text: 'OK' }]);
+                    //Alert.alert('Success', 'Successfully updated your address', [{ text: 'OK' }]);
                     this.setState({ eater: this.state.eater, showProgress: false });
                     this.state.callback(this.state.eater);
                 }).catch((err)=>{
