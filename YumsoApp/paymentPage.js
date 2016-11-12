@@ -137,9 +137,9 @@ class PaymentPage extends Component {
             }else if(response.statusCode==200 || response.statusCode==202){
                 this.setState({showProgress:false});
                 if(response.data.result===true){
-                    Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]); 
-                    this.props.navigator.state.routeStack = [];                  
-                    this.props.navigator.push({
+                   //Alert.alert('Success','Your Order is placed.',[{ text: 'OK' }]); 
+                   this.props.navigator.state.routeStack = [];                  
+                   this.props.navigator.push({
                         name: 'OrderConfirmation',
                         passProps:{
                             eater: this.state.eater

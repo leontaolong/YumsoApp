@@ -257,7 +257,7 @@ class ShopPage extends Component {
               var chooseQuantityView = <View style={styleShopPage.chooseQuantityView}>
                                             <View style={styleShopPage.lateNoteView}>
                                                 <Text style={styleShopPage.lateNoteText}>
-                                                    Chef requires order {dateRender.renderTime1(new Date(this.state.selectedTime).getTime()-this.state.scheduleMapping[this.state.selectedTime][dish.dishId].latestOrderTime)} before out-for-deliver time
+                                                    Chef requires order {dateRender.renderTime1(new Date(this.state.selectedTime).getTime()-this.state.scheduleMapping[this.state.selectedTime][dish.dishId].latestOrderTime)} ahead
                                                 </Text>
                                             </View>
                                             <View style={styleShopPage.leftQuantityView}>
@@ -327,7 +327,7 @@ class ShopPage extends Component {
               var chooseQuantityView = <View style={styleShoppingCartPage.quantityTotalPriceView}>
                                             <View style={styleShoppingCartPage.quantityView}>
                                                 <Text style={styleShopPage.lateNoteText}>
-                                                    Chef requires order {dateRender.renderTime1(new Date(this.state.selectedTime).getTime()-this.state.scheduleMapping[this.state.selectedTime][dish.dishId].latestOrderTime)} before out-for-deliver time
+                                                    Chef requires order {dateRender.renderTime1(new Date(this.state.selectedTime).getTime()-this.state.scheduleMapping[this.state.selectedTime][dish.dishId].latestOrderTime)} ahead
                                                 </Text>
                                             </View>
                                             <View style={styleShoppingCartPage.leftQuantityView}>
@@ -406,7 +406,7 @@ class ShopPage extends Component {
                       }
                   }
                   if(isAllSoldOut){
-                     deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label) + " (Sold Out)"}); 
+                     deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label) + "(Sold Out)"}); 
                   }else{
                      deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
                   }
@@ -416,6 +416,8 @@ class ShopPage extends Component {
                                             <Text style={styleShopPage.openHourTitle}>Out for Delivery at</Text>
                                             <ModalPicker
                                             style={styleShopPage.modalPicker}
+                                            selectTextStyle={styleShopPage.modalPickerSelectText}
+                                            selectStyle={styleShopPage.modalPickerSelect}
                                             data={deliveryTimeRendered}
                                             initValue={'Select Time'}
                                             onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
@@ -863,14 +865,19 @@ var styleShopPage = StyleSheet.create({
     openHourTitle:{
         alignSelf:'center',
         fontSize:windowHeight/40.57,
-        color:'#4A4A4A',
+        color:'#7BCBBE',
         marginRight:windowWidth*0.015625,
     },
     modalPicker:{
         alignSelf:'center',
     },
-    openHoursText:{
-
+    modalPickerSelectText:{
+        fontSize:windowHeight/40.57,
+        color:'#7BCBBE'
+    },
+    modalPickerSelect:{
+        borderColor:'#7BCBBE',
+        borderWidth:1,
     },
     footerView:{ 
         flexDirection:'row', 
@@ -975,11 +982,12 @@ var styleShopPage = StyleSheet.create({
         alignItems:'center',
     },
     lateNoteText:{
-        fontSize:windowHeight/49.06,
+        fontSize:12,
         color:'#7BCBBE',
         fontWeight:'500',
         flexWrap: 'wrap',
         flex:1,
+        alignSelf:'center',
     },
     quantitySelectionView:{
         flex:0.6,

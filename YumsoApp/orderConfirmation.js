@@ -37,8 +37,10 @@ class OrderConfirmation extends Component {
                     </View>
                 </View>
                 <View style={styleConfirmationPage.confirmTextView}>
-                    <Text style={styleConfirmationPage.enjoyYourMealText}>Enjoy Your Meal!</Text>
-                    <Text style={styleConfirmationPage.orderConfirmedText}>Your order is confirmed.</Text>   
+                    <Text style={styleConfirmationPage.enjoyYourMealText}>Your order is confirmed.</Text>
+                    <View style={styleConfirmationPage.orderConfirmedTextView}>
+                        <Text style={styleConfirmationPage.orderConfirmedText}>Please pay attention to your cell phone, we may call you when your order arrives</Text>
+                    </View>   
                 </View>
                 <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.orderMoreMutton} onPress={()=>this.navigateBackToChefList()}>
                     <Text style={styleConfirmationPage.orderMoreMuttonText}>Order More</Text>
@@ -74,11 +76,12 @@ var styleConfirmationPage = StyleSheet.create({
     confirmTextView:{
       height:windowHeight*0.38,
       justifyContent:'center',
+      alignItems:'center',
       flexDirection:'column',
       backgroundColor:'transparent'
     },
     enjoyYourMealText:{
-      fontSize:windowHeight/20.44,
+      fontSize:windowHeight/23.0,
       color:'#4A4A4A',
       fontWeight:'300',
       alignSelf:'center',
@@ -87,9 +90,17 @@ var styleConfirmationPage = StyleSheet.create({
     orderConfirmedText:{
       fontSize:windowHeight/46.0,
       color:'#4A4A4A',
-      fontWeight:'200',
+      fontWeight:'300',
       alignSelf:'center',
-    },    
+      textAlign:'center',
+      flex: 1, 
+      flexWrap: 'wrap',
+    },
+    orderConfirmedTextView:{
+        width:0.9*windowWidth,
+        justifyContent:'center',
+        flexDirection:'row',
+    },   
     orderMoreMutton:{
         width:windowWidth*0.62,
         height:windowHeight*0.075,

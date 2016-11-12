@@ -393,7 +393,7 @@ class OrderDetailPage extends Component {
                                             </TouchableHighlight>
                                         </View>
                                     </View>
-                                    <TextInput placeholder="Leave a comment for this order after delivery" style={styleOrderDetailPage.commentInput} editable={false}/>                                     
+                                    <TextInput placeholder="Leave a comment after delivery" style={styleOrderDetailPage.commentInput} editable={false}/>                                     
                                 </View>),
                                (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
         }

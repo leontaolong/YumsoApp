@@ -103,6 +103,10 @@ class EaterPage extends Component {
                                     <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
                                  </View>;  
         }
+
+        if (this.state.showResetPassword){
+             return (<ResetPasswordPage userEmail={this.state.eater.email} navigator = {this.props.navigator} onCancel={this.onCancelPasswordReset.bind(this)}/>)
+        }
             
         if (this.state.edit) {
             if(this.state.fromLoginPage){

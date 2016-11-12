@@ -439,7 +439,7 @@ class MapPage extends Component {
                                        }
                                    }
                                },
-                               { text: 'Set Apt./Suite number'} ,
+                               { text: 'Set Apt./Suite Number'} ,
                               ]
                            );
                 return;
