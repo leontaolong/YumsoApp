@@ -22,6 +22,7 @@ import React, {
   Image,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert
@@ -96,9 +97,11 @@ class resetPasswordPage extends Component {
                         <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
                     </ScrollView>                       
                     </Image> 
-                    <TouchableHighlight underlayColor={'#C0C0C0'} style={styles.footerView} onPress = {this.onUpdatePressed.bind(this)}>
-                        <Text style={styleSignUpPage.signUpButtonText}>Update</Text>
-                    </TouchableHighlight>
+                    <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress = {this.onUpdatePressed.bind(this)}>
+                            <View style={styles.footerButtonYellowView}>
+                                <Text style={styles.footerButtonText}>Reset Password</Text>
+                            </View>
+                    </TouchableOpacity>
                     {loadingSpinnerView}          
                 </View>
             );

@@ -44,7 +44,7 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
             email: self.username,
             password: self.password
         }).then( (response) =>{
-            if (response.statusCode === 200) {
+            if (response.statusCode === 200 || response.statusCode === 202) {
                 accessToken.timeAquired = new Date();
                 accessToken.token = response.data.token;
             } else {
@@ -123,10 +123,11 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                 fetch(url, options).then((response)=>{
                     status = response.status;
                     var contentType = response.headers.get("content-type");
-                    if(response.status == 200 && contentType && contentType.indexOf("application/json") != -1){
+                    if((response.status == 200 || response.status == 202) && contentType && contentType.indexOf("application/json") != -1){
                        return response.json();
                     }else if(response.status == 412){
-                       throw new Error('Deprecated App Version.Please update your Yumso App.');
+                       var Error = {statusCode:412};
+                       throw Error;
                     }else{
                        return response.text(); 
                     }
@@ -136,7 +137,7 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                         data:result
                     };
                 }).catch((err)=>{
-                    if(err.message == 'Deprecated App Version.Please update your Yumso App.'){
+                    if(err.statusCode == 412){
                       throw err;
                     }else{
                       throw new Error('Please check your network connection');

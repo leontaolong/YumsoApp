@@ -77,7 +77,7 @@ class PaymentOptionPage extends Component {
                         });
                     });
             }else{
-                 Alert.alert( 'Network and server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Network or server error', 'Please try again later',[ { text: 'OK' }]);   
             }
         };
     }
@@ -103,7 +103,7 @@ class PaymentOptionPage extends Component {
         this.setState({showProgress:true});
         return this.client.getWithAuth(config.getPaymentList+this.state.eaterId)
             .then((res) => {
-                if (res.statusCode != 200) {
+                if (res.statusCode != 200 && res.statusCode != 202) {
                     this.setState({showProgress:false});
                     return this.responseHandler(res);
                 }
@@ -272,7 +272,7 @@ class PaymentOptionPage extends Component {
         var client = new HttpsClient(config.baseUrl, true);
         client.getWithAuth(config.paymentTokenEndpoint)
             .then((res) => {
-                if (res.statusCode != 200) {
+                if (res.statusCode != 200 && res.statusCode != 202) {
                     this.setState({showProgress:false});              
                     return this.responseHandler(res);
                 }
@@ -283,7 +283,7 @@ class PaymentOptionPage extends Component {
                             .then((nonce) => {
                                 return client.postWithAuth(config.addAPayment, { payment_method_nonce: nonce, userId: this.state.eaterId })
                                 .then((res)=>{
-                                    if (res.statusCode != 200) {
+                                    if (res.statusCode != 200 && res.statusCode != 202) {
                                         this.setState({ showProgress: false });
                                         return this.responseHandler(res);
                                     }                                  
@@ -305,7 +305,7 @@ class PaymentOptionPage extends Component {
         var client = new HttpsClient(config.baseUrl, true);
         return client.postWithAuth(config.deletePayment, { token: card.token, userId: this.state.eaterId })
             .then((res) => {
-                if (res.statusCode != 200) {
+                if (res.statusCode != 200 && res.statusCode != 202) {
                     this.setState({showProgress:false});                  
                     return this.responseHandler(res);
                 }      

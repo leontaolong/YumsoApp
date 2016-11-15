@@ -14,11 +14,11 @@ var commonWidget = require('./commonModules/commonWidget');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
 var ballonIcon = require('./icons/icon-location-white.png');
-var favoriteIcon = require('./icons/icon-liked-white.png');
-var labelIcon = require('./icons/icon-label.png');
+var whiteLikeIcon = require('./icons/icon-liked-white.png');
+var labelIcon = require('./icons/icon-label-grey.png');
 var menuIcon = require('./icons/icon-menu.webp');
 var notlikedIcon = require('./icons/icon-unliked.png')
-var likedIcon = require('./icons/icon-liked.png');
+var likedIcon = require('./icons/icon-liked-red.png');
 var backIcon = require('./icons/icon-back.png');
 var dollarSign1_Grey = require('./icons/icon-dollar1-grey.webp');
 var dollarSign2_Grey = require('./icons/icon-dollar2-grey.webp');
@@ -49,7 +49,8 @@ import React, {
     PushNotificationIOS,
     Alert,
     AsyncStorage,
-    AppState
+    AppState,
+    Linking
 } from 'react-native';
 
 class ChefListPage extends Component {
@@ -85,6 +86,7 @@ class ChefListPage extends Component {
             sortCriteriaIcon:sortCriteriaIconGrey,
             deviceToken: null,
             currentTime: new Date().getTime(),
+            showUpdateAppBanner:false,
         };
 
         this.responseHandler = function (response, msg) {
@@ -105,7 +107,7 @@ class ChefListPage extends Component {
                         });                     
                     });
             } else {
-                 Alert.alert( 'Server Error', 'Failed. Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Internal Error', 'Server under maintenance. Please try again later',[ { text: 'OK' }]);   
             }
         };
     }
@@ -117,7 +119,6 @@ class ChefListPage extends Component {
                  this.setState({GPSproxAddress:undefined,showProgress:false,pickedAddress:{lat:47.6062095, lng:-122.3320708}}); 
                  commonAlert.locationError(err);
            });//todo: really wait??
-           console.log("commonAlert.locationError");
            this.setState({showProgress:false})
         }
         let eater = this.state.eater;
@@ -159,7 +160,7 @@ class ChefListPage extends Component {
             return;
         }
 
-        if(response && response.data){
+        if(response && (response.statusCode==200 || response.statusCode==202) && response.data){
            var chefs = response.data.chefs;
            var chefView = {};
            var chefsDictionary = {};
@@ -176,8 +177,10 @@ class ChefListPage extends Component {
                 }
            }
            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary, currentTime: new Date().getTime()});
+        }else{
+            this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+            commonAlert.serverSideError();
         }
-        
     }
     
     getLocation(){
@@ -190,7 +193,7 @@ class ChefListPage extends Component {
                         .then((res) => {
                             var city = 'unknown';
                             var state = 'unknown';
-                            if (res.statusCode === 200 && res.data.status === 'OK' && res.data.results.length > 0) {
+                            if ((res.statusCode === 200 || res.statusCode === 202) && res.data.status === 'OK' && res.data.results.length > 0) {
                                 var results = res.data.results;
                                 var address = results[0].formatted_address;
                                 for (var component of results[0].address_components) {
@@ -233,7 +236,7 @@ class ChefListPage extends Component {
                              <Image source={likedIcon} style={styleChefListPage.likeIcon}></Image>
                            </View>;
         } 
-        console.log(chef);
+        //console.log(chef);
         var nextDeliverTimeView = null;
         var EOD = new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000;
         if(chef.nextDeliverTime && chef.nextDeliverTime>this.state.currentTime && chef.nextDeliverTime<EOD){
@@ -264,10 +267,9 @@ class ChefListPage extends Component {
                     </Swiper>
                     {nextDeliverTimeView}
                 </View>
+                <TouchableHighlight underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
                 <View style={styleChefListPage.shopInfoView}>
-                    <TouchableHighlight style={styleChefListPage.chefPhotoView} underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
-                       <Image source={{ uri: chef.chefProfilePic }} style={styleChefListPage.chefPhoto}/>
-                    </TouchableHighlight>                   
+                    <Image source={{ uri: chef.chefProfilePic }} style={styleChefListPage.chefPhoto}/>
                     <View style={styleChefListPage.shopInfoSection}>
                        <View style={styleChefListPage.shopInfoRow1}>
                          <View style={styleChefListPage.shopNameView}>
@@ -290,10 +292,7 @@ class ChefListPage extends Component {
                        
                        <View style={styleChefListPage.shopInfoRow3}>
                           <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.styleTag,15)}</Text>
-                          </View>
-                          <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.foodTag,15)}</Text>
+                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.styleTag,15)}, {commonWidget.getTextLengthLimited(chef.foodTag,15)}</Text>
                           </View>
                           <View style={styleChefListPage.distanceDollarSignView}>
                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.pickupAddressDetail.city}</Text>
@@ -301,12 +300,13 @@ class ChefListPage extends Component {
                        </View>                       
                     </View>
                 </View>
+                </TouchableHighlight>                   
             </View>
         );
     }
     
     render() {
-        const menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
+        var menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
             loadingSpinnerView =<View style={styles.listLoadingView}>
@@ -381,12 +381,26 @@ class ChefListPage extends Component {
                     </TouchableOpacity>                
                </View>                    
         }
+
+        var updateAppBannerView=null;
+        if(this.state.showUpdateAppBanner){
+           updateAppBannerView = <View style={styles.infoBannerView}>
+                                   <Text style={styles.infoBannerText}>
+                                      Yumso App has new version available.  
+                                   </Text> 
+                                   <TouchableHighlight style={styles.infoBannerLinkView} onPress={()=>this.linkToAppStore()} underlayColor={'#ECECEC'}>
+                                        <Text style={styles.infoBannerLink}>
+                                            Tap to update
+                                        </Text>
+                                    </TouchableHighlight>
+                                 </View>
+        }
         
         return (
-            <SideMenu menu={menu} isOpen={this.state.isMenuOpen}>
+            <SideMenu menu={menu} isOpen={this.state.isMenuOpen} onChange={(isOpen) => this.openSideMenu(isOpen)}>
                 <View style={styles.container}>                    
                     <View style={styleChefListPage.headerBannerView}>
-                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({ isMenuOpen: true }) }>
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
                           <View style={styles.menuButtonView}>
                             <Image source={menuIcon} style={styles.menuIcon}/>
                           </View>
@@ -410,10 +424,11 @@ class ChefListPage extends Component {
                         </View>
                         <View style={styleChefListPage.orangeTopBannerButtonView}>
                            <TouchableHighlight style={styleChefListPage.orangeTopBannerButtonWrapper} underlayColor={'transparent'}  onPress={() => this.showFavoriteChefs() }>
-                             <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={this.state.showFavoriteChefsOnly===true?likedIcon:favoriteIcon}/>
+                             <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={this.state.showFavoriteChefsOnly===true?likedIcon:whiteLikeIcon}/>
                            </TouchableHighlight>
                         </View>
                     </View> 
+                    {updateAppBannerView}
                     {networkUnavailableView}
                     {cheflistView}
                     {loadingSpinnerView}
@@ -476,6 +491,15 @@ class ChefListPage extends Component {
         }
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
     }
+
+    async openSideMenu(isOpen){
+        if(isOpen===false){return;}
+        this.setState({ isMenuOpen: true });
+        if(this.state.eater){
+            let res = await this.client.getWithAuth(config.eaterEndpoint);
+            this.setState({eater:res.data.eater});
+        }
+    }
     
     mapDone(address){
          if(address){
@@ -492,6 +516,10 @@ class ChefListPage extends Component {
     
     onPressApplySearchButton(){
         this.searchChef(true);
+    }
+
+    linkToAppStore(){
+        Linking.openURL('itms://itunes.apple.com/us/app/apple-store/id1125810059?mt=8')
     }
 
     searchChef(isApplySearchButtonPressed){
@@ -538,7 +566,7 @@ class ChefListPage extends Component {
                 }
                 return this.client.getWithoutAuth(url)
                     .then((res) => {
-                        if (res.statusCode === 200) {
+                        if (res.statusCode === 200 || res.statusCode === 202) {
                             var chefs = res.data.chefs;
                             for (var chef of chefs) {
                                 if(chef && !(this.state.chefView[chef.chefId] && this.state.chefsDictionary[chef.chefId])){
@@ -553,6 +581,10 @@ class ChefListPage extends Component {
                                 }
                             }
                             this.setState({currentTime:new Date().getTime(), dataSource: this.state.dataSource.cloneWithRows(chefs) })
+
+                            if(res.statusCode === 202){
+                               this.setState({showUpdateAppBanner:true});
+                            }
                             // this.onRefreshDone();
                         } else {
                             // this.onRefreshDone();
@@ -576,7 +608,7 @@ class ChefListPage extends Component {
             this.state.eater.chefFilterSettings['withBestRatedSort'] = this.state.withBestRatedSort;
             return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:{eaterId: this.state.eater.eaterId, chefFilterSettings: this.state.eater.chefFilterSettings}})
                 .then((res) => {
-                    if (res.statusCode != 200) {
+                    if (res.statusCode != 200 && res.statusCode!=202) {
                         this.setState({showProgress:false});                                 
                         return self.responseHandler(res);
                     }
@@ -612,6 +644,7 @@ class ChefListPage extends Component {
                 chef:chef,
                 eater:this.state.eater,
                 currentLocation:this.state.GPSproxAddress,
+                showUpdateAppBanner:this.state.showUpdateAppBanner,
                 defaultDeliveryAddress: this.state.pickedAddress,//todo: this is not really the pickaddress
                 callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
             }
@@ -625,51 +658,76 @@ var Menu = React.createClass({
     render: function() {
         let isAuthenticated = this.props.eater!=undefined;
         var profileImg = profileImgNoSignIn;
+        var orderNumbersView = null;
         if(isAuthenticated && this.props.eater.eaterProfilePic){
             profileImg = {uri:this.props.eater.eaterProfilePic};
+            var eater = this.props.eater;
+            orderNumbersView = <View style={sideMenuStyle.orderNumbersView}>
+                                    <View style={sideMenuStyle.oneOrderStatView}>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderOngoing : 0}</Text>
+                                            <View>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Order</Text>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Pending</Text>
+                                            </View>
+                                    </View>
+                                    <View style={sideMenuStyle.oneOrderStatView}>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderCount : 0}</Text>
+                                            <View>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Order</Text>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Completed</Text>
+                                            </View>
+                                    </View>
+                                    <View style={sideMenuStyle.oneOrderStatView}>
+                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderNeedComments : 0}</Text>
+                                            <View>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Need</Text>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Review</Text>
+                                            </View>
+                                    </View>
+                               </View>
         }else{
-            
+            orderNumbersView = <View style={sideMenuStyle.orderNumbersView}></View>
         }
-        var profile;
+
+        var eaterProfilePic;
         if(!isAuthenticated){
-            profile = <Image source={profileImg} style={sideMenuStyle.chefPhoto}/>;
+           eaterProfilePic = <Image source={profileImg} style={sideMenuStyle.eaterPhoto}/>;
         }else{
-            profile = <TouchableHighlight style = {styles.chefProfilePic} onPress={()=>this.goToEaterPage()}>
-                        <Image source={profileImg} style={sideMenuStyle.chefPhoto}/>
-                     </TouchableHighlight>;
+           eaterProfilePic = <Image source={profileImg} style={sideMenuStyle.eaterPhoto}/>        
         }
         return (
             <View style={sideMenuStyle.sidemenu}>
-                {profile}
-                <View style={{height:windowHeight*0.07}}></View>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
-                   <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                   <Text style={sideMenuStyle.paddingMenuItem}></Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
-                   <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
-                </TouchableOpacity>
-                <View style={{height:windowHeight*0.02}}></View>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemContactUsView} onPress={this.navigateToContactUsPage}>
-                   <Text style={sideMenuStyle.paddingMenuItemAbout}>Contact Us</Text>
-                </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
-                   <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
-                </TouchableOpacity>
+                   <TouchableHighlight style = {sideMenuStyle.eaterPhotoView} onPress={()=>this.goToEaterPage()} underlayColor={'transparent'}>
+                       {eaterProfilePic}
+                   </TouchableHighlight>
+                   {orderNumbersView}
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                       <Text style={sideMenuStyle.paddingMenuItem}></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
+                       <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
+                       <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToAddressBookPage} >
+                       <Text style={sideMenuStyle.paddingMenuItem}>Address</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
+                       <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.navigateToContactUsPage}>
+                       <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
+                       <Text style={sideMenuStyle.paddingMenuItem}></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
+                       <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
+                       <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
+                    </TouchableOpacity>
             </View>
         );
     },
@@ -722,6 +780,31 @@ var Menu = React.createClass({
             }
         });
     },
+
+    goToAddressBookPage:function() {
+        this.props.caller.setState({ isMenuOpen: false });
+        if(!this.props.eater){
+            this.props.navigator.push({
+                name: 'LoginPage',
+                passProps:{
+                    callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
+                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
+                }
+            });  
+            return;
+        }
+        this.props.navigator.push({
+            name: 'AddressBookPage',
+            passProps:{
+                eater:this.props.eater,
+                currentLocation:this.props.currentLocation,
+                principal:this.props.principal,
+                callback: function(eater){
+                    this.props.caller.setState({eater:eater});
+                }.bind(this)
+            }
+        });
+    },
    
     goToPaymentOptionPage:function() {
         this.props.caller.setState({ isMenuOpen: false });
@@ -762,7 +845,7 @@ var Menu = React.createClass({
         return AuthService.logOut()
         .then(()=>{
             this.props.caller.setState({eater:undefined});
-            Alert.alert( '', 'You have successfully logged out',[ { text: 'OK' }]); 
+            //Alert.alert( '', 'You have successfully logged out',[ { text: 'OK' }]); 
             this.props.caller.setState({ isMenuOpen: false });
             this.props.navigator.push({
                 name: 'LoginPage',
@@ -786,52 +869,83 @@ var Menu = React.createClass({
 });
 
 var sideMenuStyle = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
     sidemenu: {
+        flexDirection:'column',
         height:windowHeight,
         width:windowWidth*2/3.0,
-        backgroundColor:'#7BCBBE',
+        backgroundColor:'#F5F5F5',
         marginTop:20,
+        alignItems:'center',
     },
-    chefPhoto:{
-        width:windowWidth*2/3.0,
-        height:windowWidth*2/3.0,
+    eaterPhoto:{
+        width:windowWidth/3.0,
+        height:windowWidth/3.0,
+        borderRadius:0.5*windowWidth/3.0, 
+        borderWidth: 0, 
+        overflow: 'hidden',
+    },
+    eaterPhotoView:{
+        width:windowWidth/3.0,
+        height:windowWidth/3.0,
+        marginTop:windowWidth/7.0,
+    },
+    orderNumbersView:{
+        flexDirection:'row',
+        width:windowWidth*0.6,
+        height:windowHeight/92.0 + windowWidth/5.0,
+        borderColor:'#4A4A4A',
+        borderBottomWidth:1.5,
+        marginTop:windowWidth/30.0,
+        paddingBottom:windowHeight/92.0,
+    },
+    oneOrderStatView:{
+        flex:1/3.0,
+        flexDirection:'column',
+        height:windowWidth/5.0,
+        alignItems:'center',
+        justifyContent:'space-around',
+    },
+    oneOrderStatNumberText:{
+        fontSize:windowHeight/37.055,
+        fontWeight:'500',
+        color:'#4A4A4A',
+    },
+    oneOrderStatNumberTitle:{
+        flexDirection:'row',
+        justifyContent:'center',
+        width:windowWidth*0.2,
+        fontSize:windowHeight/52.57,
+        fontWeight:'400',
+        color:'#4A4A4A',
+        textAlign:'center',
+        alignSelf:'center',
+        flexWrap:'wrap',
     },
     paddingMenuItemView:{
+        width:windowWidth*2/3.0,
         paddingVertical:windowWidth*0.0227,
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'center',
+        paddingLeft:windowWidth/8.28,
     },
     paddingMenuItem: {
-        paddingLeft:windowWidth*0.064,        
-        color:'#fff',
         fontSize:windowHeight/37.055,
+        fontWeight:'500',
+        color:'#4A4A4A'
     },
     paddingMenuItemAbout: {
-        paddingVertical: windowWidth*0.015,
-        color:'#fff',
-        borderTopWidth:1,
-        borderColor:'#fff',
         fontSize:windowHeight/41.69,
-    },
-    paddingMenuItemContactUsView:{
-        borderTopWidth:1,
-        borderColor:'#fff',
-        width:windowWidth*0.226,
-        marginLeft:windowWidth*0.064,
+        color:'#4A4A4A'
     },
     paddingMenuItemAboutView:{
-        borderColor:'#fff',
+        borderTopWidth:1,
+        borderColor:'#4A4A4A',
         width:windowWidth*0.226,
-        marginLeft:windowWidth*0.064,
+        paddingVertical:windowWidth*0.0227,
+        flexDirection:'row',
+        alignSelf:'flex-start',
+        marginLeft:windowWidth/8.28,
     },
 });
 
@@ -865,8 +979,8 @@ var styleChefListPage = StyleSheet.create({
     oneShopListView:{
        alignSelf:'stretch',
        backgroundColor:'#FFFFFF',
-       borderColor:'#F5F5F5',
-       borderTopWidth:5,
+       borderColor:'#EBEBEB',
+       borderBottomWidth:7,
     },
     oneShopPhotoView:{
        height:windowHeight*0.388,
@@ -884,10 +998,8 @@ var styleChefListPage = StyleSheet.create({
        paddingBottom:windowHeight*0.02698,
        paddingHorizontal:windowWidth*0.032,
     },
-    chefPhotoView:{
-       marginRight:windowWidth*0.04, 
-    },
     chefPhoto:{
+       marginRight:windowWidth*0.04,
        height:windowWidth*0.16,
        width:windowWidth*0.16,
        borderRadius: 12, 
@@ -909,7 +1021,7 @@ var styleChefListPage = StyleSheet.create({
        alignItems:'flex-start', 
     }, 
     oneShopNameText:{
-       fontSize:windowHeight/37.06,
+       fontSize:windowHeight/34.9,
        fontWeight:'500',
        color:'#4A4A4A',
     },
@@ -919,8 +1031,8 @@ var styleChefListPage = StyleSheet.create({
        alignItems:'flex-end', 
     }, 
     likeIcon:{
-       width:windowWidth*0.05,
-       height:windowWidth*0.05,
+       width:windowWidth*0.06,
+       height:windowWidth*0.06,
     },
     shopInfoRow2:{
        flexDirection:'row',
@@ -931,7 +1043,7 @@ var styleChefListPage = StyleSheet.create({
        alignItems:'flex-start',
     },
     reviewNumberText:{
-       fontSize:11,
+       fontSize:windowHeight/47.33,
        color:'#4A4A4A',
        marginLeft:windowWidth*0.0187,
        alignSelf:'center',
@@ -942,7 +1054,7 @@ var styleChefListPage = StyleSheet.create({
         justifyContent:'flex-end',
     },
     distanceDollarSignText:{
-        fontSize:11,
+        fontSize:windowHeight/47.33,
         color:'#4A4A4A',
         textAlign:'left',
     },
@@ -955,13 +1067,13 @@ var styleChefListPage = StyleSheet.create({
         marginRight:windowWidth*0.04,
     },   
     labelIcon:{
-        width:15, 
-        height:15,
+        width:1.5*windowHeight/71.0, 
+        height:windowHeight/71.0,
         alignSelf:'center',
     },
     labelText:{
-        fontSize:12,
-        color:'#FFCC33',
+        fontSize:windowHeight/47.33,
+        color:'#4A4A4A',
         marginLeft:windowWidth/82.8,
         alignSelf:'center',
     },

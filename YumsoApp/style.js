@@ -66,6 +66,18 @@ module.exports = StyleSheet.create({
         backgroundColor:'#FFCC33',
         justifyContent:'center',
     },
+    footerButtonYellowView:{
+       flexDirection:'row',        
+       justifyContent: 'center',
+       height:windowHeight*0.075,
+       width:windowWidth,
+    },
+    footerButtonText:{
+       color:'#fff',
+       fontSize:windowHeight/37.056,
+       fontWeight:'bold',
+       alignSelf: 'center',
+    },
     backButtonIcon:{
       width:windowWidth*0.106,
       height:windowWidth*0.106,
@@ -118,8 +130,8 @@ module.exports = StyleSheet.create({
       marginLeft:10,
     },
     menuIcon:{
-      width:windowHeight*0.0352,
-      height:windowHeight*0.0264,
+      width:windowHeight*0.0286,
+      height:windowHeight*0.0208,
     },
     searchIcon:{
       width:windowHeight/24.5,
@@ -226,6 +238,32 @@ module.exports = StyleSheet.create({
       textAlign:'justify',
       paddingTop:8,
       fontWeight:'600'
+    },
+    infoBannerView:{
+        flexDirection:'row',   
+        alignItems:'center',     
+        justifyContent: 'center',
+        height:30,
+        backgroundColor:'#F5F5F5'
+    },
+    infoBannerText:{
+        fontSize:12,
+        fontWeight:'400',
+        color:'#4A4A4A',
+        alignSelf:'center', 
+    },
+    infoBannerLinkView:{
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'center',
+        height:30,
+        width:80,
+    },
+    infoBannerLink:{
+        fontSize:12,
+        fontWeight:'400',
+        color:'#FFCC33',
+        alignSelf:'center',
     },
 
 

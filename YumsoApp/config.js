@@ -2,7 +2,7 @@ module.exports={
     baseUrl: 'https://www.yumso.com',
     //baseUrl: 'http://ec2-35-160-206-47.us-west-2.compute.amazonaws.com',
     //baseUrl: 'http://10.0.0.242:8080',
-    AppVersion:'1.5.6',
+    AppVersion:'1.5.8',
     googleApiName:'yumsoIOS	',
     googleApiKey:'AIzaSyBQdKxM-ZRQ2r95bkQLPlY10joKJeC6slw',
     googleGeoBaseUrl: 'https://maps.googleapis.com',

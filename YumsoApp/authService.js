@@ -57,7 +57,7 @@ class AuthService {
                 password_re:password_re
             }
         });
-        if(response.statusCode==200){
+        if(response.statusCode==200 || response.statusCode==202){
             Alert.alert( 'Verify Your Email', 'Please click to verify through the email just sent to you. Check spam in case you do not find it in inbox',[ { text: 'OK' }]); 
             return true;
         }else{
@@ -68,7 +68,7 @@ class AuthService {
     
     async forgotPasswordWithEmail(email){
         let response = await this.client.postWithoutAuth(config.forgotPasswordEndpointEmail + email, {});
-        if(response.statusCode==200){
+        if(response.statusCode==200 || response.statusCode==202){
             Alert.alert( 'Success', 'Please reset the password through the link sent to '+email,[ { text: 'OK' }]); 
             return true;
         }else{
@@ -83,11 +83,11 @@ class AuthService {
             oldPassword: oldPassword,
             newPassword: newPassword,
         });
-        if(response.statusCode==200){
+        if(response.statusCode==200 || response.statusCode==202){
             Alert.alert( 'Success', 'You password has been updated',[ { text: 'OK' }]); 
             return true;
         }else{
-            Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);
+            Alert.alert( 'Error', response.data,[ { text: 'OK' }]);
             return false; 
         }
     }
@@ -98,7 +98,7 @@ class AuthService {
             password: password,
             deviceToken: deviceToken
         });
-        if(response.statusCode!=200){
+        if(response.statusCode!=200 && response.statusCode!=202){
             if(response.data && response.data.includes('verify')){
               Alert.alert( 'Email Not Verified', response.data,[ { text: 'OK' }]);
             }else{
@@ -111,14 +111,14 @@ class AuthService {
             [authTokenKey, response.data.token]
         ]);
         let res = await this.client.getWithAuth(config.eaterEndpoint);
-        if(res.statusCode!==200){
+        if(res.statusCode!==200 && res.statusCode!==202){
             Alert.alert( 'Warning', 'Failed login and get your profile',[ { text: 'OK' }]); 
             return undefined;          
         }
         await AsyncStorage.multiSet([
             [eaterKey, JSON.stringify(res.data.eater)]
         ]); 
-        Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
+        //Alert.alert( '', 'Successfully logged in',[ { text: 'OK' }]);
         return res.data.eater;
     }
     
@@ -128,7 +128,7 @@ class AuthService {
             token:token,
             deviceToken:deviceToken
         });
-        if(response.statusCode!==200){
+        if(response.statusCode!==200 && response.statusCode!==202){
             Alert.alert( 'Warning', 'Failed login to facebook with its token',[ { text: 'OK' }]); 
             return undefined;
         }
@@ -137,14 +137,14 @@ class AuthService {
             [authTokenKey, response.data.token]
         ]);    
         let res = await this.client.getWithAuth(config.eaterEndpoint);
-        if(res.statusCode!==200){
+        if(res.statusCode!==200 && res.statusCode!==202){
             Alert.alert( 'Warning', 'Failed login and get your profile',[ { text: 'OK' }]); 
             return undefined;          
         }
         await AsyncStorage.multiSet([
             [eaterKey, JSON.stringify(res.data.eater)]
         ]); 
-        Alert.alert( '', 'Successfully logged in through Facebook',[ { text: 'OK' }]);      
+        //Alert.alert( '', 'Successfully logged in through Facebook',[ { text: 'OK' }]);      
         return res.data.eater;   
     }
     
@@ -162,7 +162,7 @@ class AuthService {
     getLoginStatus(){
         return this.client.getWithAuth(config.authStatusEndpoint)
         .then((res)=>{
-            if(res.statusCode===200){
+            if(res.statusCode===200 || res.statusCode===202){
                 return true;
             }else{
                 return AsyncStorage.multiRemove([principalKey,authTokenKey,eaterKey])
