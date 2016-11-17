@@ -179,7 +179,7 @@ class ChefListPage extends Component {
            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary, currentTime: new Date().getTime()});
         }else{
             this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-            commonAlert.serverSideError();
+            commonAlert.networkError(response);
         }
     }
     

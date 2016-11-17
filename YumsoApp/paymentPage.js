@@ -199,7 +199,7 @@ class PaymentPage extends Component {
                 }                    
             }else{
                 this.setState({showProgress:false});
-                Alert.alert('Failed creating order','Network or server error',[{ text: 'OK' }]);            
+                commonAlert.networkError(response);          
             }
          }).catch((err)=>{
                this.setState({showProgress: false});
