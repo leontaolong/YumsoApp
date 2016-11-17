@@ -117,7 +117,16 @@ class ShopPage extends Component {
 
         //let dishes = responseDish.data.dishes;
         let dishes = this.moveHighlightedDishToTop(responseDish.data.dishes);
-        let schedules = responseSchedule.data.schedules;
+        let allSchedules = responseSchedule.data.schedules;
+        let schedules = [];
+        //filter all the schedules with earliest order time earlier than current time.
+        var currentTime = new Date().getTime();
+        console.log(allSchedules);
+        for(let oneSchedule of allSchedules){
+            if(oneSchedule.earliestOrderTime<=currentTime){
+               schedules.push(oneSchedule);
+            }
+        }
         let scheduleMapping = {};
         let timeData = [];
         let index = 0;
