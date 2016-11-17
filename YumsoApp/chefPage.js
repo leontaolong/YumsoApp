@@ -5,18 +5,18 @@ var config = require('./config');
 var dateRender = require('./commonModules/dateRender');
 var AuthService = require('./authService');
 var backIcon = require('./icons/icon-back.png');
-var yumsoVerifiedIcon = require('./icons/icon-YumsoVerified.webp');
-var chefQualificationIcon = require('./icons/icon-ChefQualification.webp');
-var bestReviewedIcon = require('./icons/icon-BestReviewed.webp');
+var yumsoVerifiedIcon = require('./icons/icon-YumsoVerified.png');
+var chefQualificationIcon = require('./icons/icon-ChefQualification.png');
+var bestReviewedIcon = require('./icons/icon-BestReviewed.png');
 import Dimensions from 'Dimensions';
 
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 var badges=[
-            {icon:yumsoVerifiedIcon, color:'#1077BF', label:'Yumso Verified'},
-            {icon:chefQualificationIcon, color:'#8CC63F', label:'Chef Qualification'},
-            {icon:bestReviewedIcon, color:'#FED13F', label:'Best Reviewed'},
+            {icon:yumsoVerifiedIcon, label:'Yumso Verified'},
+            {icon:chefQualificationIcon, label:'Chef Qualification'},
+            {icon:bestReviewedIcon, label:'Best Reviewed'},
            ];
 
 
@@ -66,9 +66,17 @@ class ShoppingCartPage extends Component {
            chefAllBadgesViews.push(<View key={badges[onebadge].label} style={{flexDirection:'column', width:oneBadgeViewLength,justifyContent:'center'}}>
                                       <Image source={badges[onebadge].icon} style={styleShoppingCartPage.badgeIcon}/>
                                       <View style={styleShoppingCartPage.badgeLabelView}>
-                                        <Text style={{fontSize:windowHeight/43.69,color:badges[onebadge].color,alignSelf:'center',textAlign:'center',}}>{badges[onebadge].label}</Text>
+                                        <Text style={{fontSize:windowHeight/43.69,color:'#979797', fontWeight:'400', alignSelf:'center',textAlign:'center',}}>{badges[onebadge].label}</Text>
                                       </View>
                                    </View>)  
+        }
+
+        var chefStoryView=null;
+        if(this.state.chef.storeDescription){
+           chefStoryView = <View style={styleShoppingCartPage.chefStoryView}>
+                                <Text style={styleShoppingCartPage.myStoryTitleText}>My Story</Text>
+                                <Text style={styleShoppingCartPage.myStoryContentText}>{this.state.chef.storeDescription}</Text>
+                           </View>
         }    
                
         return (
@@ -96,10 +104,7 @@ class ShoppingCartPage extends Component {
                     <View style={styleShoppingCartPage.badgeView}>
                         {chefAllBadgesViews}
                     </View>
-                    <View style={styleShoppingCartPage.chefStoryView}>
-                        <Text style={styleShoppingCartPage.myStoryTitleText}>My Story</Text>
-                        <Text style={styleShoppingCartPage.myStoryContentText}>{this.state.chef.storeDescription}</Text>
-                    </View>
+                    {chefStoryView}
                </ScrollView>
            </View>     
         );
@@ -138,14 +143,14 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     chefLocationText:{
         fontSize:windowHeight/40.57,
-        color:'#9B9B9B',
+        color:'#979797',
     },
     badgeView:{
         width:windowWidth,
         height:windowWidth*0.45,
         flexDirection:'row',
-        borderTopWidth:5,
-        borderColor:'#F5F5F5',
+        borderTopWidth:1,
+        borderColor:'#EAEAEA',
     },
     badgeIcon:{
         width:windowHeight*0.14,
@@ -163,8 +168,8 @@ var styleShoppingCartPage = StyleSheet.create({
         width:windowWidth,
         flexDirection:'column',
         paddingHorizontal:windowHeight*0.0264,
-        borderTopWidth:5,
-        borderColor:'#F5F5F5',
+        borderTopWidth:1,
+        borderColor:'#EAEAEA',
     },
     myStoryTitleText:{
         fontSize:windowHeight/35.5,
@@ -174,9 +179,10 @@ var styleShoppingCartPage = StyleSheet.create({
         marginVertical:windowHeight*0.0264,    
     },
     myStoryContentText:{
-        fontSize:windowHeight/47.33,
+        fontSize:14*windowHeight/677,
         color:'#4A4A4A',
         textAlign:'justify',
+        lineHeight:17*windowHeight/677
     }
 });
 

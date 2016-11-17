@@ -46,7 +46,7 @@ module.exports = StyleSheet.create({
     headerBannerView:{
       flexDirection:'row',
       borderBottomWidth:1,
-      borderColor:'#F5F5F5',
+      borderColor:'#EAEAEA',
       height:windowHeight*0.066,
       backgroundColor:'#FFFFFF',
     },
@@ -131,7 +131,7 @@ module.exports = StyleSheet.create({
     },
     menuIcon:{
       width:windowHeight*0.0286,
-      height:windowHeight*0.0208,
+      height:windowHeight*0.0235,
     },
     searchIcon:{
       width:windowHeight/24.5,
@@ -172,7 +172,7 @@ module.exports = StyleSheet.create({
       flexDirection:'row',
       justifyContent:'center',
       borderBottomWidth:2,
-      borderColor:'#D7D7D7',
+      borderColor:'#EAEAEA',
       alignSelf:'center'
     },
     loginInput:{
@@ -218,10 +218,11 @@ module.exports = StyleSheet.create({
       flex:1,
       flexDirection:'column',
       justifyContent:'center',
+      backgroundColor:'#F5F5F5'
     },
     networkUnavailableText:{
       fontSize:16,
-      color:'#9B9B9B',
+      color:'#979797',
       justifyContent:'center',
       textAlign:'center',
       marginBottom:20,
@@ -231,13 +232,6 @@ module.exports = StyleSheet.create({
       color:'#FFCC33',
       justifyContent:'center',
       textAlign:'center',
-    },
-    passwordRequirementText:{
-      fontSize:12,
-      color:'#F5F5F5',
-      textAlign:'justify',
-      paddingTop:8,
-      fontWeight:'600'
     },
     infoBannerView:{
         flexDirection:'row',   
@@ -265,7 +259,41 @@ module.exports = StyleSheet.create({
         color:'#FFCC33',
         alignSelf:'center',
     },
-
+    greyBorderView:{
+        height:windowHeight/73.6,
+        backgroundColor:'#F5F5F5',
+        borderTopWidth:1.5,
+        borderTopColor:'#EAEAEA',
+        borderBottomWidth:1.5,
+        borderBottomColor:'#F5F5F5',
+    },
+    greyBorderViewThin:{
+        height:windowHeight/100,
+        backgroundColor:'#F5F5F5',
+        borderTopWidth:1,
+        borderTopColor:'#EAEAEA',
+        borderBottomWidth:1,
+        borderBottomColor:'#F5F5F5',
+    },
+    refreshableListView:{
+      backgroundColor:'#F5F5F5',
+      fontSize:14,
+      color:'#4A4A4A',
+    },
+    dishListView:{
+        alignSelf:'stretch',
+        backgroundColor:'#F5F5F5',
+        paddingBottom:20,
+        flexDirection:'column',
+        height: windowHeight*9/10
+    }, 
+    dishListViewWhite:{
+        alignSelf:'stretch',
+        backgroundColor:'#FFFFFF',
+        paddingBottom:20,
+        flexDirection:'column',
+        height: windowHeight*9/10
+    }, 
 
     logo:{
       width:66,
@@ -364,13 +392,7 @@ module.exports = StyleSheet.create({
         padding:3,  
         position: 'relative',
     },
-    dishListView:{
-        alignSelf:'stretch',
-        backgroundColor:'#fff',
-        paddingBottom:20,
-        flexDirection:'column',
-        height: windowHeight*9/10
-    }, 
+    
     dishListView_dish:{
         margin:5,
         alignSelf:'stretch',

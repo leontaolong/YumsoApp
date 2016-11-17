@@ -300,7 +300,8 @@ class ChefListPage extends Component {
                        </View>                       
                     </View>
                 </View>
-                </TouchableHighlight>                   
+                </TouchableHighlight>
+                <View style={styles.greyBorderView}></View>                   
             </View>
         );
     }
@@ -318,7 +319,7 @@ class ChefListPage extends Component {
                             dataSource = {this.state.dataSource}
                             renderRow={this.renderRow.bind(this)}
                             loadData={this.searchChef.bind(this)}
-                            refreshDescription = " "/>
+                            refreshDescription = "Pull to refresh "/>
         var networkUnavailableView = null;
         if(this.state.showNetworkUnavailableScreen){
            networkUnavailableView = <NetworkUnavailableScreen onReload = {this.componentDidMount.bind(this)} />
@@ -398,7 +399,7 @@ class ChefListPage extends Component {
         
         return (
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen} onChange={(isOpen) => this.openSideMenu(isOpen)}>
-                <View style={styles.container}>                    
+                <View style={styles.greyContainer}>                    
                     <View style={styleChefListPage.headerBannerView}>
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
                           <View style={styles.menuButtonView}>
@@ -674,7 +675,7 @@ var Menu = React.createClass({
                                             <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderCount : 0}</Text>
                                             <View>
                                                 <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Order</Text>
-                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Completed</Text>
+                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Placed</Text>
                                             </View>
                                     </View>
                                     <View style={sideMenuStyle.oneOrderStatView}>
@@ -979,8 +980,6 @@ var styleChefListPage = StyleSheet.create({
     oneShopListView:{
        alignSelf:'stretch',
        backgroundColor:'#FFFFFF',
-       borderColor:'#EBEBEB',
-       borderBottomWidth:7,
     },
     oneShopPhotoView:{
        height:windowHeight*0.388,

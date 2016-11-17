@@ -11,6 +11,8 @@ var backIcon = require('./icons/icon-back.png');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
 var forwardIcon = require('./icons/icon-forward.png');
+var upIconWhite = require('./icons/icon-up-white.png');
+var downIconWhite = require('./icons/icon-down-white.png');
 var mapIcon = require('./icons/icon-map.png');
 var chefPageIcon = require('./icons/icon-chefpage.png');
 var reviewIcon = require('./icons/icon-reviews.png');
@@ -127,7 +129,6 @@ class ShopPage extends Component {
            scheduleMapping['All Dishes']= allDishSet;
            timeData.push({ key: index++, label: 'All Dishes' })
         }
-        console.log('schedules: '+JSON.stringify(schedules));
         for(var schedule of schedules){
             var time = new Date(schedule.deliverTimestamp).toString();   
             if(!scheduleMapping[time]){
@@ -149,7 +150,6 @@ class ShopPage extends Component {
                };
             }
         }
-        console.log('timeData '+JSON.stringify(timeData));
         this.setState({
             dishes:dishes, 
             dataSource:this.state.dataSource.cloneWithRows(dishes), 
@@ -230,14 +230,14 @@ class ShopPage extends Component {
                                 </View>
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                             </View>
-                        </TouchableHighlight>)                                
-                       ];
+                        </TouchableHighlight>),
+                       (<View style={styles.greyBorderView}></View>)];
     }
 
     renderRow(dish){
         let imageSrc = defaultDishPic;
         if(dish.pictures && dish.pictures!=null && dish.pictures.length!=0){
-            imageSrc={uri:dish.pictures[0]};   
+           imageSrc={uri:dish.pictures[0]};   
         }
         
         if(dish.isHighlightDish){
@@ -299,7 +299,7 @@ class ShopPage extends Component {
                                     <Text style={styleShopPage.chefRecommendLabelText}>Chef's Special</Text>
                             </View>
                         </View>
-                        <View style={styleShopPage.oneDishNameDiscriptionView}>                  
+                        <View style={styleShopPage.oneDishNameDiscriptionView}>
                             <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
                             <Text style={styleShopPage.oneDishIngredientText}>{dish.ingredients}</Text>
                         </View>
@@ -309,6 +309,7 @@ class ShopPage extends Component {
                             </View>
                             {chooseQuantityView}
                         </View>
+                        <View style={styles.greyBorderView}></View>
                     </View>);
         }else{
            if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][dish.dishId] && this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantityImmutable == 0){
@@ -362,24 +363,28 @@ class ShopPage extends Component {
                                        </View>
            }
 
-           return (<View style={styleShoppingCartPage.oneListingView}>
-                    <TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7}>
-                       {shopPageDishImageView}
-                    </TouchableOpacity>
-                    <View style={styleShoppingCartPage.shoppingCartInfoView}>
-                        <View style={styleShoppingCartPage.dishNamePriceView}>
-                            <View style={styleShoppingCartPage.dishNameView}>
-                                <Text style={styleShoppingCartPage.dishNameText}>{dish.dishName}</Text>
-                            </View>
-                            <View style={styleShoppingCartPage.dishPriceView}>
-                                <Text style={styleShoppingCartPage.dishPriceText}>${dish.price}</Text>   
-                            </View>
-                        </View>                         
-                        <View style={styleShoppingCartPage.dishIngredientView}>
-                        </View>                                     
-                        {chooseQuantityView}                  
-                    </View>
-                </View>);
+           return (<View>
+                     <View style={styleShoppingCartPage.oneListingView}>
+                        <TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7}>
+                        {shopPageDishImageView}
+                        </TouchableOpacity>
+                        <View style={styleShoppingCartPage.shoppingCartInfoView}>
+                            <View style={styleShoppingCartPage.dishNamePriceView}>
+                                <View style={styleShoppingCartPage.dishNameView}>
+                                    <Text style={styleShoppingCartPage.dishNameText}>{dish.dishName}</Text>
+                                </View>
+                                <View style={styleShoppingCartPage.dishPriceView}>
+                                    <Text style={styleShoppingCartPage.dishPriceText}>${dish.price}</Text>   
+                                </View>
+                            </View>                         
+                            <View style={styleShoppingCartPage.dishIngredientView}>
+                                <Text style={styleShoppingCartPage.dishIngredientText}>{commonWidget.getTextLengthLimited(dish.ingredients,28)}</Text>
+                            </View>                                     
+                            {chooseQuantityView}                  
+                        </View>
+                     </View>
+                     <View style={styles.greyBorderView}></View>
+                  </View>);
         }
     }
          
@@ -415,17 +420,53 @@ class ShopPage extends Component {
            scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
                                             <Text style={styleShopPage.openHourTitle}>Out for Delivery at</Text>
                                             <ModalPicker
-                                            style={styleShopPage.modalPicker}
-                                            selectTextStyle={styleShopPage.modalPickerSelectText}
-                                            selectStyle={styleShopPage.modalPickerSelect}
-                                            data={deliveryTimeRendered}
-                                            initValue={'Select Time'}
-                                            onChange={(option)=>{ this.displayDish(`${option.key}`)}} />
+                                             style={styleShopPage.modalPicker}
+                                             selectTextStyle={styleShopPage.modalPickerSelectText}
+                                             selectStyle={styleShopPage.modalPickerSelect}
+                                             data={deliveryTimeRendered}
+                                             initValue={'Select Time'}
+                                             onChange={(option)=>{ this.displayDish(`${option.key}`)}}/>
                                     </View>);
         }else{
            scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
                                             <Text style={styleShopPage.openHourTitle}>Currently no dish avaliable to order</Text>
                                     </View>);
+        }
+
+        var chefNoticeView = null
+        if(this.state.chef.chefNotice){
+           if(this.state.chef.chefNotice.length<=25){
+              chefNoticeView = <View style={styleShopPage.chefNoticeView}>
+                                    <View style={styleShopPage.chefNoticeTextView}>
+                                        <Text style={styleShopPage.chefNoticeText}>
+                                            {this.state.chef.chefNotice}
+                                        </Text>
+                                    </View>
+                                </View>
+            }else{
+               chefNoticeView = <View style={styleShopPage.chefNoticeView}>
+                                        <View style={styleShopPage.chefNoticeTextView}>
+                                            <Text style={styleShopPage.chefNoticeText}>
+                                                Chef Notice: {commonWidget.getTextLengthLimited(this.state.chef.chefNotice,25)}
+                                            </Text>
+                                        </View>
+                                        <TouchableOpacity style={styleShopPage.chefNoticeButtonView} onPress={()=>this.setState({isChefNoticeExtended:true})} activeOpacity={0.7}>
+                                            <Image source={downIconWhite} style={styleShopPage.chefNoticeIcon}/>
+                                        </TouchableOpacity>
+                                    </View>;
+               if(this.state.isChefNoticeExtended){
+                  chefNoticeView = <View style={styleShopPage.chefNoticeExtendedView}>
+                                            <View style={styleShopPage.chefNoticeTextView}>
+                                                <Text style={styleShopPage.chefNoticeText}>
+                                                    Chef Notice: {this.state.chef.chefNotice}
+                                                </Text>
+                                            </View>
+                                            <TouchableOpacity style={styleShopPage.chefNoticeButtonView} onPress={()=>this.setState({isChefNoticeExtended:false})} activeOpacity={0.7}>
+                                                <Image source={upIconWhite} style={styleShopPage.chefNoticeIcon}/>
+                                            </TouchableOpacity>
+                                  </View>;
+               }
+            }
         }
         
         var updateAppBannerView=null;
@@ -484,6 +525,7 @@ class ShopPage extends Component {
                             </TouchableHighlight>
                         </View>
                         {scheduleSelectionView}
+                        {chefNoticeView}
                         {updateAppBannerView}
                         {networkUnavailableView}
                         {dishListView}
@@ -654,6 +696,7 @@ class ShopPage extends Component {
             Alert.alert( 'Warning', 'You do not have any item in shopping cart',[ { text: 'OK' }]);
             return;  
         }
+        //console.log(this.state.shoppingCart);
         this.props.navigator.push({
             name: 'ShoppingCartPage', 
             passProps:{
@@ -681,6 +724,7 @@ class ShopPage extends Component {
             passProps:{
                 chefId:this.state.chefId,
                 chefProfilePic:this.state.chef.chefProfilePic,
+                shopName:this.state.chef.shopname,
             }
         });       
     }
@@ -728,20 +772,25 @@ var styleShopPage = StyleSheet.create({
     shopPictureView:{
         height: windowHeight*0.4419,
     },
+    oneDishNameView:{
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'center',
+        flexWrap:'wrap',
+    },
     chefRecommendLabelView:{
-        marginTop:-windowHeight*0.4419+7,
+        marginTop:-windowHeight*0.4419,
         paddingHorizontal:7,
         paddingVertical:3,
         flexDirection: 'column',
         alignItems:'center',
         justifyContent:'center',
-        alignSelf:'flex-end',
+        alignSelf:'flex-start',
         backgroundColor:'#ff5000',
-        marginRight:7,
     },
     chefRecommendLabelText:{
         color:'#fff',
-        fontSize:12,
+        fontSize:12*windowHeight/667,
         fontWeight:'500',
     },  
     shopPicture:{
@@ -751,6 +800,7 @@ var styleShopPage = StyleSheet.create({
     shopInfoView:{
         flexDirection:'row',
         height:windowHeight*0.14,
+        backgroundColor:'#FFFFFF',
         paddingTop:windowHeight*0.0225,
         paddingBottom:windowHeight*0.02698,
         paddingLeft:windowWidth*0.032,
@@ -845,7 +895,8 @@ var styleShopPage = StyleSheet.create({
     },
     pickupAddressText:{ 
         fontSize: windowHeight/47.33, 
-        color: '#A9A9A9'
+        fontWeight:'400',
+        color: '#979797'
     },
     pickupAddressIcon:{ 
         width: windowHeight/36.8, 
@@ -858,26 +909,31 @@ var styleShopPage = StyleSheet.create({
     timeSelectorView:{
         flexDirection:'row',
         justifyContent:'center', 
-        borderColor:'#F5F5F5',
-        borderBottomWidth:1,
-        height:windowHeight*0.10,
+        height:windowHeight*0.08,
+        //backgroundColor:'#FFCC33'
     },
     openHourTitle:{
         alignSelf:'center',
-        fontSize:windowHeight/40.57,
-        color:'#7BCBBE',
+        fontSize:windowHeight/46.0,
+        //color:'#FFFFFF',
+        color:'#4A4A4A',
+        fontWeight:'600',
         marginRight:windowWidth*0.015625,
     },
     modalPicker:{
         alignSelf:'center',
+        //backgroundColor:'#FFCC33'
     },
     modalPickerSelectText:{
-        fontSize:windowHeight/40.57,
-        color:'#7BCBBE'
+        fontSize:windowHeight/46.0,
+        //color:'#FFFFFF',
+        color:'#7BCBBE',
+        fontWeight:'600',
     },
     modalPickerSelect:{
+        //borderColor:'#FFFFFF',
         borderColor:'#7BCBBE',
-        borderWidth:1,
+        borderWidth:1.5,
     },
     footerView:{ 
         flexDirection:'row', 
@@ -921,8 +977,8 @@ var styleShopPage = StyleSheet.create({
     },
     oneDishInListView:{
         marginBottom:0,
-        borderColor: '#EBEBEB',
-        borderBottomWidth:7,
+        borderColor: '#EAEAEA',
+        borderTopWidth:1,
     },
     oneDishPicture:{
         width: windowWidth,
@@ -936,6 +992,7 @@ var styleShopPage = StyleSheet.create({
     oneDishNameDiscriptionView:{
         flex: 1,
         flexDirection: 'column',
+        backgroundColor:'#FFFFFF',
         paddingHorizontal: windowWidth/27.6,
         paddingTop: windowHeight*0.03,
         paddingBottom:windowHeight*0.005,
@@ -1032,6 +1089,50 @@ var styleShopPage = StyleSheet.create({
         color:'#9B9B9B',
         marginTop:windowHeight*0.0035,
     },
+    chefNoticeView:{
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
+        height:windowHeight*0.05,
+        backgroundColor:'#7BCBBE',
+    },
+    chefNoticeTextView:{
+        width:windowWidth*0.9,
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'center',
+        paddingLeft:10,
+    },
+    chefNoticeText:{
+        color:'#FFFFFF',
+        fontSize:16,
+        fontWeight:'500',
+        flex:1,
+        flexWrap:'wrap',
+    },
+    chefNoticeButtonView:{
+        width:windowWidth*0.1,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    chefNoticeIcon:{
+        width:35,
+        height:35,
+    },
+    chefNoticeExtendedView:{
+        flexDirection:'row',
+        backgroundColor:'#7BCBBE',
+        padding:10,
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    chefNoticeExtendedButtonView:{
+        height:windowHeight*0.05,
+        flexDirection:'row',
+        justifyContent:'flex-end',
+        alignItems:'center',
+    }
 });
 
 var styleShoppingCartPage = StyleSheet.create({
@@ -1039,12 +1140,13 @@ var styleShoppingCartPage = StyleSheet.create({
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
         flex:1,
-        borderColor: '#EBEBEB',
-        borderBottomWidth: 7,
+        borderColor: '#EAEAEA',
+        borderTopWidth: 1,
     },
     oneDishPictureUnhighlight:{
         width:windowWidth/2.76,
         height:windowWidth/2.76,
+        backgroundColor:'#FFFFFF',
     },
     oneDishPictureUnhighlightSoldOut:{
         width:windowWidth/2.76,
@@ -1055,6 +1157,7 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1,
         height:windowWidth/2.76,
         flexDirection:'column',
+        backgroundColor:'#FFFFFF',
         paddingLeft:windowWidth/20.7,
         paddingRight:windowWidth/27.6,
         paddingTop:windowHeight/73.6,

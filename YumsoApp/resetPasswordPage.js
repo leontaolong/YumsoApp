@@ -50,13 +50,7 @@ class resetPasswordPage extends Component {
             }
             
             var passwordRequirmentText = null;
-            // if(this.state.showPasswordRequirment){
-            //   passwordRequirmentText = <Text style={styles.passwordRequirementText}>
-            //                                 Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
-            //                                </Text>;
-            // }
-            
-            
+             
             return (//TODO: i agree terms and conditions.
                 <View style={styles.container}>
                     <View style={styles.headerBannerView}>    
