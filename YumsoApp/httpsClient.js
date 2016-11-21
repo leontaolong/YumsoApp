@@ -126,8 +126,10 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                     if((response.status == 200 || response.status == 202) && contentType && contentType.indexOf("application/json") != -1){
                        return response.json();
                     }else if(response.status == 412){
-                       var Error = {statusCode:412};
-                       throw Error;
+                       var err = {statusCode:412};
+                       throw err;
+                    }else if(response.status == 500){
+                       return response.json();
                     }else{
                        return response.text(); 
                     }
@@ -138,9 +140,9 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                     };
                 }).catch((err)=>{
                     if(err.statusCode == 412){
-                      throw err;
+                       throw err;
                     }else{
-                      throw new Error('Please check your network connection');
+                       throw new Error('Please check your network connection');
                     }
                 }),
                 timeout

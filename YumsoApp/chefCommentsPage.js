@@ -35,6 +35,7 @@ class ChefCommentsPage extends Component {
         var routeStack = this.props.navigator.state.routeStack;
         var chefId = routeStack[routeStack.length-1].passProps.chefId;
         var chefProfilePic = routeStack[routeStack.length-1].passProps.chefProfilePic;
+        var shopName = routeStack[routeStack.length-1].passProps.shopName;
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:false,
@@ -42,6 +43,7 @@ class ChefCommentsPage extends Component {
             showNetworkUnavailableScreen:false,
             chefId: chefId,
             chefProfilePic:chefProfilePic,
+            shopName:shopName,
         };
     }
 
@@ -68,38 +70,31 @@ class ChefCommentsPage extends Component {
     }
 
     renderRow(comment){
-        // let imageSrc =require('./icons/dishImageUnavailable.png') ;               
-        return (
-            <View style={styleChefCommentsPage.oneListingView}>
-                <View style={styleChefCommentsPage.eaterNameView}>
-                   <Text style={styleChefCommentsPage.eaterNameText}>{comment.eaterAlias}</Text>
-                </View>
-                <View style={styleOrderDetailPage.commentBox}>
-                   <View style={styleOrderDetailPage.ratingCommentTimeView}>
-                       <View style={styleOrderDetailPage.ratingView}>
-                           {rating.renderRating(comment.starRating)}
-                       </View>
-                       <View style={styleOrderDetailPage.commentTimeView}>
-                           <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(comment.eaterCommentTime)}</Text>
-                       </View>
-                   </View>
-                   <Text style={styleOrderDetailPage.commentText}>{comment.eaterComment && comment.eaterComment.trim()? comment.eaterComment.trim():'No Comment'}</Text>
-                </View>
-                {this.displayChefComment(comment)}  
-            </View>
-        );
+        return (<View style={styleChefCommentsPage.oneListingView}>
+                    <View style={styleChefCommentsPage.eaterPhotoView}>
+                        <Image source={{uri:comment.eaterProfilePic}} style={styleChefCommentsPage.eaterPhoto}/>
+                    </View>
+                    <View style={styleChefCommentsPage.oneCommentView}>
+                        <View style={styleChefCommentsPage.reviewerNameCommentTimeView}>
+                            <Text style={styleChefCommentsPage.reviewerNameText}>{comment.eaterAlias}</Text>
+                            <Text style={styleChefCommentsPage.commentTimeText}>{dateRender.renderDate3(comment.eaterCommentTime)}</Text>
+                        </View>
+                        <View style={styleChefCommentsPage.ratingView}>
+                            {rating.renderRating(comment.starRating)}
+                        </View>
+                        <Text style={styleChefCommentsPage.commentText}>{comment.eaterComment && comment.eaterComment.trim()? comment.eaterComment.trim():'No Comment'}</Text>
+                        {this.displayChefComment(comment)}
+                    </View>   
+                </View>);
     }
     
     displayChefComment(comment){
          if(comment.chefComment){
-           var chefCommentSection = <View key={'chefReplyView'} style={styleOrderDetailPage.chefReplyBox}>
-                                        <View style={styleOrderDetailPage.chefPhotoView}>
-                                        <Image source={{uri:this.state.chefProfilePic}} style={styleOrderDetailPage.chefPhoto}/>
-                                        </View>
-                                        <View style={styleOrderDetailPage.chefReplyContentView}>
-                                        <Text style={styleOrderDetailPage.chefReplyText}>{comment.chefComment}</Text>
-                                        </View>
-                                    </View>;
+           var chefCommentSection = [(<View key={'chefNameCommentTimeView'} style={styleChefCommentsPage.chefNameCommentTimeView}>
+                                            <Text style={styleChefCommentsPage.reviewerNameText}>{this.state.shopName}</Text>
+                                            <Text style={styleChefCommentsPage.commentTimeText}>{dateRender.renderDate3(comment.chefCommentTime)}</Text>
+                                      </View>),
+                                     (<Text key={'commentText'} style={styleChefCommentsPage.commentText}>{comment.chefComment}</Text>)];
            return chefCommentSection;
         }
         return[];
@@ -117,7 +112,7 @@ class ChefCommentsPage extends Component {
            var  noReviewText = <Text style={styles.listViewEmptyText}>This chef does not have any review left</Text>
         }
         
-        var commentListView = <ListView style={styles.dishListView}
+        var commentListView = <ListView style={styles.dishListViewWhite}
                                dataSource = {this.state.dataSource}
                                renderRow={this.renderRow.bind(this)}/>
         var networkUnavailableView = null;
@@ -156,84 +151,67 @@ class ChefCommentsPage extends Component {
 var styleChefCommentsPage = StyleSheet.create({
     oneListingView:{
        flex:1,
-       flexDirection:'column',
-       paddingHorizontal:10,
-       paddingVertical:15,
+       flexDirection:'row',
+       paddingTop:windowHeight*0.03,
+       paddingBottom:windowHeight*0.015,
        borderBottomWidth:1,
-       borderColor: '#f5f5f5',
+       borderColor: '#EAEAEA',
+       width:windowWidth*0.9,
+       alignSelf:'center',
     },
-    eaterNameView:{
-        width:windowWidth*0.93,
+    eaterPhotoView:{
+       flex:1/6,
+       flexDirection:'column',
+       alignItems:'center',
+       justifyContent:'flex-start',
+    },
+    eaterPhoto:{
+        width:windowWidth*0.11,
+        height:windowWidth*0.11,
+        borderWidth:0,
+        borderRadius:0.5*windowWidth*0.11,
+    },
+    oneCommentView:{
+        flex:5/6,
+        flexDirection:'column',
+        paddingLeft:windowWidth*0.027,
+    },
+    reviewerNameCommentTimeView:{
         flexDirection:'row',
-        alignSelf:'center',
+        justifyContent:'space-between',
+        alignItems:'center',
     },
-    eaterNameText:{
-        fontSize:14,
-        fontWeight:'600',
-    },
-}); 
-
-var styleOrderDetailPage = StyleSheet.create({  
-    commentBox:{
-        alignSelf:'center',
-        backgroundColor:'#F5F5F5',
-        width:windowWidth*0.93,
-        marginTop:windowHeight*0.01
-    },
-    ratingView:{
-        flex:0.5,
-        justifyContent:'flex-start',
-        flexDirection:'row',
-        backgroundColor:'#FFFFFF',
-    },
-    commentText:{
-        padding:15,
-        fontSize:14,
+    reviewerNameText:{
+        fontSize:14*windowHeight/667.0,
+        fontWeight:'bold',
         color:'#4A4A4A',
     },
-    chefReplyBox:{
-        flexDirection:'row',
-        alignSelf:'center',
-        width:windowWidth*0.93,
-        marginTop:10,
-    },
-    chefPhotoView:{
-        flex:1/6,
-        flexDirection:'column',
-        alignItems:'flex-start',
-        justifyContent:'flex-start',
-    },
-    chefPhoto:{
-        width:windowWidth*0.93/7,
-        height:windowWidth*0.93/7,
-        borderWidth:0,
-        borderRadius:8,
-    },
-    chefReplyContentView:{
-         flex:5/6,
-         backgroundColor:"#4A4A4A",
-    },
-    chefReplyText:{
-        padding:15,
-        fontSize:14,
-        color:'#F5F5F5',
-    },
-    ratingCommentTimeView:{
-        flexDirection:'row',
-        height:windowHeight*0.028,
-        flex:1,
-    },
-    commentTimeView:{
-        flex:0.5,
-        flexDirection:'row',
-        justifyContent:'flex-end',
-        backgroundColor:'#FFFFFF'
-    },
     commentTimeText:{
-        fontSize:12,
-        color:'#9B9B9B',
-        fontWeight:'600',
-    }
-});
+        fontSize:12*windowHeight/667.0,
+        color:'#979797',
+        fontWeight:'300',
+    },
+    ratingView:{
+        flexDirection:'row',
+        height:windowHeight*0.027,
+        flex:1,
+        justifyContent:'flex-start',
+        alignItems:'flex-end',
+    },
+    chefNameCommentTimeView:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        borderColor:'#EAEAEA',
+        borderTopWidth:1,
+        paddingTop:windowHeight*0.015,
+    },
+    commentText:{
+        paddingVertical:windowHeight*0.015,
+        fontSize:14*windowHeight/667.0,
+        color:'#4A4A4A',
+        lineHeight:17*windowHeight/667.0,
+    },
+}); 
 
 module.exports = ChefCommentsPage;

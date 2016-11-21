@@ -155,7 +155,7 @@ class OrderDetailPage extends Component {
                 if(this.state.order.estimatedDeliverTimeRange){
                    ETAView = <View style={styleOrderDetailPage.ETAView}>
                                 <Text style={styleOrderDetailPage.ETAText}>
-                                    Estimated to arrive between {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.max)}
+                                Expect arrival between {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.max)}
                                 </Text>
                              </View>;
                 }
@@ -610,8 +610,8 @@ var styleOrderDetailPage = StyleSheet.create({
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
         flex:1,
-        borderColor:'#F5F5F5',
-        borderBottomWidth:5,
+        borderColor:'#EAEAEA',
+        borderTopWidth:1,
     },
     dishPhoto:{
         width:windowWidth*0.344,
@@ -905,7 +905,7 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     notesToChefText:{
         fontSize:windowHeight/47.33,
-        color:'#9B9B9B',
+        color:'#979797',
         alignSelf:'center',  
     },
     notesToChefButtonView:{

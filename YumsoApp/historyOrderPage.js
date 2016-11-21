@@ -38,11 +38,14 @@ class HistoryOrderPage extends Component {
         var routeStack = this.props.navigator.state.routeStack;
         let eater = routeStack[routeStack.length-1].passProps.eater;      
         this.state = {
-            dataSource: ds.cloneWithRows([]),
+            dataSourceOrderPending: ds.cloneWithRows([]),
+            dataSourceNeedReview: ds.cloneWithRows([]),
+            dataSourceCompleted: ds.cloneWithRows([]),
             showProgress:false,
             showCommentBox:false,
             showNetworkUnavailableScreen:false,
-            eater:eater
+            eater:eater,
+            orderListSelect:'',
         };
         this.responseHandler = function (response, msg) {
             if(response.statusCode==400){
@@ -108,34 +111,77 @@ class HistoryOrderPage extends Component {
         if (pastOneWeekOrder && pastOneWeekOrder.data && pastOneWeekComment && pastOneWeekComment.data){
             let orders = pastOneWeekOrder.data.orders;
             let comments = pastOneWeekComment.data.comments;
-            console.log(orders); 
-            console.log(comments);
+            //console.log(orders); 
             for(var comment of comments){
                 for(var order of orders){
                     if(order.orderId==comment.orderId){
-                        order.comment = comment;
+                       order.comment = comment;
                     }
                 }
             }
-            this.setState({dataSource: this.state.dataSource.cloneWithRows(orders), showProgress:false, orders:orders});
+
+            var orderPending = [];
+            var orderNeedReview = [];
+            var orderCompleted = [];
+            for(var oneOrder of orders){
+                if(oneOrder.orderStatus.toLowerCase() == 'new' || oneOrder.orderStatus.toLowerCase() == 'delivering'){
+                   orderPending.push(oneOrder);
+                }else if(oneOrder.orderStatus.toLowerCase() == 'delivered' && new Date().getTime()-oneOrder.orderDeliverTime <= 7*24*60*60*1000 && !oneOrder.comment){
+                   orderNeedReview.push(oneOrder);
+                }else{
+                   orderCompleted.push(oneOrder);
+                }
+            }
+            this.setState({
+                           dataSourceOrderPending: this.state.dataSourceOrderPending.cloneWithRows(orderPending),
+                           dataSourceNeedReview: this.state.dataSourceNeedReview.cloneWithRows(orderNeedReview),
+                           dataSourceCompleted: this.state.dataSourceCompleted.cloneWithRows(orderCompleted),
+                           showProgress:false, 
+                           orderPending:orderPending,
+                           orderNeedReview:orderNeedReview,
+                           orderCompleted:orderCompleted
+                         });
+            
+            if(orderPending.length>0){
+               this.setState({orderListSelect:'orderPending'});
+            }else if(orderNeedReview.length>0){
+               this.setState({orderListSelect:'orderNeedReview'});
+            }else{
+               this.setState({orderListSelect:'orderCompleted'});                 
+            }
         }
     }
      
     
     renderRow(order){
         if(order.orderStatus.toLowerCase() == 'delivered'){
-          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
-          if(new Date().getTime()-order.orderDeliverTime <= 7*24*60*60*1000 && !order.comment){
-             var action = "Review Order >"
-          }else{
-             var action = "Order Details >"
-          }
+           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
+           if(new Date().getTime()-order.orderDeliverTime <= 7*24*60*60*1000 && !order.comment){
+              var action = "Review Order >"
+           }else{
+              var action = "Order Details >"
+           }
         }else if(order.orderStatus.toLowerCase() == 'new'){
-          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Will be out for delivery at {dateRender.renderDate2(order.orderDeliverTime)}</Text>
+          if(order.estimatedDeliverTimeRange){
+             var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>
+                                  Expect arrival between {dateRender.formatTime2StringShort(order.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(order.estimatedDeliverTimeRange.max)}
+                                   </Text>
+          }else{
+             var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Will be out for delivery at {dateRender.renderDate2(order.orderDeliverTime)}</Text>
+          }
+          
           var action = "Track Order >"
         }else if(order.orderStatus.toLowerCase() == 'delivering'){
+          if(order.estimatedDeliverTimeRange){
+             var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>
+                                   Expect arrival between {dateRender.formatTime2StringShort(order.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(order.estimatedDeliverTimeRange.max)}
+                                   </Text>
+          }
           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivering</Text>
           var action = "Track Order >"
+        }else if(order.orderStatus.toLowerCase() == 'cancelled'){
+          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Cancelled at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
+          var action = "Order Details >"
         }
 
         if(order.shopPictures && order.shopPictures[0]){
@@ -144,19 +190,21 @@ class HistoryOrderPage extends Component {
            var imageSrc = defaultShopPic;
         }
      
-        return  (<TouchableHighlight onPress={()=>this.navigateToOrderDetailPage(order)}> 
-                    <View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
-                        <Image source={imageSrc} style={styleHistoryOrderPage.shopPhoto}/>
-                        <View style={styleHistoryOrderPage.orderInfoView}>
-                            <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
-                            {orderStatusText}           
-                            <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
-                            <View style={styleHistoryOrderPage.orderDetailsClickableView}>
-                            <Text style={styleHistoryOrderPage.orderDetailsClickable}>{action}</Text>                                                                               
+        return  (
+                    <TouchableHighlight onPress={()=>this.navigateToOrderDetailPage(order)}> 
+                        <View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
+                            <Image source={imageSrc} style={styleHistoryOrderPage.shopPhoto}/>
+                            <View style={styleHistoryOrderPage.orderInfoView}>
+                                <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
+                                {orderStatusText}           
+                                <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
+                                <View style={styleHistoryOrderPage.orderDetailsClickableView}>
+                                   <Text style={styleHistoryOrderPage.orderDetailsClickable}>{action}</Text>                                                                               
+                                </View>
                             </View>
                         </View>
-                    </View>
-                 </TouchableHighlight>);
+                    </TouchableHighlight>
+                 );
     }
         
     render() {
@@ -167,23 +215,40 @@ class HistoryOrderPage extends Component {
                                 </View>;  
         }
                 
-        if(this.state.orders && this.state.orders.length==0){
-          var  noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order recently, come and order some!</Text>
-        }
-
         var networkUnavailableView = null;
-        var commentListView = null;
+        var orderListView = null;
         if(this.state.showNetworkUnavailableScreen){
            networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchOrderAndComments.bind(this)} />
         }else{
-           commentListView = <RefreshableListView
-                              dataSource = {this.state.dataSource}
-                              renderRow={this.renderRow.bind(this) }
-                              loadData={this.fetchOrderAndComments.bind(this)}/>
+           if(this.state.orderListSelect=='orderPending'){
+              if(this.state.orderPending && this.state.orderPending.length==0){
+                 var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order pending.</Text>
+              }
+              orderListView = <RefreshableListView
+                               dataSource = {this.state.dataSourceOrderPending}
+                               renderRow={this.renderRow.bind(this) }
+                               loadData={this.fetchOrderAndComments.bind(this)}/>
+           }else if(this.state.orderListSelect=='orderNeedReview'){
+              if(this.state.orderNeedReview && this.state.orderNeedReview.length==0){
+                 var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order needs review.</Text>
+              }
+              orderListView = <RefreshableListView
+                               dataSource = {this.state.dataSourceNeedReview}
+                               renderRow={this.renderRow.bind(this) }
+                               loadData={this.fetchOrderAndComments.bind(this)}/>
+           }else{
+              if(this.state.orderCompleted && this.state.orderCompleted.length==0){
+                 var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order completed.</Text>
+              }
+              orderListView = <RefreshableListView
+                               dataSource = {this.state.dataSourceCompleted}
+                               renderRow={this.renderRow.bind(this) }
+                               loadData={this.fetchOrderAndComments.bind(this)}/>
+           }
         }
         
         return (
-            <View style={styles.container}>
+            <View style={styles.greyContainer}>
                <View style={styles.headerBannerView}>    
                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
                       <View style={styles.backButtonView}>
@@ -196,9 +261,24 @@ class HistoryOrderPage extends Component {
                    <View style={styles.headerRightView}>
                    </View>
                </View>
+               <View style={styleHistoryOrderPage.orderListSelectView}>
+                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderPending') } 
+                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',backgroundColor:this.renderOrderListOnSelectColor('orderPending')}}>
+                      <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Pending</Text>
+                   </TouchableHighlight>
+                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderNeedReview') } 
+                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',borderColor:'#F5F5F5', borderLeftWidth:1,borderRightWidth:1,
+                    backgroundColor:this.renderOrderListOnSelectColor('orderNeedReview')}}>
+                      <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Need Review</Text>
+                   </TouchableHighlight>
+                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderCompleted') }
+                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',backgroundColor:this.renderOrderListOnSelectColor('orderCompleted')}}>
+                      <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Completed</Text>
+                   </TouchableHighlight>
+                </View>
                {networkUnavailableView}
                {noOrderText}
-               {commentListView}
+               {orderListView}
                {loadingSpinnerView}                   
             </View>
         );
@@ -206,6 +286,20 @@ class HistoryOrderPage extends Component {
 
     navigateBackToChefList() {
         this.props.navigator.pop();
+    }
+
+    toggleOrderList(orderListSelectName){
+        if(orderListSelectName!=this.state.orderListSelect){
+           this.setState({orderListSelect:orderListSelectName});
+        }
+    }
+
+    renderOrderListOnSelectColor(orderListSelectName){
+         if(this.state.orderListSelect == orderListSelectName){
+             return '#F5F5F5';
+         }else{
+             return '#FFFFFF';
+         }
     }
 
     navigateToOrderDetailPage(order){
@@ -230,12 +324,12 @@ var styleHistoryOrderPage = StyleSheet.create({
         borderBottomWidth:5,
     },
     shopPhoto:{
-        width:windowWidth*0.344,
-        height:windowWidth*0.344,
+        width:windowWidth*0.333,
+        height:windowWidth*0.333,
     },
     orderInfoView:{
         flex:1,
-        height:windowWidth*0.344,
+        height:windowWidth*0.333,
         flexDirection:'column',
         paddingLeft:windowWidth*0.04,
         paddingRight:windowWidth*0.048,
@@ -269,6 +363,15 @@ var styleHistoryOrderPage = StyleSheet.create({
         color:'#F8C84E',
         alignSelf:'flex-end',
     },
+    orderListSelectView:{
+        height:windowHeight/14.72,
+        flexDirection:'row',
+    },
+    oneOrderListSelectText:{
+        fontSize:windowHeight/40.88,
+        color:'#4A4A4A',
+        fontWeight:'500',
+    }
 });    
 
 module.exports = HistoryOrderPage;

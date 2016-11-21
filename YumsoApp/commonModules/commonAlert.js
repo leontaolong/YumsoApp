@@ -10,6 +10,8 @@ class CommonAlert {
     networkError(err){
         if(err.statusCode == 412){
            this.appVersionError();
+        }else if(err.statusCode == 500){
+           this.serverSideError(err);
         }else{
           var title = 'Network Error';
           var text = err.message;
@@ -29,9 +31,14 @@ class CommonAlert {
         Alert.alert(title, text,[ { text: 'OK' }]);
     }
 
-    serverSideError(){
-        var title = 'Server Error';
-        var text = 'Server side error. Please try again later.';
+    serverSideError(errorObject){
+        var title = 'Server Side Error';
+        if(errorObject.data && errorObject.data.exceptionId){
+           var text = '[ExceptionId] ' + errorObject.data.exceptionId;
+           if(errorObject.data.err){
+              text = text + ' [Error] ' + JSON.stringify(errorObject.data.err);
+           }
+        }
         Alert.alert(title, text,[ { text: 'OK' }]);
     }
 }

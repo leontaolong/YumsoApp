@@ -4,6 +4,7 @@ var config = require('./config');
 var AuthService = require('./authService');
 var backIcon = require('./icons/icon-back.png');
 var commonAlert = require('./commonModules/commonAlert');
+var commonWidget = require('./commonModules/commonWidget');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -20,6 +21,7 @@ import React, {
   TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
+  PushNotificationIOS,
   Alert
 } from 'react-native';
 
@@ -29,13 +31,26 @@ class PaymentPage extends Component {
         let routeStack = props.navigator.state.routeStack;
         let orderDetail = routeStack[routeStack.length-1].passProps.orderDetail;
         let eater = routeStack[routeStack.length-1].passProps.eater;
+        let shoppingCart = routeStack[routeStack.length-1].passProps.shoppingCart;        
+        let selectedTime = routeStack[routeStack.length-1].passProps.selectedTime;
+        let scheduleMapping = routeStack[routeStack.length-1].passProps.scheduleMapping;
         this.shoppingCartContext = routeStack[routeStack.length-1].passProps.context;
         this.state = {
             showProgress:false,
             orderDetail:orderDetail,
-            eater:eater
+            eater:eater,
+            shoppingCart:shoppingCart,
+            selectedTime:selectedTime,
+            scheduleMapping:scheduleMapping,
         };
         this.client = new HttpsClient(config.baseUrl, true);
+        //console.log("eater: "+this.state.eater);
+    }
+
+    async componentWillMount(){
+        this.registerNotification().then(function (token) {
+            return AuthService.updateCacheDeviceToken(token);
+        });
     }
     
     render() {
@@ -98,9 +113,11 @@ class PaymentPage extends Component {
               </View>);
     }
       
-    confirm(){
+    async confirm(){
+        let deviceToken = await AuthService.getDeviceTokenFromCache();
+        this.setState({deviceToken:deviceToken})
         Alert.alert(
-            'Order placement',
+            'Place Order',
             'Ready to place the order? Your total is $'+this.state.orderDetail.price.grandTotal,
             [
                 { text: 'Pay', onPress: () => this.createAnOrder() },              
@@ -109,14 +126,32 @@ class PaymentPage extends Component {
         );    
     }  
     
+    registerNotification() {
+        return new Promise((resolve,reject) => {
+            PushNotificationIOS.addEventListener('register', function(token){
+               if(token){
+                  console.log('You are registered and the device token is: ',token);
+                  resolve(token);
+               }else{
+                  console.log('Failed registering, no token');
+                  reject(new Error('Failed registering notification service'))
+               }  
+            });
+            PushNotificationIOS.requestPermissions();
+        });
+    }
+
     createAnOrder(){
         if(!this.state.paymentOption){
             Alert.alert('Warning','Please select a payment option.',[{ text: 'OK' }]);      
             return; 
         }
-        
+        if(commonWidget.alertWhenGracePeriodTimeOut(this.state.shoppingCart,this.state.scheduleMapping,this.state.selectedTime)){
+           return;
+        }
+        console.log('deviceToken will be sent: '+ this.state.deviceToken);
         this.setState({showProgress:true});
-        return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail, paymentOption: this.state.paymentOption})
+        return this.client.postWithAuth(config.createOrderEndpoint, {orderDetail:this.state.orderDetail, paymentOption: this.state.paymentOption, deviceToken:this.state.deviceToken})
          .then((response)=>{
             if(response.statusCode==400){
                  Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
@@ -164,7 +199,7 @@ class PaymentPage extends Component {
                 }                    
             }else{
                 this.setState({showProgress:false});
-                Alert.alert('Failed creating order','Network or server error',[{ text: 'OK' }]);            
+                commonAlert.networkError(response);          
             }
          }).catch((err)=>{
                this.setState({showProgress: false});

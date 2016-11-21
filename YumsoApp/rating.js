@@ -24,40 +24,40 @@ var windowWidth = Dimensions.get('window').width;
     renderRating(rating){
           var ratingIconsView = null;
           var starNumbers = Math.round(rating/0.5)/2;
-
+          var starSize = windowWidth/27;
           switch (starNumbers) {
               case 0:
-                  ratingIconsView = <Image source={rating0star} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating0star} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               case 0.5:
-                  ratingIconsView = <Image source={ratingHalfstar} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={ratingHalfstar} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               case 1:
-                  ratingIconsView = <Image source={rating1star} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating1star} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               case 1.5:
-                  ratingIconsView = <Image source={rating1Halfstar} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating1Halfstar} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               case 2:
-                  ratingIconsView = <Image source={rating2star} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating2star} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               case 2.5:
-                  ratingIconsView = <Image source={rating2Halfstar} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating2Halfstar} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               case 3:
-                  ratingIconsView = <Image source={rating3star} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating3star} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               case 3.5:
-                  ratingIconsView = <Image source={rating3Halfstar} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating3Halfstar} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               case 4:
-                  ratingIconsView = <Image source={rating4star} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating4star} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               case 4.5:
-                  ratingIconsView = <Image source={rating4Halfstar} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating4Halfstar} style={{ width: 6*starSize, height:starSize }}/>
                   break;
               case 5:
-                  ratingIconsView = <Image source={rating5star} style={{ width: 6*windowWidth/32, height: windowWidth/32 }}/>
+                  ratingIconsView = <Image source={rating5star} style={{ width: 6*starSize, height: starSize }}/>
                   break;
               default:
                   break;

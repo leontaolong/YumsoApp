@@ -267,7 +267,7 @@ class ShoppingCartPage extends Component {
                             </TouchableHighlight>
                             <View style={styleShoppingCartPage.ETATextView}>
                                 <Text style={styleShoppingCartPage.ETAText}>
-                                   Estimated to arrive between {dateRender.formatTime2StringShort(this.state.quotedOrder.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(this.state.quotedOrder.estimatedDeliverTimeRange.max)}
+                                Expect arrival between {dateRender.formatTime2StringShort(this.state.quotedOrder.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(this.state.quotedOrder.estimatedDeliverTimeRange.max)}
                                 </Text>
                             </View>
                         </View>                      
@@ -330,7 +330,7 @@ class ShoppingCartPage extends Component {
                     <View style={styles.headerRightView}>
                     </View>
                </View>
-               <ListView style={styles.dishListView} ref="listView"
+               <ListView style={styles.dishListViewWhite} ref="listView"
                                 dataSource = {this.state.dataSource}
                                 renderHeader={this.renderHeader.bind(this)}
                                 renderRow={this.renderRow.bind(this) } 
@@ -496,6 +496,10 @@ class ShoppingCartPage extends Component {
            Alert.alert('Warning','You do not have any item in shopping cart',[{ text: 'OK' }]);         
            return; 
         }
+        //To handle the case when the eater step into the shop before latest order time but try to add after latest order time. 
+        if(commonWidget.alertWhenGracePeriodTimeOut(this.state.shoppingCart,this.state.scheduleMapping,this.state.selectedTime)){
+           return;
+        }
         this.setState({showProgress:true});
         var orderList = {};
         for (var cartItemKey in this.state.shoppingCart[this.state.selectedTime]) {
@@ -569,6 +573,11 @@ class ShoppingCartPage extends Component {
         //     Alert.alert('Warning','You do not have any item in your shopping cart',[{ text: 'OK' }]);
         //     return;
         // }
+        
+        //To handle the case when the eater step into the shop before latest order time but try to add after latest order time. 
+        if(commonWidget.alertWhenGracePeriodTimeOut(this.state.shoppingCart,this.state.scheduleMapping,this.state.selectedTime)){
+           return;
+        }
         let eater = this.state.eater;
         if(!eater){
             eater = await AuthService.getEater();
@@ -613,7 +622,10 @@ class ShoppingCartPage extends Component {
             passProps:{
                 orderDetail: order,
                 eater: this.state.eater,
-                context:this
+                context:this,
+                shoppingCart:this.state.shoppingCart,
+                selectedTime:this.state.selectedTime,
+                scheduleMapping: this.state.scheduleMapping,
             }
         });    
     }
@@ -743,7 +755,8 @@ var styleShoppingCartPage = StyleSheet.create({
         height:30,
         flexDirection:'row',
         borderColor:'#9B9B9B',
-        borderWidth:1,
+        backgroundColor:'#F5F5F5',
+        borderWidth:0,
         borderRadius:5,
         marginTop:windowHeight/147.2,
         width:windowWidth*0.4,
@@ -881,7 +894,8 @@ var styleShoppingCartPage = StyleSheet.create({
         height:28,
         flexDirection:'row',
         borderColor:'#F2F2F2',
-        borderWidth:1,
+        backgroundColor:'#F5F5F5',
+        borderWidth:0,
         borderRadius:5,
         flex:0.52,
         alignSelf:'center',

@@ -37,13 +37,6 @@ class SignUpPage extends Component {
     }
     
     render() {
-            var passwordRequirmentText = null;
-            // if(this.state.showPasswordRequirment){
-            //   var passwordRequirmentText = <Text style={styles.passwordRequirementText}>
-            //                                 Your password should contain 7-12 characters with at least one number,one lower case letter and one upper case letter
-            //                                </Text>;
-            // }
-
             var loadingSpinnerView = null;
             if (this.state.showProgress) {
                 loadingSpinnerView =<View style={styles.loaderView}>

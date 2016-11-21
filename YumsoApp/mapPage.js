@@ -138,9 +138,10 @@ class MapPage extends Component {
 
             var addressBookClickableView = null;
             if(this.showHouseIcon){
-               addressBookClickableView = <TouchableHighlight onPress={() => this.onPressHouseIcon()} style={styleMapPage.addressBookClickableView} underlayColor={'#F5F5F5'}>
+               addressBookClickableView = [(<Text key={'separator'} style={{fontSize:windowHeight/30.66,alignSelf:'center',color:'#D7D7D7'}}>|</Text>),
+                                           (<TouchableHighlight key={'addressBookButton'}  onPress={() => this.onPressHouseIcon()} style={styleMapPage.addressBookClickableView} underlayColor={'#F5F5F5'}>
                                               <Text style={styleMapPage.currentLocationClickableText}>Address Book</Text>
-                                          </TouchableHighlight>
+                                            </TouchableHighlight>)];
             }
                                                 
             return (
@@ -652,8 +653,9 @@ var styleMapPage = StyleSheet.create({
     },
     locationSearchInput:{
         flex:0.9,
-        fontSize:windowHeight/43.2,
-        color:'#696969',
+        fontSize:windowHeight/52.57,
+        color:'#4A4A4A',
+        fontWeight:'400',
         textAlign:'left',
     },
     currentLocationClickableView:{
@@ -661,21 +663,23 @@ var styleMapPage = StyleSheet.create({
         flexDirection:'row',
         width:windowWidth*0.5,
         height:windowWidth*0.1,
-        justifyContent:'center',
+        justifyContent:'flex-end',
+        alignItems:'center',
+        paddingRight:windowWidth/10.35,
     },
     addressBookClickableView:{
         flex:0.5,
         flexDirection:'row',
         width:windowWidth*0.5,
         height:windowWidth*0.1,
-        justifyContent:'center',
+        justifyContent:'flex-start',
+        alignItems:'center',
+        paddingLeft:windowWidth/10.35,
     },
     currentLocationClickableText:{
-        fontSize:windowHeight/36.8,
+        fontSize:windowHeight/46.0,
         color:'#7BCBBE',
-        fontWeight:'400',
-        marginTop:windowHeight/105.14,
-        marginLeft:windowWidth/207.0,
+        fontWeight:'500',
     },
     possibleAddressText:{
         fontSize:windowHeight/36.8,
@@ -743,23 +747,30 @@ var styleMapPage = StyleSheet.create({
     },
     oneAddressIconTitleView:{
         flex:0.3,
-        flexDirection:'row',        
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'flex-start',        
     },
     oneAddressIcon:{
-        width:windowHeight/16.675,
-        height:windowHeight/16.675,
+        width:windowHeight/25,
+        height:windowHeight/25,
+        marginTop:windowHeight/80,
     },
     oneAddressTitleText:{
-        marginTop:windowHeight/66.7,
+        marginTop:windowHeight/55.583,
         fontSize:windowHeight/39.24,
     },
     oneAddressTextView:{
         flex:0.7,
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'flex-start', 
     },
     oneAddressText:{
         marginTop:windowHeight/55.583,
         fontSize:windowHeight/39.24,
-        textAlign:'justify',
+        flexWrap:'wrap',
+        flex:1
     },
     aptNumberView:{
         backgroundColor:'#fff', 
@@ -775,16 +786,18 @@ var styleMapPage = StyleSheet.create({
         alignSelf:'center',
         fontSize:windowHeight/41.69,
         color:'#4A4A4A',
+        fontWeight:'400',
     },
     aptNumberViewInput:{
-        borderWidth:1,
         width:windowWidth*0.27,
         height:windowHeight*0.044,
         alignSelf:'center',
         paddingHorizontal:7,
         fontSize:windowHeight/47.64,
+        color:'#4A4A4A',
+        fontWeight:'400',
+        backgroundColor:'#F5F5F5',
         borderRadius:6,
-        borderColor:'#9B9B9B',
     },
 })    
 

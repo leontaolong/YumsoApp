@@ -41,11 +41,11 @@ class DateRender {
             var d = new Date(time);
             var hh = d.getHours();
             var m = d.getMinutes();
-            var dd = "AM";
+            var dd = " AM";
             var h = hh;
             if (h >= 12) {
                 h = hh - 12;
-                dd = "PM";
+                dd = " PM";
             }
             if (h == 0) {
                 h = 12;
@@ -82,7 +82,7 @@ class DateRender {
     }
 
     renderTime1(timeInMilliseconds) {
-        return timeInMilliseconds/(60*1000)<60 ? timeInMilliseconds/(60*1000)+" min": timeInMilliseconds/(60*60*1000)+" hr";
+        return timeInMilliseconds/(60*1000)<=60 ? timeInMilliseconds/(60*1000)+" min": timeInMilliseconds/(60*60*1000)+" hours";
     }
 }
 
