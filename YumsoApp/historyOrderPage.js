@@ -9,7 +9,9 @@ var backIcon = require('./icons/icon-back.png');
 var defaultShopPic = require('./icons/defaultAvatar.jpg');
 var RefreshableListView = require('react-native-refreshable-listview');
 var commonAlert = require('./commonModules/commonAlert');
+var commonWidget = require('./commonModules/commonWidget');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 
 import React, {
   Component,
@@ -19,6 +21,7 @@ import React, {
   Image,
   ListView,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert,
@@ -45,7 +48,7 @@ class HistoryOrderPage extends Component {
             showCommentBox:false,
             showNetworkUnavailableScreen:false,
             eater:eater,
-            orderListSelect:'',
+            orderListSelect:'orderCompleted',
         };
         this.responseHandler = function (response, msg) {
             if(response.statusCode==400){
@@ -124,9 +127,9 @@ class HistoryOrderPage extends Component {
             var orderNeedReview = [];
             var orderCompleted = [];
             for(var oneOrder of orders){
-                if(oneOrder.orderStatus.toLowerCase() == 'new' || oneOrder.orderStatus.toLowerCase() == 'delivering'){
+                if(commonWidget.isOrderPending(oneOrder)){
                    orderPending.push(oneOrder);
-                }else if(oneOrder.orderStatus.toLowerCase() == 'delivered' && new Date().getTime()-oneOrder.orderDeliverTime <= 7*24*60*60*1000 && !oneOrder.comment){
+                }else if(commonWidget.isOrderCommentable(oneOrder)){
                    orderNeedReview.push(oneOrder);
                 }else{
                    orderCompleted.push(oneOrder);
@@ -139,49 +142,34 @@ class HistoryOrderPage extends Component {
                            showProgress:false, 
                            orderPending:orderPending,
                            orderNeedReview:orderNeedReview,
-                           orderCompleted:orderCompleted
+                           orderCompleted:orderCompleted,
+                           orders:orders,
                          });
-            
-            if(orderPending.length>0){
-               this.setState({orderListSelect:'orderPending'});
-            }else if(orderNeedReview.length>0){
-               this.setState({orderListSelect:'orderNeedReview'});
-            }else{
-               this.setState({orderListSelect:'orderCompleted'});                 
-            }
         }
     }
      
     
     renderRow(order){
-        if(order.orderStatus.toLowerCase() == 'delivered'){
-           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivered at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
-           if(new Date().getTime()-order.orderDeliverTime <= 7*24*60*60*1000 && !order.comment){
-              var action = "Review Order >"
+        if(commonWidget.isOrderCommentable(order)){
+           var action = "Review Order";
+        }else if(commonWidget.isOrderPending(order)){
+           if(order.orderStatus=='new'){
+              var action = "New Order"
            }else{
-              var action = "Order Details >"
+              var action = "Delivering"
            }
-        }else if(order.orderStatus.toLowerCase() == 'new'){
-          if(order.estimatedDeliverTimeRange){
-             var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>
-                                  Expect arrival between {dateRender.formatTime2StringShort(order.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(order.estimatedDeliverTimeRange.max)}
-                                   </Text>
-          }else{
-             var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Will be out for delivery at {dateRender.renderDate2(order.orderDeliverTime)}</Text>
-          }
-          
-          var action = "Track Order >"
-        }else if(order.orderStatus.toLowerCase() == 'delivering'){
-          if(order.estimatedDeliverTimeRange){
-             var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>
-                                   Expect arrival between {dateRender.formatTime2StringShort(order.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(order.estimatedDeliverTimeRange.max)}
-                                   </Text>
-          }
-          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Delivering</Text>
-          var action = "Track Order >"
-        }else if(order.orderStatus.toLowerCase() == 'cancelled'){
-          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>Cancelled at {dateRender.renderDate2(order.orderStatusModifiedTime)}</Text>
-          var action = "Order Details >"
+        }else{ 
+           var action = "See Details"
+        }
+
+        if(order.orderStatus.toLowerCase() == 'cancelled'){
+           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>
+                                 Cancelled
+                                 </Text>
+        }else{
+           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>
+                                 Placed at {dateRender.renderDate2(order.orderCreatedTime)}
+                                 </Text>
         }
 
         if(order.shopPictures && order.shopPictures[0]){
@@ -191,11 +179,14 @@ class HistoryOrderPage extends Component {
         }
      
         return  (
-                    <TouchableHighlight onPress={()=>this.navigateToOrderDetailPage(order)}> 
+                    <TouchableOpacity onPress={()=>this.navigateToOrderDetailPage(order)} activeOpacity={0.7}> 
                         <View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
                             <Image source={imageSrc} style={styleHistoryOrderPage.shopPhoto}/>
                             <View style={styleHistoryOrderPage.orderInfoView}>
-                                <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>                                                          
+                                <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text> 
+                                <Text style={styleHistoryOrderPage.completeTimeText}>
+                                OrderId: {order.orderIdShort}
+                                </Text>                                                         
                                 {orderStatusText}           
                                 <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
                                 <View style={styleHistoryOrderPage.orderDetailsClickableView}>
@@ -203,47 +194,50 @@ class HistoryOrderPage extends Component {
                                 </View>
                             </View>
                         </View>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                  );
     }
         
     render() {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                </View>;  
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>  
         }
-                
-        var networkUnavailableView = null;
         var orderListView = null;
+        var networkUnavailableView = null;
         if(this.state.showNetworkUnavailableScreen){
            networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchOrderAndComments.bind(this)} />
         }else{
+           var orderPendingListView = <RefreshableListView
+                                            dataSource = {this.state.dataSourceOrderPending}
+                                            renderRow={this.renderRow.bind(this) }
+                                            loadData={this.fetchOrderAndComments.bind(this)}/>
+            
+           var orderNeedReviewListView = <RefreshableListView
+                                            dataSource = {this.state.dataSourceNeedReview}
+                                            renderRow={this.renderRow.bind(this) }
+                                            loadData={this.fetchOrderAndComments.bind(this)}/>
+           
+           var orderCompletedListView = <RefreshableListView
+                                            dataSource = {this.state.dataSourceCompleted}
+                                            renderRow={this.renderRow.bind(this) }
+                                            loadData={this.fetchOrderAndComments.bind(this)}/>
+
            if(this.state.orderListSelect=='orderPending'){
               if(this.state.orderPending && this.state.orderPending.length==0){
                  var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order pending.</Text>
               }
-              orderListView = <RefreshableListView
-                               dataSource = {this.state.dataSourceOrderPending}
-                               renderRow={this.renderRow.bind(this) }
-                               loadData={this.fetchOrderAndComments.bind(this)}/>
+              orderListView = orderPendingListView;
            }else if(this.state.orderListSelect=='orderNeedReview'){
               if(this.state.orderNeedReview && this.state.orderNeedReview.length==0){
                  var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order needs review.</Text>
               }
-              orderListView = <RefreshableListView
-                               dataSource = {this.state.dataSourceNeedReview}
-                               renderRow={this.renderRow.bind(this) }
-                               loadData={this.fetchOrderAndComments.bind(this)}/>
-           }else{
+              orderListView = orderNeedReviewListView;
+            }else{
               if(this.state.orderCompleted && this.state.orderCompleted.length==0){
                  var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order completed.</Text>
               }
-              orderListView = <RefreshableListView
-                               dataSource = {this.state.dataSourceCompleted}
-                               renderRow={this.renderRow.bind(this) }
-                               loadData={this.fetchOrderAndComments.bind(this)}/>
+              orderListView = orderCompletedListView;
            }
         }
         
@@ -296,10 +290,43 @@ class HistoryOrderPage extends Component {
 
     renderOrderListOnSelectColor(orderListSelectName){
          if(this.state.orderListSelect == orderListSelectName){
-             return '#F5F5F5';
-         }else{
              return '#FFFFFF';
+         }else{
+             return '#F5F5F5';
          }
+    }
+
+    updateOneOrder(order){
+        for(oneOrder of this.state.orders){
+            if(order.orderId == oneOrder.orderId){
+               oneOrder['orderStatus'] = order.orderStatus;
+               oneOrder['orderDeliverTime'] = order.orderDeliverTime;
+               oneOrder['comment'] = order.comment;
+               break;
+            }
+        }
+
+        let orderPending = [];
+        let orderNeedReview = [];
+        let orderCompleted = [];
+        for(var oneOrder of this.state.orders){
+            if(commonWidget.isOrderPending(oneOrder)){
+               orderPending.push(oneOrder);
+            }else if(commonWidget.isOrderCommentable(oneOrder)){
+               orderNeedReview.push(oneOrder);
+            }else{
+               orderCompleted.push(oneOrder);
+            }
+        }
+        this.setState({
+                           dataSourceOrderPending: new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2}).cloneWithRows(orderPending),
+                           dataSourceNeedReview: new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2}).cloneWithRows(orderNeedReview),
+                           dataSourceCompleted: new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2}).cloneWithRows(orderCompleted),
+                           showProgress:false, 
+                           orderPending:orderPending,
+                           orderNeedReview:orderNeedReview,
+                           orderCompleted:orderCompleted,
+                     });
     }
 
     navigateToOrderDetailPage(order){
@@ -309,7 +336,7 @@ class HistoryOrderPage extends Component {
             passProps:{
                 eater:this.state.eater,
                 order:order,
-                callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
+                callback: this.updateOneOrder.bind(this) //todo: force rerender or just setState
             }
         });    
     }
@@ -350,7 +377,7 @@ var styleHistoryOrderPage = StyleSheet.create({
     completeTimeText:{
         fontSize:windowHeight/51.636,
         color:'#4A4A4A',
-        marginTop:windowHeight*0.0150,
+        marginTop:windowHeight*0.009,
     },
     orderDetailsClickableView:{
         flexDirection:'row',

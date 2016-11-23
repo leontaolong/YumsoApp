@@ -7,6 +7,8 @@ var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
 var commonAlert = require('./commonModules/commonAlert');
 var validator = require('validator');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -39,9 +41,7 @@ class SignUpPage extends Component {
     render() {
             var loadingSpinnerView = null;
             if (this.state.showProgress) {
-                loadingSpinnerView =<View style={styles.loaderView}>
-                                        <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                    </View>;  
+                loadingSpinnerView =<LoadingSpinnerViewFullScreen/>;  
             }
             
             return (//TODO: i agree terms and conditions.
@@ -237,10 +237,12 @@ var styleSignUpPage = StyleSheet.create({
     },
     legalText:{
       fontSize:windowHeight/47.64,
+      fontWeight:'400',
       color:'#fff',
     },
     legalTextClickable:{
       fontSize:windowHeight/47.64,
+      fontWeight:'400',
       color:'#FFCC33',
     },
     signUpButtonText:{

@@ -15,6 +15,8 @@ var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var commonAlert = require('./commonModules/commonAlert');
 var commonWidget = require('./commonModules/commonWidget');
 var validator = require('validator');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -294,9 +296,7 @@ class ShoppingCartPage extends Component {
     render() {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                </View>;  
+            loadingSpinnerView =<LoadingSpinnerViewFullScreen/>;  
         }
         if(this.state.selectDeliveryAddress){
             return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} specificAddressMode={true} currentAddress={this.state.currentLocation} showHouseIcon={true}/>);   

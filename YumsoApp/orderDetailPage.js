@@ -7,11 +7,14 @@ var AuthService = require('./authService');
 var backIcon = require('./icons/icon-back.png');
 var ratingIconGrey = require('./icons/icon-rating-grey.png');
 var ratingIconOrange = require('./icons/icon-rating-orange.png');
+var refreshIcon = require('./icons/icon-refresh-orange.png');
 var deleteBannerIcon = require('./icons/icon-x.png');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var commonAlert = require('./commonModules/commonAlert');
 var RefreshableListView = require('react-native-refreshable-listview');
 var commonWidget = require('./commonModules/commonWidget');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -48,6 +51,7 @@ class OrderDetailPage extends Component {
             dataSource: ds.cloneWithRows(Object.values(order.orderList)),
             showProgress:false,
             order:order,
+            orderStatus:order.orderStatus,
             starRating:order.comment? order.comment.starRating : '',
             comment:order.comment? order.comment.eaterComment : '',            
             commentTime:order.comment? order.comment.eaterCommentTime : '',
@@ -80,6 +84,26 @@ class OrderDetailPage extends Component {
                  Alert.alert( 'Network or server error', 'Please try again later',[ { text: 'OK' }]);   
             }
         };
+    }    
+    async fetchOrderDetail(){
+        this.setState({showProgress: true});
+        try{
+          var response = await this.client.getWithAuth(config.getOneOrderEndpoint+this.state.order.chefId+'/'+this.state.order.orderId);
+          if (response && response.statusCode != 200 && response.statusCode != 202) {
+              this.setState({showProgress:false});
+              return this.responseHandler(response);
+          }
+          if (response && response.data && response.data.order){
+              this.setState({showProgress:false,showNetworkUnavailableScreen:false});
+              this.state.order['orderStatus']=response.data.order.orderStatus;
+              this.state.order['orderDeliverTime']=response.data.order.orderDeliverTime;
+              this.setState({dataSource:new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2}).cloneWithRows(this.state.order.orderList)});
+          }
+        }catch(err){
+          this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+          commonAlert.networkError(err);
+          return;
+        }
     }
             
     renderRow(orderItem){
@@ -107,16 +131,15 @@ class OrderDetailPage extends Component {
         var ETAView=null;
         if(this.state.showDeliverStatusView){  
            if(this.state.order.orderStatus.toLowerCase()=='delivered'){
-              var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
-                                        <Text style={styleOrderDetailPage.deliverTimeText}>Your order was delivered at {dateRender.renderDate2(this.state.order.orderStatusModifiedTime)}</Text>
-                                        <TouchableHighlight style={styleOrderDetailPage.deleteBannerIconView} underlayColor={'transparent'} onPress={()=>this.setState({showDeliverStatusView:false})}>
-                                           <Image source={deleteBannerIcon} style={styleOrderDetailPage.deleteBannerIcon} />
-                                        </TouchableHighlight>
+              var deliverTimeView = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverTimeView}>
+                                        <Text style={styleOrderDetailPage.deliverTimeText}>
+                                           Your order was delivered at {dateRender.renderDate2(this.state.order.orderStatusModifiedTime)}
+                                        </Text>
                                      </View>);
            }else if(this.state.order.orderStatus.toLowerCase()=='cancelled'){
-               var deliverTimeView = (<View style={styleOrderDetailPage.deliverTimeView}>
+              var deliverTimeView = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverTimeView}>
                                         <Text style={styleOrderDetailPage.deliverTimeText}>Your order has been cancelled</Text>
-                                      </View>);
+                                     </View>);
            }else{
                 //Render 'Order received' status 
                var currentTime = new Date().getTime();
@@ -133,7 +156,7 @@ class OrderDetailPage extends Component {
                   var DeliveringStatusTextColor = "#FFFFFF";
                }
                 
-               var deliverTimeView = (<View style={styleOrderDetailPage.deliverStatusView}>
+               var deliverTimeView = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverStatusView}>
                                             <View style={styleOrderDetailPage.oneStatusView}>
                                                 <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Order</Text>
                                                 <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Received</Text>
@@ -153,7 +176,7 @@ class OrderDetailPage extends Component {
                                             </View>
                                        </View>);
                 if(this.state.order.estimatedDeliverTimeRange){
-                   ETAView = <View style={styleOrderDetailPage.ETAView}>
+                   ETAView = <View key={'ETAView'} style={styleOrderDetailPage.ETAView}>
                                 <Text style={styleOrderDetailPage.ETAText}>
                                 Expect arrival between {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.max)}
                                 </Text>
@@ -161,7 +184,7 @@ class OrderDetailPage extends Component {
                 }
             }
 
-            var contactUsView = <View style={styles.infoBannerView}>
+            var contactUsView = <View key={'contactUsView'} style={styles.infoBannerView}>
                                    <Text style={styles.infoBannerText}>
                                       Got problem with your order? Call us at  
                                    </Text> 
@@ -175,7 +198,7 @@ class OrderDetailPage extends Component {
     
     renderFooter(){
       var promotionDeductionView = null;
-      if(this.state.order.price.couponValue){
+      if(this.state.order.price && this.state.order.price.couponValue){
          promotionDeductionView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalView}>
                                          <View style={styleShoppingCartPage.couponTitleView}>
                                              <Text style={styleShoppingCartPage.priceTitleText}>Coupon Deduction</Text>
@@ -204,7 +227,7 @@ class OrderDetailPage extends Component {
       let fullDeliveryAddress = this.state.order.shippingAddress.apartmentNumber ? 'Apt/Suite '+this.state.order.shippingAddress.apartmentNumber+' '+this.state.order.shippingAddress.formatted_address:this.state.order.shippingAddress.formatted_address;
       var costBreakDownView = [(<View key={'orderIdView'} style={styleShoppingCartPage.subtotalView}>
                                     <View style={styleShoppingCartPage.priceTitleView}>
-                                        <Text style={styleShoppingCartPage.priceTitleText}>Order#</Text>
+                                        <Text style={styleShoppingCartPage.priceTitleText}>OrderId</Text>
                                     </View>
                                     <View style={styleShoppingCartPage.priceNumberView}>
                                         <Text style={styleShoppingCartPage.priceNumberText}>{this.state.order.orderId.substring(0,this.state.order.orderId.indexOf('-'))}</Text>
@@ -257,8 +280,8 @@ class OrderDetailPage extends Component {
                                     </TouchableHighlight>
                                  </View>)];
         var commentBoxView = [];
-        if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.order.comment && this.state.order.comment.starRating){
-           if(this.state.order.comment.chefComment && this.state.order.comment.chefComment.trim()){
+        if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.order.comment && this.state.order.comment.starRating){//if rated,show rating/comment
+           if(this.state.order.comment.chefComment && this.state.order.comment.chefComment.trim()){//if chef replied,show reply content
               var chefReplyView = <View key={'chefReplyView'} style={styleOrderDetailPage.chefReplyBox}>
                                     <View style={styleOrderDetailPage.chefPhotoView}>
                                       <Image source={{uri:this.state.order.chefProfilePic}} style={styleOrderDetailPage.chefPhoto}/>
@@ -320,7 +343,7 @@ class OrderDetailPage extends Component {
                                   </View>
                                   <Text style={styleOrderDetailPage.commentText}>{this.state.comment.trim() ? this.state.comment :'No comment'}</Text>
                              </View>
-        }else if(this.state.order.orderStatus.toLowerCase() == 'delivered' && new Date().getTime()-this.state.order.orderDeliverTime <= 7*24*60*60*1000){
+        }else if(commonWidget.isOrderCommentable(this.state.order)){//if the order is commentable, show commet input area
             commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
                                    <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
@@ -348,7 +371,7 @@ class OrderDetailPage extends Component {
                                     </TouchableHighlight>
                                  </View>),
                                 (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
-        }else if(new Date().getTime()-this.state.order.orderDeliverTime > 7*24*60*60*1000){
+        }else if(new Date().getTime()-this.state.order.orderDeliverTime > 7*24*60*60*1000){//if the order expired for comment, show disabled commentbox
             commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
                                     <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
@@ -372,7 +395,7 @@ class OrderDetailPage extends Component {
                                     <TextInput placeholder="Order created 7 days ago cannot be reviewed" style={styleOrderDetailPage.commentInput} editable={false}/>                                     
                                  </View>),
                                 (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
-        }else if(this.state.order.orderStatus.toLowerCase() != 'delivered'){
+        }else if(this.state.order.orderStatus.toLowerCase() != 'delivered'){//if order is not delivered,show comment suggestion
             commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBox}>
                                     <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
@@ -403,9 +426,7 @@ class OrderDetailPage extends Component {
     render() {        
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                </View>;  
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;  
         }
    
         return (<View style={styles.container}>
@@ -416,10 +437,13 @@ class OrderDetailPage extends Component {
                             </View>
                             </TouchableHighlight>    
                             <View style={styles.titleView}>
-                            <Text style={styles.titleText}>Order Details</Text>
+                               <Text style={styles.titleText}>Order Details</Text>
                             </View>
+                            <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={() => this.fetchOrderDetail()}>
                             <View style={styles.headerRightView}>
+                               <Image source={refreshIcon} style={styles.refreshButtonIcon}/>
                             </View>
+                            </TouchableHighlight> 
                     </View>
                     <ListView style={styleOrderDetailPage.dishListView} ref="listView" 
                                     dataSource = {this.state.dataSource}
@@ -429,38 +453,9 @@ class OrderDetailPage extends Component {
                     {loadingSpinnerView}
                 </View>);
     }
-
-    async getOneOrder(){
-        const start = 'start=0';
-        const end = 'end='+ new Date().getTime();
-        var eaterId = this.state.order.eaterId;
-        try{
-          var allOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eaterId+'?'+start+'&'+end);
-          this.setState({showProgress:false,showNetworkUnavailableScreen:false})
-        }catch(err){
-          this.setState({showProgress: false,showNetworkUnavailableScreen:true});
-          commonAlert.networkError(err);
-          return;
-        }
-
-        if (allOrder && allOrder.statusCode != 200 && allOrder.statusCode != 202) {
-            this.setState({showProgress:false});
-            return this.responseHandler(allOrder);
-        }
-
-        if (allOrder && allOrder.data){
-            for(var thisOrder of allOrder.data.orders){
-                if(thisOrder.orderId == this.state.order.orderId){
-                   this.setState({showProgress:false, order:thisOrder});
-                   break;
-                }
-            }
-        }
-    }
     
     _onLayout(event) {
         this.y = event.nativeEvent.layout.y;
-        console.log(this.y);
     }
     
     _onFocus() {
@@ -548,8 +543,9 @@ class OrderDetailPage extends Component {
     }
 
     navigateBackToHistoryOrderPage(){
-        if(this.callback){
-           this.callback();
+        if(this.callback && (this.state.order.orderStatus!=this.state.orderStatus||this.state.ratingSucceed)){
+           console.log(this.state.order);
+           this.callback(this.state.order);
         }
         this.props.navigator.pop();
     }
@@ -558,7 +554,8 @@ class OrderDetailPage extends Component {
 var styleOrderDetailPage = StyleSheet.create({
     deliverTimeView:{
         flexDirection:'row',
-        justifyContent:'space-around',
+        justifyContent:'center',
+        alignItems:'center',
         height:windowHeight*0.0974,
         backgroundColor:'#FFCC33'
     },
@@ -570,7 +567,7 @@ var styleOrderDetailPage = StyleSheet.create({
     },
     ETAText:{
         color:'#FFFFFF',
-        fontWeight:'500',
+        fontWeight:'bold',
         fontSize:windowHeight/52.57,
     },
     ETAView:{
@@ -587,18 +584,25 @@ var styleOrderDetailPage = StyleSheet.create({
        height:windowHeight*0.0974,
        width:windowWidth/6.0,
     },
+    deliverTimeTextView:{
+        flex:0.9,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignSelf:'center',
+    },
     deliverTimeText:{
         color:'#FFFFFF',
         fontWeight:'bold',
         fontSize:windowHeight/51.64,
-        alignSelf:'center',
     },
     deleteBannerIcon:{
        width:windowHeight*0.0528,
        height:windowHeight*0.0528,
     },
     deleteBannerIconView:{
-       alignSelf:'center',
+       flex:0.1,
+       justifyContent:'center',
+       alignItems:'center'
     },
     dishListView:{
         flex:1,
@@ -731,29 +735,6 @@ var styleOrderDetailPage = StyleSheet.create({
 });
 
 var styleShoppingCartPage = StyleSheet.create({
-    chefShopNameView:{
-        flexDirection:'row',
-        justifyContent:'center',
-        height:windowHeight/14.72,
-        borderBottomWidth:1,
-        borderColor:'#F5F5F5',
-    },
-    chefShopNameText:{
-        color:'#FFCC33',
-        fontSize:windowHeight/36.8,
-        fontWeight:'500',
-        marginTop:windowHeight/73.6,
-    },
-    deliverTimeView:{
-        flexDirection:'row',
-        justifyContent:'center',
-        height:windowHeight/18.4,
-    },
-    deliverTimeText:{
-        color:'#4A4A4A',
-        fontSize:windowHeight/49.06,
-        marginTop:windowHeight/73.6,
-    },
     subtotalView:{
         flexDirection:'row',
         height:windowHeight/14.72,

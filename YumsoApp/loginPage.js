@@ -8,6 +8,7 @@ var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
 var commonAlert = require('./commonModules/commonAlert');
 var validator = require('validator');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -56,9 +57,7 @@ class LoginPage extends Component {
       
       var loadingSpinnerView = null;
       if (this.state.showProgress) {
-          loadingSpinnerView = <View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                               </View>;  
+          loadingSpinnerView =<LoadingSpinnerViewFullScreen/>;  
       }
 
       console.log('LoginPage deviceToken '+this.state.deviceToken);
@@ -73,18 +72,18 @@ class LoginPage extends Component {
          backButtonView =  <View style={styles.headerLeftView}>
                            </View>  
       }else{
-          backButtonView =  <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                                <View style={styles.backButtonView}>
-                                <Image source={backIcon} style={styles.backButtonIcon}/>
-                                </View>
-                           </TouchableHighlight>
+         backButtonView = <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                              <View style={styles.backButtonView}>
+                                 <Image source={backIcon} style={styles.backButtonIcon}/>
+                              </View>
+                          </TouchableHighlight>
       }
       
       return (
             <View style={styles.container}>
               <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                   <View style={styles.headerBannerView}>    
-                    {backButtonView}  
+                    {backButtonView}
                     <View style={styles.titleView}>
                         <Text style={styles.titleText}>Sign In</Text>
                     </View>
@@ -93,7 +92,40 @@ class LoginPage extends Component {
                  </View>
                  <ScrollView scrollEnabled={false} contentContainerStyle={styleLoginPage.scrollView}>
                     <View style={styleLoginPage.blankView}>
+                        <View style={styleLoginPage.fbSignInButtonView}>
+                            <FBLogin style={styleLoginPage.fbSignInButton}
+                                permissions={facebookPermissions}
+                                onLogin={function(data) {
+                                    _this.onGettingFbToken(data.credentials);
+                                    _this.setState({ user: data.credentials });
+                                } }
+                                onLogout={function() {
+                                    console.log("Logged out.");
+                                    _this.setState({ user: null });
+                                } }
+                                onLoginFound={function(data) {
+                                    console.log("Existing login found.");
+                                    _this.onGettingFbToken(data.credentials);
+                                    _this.setState({ user: data.credentials });
+                                } }
+                                onLoginNotFound={function() {
+                                    console.log("No user logged in.");
+                                    _this.setState({ user: null });
+                                } }
+                                onError={function(data) {
+                                    console.log("ERROR");
+                                    console.log(data);
+                                } }
+                                onCancel={function() {
+                                    console.log("User cancelled.");
+                                } }
+                                onPermissionsMissing={function(data) {
+                                    console.log("Check permissions!");
+                                    console.log(data);
+                                } }/>
+                        </View> 
                     </View>
+                    <Text style={styleLoginPage.loginMethodPartitionText}>or sign up with email</Text>
                     <View style={styles.loginInputView}>
                     <TextInput placeholder="email" style={styles.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} 
                        maxLength={40} autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
@@ -117,40 +149,8 @@ class LoginPage extends Component {
                     </View>
                     {skipLoginView}
                  </ScrollView>
-              </Image>              
-              <View style={styleLoginPage.fbSignInButtonView}>
-                    <FBLogin style={styleLoginPage.fbSignInButton}
-                        permissions={facebookPermissions}
-                        onLogin={function(data) {
-                            _this.onGettingFbToken(data.credentials);
-                            _this.setState({ user: data.credentials });
-                        } }
-                        onLogout={function() {
-                            console.log("Logged out.");
-                            _this.setState({ user: null });
-                        } }
-                        onLoginFound={function(data) {
-                            console.log("Existing login found.");
-                            _this.onGettingFbToken(data.credentials);
-                            _this.setState({ user: data.credentials });
-                        } }
-                        onLoginNotFound={function() {
-                            console.log("No user logged in.");
-                            _this.setState({ user: null });
-                        } }
-                        onError={function(data) {
-                            console.log("ERROR");
-                            console.log(data);
-                        } }
-                        onCancel={function() {
-                            console.log("User cancelled.");
-                        } }
-                        onPermissionsMissing={function(data) {
-                            console.log("Check permissions!");
-                            console.log(data);
-                        } }/>
-                </View> 
-                {loadingSpinnerView}
+              </Image>               
+              {loadingSpinnerView}
             </View>
         );
     }
@@ -306,12 +306,21 @@ var styleLoginPage = StyleSheet.create({
       alignItems:'center',
     },
     blankView:{
-      height:windowHeight*0.184,
+      height:windowHeight*0.225,
       width:windowWidth,
+      justifyContent:'flex-end',
+      alignItems:'center',
+      paddingBottom:10*windowHeight/667,
+    },
+    loginMethodPartitionText:{
+      fontSize:16*windowHeight/667,
+      fontWeight:'400',
+      backgroundColor:'transparent',  
+      color:'#fff',
     },
     signInButtonView:{
-      height:windowHeight*0.08,
-      width:windowWidth*0.634,
+      height:windowHeight*0.075,
+      width:windowWidth*0.8,
       backgroundColor:'#FFCC33',
       justifyContent: 'center',
     }, 
@@ -322,20 +331,21 @@ var styleLoginPage = StyleSheet.create({
       alignSelf:'center',
     },
     askToSignUpView:{
-      height:windowHeight/13.38, 
-      justifyContent: 'center',   
+      height:35*windowHeight/667, 
+      justifyContent: 'center',
+      alignItems:'flex-end',  
       flexDirection:'row',  
     },
     askToSignUpText:{
-      fontSize:16,
+      fontSize:16*windowHeight/667,
+      fontWeight:'500',
       color:'#FFF',
-      alignSelf:'center',
       backgroundColor:'transparent',
     },
     signUpText:{
-      fontSize:16,
+      fontSize:16*windowHeight/667,
+      fontWeight:'500',
       color:'#FFCC33',
-      alignSelf:'center',
       backgroundColor:'transparent',
     },
     forgotPasswordView:{
@@ -347,13 +357,15 @@ var styleLoginPage = StyleSheet.create({
       marginTop:6,
     },
     forgotPasswordText:{
-      fontSize:14,
+      fontSize:16*windowHeight/667,
+      fontWeight:'500',
       color:'#FFCC33',
       backgroundColor:'transparent',
     },
     fbSignInButtonView:{
       flexDirection:'row', 
       height:windowHeight*0.075, 
+      width:windowWidth*0.8,
       justifyContent:'center',
       backgroundColor:'#415DAE',
     },

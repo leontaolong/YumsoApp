@@ -5,6 +5,8 @@ var AuthService = require('./authService');
 var backIcon = require('./icons/icon-back.png');
 var commonAlert = require('./commonModules/commonAlert');
 var commonWidget = require('./commonModules/commonWidget');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -56,9 +58,7 @@ class PaymentPage extends Component {
     render() {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                </View>;  
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;  
         }
         
         if(this.state.paymentOption){
@@ -71,7 +71,7 @@ class PaymentPage extends Component {
                                         </View>),
                                        (<View key={'selectedPaymentTextView'} style={stylePaymentPage.selectedPaymentTextView}>
                                             <Text style={stylePaymentPage.selectedPaymentText}>
-                                              {this.state.paymentOption.cardType}*****{this.state.paymentOption.last4} has been chosen for this payment
+                                              {this.state.paymentOption.cardType} **** {this.state.paymentOption.last4} has been chosen for this payment
                                             </Text>
                                         </View>)];
         }else{
@@ -82,6 +82,13 @@ class PaymentPage extends Component {
                                             </View>
                                             </TouchableHighlight> 
                                         </View>)];
+        }
+        
+        var turnOnNotificationTextView = null
+        if(this.state.deviceToken=='No_Device_Token'){
+           turnOnNotificationTextView = <View style={stylePaymentPage.turnOnNotificationTextView}>
+                                        <Text style={stylePaymentPage.turnOnNotificationText}>We recommend you turn on notification to receive status update for your order.</Text>
+                                      </View> 
         }
                 
         return (<View style={styles.greyContainer}>
@@ -99,7 +106,8 @@ class PaymentPage extends Component {
                  </View>
                  <View style={stylePaymentPage.totalAmountView}>
                     <Text style={stylePaymentPage.totalAmountTitle}>You total amount is:</Text>
-                    <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>   
+                    <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>
+                    {turnOnNotificationTextView}    
                  </View>
                  {selectPaymentMethodView}
                  <View style={{flex:1}}>
@@ -115,7 +123,9 @@ class PaymentPage extends Component {
       
     async confirm(){
         let deviceToken = await AuthService.getDeviceTokenFromCache();
-        this.setState({deviceToken:deviceToken})
+        if(deviceToken){
+           this.setState({deviceToken:deviceToken})
+        }
         Alert.alert(
             'Place Order',
             'Ready to place the order? Your total is $'+this.state.orderDetail.price.grandTotal,
@@ -212,6 +222,10 @@ class PaymentPage extends Component {
     }
 
     async selectPayment() {
+        let deviceToken = await AuthService.getDeviceTokenFromCache();
+        if(deviceToken){
+           this.setState({deviceToken:deviceToken})
+        }
         this.props.navigator.push({
             name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
             passProps:{
@@ -229,18 +243,36 @@ var stylePaymentPage = StyleSheet.create({
     totalAmountView:{
       height:windowHeight*0.38,
       justifyContent:'center',
+      alignItems:'center',
       flexDirection:'column',
     },
     totalAmountTitle:{
-      fontSize:windowHeight/37.056,
-      fontWeight:'300',
+      fontSize:20*windowHeight/667.0,
+      fontWeight:'400',
       alignSelf:'center',
+      marginBottom:5*windowHeight/667.0,
     },
     totalAmountText:{
-      fontSize:windowHeight/10.42,
+      fontSize:68*windowHeight/667.0,
       fontWeight:'bold',
       alignSelf:'center',
-      color:'#404040',
+      color:'#4A4A4A',
+    },
+    turnOnNotificationText:{
+      fontSize:16*windowHeight/667.0,
+      color:'#4A4A4A',
+      fontWeight:'300',
+      alignSelf:'center',
+      textAlign:'center',
+      flex: 1, 
+      flexWrap: 'wrap',
+      marginTop:5*windowHeight/667,
+    },
+    turnOnNotificationTextView:{
+        width:0.9*windowWidth,
+        justifyContent:'center',
+        alignItems:'center',
+        flexDirection:'row',
     },
     selectPaymentbuttonView:{
       height:windowHeight*0.075,
@@ -262,13 +294,15 @@ var stylePaymentPage = StyleSheet.create({
     selectedPaymentTextView:{
       flexDirection:'column',
       width:windowWidth*0.95,
+      justifyContent:'flex-start',
+      alignItems:'center',
+      alignSelf:'center',
     },
     selectedPaymentText:{
       color:'#A0A0A0',
       fontSize:windowHeight/51.636,
       marginTop:windowHeight*0.02,
       textAlign:'center',
-      alignSelf:'center',
     },
     placeOrderButton:{
       flexDirection:'row',        

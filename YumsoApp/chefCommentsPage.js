@@ -7,6 +7,7 @@ var dateRender = require('./commonModules/dateRender');
 var commonAlert = require('./commonModules/commonAlert');
 var backIcon = require('./icons/icon-back.png');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -103,9 +104,7 @@ class ChefCommentsPage extends Component {
     render() {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                </View>;  
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>  
         }
         
         if(this.state.comments && this.state.comments.length==0){
@@ -168,7 +167,8 @@ var styleChefCommentsPage = StyleSheet.create({
     eaterPhoto:{
         width:windowWidth*0.11,
         height:windowWidth*0.11,
-        borderWidth:0,
+        borderWidth:0.5,
+        borderColor:'#EAEAEA',
         borderRadius:0.5*windowWidth*0.11,
     },
     oneCommentView:{

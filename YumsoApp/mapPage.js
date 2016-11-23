@@ -9,6 +9,7 @@ var searchIcon = require('./icons/icon-search.png');
 var backIcon = require('./icons/icon-back.png');
 var locatorIcon = require('./icons/icon-location.png');
 var houseIcon = require('./icons/icon-grey-house.png');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 
 import Dimensions from 'Dimensions';
 
@@ -107,9 +108,7 @@ class MapPage extends Component {
     render() {  
             var loadingSpinnerView = null;
             if (this.state.showProgress) {
-                loadingSpinnerView =<View style={styles.loaderView}>
-                                        <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                    </View>;  
+                loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;  
             }
             let aptView = <View></View>;
             if(this.state.showApartmentNumber){

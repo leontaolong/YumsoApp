@@ -13,10 +13,11 @@ var commonAlert = require('./commonModules/commonAlert');
 var commonWidget = require('./commonModules/commonWidget');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
-var ballonIcon = require('./icons/icon-location-white.png');
+var ballonIcon = require('./icons/icon-location-grey.png');
 var whiteLikeIcon = require('./icons/icon-liked-white.png');
 var labelIcon = require('./icons/icon-label-grey.png');
 var menuIcon = require('./icons/icon-menu.webp');
+var filterIcon = require('./icons/icon-filter.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked-red.png');
 var backIcon = require('./icons/icon-back.png');
@@ -29,6 +30,7 @@ var dollarSign3_Orange = require('./icons/icon-dollar3-orange.webp');
 var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.webp');
 var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.webp');
 var RefreshableListView = require('react-native-refreshable-listview');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 
 import Dimensions from 'Dimensions';
 
@@ -310,9 +312,7 @@ class ChefListPage extends Component {
         var menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.listLoadingView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                </View>;  
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>; 
         }
         
         var cheflistView = <RefreshableListView ref="listView"
@@ -408,27 +408,16 @@ class ChefListPage extends Component {
                         </TouchableHighlight>
                         <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.titleView}>
+                            <Image source={ballonIcon} style={styles.ballonIcon}/>
                             <Text style={styles.titleText}>{this.state.city?this.state.city:'unknow'}</Text>
                         </View>
                         </TouchableHighlight>
                         <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
                           <View style={styles.headerRightTextButtonView}>
-                              <Text style={styles.headerRightTextButtonText}>Filter</Text>
+                            <Image source={filterIcon} style={styles.filterIcon}/>
                           </View>
                         </TouchableHighlight>
                     </View>
-                    <View style={styleChefListPage.orangeTopBannerView}>
-                        <View style={styleChefListPage.orangeTopBannerButtonView}>
-                          <TouchableHighlight style={styleChefListPage.orangeTopBannerButtonWrapper} underlayColor={'transparent'}  onPress={() => this.setState({showLocSearch:true}) }>
-                             <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={ballonIcon}/>
-                          </TouchableHighlight>
-                        </View>
-                        <View style={styleChefListPage.orangeTopBannerButtonView}>
-                           <TouchableHighlight style={styleChefListPage.orangeTopBannerButtonWrapper} underlayColor={'transparent'}  onPress={() => this.showFavoriteChefs() }>
-                             <Image style={styleChefListPage.orangeTopBannerButtonIcon} source={this.state.showFavoriteChefsOnly===true?likedIcon:whiteLikeIcon}/>
-                           </TouchableHighlight>
-                        </View>
-                    </View> 
                     {updateAppBannerView}
                     {networkUnavailableView}
                     {cheflistView}

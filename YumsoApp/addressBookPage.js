@@ -7,6 +7,7 @@ var AuthService = require('./authService');
 var MapPage = require('./mapPage');
 var backIcon = require('./icons/icon-back.png');
 var houseIcon = require('./icons/icon-grey-house.png');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -73,9 +74,7 @@ class addressBookPage extends Component {
      render() {         
          var loadingSpinnerView = null;
          if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                </View>;  
+             loadingSpinnerView = <LoadingSpinnerViewFullScreen/> 
          }
          
          if (this.state.addMoreAddress) {

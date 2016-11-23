@@ -26,6 +26,7 @@ var Swiper = require('react-native-swiper');
 var commonAlert = require('./commonModules/commonAlert');
 var commonWidget = require('./commonModules/commonWidget');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 // import * as WeChat from 'react-native-wechat';
 // var result = await  WeChat.shareToTimeline({type: 'text', description: 'I\'m Wechat, :)'});
 
@@ -121,7 +122,7 @@ class ShopPage extends Component {
         let schedules = [];
         //filter all the schedules with earliest order time earlier than current time.
         var currentTime = new Date().getTime();
-        console.log(allSchedules);
+        //console.log(allSchedules);
         for(let oneSchedule of allSchedules){
             if(oneSchedule.earliestOrderTime<=currentTime){
                schedules.push(oneSchedule);
@@ -299,11 +300,9 @@ class ShopPage extends Component {
                                        </View>
            }
 
-           return (<View style={styleShopPage.oneDishInListView}>
+           return (<TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7} style={styleShopPage.oneDishInListView}>
                         <View style={styleShopPage.oneDishPicture}>
-                            <TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7}>
-                                {shopPageDishImageView}
-                            </TouchableOpacity>
+                            {shopPageDishImageView}
                             <View style={styleShopPage.chefRecommendLabelView}>
                                     <Text style={styleShopPage.chefRecommendLabelText}>Chef's Special</Text>
                             </View>
@@ -319,7 +318,7 @@ class ShopPage extends Component {
                             {chooseQuantityView}
                         </View>
                         <View style={styles.greyBorderView}></View>
-                    </View>);
+                    </TouchableOpacity>);
         }else{
            if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][dish.dishId] && this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantityImmutable == 0){
               var shopPageDishImageView = <Image source={imageSrc} style={styleShoppingCartPage.oneDishPictureUnhighlightSoldOut}/>;
@@ -372,11 +371,9 @@ class ShopPage extends Component {
                                        </View>
            }
 
-           return (<View>
+           return (<TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7}>
                      <View style={styleShoppingCartPage.oneListingView}>
-                        <TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7}>
                         {shopPageDishImageView}
-                        </TouchableOpacity>
                         <View style={styleShoppingCartPage.shoppingCartInfoView}>
                             <View style={styleShoppingCartPage.dishNamePriceView}>
                                 <View style={styleShoppingCartPage.dishNameView}>
@@ -393,16 +390,14 @@ class ShopPage extends Component {
                         </View>
                      </View>
                      <View style={styles.greyBorderView}></View>
-                  </View>);
+                  </TouchableOpacity>);
         }
     }
          
     render() {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                </View>;  
+            loadingSpinnerView =<LoadingSpinnerViewFullScreen/>;  
         }
 
         let scheduleSelectionView='';
@@ -438,7 +433,7 @@ class ShopPage extends Component {
                                     </View>);
         }else{
            scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
-                                            <Text style={styleShopPage.openHourTitle}>Currently no dish avaliable to order</Text>
+                                            <Text style={styleShopPage.openHourTitle}>NO DELIVERY SCHEDULE</Text>
                                     </View>);
         }
 
@@ -986,8 +981,6 @@ var styleShopPage = StyleSheet.create({
     },
     oneDishInListView:{
         marginBottom:0,
-        borderColor: '#EAEAEA',
-        borderTopWidth:1,
     },
     oneDishPicture:{
         width: windowWidth,
@@ -1149,8 +1142,6 @@ var styleShoppingCartPage = StyleSheet.create({
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
         flex:1,
-        borderColor: '#EAEAEA',
-        borderTopWidth: 1,
     },
     oneDishPictureUnhighlight:{
         width:windowWidth/2.76,
