@@ -241,7 +241,7 @@ class ShopPage extends Component {
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                             </View>
                         </TouchableHighlight>),
-                       (<View style={styles.greyBorderView}></View>)];
+                       (<View key={'greyBorderView'} style={styles.greyBorderView}></View>)];
     }
 
     renderRow(dish){
