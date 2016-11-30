@@ -7,6 +7,8 @@ var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/signInBackground.jpg');
 var commonAlert = require('./commonModules/commonAlert');
 var validator = require('validator');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
@@ -44,9 +46,7 @@ class resetPasswordPage extends Component {
     render() {
             var loadingSpinnerView = null;
             if (this.state.showProgress) {
-                loadingSpinnerView =<View style={styles.loaderView}>
-                                        <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                    </View>;  
+                loadingSpinnerView =<LoadingSpinnerViewFullScreen/>;  
             }
             
             var passwordRequirmentText = null;

@@ -40,6 +40,20 @@ class CommonWidget {
         }
         return false;
     }
+
+    isOrderCommentable(oneOrder){
+        if(oneOrder.orderStatus.toLowerCase() == 'delivered' && new Date().getTime()-oneOrder.orderDeliverTime <= 7*24*60*60*1000 && !oneOrder.comment){
+           return true;
+        }
+        return false;
+    }
+
+    isOrderPending(oneOrder){
+        if(oneOrder.orderStatus.toLowerCase() == 'new' || oneOrder.orderStatus.toLowerCase() == 'delivering'){
+           return true;
+        }
+        return false;
+    }
 }
 
 module.exports = new CommonWidget();

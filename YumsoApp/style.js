@@ -17,13 +17,11 @@ module.exports = StyleSheet.create({
       backgroundColor:'#fff',
     },
     loaderView:{
-      backgroundColor:'#fff', 
       position:'absolute',
       top:0,
       left:0,
       right:0, 
       height:windowHeight,
-      opacity:0.3,
     },
     listLoadingView:{
       backgroundColor:'transparent', 
@@ -82,6 +80,11 @@ module.exports = StyleSheet.create({
       width:windowWidth*0.106,
       height:windowWidth*0.106,
     },
+    refreshButtonIcon:{
+      width:17,
+      height:17,
+      marginRight:15,
+    },
     likeButtonIcon:{
       width:windowWidth/12.5,
       height:windowWidth/12.5,
@@ -92,8 +95,10 @@ module.exports = StyleSheet.create({
     },
     titleView:{
       flex:0.4/6, 
+      flexDirection:'row',
       width:windowWidth*4/6.0,
-      justifyContent:'center',     
+      justifyContent:'center',  
+      alignItems:'center'   
     },
     titleText:{
       fontSize:windowHeight/37.06,
@@ -106,6 +111,7 @@ module.exports = StyleSheet.create({
       flex:0.1/6.0,
       width:windowWidth/6.0,
       justifyContent:'flex-end',
+      alignItems:'center',
       flexDirection:'row',
     },
     headerRightTextButtonView:{
@@ -132,6 +138,15 @@ module.exports = StyleSheet.create({
     menuIcon:{
       width:windowHeight*0.0286,
       height:windowHeight*0.0235,
+    },
+    filterIcon:{
+      width:20*windowHeight/667,
+      height:20*windowHeight/667,
+    },
+    ballonIcon:{
+      marginTop:0.8*windowHeight/667,
+      width:25*windowHeight/667,
+      height:25*windowHeight/667,
     },
     searchIcon:{
       width:windowHeight/24.5,

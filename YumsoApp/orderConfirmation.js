@@ -39,7 +39,7 @@ class OrderConfirmation extends Component {
                 <View style={styleConfirmationPage.confirmTextView}>
                     <Text style={styleConfirmationPage.enjoyYourMealText}>Your order is confirmed.</Text>
                     <View style={styleConfirmationPage.orderConfirmedTextView}>
-                        <Text style={styleConfirmationPage.orderConfirmedText}>Please pay attention to your cell phone, we may call you when your order arrives.</Text>
+                        <Text style={styleConfirmationPage.orderConfirmedText}>Please pay attention to your cell phone and turn on notification to receive status update. We may also call you when your order arrives.</Text>
                     </View>   
                 </View>
                 <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.orderMoreMutton} onPress={()=>this.navigateBackToChefList()}>
@@ -81,14 +81,14 @@ var styleConfirmationPage = StyleSheet.create({
       backgroundColor:'transparent'
     },
     enjoyYourMealText:{
-      fontSize:windowHeight/23.0,
+      fontSize:30*windowHeight/667.0,
       color:'#4A4A4A',
       fontWeight:'300',
       alignSelf:'center',
       marginBottom:windowHeight*0.05
     },
     orderConfirmedText:{
-      fontSize:windowHeight/46.0,
+      fontSize:16*windowHeight/667.0,
       color:'#4A4A4A',
       fontWeight:'300',
       alignSelf:'center',

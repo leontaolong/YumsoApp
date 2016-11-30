@@ -13,9 +13,11 @@ var plusIcon = require('./icons/icon-add.png');
 var backIcon = require('./icons/icon-back.png');
 var checkedIcon = require('./icons/icon-checkBox-checked.jpeg');
 var uncheckedIcon = require('./icons/icon-checkBox-unchecked.jpeg');
+var deleteCardIcon = require('./icons/icon-delete-grey.png');
 var Swipeout = require('react-native-swipeout');
 var commonAlert = require('./commonModules/commonAlert');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 
 import Dimensions from 'Dimensions';
 
@@ -132,18 +134,20 @@ class PaymentOptionPage extends Component {
         
         if(this.state.isFromCheckOutPage){                 
             return (
-                <Swipeout backgroundColor={'#FFFFFF'} right={swipeoutBtns}>
+                <Swipeout backgroundColor={'#FFFFFF'} close={true} right={swipeoutBtns}>
+                    <TouchableHighlight style={stylePaymentOptionPage.checkBoxIconView} underlayColor={'transparent'} onPress={()=>this.onCardClick(card)}>
                     <View style={stylePaymentOptionPage.paymentMethodView}>         
-                        <TouchableHighlight style={stylePaymentOptionPage.checkBoxIconView} underlayColor={'transparent'} onPress={()=>this.onCardClick(card)}>
-                                        <Image style={stylePaymentOptionPage.checkBoxIcon} source={checkBoxIcon}/>
-                        </TouchableHighlight>
+                        <View style={stylePaymentOptionPage.checkBoxIconView}>
+                                <Image style={stylePaymentOptionPage.checkBoxIcon} source={checkBoxIcon}/>
+                        </View>
                         <View  style={stylePaymentOptionPage.paymentMethodIconView}>
                             {this.renderPaymentMethodType(card)}
                         </View>
                         <View style={stylePaymentOptionPage.paymentMethodInfoView}>
-                        <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                             <Text style={stylePaymentOptionPage.paymentMethodInfoText}>**** {card.last4}</Text>
                         </View>
                     </View>
+                    </TouchableHighlight>
                 </Swipeout>
             );
         }else{
@@ -154,7 +158,7 @@ class PaymentOptionPage extends Component {
                             {this.renderPaymentMethodType(card)}
                         </View>
                         <View style={stylePaymentOptionPage.paymentMethodInfoView}>
-                        <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                            <Text style={stylePaymentOptionPage.paymentMethodInfoText}>**** {card.last4}</Text>
                         </View>
                     </View>
                 </Swipeout>);
@@ -163,36 +167,40 @@ class PaymentOptionPage extends Component {
     
     renderFooter(){
         if(this.state.isFromCheckOutPage){  
-          return (
+          return [
+             <View style={{height:9*windowHeight/667}}></View>,
+             <TouchableHighlight underlayColor={'#F5F5F5'} onPress={()=>this.addAPayment()}>
              <View style={stylePaymentOptionPage.addCardView}>          
                <View style={stylePaymentOptionPage.checkBoxIconView}>
                </View>
-               <TouchableHighlight style={stylePaymentOptionPage.addCardIconView} underlayColor={'transparent'} onPress={()=>this.addAPayment()}>
+               <View style={stylePaymentOptionPage.addCardIconView}>
                   <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
-               </TouchableHighlight>
-               <View style={stylePaymentOptionPage.addCardTitleView}>
-                  <Text style={stylePaymentOptionPage.addCardTitleText}>Credit/Debit Card</Text>
                </View>
-             </View>);
+               <View style={stylePaymentOptionPage.addCardTitleView}>
+                  <Text style={stylePaymentOptionPage.addCardTitleText}>Add Credit/Debit Card</Text>
+               </View>
+             </View>
+             </TouchableHighlight>];
         }else{
-          return (
+          return [
+             <View style={{height:9*windowHeight/667}}></View>,
+             <TouchableHighlight underlayColor={'#F5F5F5'} onPress={()=>this.addAPayment()}>
              <View style={stylePaymentOptionPage.addCardView}>          
-               <TouchableHighlight style={stylePaymentOptionPage.addCardIconView} underlayColor={'transparent'} onPress={()=>this.addAPayment()}>
+               <View style={stylePaymentOptionPage.addCardIconView}>
                   <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
-               </TouchableHighlight>
-               <View style={stylePaymentOptionPage.addCardTitleView}>
-                  <Text style={stylePaymentOptionPage.addCardTitleText}>Credit/Debit Card</Text>
                </View>
-             </View>);
+               <View style={stylePaymentOptionPage.addCardTitleView}>
+                  <Text style={stylePaymentOptionPage.addCardTitleText}>Add Credit/Debit Card</Text>
+               </View>
+             </View>
+             </TouchableHighlight>];
         }
     }
     
     render() {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView =<View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                </View>;  
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;  
         }
         
         if(this.state.chosenCard && this.state.isFromCheckOutPage){
@@ -322,8 +330,8 @@ var stylePaymentOptionPage = StyleSheet.create({
         flex:1,
         flexDirection:'row',
         height:windowHeight*0.075,
-        paddingHorizontal:15,
-        borderTopWidth:3,
+        paddingLeft:15*windowHeight/667.0,
+        borderTopWidth:3*windowHeight/667.0,
         borderColor:'#F5F5F5',
     },
     checkBoxIconView:{
@@ -332,12 +340,12 @@ var stylePaymentOptionPage = StyleSheet.create({
         justifyContent:'flex-start'  
     },
     checkBoxIcon:{
-        width:25,
-        height:25,
+        width:25*windowHeight/667.0,
+        height:25*windowHeight/667.0,
         alignSelf:'center',
     },
     paymentMethodInfoView:{
-        flex:0.5,
+        flex:0.75,
         flexDirection:'row',
         justifyContent:'flex-start',
     },
@@ -351,29 +359,32 @@ var stylePaymentOptionPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'flex-start'
     },
-    paymentCreditCardView:{
-        flex:1,
-        flexDirection:'row',
-        borderColor:'#D7D7D7',
-        borderBottomWidth: 1,
+    deleteCardIconView:{
+        flex:0.1,
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    deleteCardIcon:{
+        width:30*windowHeight/667.0,
+        height:30*windowHeight/667.0,
     },
     paymentMethodIcon:{
-        width:32,
-        height:20,
+        width:32*windowHeight/667.0,
+        height:20*windowHeight/667.0,
         alignSelf:'center',
     },
     addCardView:{
         flex:1,
         flexDirection:'row',
         height:windowHeight*0.075,
-        paddingHorizontal:15,
-        borderTopWidth:3,
-        borderColor:'#F5F5F5',
+        paddingLeft:15*windowHeight/667.0,
+        backgroundColor:'#fff',
     },
     addCardTitleView:{
-        flex:0.5,
+        flex:0.75,
         flexDirection:'row',
         justifyContent:'flex-start',
+        backgroundColor:'#FFF'
     },
     addCardTitleText:{
         alignSelf:'center',
@@ -383,14 +394,14 @@ var stylePaymentOptionPage = StyleSheet.create({
     addCardIconView:{
         flex:0.15,
         flexDirection:'row',
-        justifyContent:'flex-start'
+        justifyContent:'flex-start',
+        backgroundColor:'#fff',
     },
     addCardIcon:{
-        width:30,
-        height:30,
+        width:30*windowHeight/667.0,
+        height:30*windowHeight/667.0,
         alignSelf:'center',
     },
-
     bottomButton:{
       flexDirection:'row',        
       justifyContent: 'center',

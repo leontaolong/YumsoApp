@@ -34,10 +34,8 @@ class CommonAlert {
     serverSideError(errorObject){
         var title = 'Server Side Error';
         if(errorObject.data && errorObject.data.exceptionId){
-           var text = '[ExceptionId] ' + errorObject.data.exceptionId;
-           if(errorObject.data.err){
-              text = text + ' [Error] ' + JSON.stringify(errorObject.data.err);
-           }
+           var text = "Sorry about the inconvenience. We will get it fixed ASAP.\n"
+           text = text + 'ExceptionId: ' + errorObject.data.exceptionId;
         }
         Alert.alert(title, text,[ { text: 'OK' }]);
     }

@@ -12,6 +12,7 @@ var uploadPhotoIcon = require('./icons/icon-camera.png');
 var houseIcon = require('./icons/icon-grey-house.png');
 var paypalIcon = require('./icons/icon-paypal.png');
 var ResetPasswordPage = require('./resetPasswordPage');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 var validator = require('validator');
 import Dimensions from 'Dimensions';
 
@@ -99,9 +100,7 @@ class EaterPage extends Component {
      render() {         
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView = <View style={styles.loaderView}>
-                                    <ActivityIndicatorIOS animating={this.state.showProgress} size="large" style={styles.loader}/>
-                                 </View>;  
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;  
         }
 
         if (this.state.showResetPassword){

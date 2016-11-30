@@ -1,8 +1,8 @@
 module.exports={
-    baseUrl: 'https://www.yumso.com',
+    //baseUrl: 'https://www.yumso.com',
     //baseUrl: 'http://ec2-35-160-206-47.us-west-2.compute.amazonaws.com',
-    //baseUrl: 'http://10.104.201.80:8080',
-    AppVersion:'1.5.9',
+    baseUrl: 'http://10.0.0.242:8080',
+    AppVersion:'1.6.0',
     gracePeriodLength:5,
     googleApiName:'yumsoIOS	',
     googleApiKey:'AIzaSyBQdKxM-ZRQ2r95bkQLPlY10joKJeC6slw',
@@ -24,7 +24,7 @@ module.exports={
     //non-public
     createOrderEndpoint:'/api/v1/chef/order/createOrder',
     orderHistoryEndpoint:'/api/v1/chef/order/eaterOrders/',
-    //Todo:getOneOrderEndpoint:'/api/v1/chef/order/eaterOrders/',
+    getOneOrderEndpoint:'/api/v1/chef/order/oneOrder/',
     orderCommentEndpoint:'/api/v1/chef/order/eaterComments/',
     leaveEaterCommentEndpoint:'/api/v1/chef/order/leaveEaterComment/',
     eaterEndpoint:'/api/v1/eater/getEater',
