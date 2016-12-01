@@ -15,7 +15,7 @@ class LoadingSpinnerViewBottom extends Component {
     render() {  
         return (
             <View style={loadingSpinnerViewBottomStyle.loaderView}>
-                  <ActivityIndicatorIOS animating={true} color={'#7BCBBE'}  size="small"/>
+                  <ActivityIndicatorIOS animating={true} color={'#4A4A4A'}  size="small"/>
             </View> 
         );
     }

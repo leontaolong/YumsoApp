@@ -125,7 +125,7 @@ class LoginPage extends Component {
                                 } }/>
                         </View> 
                     </View>
-                    <Text style={styleLoginPage.loginMethodPartitionText}>or sign up with email</Text>
+                    <Text style={styleLoginPage.loginMethodPartitionText}>- or -</Text>
                     <View style={styles.loginInputView}>
                     <TextInput placeholder="email" style={styles.loginInput} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'} 
                        maxLength={40} autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
@@ -313,8 +313,9 @@ var styleLoginPage = StyleSheet.create({
       paddingBottom:10*windowHeight/667,
     },
     loginMethodPartitionText:{
-      fontSize:16*windowHeight/667,
-      fontWeight:'400',
+      fontSize:18*windowHeight/667,
+      fontWeight:'600',
+      fontStyle: 'italic',
       backgroundColor:'transparent',  
       color:'#fff',
     },

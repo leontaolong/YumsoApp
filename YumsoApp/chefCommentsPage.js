@@ -60,7 +60,7 @@ class ChefCommentsPage extends Component {
     }
     
     fetchComments() {
-        console.log("fetchComments!")
+        //console.log("fetchComments!")
         if(this.state.comments.length>=10 && !this.state.isAllCommentLoaded){
            this.setState({showProgressBottom:true});
         }else{
@@ -75,15 +75,14 @@ class ChefCommentsPage extends Component {
         }else{
            var queryString = start + '&' + end + '&' + nextString
         }
-        //var queryString = start + '&' + end;
         return this.client.getWithoutAuth(config.chefCommentsEndpoint + this.state.chefId + '?' + queryString)
             .then((res) => {
                 if (res.statusCode != 200 && res.statusCode!=202) {
-                    throw new Error('Fail getting past comments');
+                    throw res;
                 }
 
                 if(res.data.comments && res.data.comments.length>0){
-                   this.state.comments= this.state.comments.concat(res.data.comments);
+                   this.state.comments = this.state.comments.concat(res.data.comments);
                 }
 
                 if(res.data.lastSortKey){
@@ -91,8 +90,8 @@ class ChefCommentsPage extends Component {
                 }else{
                    this.setState({isAllCommentLoaded:true});
                 }
-                console.log(this.state.comments)
-                console.log(JSON.stringify(this.state.lastSortKey));
+                //console.log(this.state.comments)
+                //console.log(JSON.stringify(this.state.lastSortKey));
                 this.setState({dataSource: this.state.dataSource.cloneWithRows(this.state.comments), showProgress:false, showProgressBottom:false, showNetworkUnavailableScreen:false});
             }).catch((err)=>{
                 this.setState({showProgress: false,showNetworkUnavailableScreen:true});
@@ -142,7 +141,7 @@ class ChefCommentsPage extends Component {
           return <LoadingSpinnerViewBottom/>
        }else if(this.state.isAllCommentLoaded){
           return <View style={styleChefCommentsPage.endOfCommentsView}>
-                   <Text style={styleChefCommentsPage.endOfCommentsText}>No more comment</Text>
+                   <Text style={styleChefCommentsPage.endOfCommentsText}>End of All Comments</Text>
                  </View>
        }else{
           return null;
@@ -156,25 +155,25 @@ class ChefCommentsPage extends Component {
         }
         
         var commentListView = null;
+        var noReviewText = null;
+        var networkUnavailableView = null;
         if(this.state.comments && this.state.comments.length==0){
            if(!this.state.showProgress){
-              var  noReviewText = <Text style={styles.listViewEmptyText}>This chef does not have any review left</Text>
+              if(this.state.showNetworkUnavailableScreen){
+                 networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchComments.bind(this)} />
+              }else{
+                 noReviewText = <Text style={styles.listViewEmptyText}>This chef does not have any review left</Text>
+              }
            }
-        }else{
+        }else if(this.state.comments && this.state.comments.length>0){
            commentListView = <ListView style={styles.dishListViewWhite}
-                                    dataSource = {this.state.dataSource}
-                                    onEndReached={ this.loadMoreComments.bind(this) }
-                                    onEndReachedThreshold={0}
-                                    pageSize={10}
-                                    initialListSize={1}
-                                    renderFooter={this.renderFooter.bind(this)}
-                                    renderRow={this.renderRow.bind(this)}/>
-        }
-
-        var networkUnavailableView = null;
-        if(this.state.showNetworkUnavailableScreen){
-           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchComments.bind(this)} />
-           commentListView = null;
+                                       dataSource = {this.state.dataSource}
+                                       onEndReached={ this.loadMoreComments.bind(this) }
+                                       onEndReachedThreshold={0}
+                                       pageSize={10}
+                                       initialListSize={1}
+                                       renderFooter={this.renderFooter.bind(this)}
+                                       renderRow={this.renderRow.bind(this)}/>
         }
 
         return (
