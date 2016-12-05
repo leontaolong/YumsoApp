@@ -7,11 +7,13 @@ var dateRender = require('./commonModules/dateRender');
 var commonAlert = require('./commonModules/commonAlert');
 var backIcon = require('./icons/icon-back.png');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
-var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
+var LoadingSpinnerViewBottom = require('./loadingSpinnerViewBottom');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
+const chefCommentPageSize = 10;
 
 import React, {
   Component,
@@ -40,11 +42,15 @@ class ChefCommentsPage extends Component {
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:false,
+            showProgressBottom:false,
             showCommentBox:false,
             showNetworkUnavailableScreen:false,
             chefId: chefId,
             chefProfilePic:chefProfilePic,
             shopName:shopName,
+            lastSortKey:null,
+            comments:[],
+            isAllCommentLoaded:false,
         };
     }
 
@@ -54,20 +60,49 @@ class ChefCommentsPage extends Component {
     }
     
     fetchComments() {
-        this.setState({showProgress:true});
+        //console.log("fetchComments!")
+        if(this.state.comments.length>=10 && !this.state.isAllCommentLoaded){
+           this.setState({showProgressBottom:true});
+        }else{
+           this.setState({showProgress:true});
+        }
         const start = 'start=0';
         const end = 'end='+ new Date().getTime();
-        return this.client.getWithoutAuth(config.chefCommentsEndpoint + this.state.chefId + '?' + start + '&' + end)
+        const nextString = 'next='+chefCommentPageSize;
+        if(this.state.lastSortKey){
+           var lastSortKeyString = 'lastSortKey='+this.state.lastSortKey;
+           var queryString = start + '&' + end + '&' + lastSortKeyString + '&' + nextString
+        }else{
+           var queryString = start + '&' + end + '&' + nextString
+        }
+        return this.client.getWithoutAuth(config.chefCommentsEndpoint + this.state.chefId + '?' + queryString)
             .then((res) => {
                 if (res.statusCode != 200 && res.statusCode!=202) {
-                    throw new Error('Fail getting past comments');
+                    throw res;
                 }
-                let comments = res.data.comments;
-                this.setState({ dataSource: this.state.dataSource.cloneWithRows(comments), showProgress:false, showNetworkUnavailableScreen:false, comments:comments });
+
+                if(res.data.comments && res.data.comments.length>0){
+                   this.state.comments = this.state.comments.concat(res.data.comments);
+                }
+
+                if(res.data.lastSortKey){
+                   this.state.lastSortKey = res.data.lastSortKey   
+                }else{
+                   this.setState({isAllCommentLoaded:true});
+                }
+                //console.log(this.state.comments)
+                //console.log(JSON.stringify(this.state.lastSortKey));
+                this.setState({dataSource: this.state.dataSource.cloneWithRows(this.state.comments), showProgress:false, showProgressBottom:false, showNetworkUnavailableScreen:false});
             }).catch((err)=>{
                 this.setState({showProgress: false,showNetworkUnavailableScreen:true});
                 commonAlert.networkError(err);
             });
+    }
+
+    loadMoreComments(){
+        if(this.state.comments.length>=10 && !this.state.isAllCommentLoaded){
+           this.fetchComments();
+        }
     }
 
     renderRow(comment){
@@ -91,33 +126,54 @@ class ChefCommentsPage extends Component {
     
     displayChefComment(comment){
          if(comment.chefComment){
-           var chefCommentSection = [(<View key={'chefNameCommentTimeView'} style={styleChefCommentsPage.chefNameCommentTimeView}>
+            var chefCommentSection = [(<View key={'chefNameCommentTimeView'} style={styleChefCommentsPage.chefNameCommentTimeView}>
                                             <Text style={styleChefCommentsPage.reviewerNameText}>{this.state.shopName}</Text>
                                             <Text style={styleChefCommentsPage.commentTimeText}>{dateRender.renderDate3(comment.chefCommentTime)}</Text>
-                                      </View>),
-                                     (<Text key={'commentText'} style={styleChefCommentsPage.commentText}>{comment.chefComment}</Text>)];
-           return chefCommentSection;
+                                       </View>),
+                                      (<Text key={'commentText'} style={styleChefCommentsPage.commentText}>{comment.chefComment}</Text>)];
+            return chefCommentSection;
         }
         return[];
    }
+
+   renderFooter(){
+       if(this.state.showProgressBottom){
+          return <LoadingSpinnerViewBottom/>
+       }else if(this.state.isAllCommentLoaded){
+          return <View style={styleChefCommentsPage.endOfCommentsView}>
+                   <Text style={styleChefCommentsPage.endOfCommentsText}>End of All Comments</Text>
+                 </View>
+       }else{
+          return null;
+       }
+   }
     
-    render() {
+   render(){
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
             loadingSpinnerView = <LoadingSpinnerViewFullScreen/>  
         }
         
-        if(this.state.comments && this.state.comments.length==0){
-           var  noReviewText = <Text style={styles.listViewEmptyText}>This chef does not have any review left</Text>
-        }
-        
-        var commentListView = <ListView style={styles.dishListViewWhite}
-                               dataSource = {this.state.dataSource}
-                               renderRow={this.renderRow.bind(this)}/>
+        var commentListView = null;
+        var noReviewText = null;
         var networkUnavailableView = null;
-        if(this.state.showNetworkUnavailableScreen){
-           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchComments.bind(this)} />
-           commentListView = null;
+        if(this.state.comments && this.state.comments.length==0){
+           if(!this.state.showProgress){
+              if(this.state.showNetworkUnavailableScreen){
+                 networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchComments.bind(this)} />
+              }else{
+                 noReviewText = <Text style={styles.listViewEmptyText}>This chef does not have any review left</Text>
+              }
+           }
+        }else if(this.state.comments && this.state.comments.length>0){
+           commentListView = <ListView style={styles.dishListViewWhite}
+                                       dataSource = {this.state.dataSource}
+                                       onEndReached={ this.loadMoreComments.bind(this) }
+                                       onEndReachedThreshold={0}
+                                       pageSize={10}
+                                       initialListSize={1}
+                                       renderFooter={this.renderFooter.bind(this)}
+                                       renderRow={this.renderRow.bind(this)}/>
         }
 
         return (
@@ -212,6 +268,17 @@ var styleChefCommentsPage = StyleSheet.create({
         color:'#4A4A4A',
         lineHeight:17*windowHeight/667.0,
     },
+    endOfCommentsView:{
+        height:50*windowHeight/667,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    endOfCommentsText:{
+        fontSize:14*windowHeight/667,
+        color:'#979797',
+        fontWeight:'400',
+    }
 }); 
 
 module.exports = ChefCommentsPage;
