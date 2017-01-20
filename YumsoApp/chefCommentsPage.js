@@ -61,7 +61,7 @@ class ChefCommentsPage extends Component {
     
     fetchComments() {
         //console.log("fetchComments!")
-        if(this.state.comments.length>=10 && !this.state.isAllCommentLoaded){
+        if(this.state.comments.length>=chefCommentPageSize && !this.state.isAllCommentLoaded){
            this.setState({showProgressBottom:true});
         }else{
            this.setState({showProgress:true});
@@ -100,7 +100,7 @@ class ChefCommentsPage extends Component {
     }
 
     loadMoreComments(){
-        if(this.state.comments.length>=10 && !this.state.isAllCommentLoaded){
+        if(this.state.comments.length>=chefCommentPageSize && !this.state.isAllCommentLoaded){
            this.fetchComments();
         }
     }

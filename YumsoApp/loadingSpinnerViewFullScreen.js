@@ -1,5 +1,5 @@
 var styles = require('./style');
-
+import {Bars} from 'react-native-loader';
 import React, {
   Component,
   StyleSheet,
@@ -16,7 +16,7 @@ class LoadingSpinnerViewFullScreen extends Component {
         return (
             <View style={loadingSpinnerViewFullScreenStyle.loaderView}>
                 <View style={loadingSpinnerViewFullScreenStyle.loaderWrapper}>
-                  <ActivityIndicatorIOS animating={true} color={'#FFFFFF'}  size="large" style={loadingSpinnerViewFullScreenStyle.loader}/>
+                  <Bars size={10} color="#FFCC33" />
                 </View>
             </View> 
         );
@@ -38,7 +38,7 @@ var loadingSpinnerViewFullScreenStyle = StyleSheet.create({
       alignItems:'center',
       backgroundColor:'#7c7c7c',
       height:70*windowHeight/667,
-      width:100*windowHeight/667,
+      width:70*windowHeight/667,
       opacity:0.7,
       borderWidth:0,
       borderRadius:9*windowHeight/667,

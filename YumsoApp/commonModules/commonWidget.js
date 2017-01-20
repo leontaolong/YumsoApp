@@ -14,7 +14,7 @@ class CommonWidget {
            return text;
         }else{
            var shortenedText = text.substr(0,lengthLimit-1);
-           var betterShortenedText = shortenedText.substr(0,Math.max(shortenedText.lastIndexOf(' '),shortenedText.lastIndexOf(','),shortenedText.lastIndexOf(';'),shortenedText.lastIndexOf('|')));
+           var betterShortenedText = shortenedText.substr(0,Math.max(shortenedText.lastIndexOf(' ')-1,shortenedText.lastIndexOf(',')-1,shortenedText.lastIndexOf(';')-1,shortenedText.lastIndexOf('|')-1));
            return betterShortenedText ? betterShortenedText + '...' : shortenedText+'...';
         }
     }

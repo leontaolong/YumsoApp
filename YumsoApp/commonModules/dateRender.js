@@ -81,6 +81,27 @@ class DateRender {
         return month + "/" + day + "/" + year + " " + this.formatTime2String(dateInMilliseconds);
     }
 
+    getDayOfWeek(dateInMilliseconds){
+        var days = ['Sun.','Mon.','Tues.','Wed.','Thurs.','Fri.','Sat.'];
+        var dateObj = new Date(dateInMilliseconds);
+        return days[dateObj.getDay()];
+    }
+
+    renderDate4(dateString) {
+        var dateInMilliseconds = new Date(dateString).getTime();
+        var todayInMillisecond = new Date().setHours(0, 0, 0, 0);
+        var tommorrowInMillisecond = todayInMillisecond + 60 * 60 * 24 * 1000;
+        var thedayaftertommorrowInMillisecond = tommorrowInMillisecond + 60 * 60 * 24 * 1000;
+        if (dateInMilliseconds >= todayInMillisecond && dateInMilliseconds < tommorrowInMillisecond) {
+            return 'Today ' + this.formatTime2String(dateString);
+        } else if (dateInMilliseconds >= tommorrowInMillisecond && dateInMilliseconds < thedayaftertommorrowInMillisecond) {
+            return 'Tomorrow ' + this.formatTime2String(dateString);
+        } else {
+            return this.getDayOfWeek(dateInMilliseconds) + ' ' + this.formatTime2String(dateString);
+        }
+        return dateString;
+    }
+
     renderTime1(timeInMilliseconds) {
         return timeInMilliseconds/(60*1000)<=60 ? timeInMilliseconds/(60*1000)+" min": timeInMilliseconds/(60*60*1000)+" hours";
     }
