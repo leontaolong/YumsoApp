@@ -6,7 +6,7 @@ var dateRender = require('./commonModules/dateRender');
 var AuthService = require('./authService');
 var backIcon = require('./icons/icon-back.png');
 var yumsoVerifiedIcon = require('./icons/icon-YumsoVerified.png');
-var chefQualificationIcon = require('./icons/icon-ChefQualification.png');
+var yumsoExclusiveIcon = require('./icons/icon-YumsoExclusive.png');
 var bestReviewedIcon = require('./icons/icon-BestReviewed.png');
 import Dimensions from 'Dimensions';
 
@@ -15,7 +15,7 @@ var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 var badges=[
             {icon:yumsoVerifiedIcon, label:'Yumso Verified'},
-            {icon:chefQualificationIcon, label:'Chef Qualification'},
+            {icon:yumsoExclusiveIcon, label:'Yumso Exclusive'},
             {icon:bestReviewedIcon, label:'Best Reviewed'},
            ];
 
@@ -54,7 +54,7 @@ class ShoppingCartPage extends Component {
         if(this.state.chef.yumsoVerifiedBadge){
             chefAllBadges.push(0);
         }
-        if(this.state.chef.chefQualificationdBadge){
+        if(this.state.chef.yumsoExclusiveBadge){
             chefAllBadges.push(1);
         }
         if(this.state.chef.bestReviewBadge){
