@@ -27,7 +27,6 @@ import React, {
   AsyncStorage,
   Alert,
   Picker,
-  Switch,
   ScrollView,
 } from 'react-native';
 
@@ -93,7 +92,6 @@ class MapPage extends Component {
         this.state = {
             showProgress:false,
             showMapView:true,
-            isSaveAddress:false,
             showAddNewAddressInputView:false,
             markers:mark?[mark]:[],
             eater:eater,
@@ -101,7 +99,7 @@ class MapPage extends Component {
             showApartmentNumber:false,
             usedSavedAddress:false,
             selectedAddress: this.props.initialLoc,
-            aptNumberViewYposition:windowHeight-windowHeight*0.074*3,
+            aptNumberViewYposition:windowHeight-windowHeight*0.074*2,
         };
         this.client = new HttpsClient(config.baseUrl, true);
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
@@ -113,23 +111,12 @@ class MapPage extends Component {
                 loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;  
             }
             let aptView = <View></View>;
-
-            let SwitchView = null
-            if(this.showHouseIcon){
-               SwitchView = <View style={{backgroundColor:'#fff',height:windowHeight*0.074,flexDirection:'row', justifyContent:'center',alignItems:'center'}}>
-                                 <Text style={styleMapPage.aptNumberViewTitle}>Save to Address Book </Text>
-                                 <Switch onValueChange={(value) => this.onSwitchChange(value)} value={this.state.isSaveAddress}/>
-                            </View>
-            }
             if(this.state.showApartmentNumber){
-               aptView = (<View key={'aptView'} style={{backgroundColor:'#fff', position:'absolute', flexDirection:'column', justifyContent:'center', 
-                                top: this.state.aptNumberViewYposition, left:0, right:0, height:windowHeight*0.074*2,}}>
-                              <View style={{backgroundColor:'#fff',height:windowHeight*0.074, flexDirection:'row', justifyContent:'center',alignItems:'center'}}>
-                                 <Text style={styleMapPage.aptNumberViewTitle}>Apt/Suite(optional) </Text>
-                                 <TextInput style={styleMapPage.aptNumberViewInput} onFocus = {()=>this.slideUpAptNumberView()} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
+               aptView = (<View key={'aptView'} style={{backgroundColor:'#fff', position:'absolute', flexDirection:'row', justifyContent:'center', 
+                                top: this.state.aptNumberViewYposition, left:0, right:0, height:windowHeight*0.074,}}>
+                              <Text style={styleMapPage.aptNumberViewTitle}>Apt/Suite# </Text>
+                              <TextInput style={styleMapPage.aptNumberViewInput} onFocus = {()=>this.slideUpAptNumberView()} clearButtonMode={'while-editing'} returnKeyType = {'done'} autoCorrect={false}
                                maxLength={20} value={this.state.apartmentNumber} keyboardType={'numbers-and-punctuation'} onSubmitEditing = {()=>this.slideDownAptNumberView()} onChangeText = {(text) => this.setState({ apartmentNumber: text })}/>
-                              </View>
-                              {SwitchView}
                           </View>);
             }   
             
@@ -427,30 +414,38 @@ class MapPage extends Component {
             //     return;   
             // }
             if(this.state.showApartmentNumber && (!this.state.apartmentNumber || !this.state.apartmentNumber.trim())){
-               this.state.selectedAddress.apartmentNumber = null;
-               if (this.state.selectedAddress) {
-                   if (this.state.eater) {
-                       if (this.onSelectAddress) {
-                           this.onSelectAddress(this.state.selectedAddress);
-                       }
-                       if (this.props.onSelectAddress) {
-                           this.props.onSelectAddress(this.state.selectedAddress);
-                       }
-                       this.state.selectedAddress = undefined;
-                   } else {
-                       if (this.onSelectAddress) {
-                           this.onSelectAddress(this.state.selectedAddress);
-                       }
-                       if (this.props.onSelectAddress) {
-                           this.props.onSelectAddress(this.state.selectedAddress);
-                       }
-                       this.state.selectedAddress = undefined;
-                  }
-               }
-               return;
+                Alert.alert( 'Warning', 
+                             'Wouldn\'t you specify your Apt./Suite number ?',
+                             [ { text: 'Not Applicable', onPress:()=>{
+                                        this.state.selectedAddress.apartmentNumber = null;
+                                        if (this.state.selectedAddress) {
+                                            if (this.state.eater) {
+                                                if (this.onSelectAddress) {
+                                                    this.onSelectAddress(this.state.selectedAddress);
+                                                }
+                                                if (this.props.onSelectAddress) {
+                                                    this.props.onSelectAddress(this.state.selectedAddress);
+                                                }
+                                                this.state.selectedAddress = undefined;
+                                            } else {
+                                                if (this.onSelectAddress) {
+                                                    this.onSelectAddress(this.state.selectedAddress);
+                                                }
+                                                if (this.props.onSelectAddress) {
+                                                    this.props.onSelectAddress(this.state.selectedAddress);
+                                                }
+                                                this.state.selectedAddress = undefined;
+                                            }
+                                       }
+                                   }
+                               },
+                               { text: 'Set Apt./Suite Number'} ,
+                              ]
+                           );
+                return;
             }
             if (this.state.apartmentNumber === undefined && !this.usedSavedAddress) {     
-                this.setState({showApartmentNumber: true, apartmentNumber: this.props.initialLoc ? this.props.initialLoc.apartmentNumber : undefined});
+                this.setState({showApartmentNumber: true, apartmentNumber: this.props.initialLoc? this.props.initialLoc.apartmentNumber:undefined});
                 return;
             }
             if(!this.usedSavedAddress) this.state.selectedAddress.apartmentNumber = this.state.apartmentNumber.trim(); //todo: state management will add the apt and save next time in edit profile.
@@ -482,7 +477,7 @@ class MapPage extends Component {
     
     onPressHouseIcon() {
         this.setState({selectedAddress:'',searchAddressResultView:'',searchAddress:''});
-        this.setState({showMapView: this.state.showMapView ? false : true});
+        this.setState({showMapView: this.state.showMapView? false:true});
     }
     
     //Locate the map view to current user location
@@ -608,19 +603,6 @@ class MapPage extends Component {
            })
     }
     
-    onSwitchChange(value){
-        if(value){
-           for(let oneAddress of this.state.eater.addressList){
-               if(address.formatted_address===oneAddress.formatted_address){
-                  Alert.alert('Warning', 'Address already exists', [{ text: 'OK' }]);
-                  this.setState({isSaveAddress: false});          
-                  return;
-               }
-           } 
-        }
-        this.setState({isSaveAddress: value});
-    }
-
     navigateBack() {
         if(!this.props.navigator){
              if(this.props.onCancel){
