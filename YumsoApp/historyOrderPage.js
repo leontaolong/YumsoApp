@@ -11,7 +11,10 @@ var RefreshableListView = require('react-native-refreshable-listview');
 var commonAlert = require('./commonModules/commonAlert');
 var commonWidget = require('./commonModules/commonWidget');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
-var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
+var LoadMoreBottomComponent = require('./loadMoreBottomComponent');
+const eaterOrderPageSize = 7;
+const firstTimeLoadPageSize = 14;
 
 import React, {
   Component,
@@ -45,10 +48,19 @@ class HistoryOrderPage extends Component {
             dataSourceNeedReview: ds.cloneWithRows([]),
             dataSourceCompleted: ds.cloneWithRows([]),
             showProgress:false,
+            showProgressBottom:false,
             showCommentBox:false,
             showNetworkUnavailableScreen:false,
             eater:eater,
+            orderPending:[],
+            orderNeedReview:[],
+            orderCompleted:[],
             orderListSelect:'orderCompleted',
+            orders:[],
+            comments:[],
+            lastSortKeyOrders:null, 
+            lastSortKeyComments:null,
+            isAllOrdersLoaded:false,
         };
         this.responseHandler = function (response, msg) {
             if(response.statusCode==400){
@@ -81,43 +93,81 @@ class HistoryOrderPage extends Component {
     }
     
     async fetchOrderAndComments() {
-        const start = 'start=0';
-        const end = 'end='+ new Date().getTime();
+        const currentTime = new Date().getTime();
+        //const oneWeekAgo = currentTime - 7*24*60*60*1000;
+        const end = 'end=' + currentTime;
+        const nextString = 'next=' + eaterOrderPageSize;
+        if(!this.state.lastSortKeyOrders){//first time load all 7 days order
+           var start = 'start=0';
+           var queryStringOrders = start + '&' + end + '&next=' + firstTimeLoadPageSize;
+        }else{
+           var start = 'start=0';
+           var lastSortKeyOrdersString = 'lastSortKey=' + this.state.lastSortKeyOrders;
+           var queryStringOrders = start + '&' + end + '&' + lastSortKeyOrdersString + '&' + nextString
+        }
+
+        if(!this.state.lastSortKeyComments){//first time load all 7 days order
+           const start = 'start=0';
+           var queryStringComments = start + '&' + end + '&next= ' + firstTimeLoadPageSize;
+        }else{
+           var start = 'start=0';
+           var lastSortKeyCommentsString = 'lastSortKey=' + this.state.lastSortKeyComments;
+           var queryStringComments = start + '&' + end + '&' + lastSortKeyCommentsString + '&' + nextString
+        }  
+
         let eater = await AuthService.getPrincipalInfo();
         try{
-          var pastOneWeekOrder = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+start+'&'+end);
-          this.setState({showProgress:false,showNetworkUnavailableScreen:false})
+          var resOrders = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+queryStringOrders);
+          console.log(resOrders);
+          this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:false})
         }catch(err){
-          this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+          this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:true});
           commonAlert.networkError(err);
           return;
         }
 
         try{
-          var pastOneWeekComment = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+start+'&'+end);
-          this.setState({showProgress:false,showNetworkUnavailableScreen:false})
+          var resComments = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+queryStringComments);
+          this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:false})
         }catch(err){
-          this.setState({showProgress: false,showNetworkUnavailableScreen:true});
+          this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:true});
           commonAlert.networkError(err);
           return;
         }
     
-        if (pastOneWeekOrder && pastOneWeekOrder.statusCode != 200 && pastOneWeekOrder.statusCode != 202) {
-            this.setState({showProgress:false});
-            return this.responseHandler(pastOneWeekOrder);
+        if (resOrders && resOrders.statusCode != 200 && resOrders.statusCode != 202) {
+            this.setState({showProgress:false,showProgressBottom:false,});
+            return this.responseHandler(resOrders);
         }
-        if (pastOneWeekComment && pastOneWeekOrder.statusCode != 200 && pastOneWeekOrder.statusCode != 202) {
-            this.setState({showProgress:false});  
-            return this.responseHandler(pastOneWeekOrder);
+        if (resComments && resComments.statusCode != 200 && resComments.statusCode != 202) {
+            this.setState({showProgress:false,showProgressBottom:false,});  
+            return this.responseHandler(resComments);
         }
 
-        if (pastOneWeekOrder && pastOneWeekOrder.data && pastOneWeekComment && pastOneWeekComment.data){
-            let orders = pastOneWeekOrder.data.orders;
-            let comments = pastOneWeekComment.data.comments;
-            //console.log(orders); 
-            for(var comment of comments){
-                for(var order of orders){
-                    if(order.orderId==comment.orderId){
+        if (resOrders.data || resComments.data){
+            if(!this.state.lastSortKeyOrders && !this.state.lastSortKeyComments){
+               this.state.orders = resOrders.data.orders;
+               this.state.comments = resComments.data.comments;
+            }else{
+               this.state.orders = this.state.orders.concat(resOrders.data.orders);
+               this.state.comments = this.state.comments.concat(resComments.data.comments);
+            }
+
+            if(resOrders.data.lastSortKey && this.state.lastSortKeyOrders != resOrders.data.lastSortKey){
+               this.state.lastSortKeyOrders = resOrders.data.lastSortKey   
+            }else if(!resOrders.data.lastSortKey){
+               this.setState({isAllOrdersLoaded:true});
+            }else{
+               return;
+            }
+
+            if(resComments.data.lastSortKey){
+               this.state.lastSortKeyComments = resComments.data.lastSortKey   
+            }
+
+            for(var comment of this.state.comments){
+                for(var order of this.state.orders){
+                    if(order.orderId == comment.orderId){
                        order.comment = comment;
                     }
                 }
@@ -126,7 +176,7 @@ class HistoryOrderPage extends Component {
             var orderPending = [];
             var orderNeedReview = [];
             var orderCompleted = [];
-            for(var oneOrder of orders){
+            for(var oneOrder of this.state.orders){
                 if(commonWidget.isOrderPending(oneOrder)){
                    orderPending.push(oneOrder);
                 }else if(commonWidget.isOrderCommentable(oneOrder)){
@@ -135,20 +185,29 @@ class HistoryOrderPage extends Component {
                    orderCompleted.push(oneOrder);
                 }
             }
+            console.log("AllOrder: ");
+            console.log(this.state.orders);
+
             this.setState({
                            dataSourceOrderPending: this.state.dataSourceOrderPending.cloneWithRows(orderPending),
                            dataSourceNeedReview: this.state.dataSourceNeedReview.cloneWithRows(orderNeedReview),
                            dataSourceCompleted: this.state.dataSourceCompleted.cloneWithRows(orderCompleted),
-                           showProgress:false, 
+                           showProgress:false,
+                           showProgressBottom:false,
                            orderPending:orderPending,
                            orderNeedReview:orderNeedReview,
                            orderCompleted:orderCompleted,
-                           orders:orders,
+                           orders:JSON.parse(JSON.stringify(this.state.orders)),
                          });
         }
     }
      
-    
+    loadMoreOrders(){
+           console.log('loadMoreOrders');
+           this.setState({showProgressBottom:true});        
+           this.fetchOrderAndComments();
+    }
+
     renderRow(order){
         if(commonWidget.isOrderCommentable(order)){
            var action = "Review Order";
@@ -197,6 +256,13 @@ class HistoryOrderPage extends Component {
                     </TouchableOpacity>
                  );
     }
+
+    renderFooter(){
+       console.log(this.state.orders)
+       if(this.state.orders && this.state.orders.length > 0 && this.state.orders.length >= firstTimeLoadPageSize){
+         return <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>;
+       }
+   }
         
     render() {
         var loadingSpinnerView = null;
@@ -206,38 +272,37 @@ class HistoryOrderPage extends Component {
         var orderListView = null;
         var networkUnavailableView = null;
         if(this.state.showNetworkUnavailableScreen){
-           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchOrderAndComments.bind(this)} />
+           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.componentDidMount.bind(this)} />
         }else{
-           var orderPendingListView = <RefreshableListView
+           if(this.state.orderListSelect=='orderPending'){
+              if(this.state.orderPending && this.state.orderPending.length==0 && !this.state.showProgress){
+                 var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order pending.</Text>
+              }
+              //console.log('orderPending')
+              var orderListView = <RefreshableListView
                                             dataSource = {this.state.dataSourceOrderPending}
                                             renderRow={this.renderRow.bind(this) }
                                             loadData={this.fetchOrderAndComments.bind(this)}/>
-            
-           var orderNeedReviewListView = <RefreshableListView
-                                            dataSource = {this.state.dataSourceNeedReview}
-                                            renderRow={this.renderRow.bind(this) }
-                                            loadData={this.fetchOrderAndComments.bind(this)}/>
-           
-           var orderCompletedListView = <RefreshableListView
-                                            dataSource = {this.state.dataSourceCompleted}
-                                            renderRow={this.renderRow.bind(this) }
-                                            loadData={this.fetchOrderAndComments.bind(this)}/>
-
-           if(this.state.orderListSelect=='orderPending'){
-              if(this.state.orderPending && this.state.orderPending.length==0){
-                 var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order pending.</Text>
-              }
-              orderListView = orderPendingListView;
            }else if(this.state.orderListSelect=='orderNeedReview'){
-              if(this.state.orderNeedReview && this.state.orderNeedReview.length==0){
+              if(this.state.orderNeedReview && this.state.orderNeedReview.length==0 && !this.state.showProgress){
                  var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order needs review.</Text>
               }
-              orderListView = orderNeedReviewListView;
+              //console.log('orderNeedReview')
+              var orderListView =  <RefreshableListView
+                                    dataSource = {this.state.dataSourceNeedReview}
+                                    renderRow={this.renderRow.bind(this) }
+                                    loadData={this.fetchOrderAndComments.bind(this)}/>;
             }else{
-              if(this.state.orderCompleted && this.state.orderCompleted.length==0){
+              //console.log('completed')
+              var orderListView = <ListView
+                                   dataSource = {this.state.dataSourceCompleted}
+                                   renderRow={this.renderRow.bind(this) }
+                                   renderFooter={ this.renderFooter.bind(this) }
+                                   pageSize={10}
+                                   initialListSize={1}/>;
+             if(this.state.orderCompleted && this.state.orderCompleted.length==0 && !this.state.showProgress){
                  var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order completed.</Text>
               }
-              orderListView = orderCompletedListView;
            }
         }
         
@@ -257,7 +322,8 @@ class HistoryOrderPage extends Component {
                </View>
                <View style={styleHistoryOrderPage.orderListSelectView}>
                    <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderPending') } 
-                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',backgroundColor:this.renderOrderListOnSelectColor('orderPending')}}>
+                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                    backgroundColor:this.renderOrderListOnSelectColor('orderPending')}}>
                       <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Pending</Text>
                    </TouchableHighlight>
                    <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderNeedReview') } 
@@ -266,7 +332,8 @@ class HistoryOrderPage extends Component {
                       <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Need Review</Text>
                    </TouchableHighlight>
                    <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderCompleted') }
-                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',backgroundColor:this.renderOrderListOnSelectColor('orderCompleted')}}>
+                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                    backgroundColor:this.renderOrderListOnSelectColor('orderCompleted')}}>
                       <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Completed</Text>
                    </TouchableHighlight>
                 </View>
@@ -286,13 +353,16 @@ class HistoryOrderPage extends Component {
         if(orderListSelectName!=this.state.orderListSelect){
            this.setState({orderListSelect:orderListSelectName});
         }
+        // if(orderListSelectName == 'orderPending' || orderListSelectName == 'orderNeedReview'){
+        //    this.setState({lastSortKeyOrders:null,lastSortKeyComments:null,});
+        // }
     }
 
     renderOrderListOnSelectColor(orderListSelectName){
          if(this.state.orderListSelect == orderListSelectName){
-             return '#FFFFFF';
+            return '#FFFFFF';
          }else{
-             return '#F5F5F5';
+            return '#F5F5F5';
          }
     }
 

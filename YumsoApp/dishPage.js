@@ -10,6 +10,8 @@ var likedIcon = require('./icons/icon-liked-onheader.png');
 var bowlIcon = require('./icons/icon_bowl.png');
 var plusIcon = require('./icons/icon-plus.png');
 var minusIcon = require('./icons/icon-minus.png');
+var commonWidget = require('./commonModules/commonWidget');
+
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -64,7 +66,7 @@ class DishPage extends Component {
                       </View>
                    </TouchableHighlight>    
                    <View style={styles.titleView}>
-                      <Text style={styles.titleText}>{this.state.dish.dishName}</Text>
+                      <Text style={styles.titleText}>{commonWidget.getTextLengthLimited(this.state.dish.dishName,28)}</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>

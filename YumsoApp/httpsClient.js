@@ -3,7 +3,7 @@ var AsyncStorage = require('react-native').AsyncStorage;
 var commonAlert = require('./commonModules/commonAlert');
 var config = require('./config');
 const AppVersion = config.AppVersion;
-const timeoutLength = 20000;
+const timeoutLength = config.timeoutLength;
 
 var HttpsClient = function (host, useTokenFromStorage, username, password, authEndpoint) {    
     var self = this;

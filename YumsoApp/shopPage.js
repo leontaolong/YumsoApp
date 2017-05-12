@@ -94,7 +94,7 @@ class ShopPage extends Component {
     async fetchDishesAndSchedules() {
         let chefId = this.state.chefId;
         const start = 'start='+new Date().getTime();
-        const end = 'end='+new Date().setDate(new Date().getDate()+6);
+        const end = 'end='+new Date().setDate(new Date().getDate()+8);
         
         try{
           this.setState({ showProgress: true });
@@ -175,18 +175,37 @@ class ShopPage extends Component {
                }else{
                   var  likeIcon = notlikedIcon;
                }
-            
+
+               if(this.state.chef.chefProfilePicUrls && this.state.chef.chefProfilePicUrls.small){
+                  var chefProfilePic = this.state.chef.chefProfilePicUrls.small;
+               }else{
+                  var chefProfilePic = this.state.chef.chefProfilePic;
+               }
+
+               if(this.state.chef.chefShopPicUrls){
+                  var shopPicturesMedium = [];
+                  for(var oneShopPhoto in this.state.chef.chefShopPicUrls){
+                      shopPicturesMedium.push(this.state.chef.chefShopPicUrls[oneShopPhoto].medium)
+                  }
+               }
+
+               if(shopPicturesMedium && shopPicturesMedium.length>0){
+                  var shopPictures = shopPicturesMedium;
+               }else{
+                  var shopPictures = this.state.chef.shopPictures;
+               }
+
                return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
                             <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={false}
                                 dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
-                                {this.state.chef.shopPictures.map((shopPicture) => {
+                                {shopPictures.map((shopPicture) => {
                                     return <Image key={'shopPicture'} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
                                 }) }
                             </Swiper>
                         </View>),                        
                        (<View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
                           <TouchableHighlight style={styleShopPage.chefPhotoView} underlayColor={'transparent'}>
-                            <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShopPage.chefPhoto}/>
+                            <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
                           </TouchableHighlight>
                             
                           <View style={styleShopPage.shopInfoSection}>
@@ -377,14 +396,14 @@ class ShopPage extends Component {
                         <View style={styleShoppingCartPage.shoppingCartInfoView}>
                             <View style={styleShoppingCartPage.dishNamePriceView}>
                                 <View style={styleShoppingCartPage.dishNameView}>
-                                    <Text style={styleShoppingCartPage.dishNameText}>{dish.dishName}</Text>
+                                    <Text style={styleShoppingCartPage.dishNameText}>{commonWidget.getTextLengthLimited(dish.dishName,28)}</Text>
                                 </View>
                                 <View style={styleShoppingCartPage.dishPriceView}>
                                     <Text style={styleShoppingCartPage.dishPriceText}>${dish.price}</Text>   
                                 </View>
                             </View>                         
                             <View style={styleShoppingCartPage.dishIngredientView}>
-                                <Text style={styleShoppingCartPage.dishIngredientText}>{commonWidget.getTextLengthLimited(dish.ingredients,28)}</Text>
+                                <Text style={styleShoppingCartPage.dishIngredientText}>{commonWidget.getTextLengthLimited(dish.ingredients,30)}</Text>
                             </View>                                     
                             {chooseQuantityView}                  
                         </View>
@@ -549,6 +568,22 @@ class ShopPage extends Component {
     }
 
     moveHighlightedDishToTop(dishes){
+        //Apply the order chef setDate
+        var dishOrderConfig = this.state.chef.dishOrderConfig;
+        if(dishOrderConfig){
+           dishes.sort(function (dishA, dishB) {
+                               if(dishOrderConfig[dishA.dishId]==undefined){
+                                  dishOrderConfig[dishA.dishId] = 100000;
+                               }
+                               if(dishOrderConfig[dishB.dishId]==undefined){
+                                  dishOrderConfig[dishB.dishId] = 100000;
+                               }
+                               if(dishOrderConfig[dishA.dishId]==dishOrderConfig[dishB.dishId]){
+                                  return dishA.createdTime - dishB.createdTime;
+                               }
+                               return  parseInt(dishOrderConfig[dishA.dishId]) - parseInt(dishOrderConfig[dishB.dishId]) 
+                      })
+        }
         let highlightDishes = [];
         let unhighlightDishes = [];
         for(var oneDish of dishes){
@@ -558,6 +593,7 @@ class ShopPage extends Component {
                unhighlightDishes.push(oneDish);
             }
         }
+
         return highlightDishes.concat(unhighlightDishes);
     }
     

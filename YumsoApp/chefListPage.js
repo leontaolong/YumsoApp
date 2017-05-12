@@ -119,7 +119,7 @@ class ChefListPage extends Component {
            this.setState({showProgress:true});
            await this.getLocation().catch((err)=>{
                  this.setState({GPSproxAddress:undefined,showProgress:false,pickedAddress:{lat:47.6062095, lng:-122.3320708}}); 
-                 commonAlert.locationError(err);
+                 //commonAlert.locationError(err);
            });//todo: really wait??
            this.setState({showProgress:false})
         }
@@ -240,15 +240,21 @@ class ChefListPage extends Component {
         } 
         //console.log(chef);
         var nextDeliverTimeView = null;
-        var EOD = new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000;
-        if(chef.nextDeliverTime && chef.nextDeliverTime>this.state.currentTime && chef.nextDeliverTime<EOD){
+        var oneWeekLater = new Date().setHours(0, 0, 0, 0) + 7 * 24 * 60 * 60 * 1000;
+        if(chef.nextDeliverTime && chef.nextDeliverTime>this.state.currentTime && chef.nextDeliverTime<oneWeekLater){
            nextDeliverTimeView = <View style={styleChefListPage.nextDeliverTimeView}>
-                                      <Text style={styleChefListPage.nextDeliverTimeText}>Today's Next: {dateRender.formatTime2StringShort(chef.nextDeliverTime)}</Text>
+                                      <Text style={styleChefListPage.nextDeliverTimeText}>Next: {dateRender.renderDate4(chef.nextDeliverTime)}</Text>
                                  </View>;
         }else{
            nextDeliverTimeView = <View style={styleChefListPage.nextDeliverTimeView}>
-                                      <Text style={styleChefListPage.nextDeliverTimeText}>Today's Next: None</Text>
+                                      <Text style={styleChefListPage.nextDeliverTimeText}>Next: None in 7 days</Text>
                                  </View>;
+        }
+
+        if(chef.chefProfilePicUrls && chef.chefProfilePicUrls.small){
+           var chefProfilePic = chef.chefProfilePicUrls.small;
+        }else{
+           var chefProfilePic = chef.chefProfilePic;
         }
 
         return (
@@ -271,7 +277,7 @@ class ChefListPage extends Component {
                 </View>
                 <TouchableHighlight underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
                 <View style={styleChefListPage.shopInfoView}>
-                    <Image source={{ uri: chef.chefProfilePic }} style={styleChefListPage.chefPhoto}/>
+                    <Image source={{ uri: chefProfilePic }} style={styleChefListPage.chefPhoto}/>
                     <View style={styleChefListPage.shopInfoSection}>
                        <View style={styleChefListPage.shopInfoRow1}>
                          <View style={styleChefListPage.shopNameView}>
@@ -327,9 +333,9 @@ class ChefListPage extends Component {
         }
 
         if(this.state.showLocSearch){
-            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);   
+           return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);   
         }else if(this.state.showChefSearch){
-            return <View style={styles.greyContainer}>
+           return <View style={styles.greyContainer}>
                        <View style={styles.headerBannerView}>    
                             <TouchableHighlight style={styles.headerLeftView} onPress={() => this.setState({
                                                                 showChefSearch: false,
@@ -493,8 +499,8 @@ class ChefListPage extends Component {
     
     mapDone(address){
          if(address){
-             Alert.alert( '', 'Your search location is set to '+address.formatted_address,[ { text: 'OK' }]); 
-             //todo: get chef use location info;                 
+            Alert.alert( '', 'Your search location is set to '+address.formatted_address,[ { text: 'OK' }]); 
+            //todo: get chef use location info;                 
          }
          this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, isMenuOpen: false, showProgress: true});
          this.componentDidMount(); //todo: we refresh it like this?
