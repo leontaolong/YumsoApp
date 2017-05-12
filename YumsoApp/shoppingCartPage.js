@@ -134,7 +134,7 @@ class ShoppingCartPage extends Component {
                         </View>
                         <View style={styleShoppingCartPage.totalPriceView}>
                              {actualQuantityText} 
-                             <Text style={styleShoppingCartPage.totalPriceText}>${dish.price*quantity}</Text>
+                             <Text style={styleShoppingCartPage.totalPriceText}>${(dish.price*quantity).toFixed(2)}</Text>
                         </View>                              
                     </View>                        
                 </View>
