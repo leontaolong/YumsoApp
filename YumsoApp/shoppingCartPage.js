@@ -374,14 +374,51 @@ class ShoppingCartPage extends Component {
            this.refs.listView.scrollTo({x:0, y:windowHeight*0.075-listViewBottomToScreenBottom, animated: true})
         }
     }
+
+    submitAddress(address){
+        if(!address){
+           return;
+        }
+        let eater = this.state.eater;
+        if(eater.addressList){
+           eater.addressList.push(address);
+        }else{
+           eater['addressList']=[];
+           eater.addressList.push(address);
+        }
+
+        this.setState({showProgress:true});
+        return this.client.postWithAuth(config.eaterUpdateEndpoint, { eater: eater })
+            .then((res) => {
+                if (res.statusCode != 200 && res.statusCode != 202) {
+                    this.setState({ showProgress: false });                
+                    return this.responseHandler(res);
+                }
+                for(let prop in eater){
+                    this.state.eater[prop] = eater[prop];
+                }
+                return AuthService.updateCacheEater(this.state.eater)
+                .then(() => {
+                    //Alert.alert('Success', 'Successfully updated your address', [{ text: 'OK' }]);
+                    this.setState({ eater: this.state.eater, showProgress: false });
+                    this.state.callback(this.state.eater);
+                }).catch((err)=>{
+                    this.setState({showProgress: false});
+                    alert(err.message);
+                });
+        }).catch((err)=>{
+            this.setState({showProgress: false});
+            commonAlert.networkError(err);
+        });
+    }
         
     mapDone(address){
-         let aptmentNumberText = address.apartmentNumber ? ' Apt/Suite# '+address.apartmentNumber : '';
+         let apartmentNumberText = address.apartmentNumber ? ' Apt/Suite# '+address.apartmentNumber : '';
          if(address){
-             Alert.alert( '', 'Your delivery location is set to '+address.formatted_address+aptmentNumberText,[ { text: 'OK' }]); 
+            Alert.alert( '', 'Your delivery location is set to '+address.formatted_address+apartmentNumberText,[ { text: 'OK' }]); 
          }
          if(this.state.deliveryAddress && this.state.deliveryAddress.formatted_address!==address.formatted_address){
-             this.setState({priceIsConfirmed:false});
+            this.setState({priceIsConfirmed:false});
          }
          this.setState({selectDeliveryAddress:false, deliveryAddress:address});
     }
@@ -392,46 +429,46 @@ class ShoppingCartPage extends Component {
     
     addToShoppingCart(dish){
         if(this.state.selectedTime==='All Dishes'){
-            Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
-            return;  
+           Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
+           return;  
         }
         if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity <= 0){
-            Alert.alert( 'Warning', 'No more ' + dish.dishName +' available',[ { text: 'OK' }]);
-            return;          
+           Alert.alert( 'Warning', 'No more ' + dish.dishName +' available',[ { text: 'OK' }]);
+           return;          
         }    
         this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity-=1;
         if(!this.state.shoppingCart[this.state.selectedTime]){
-            this.state.shoppingCart[this.state.selectedTime] = {};
+           this.state.shoppingCart[this.state.selectedTime] = {};
         }
         if(this.state.shoppingCart[this.state.selectedTime][dish.dishId]){
-            this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity+=1;
+           this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity+=1;
         }else{
-            this.state.shoppingCart[this.state.selectedTime][dish.dishId] = {dish:dish, quantity:1};
+           this.state.shoppingCart[this.state.selectedTime][dish.dishId] = {dish:dish, quantity:1};
         }
         this.getTotalPrice();
     }
     
     removeFromShoppingCart(dish){
         if(this.state.selectedTime==='All Dishes'){
-            Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
-            return;  
+           Alert.alert( 'Warning', 'Please select a delivery time',[ { text: 'OK' }]);
+           return;  
         }
         if(!this.state.shoppingCart[this.state.selectedTime]){
             return;
         }   
         if(this.state.shoppingCart[this.state.selectedTime][dish.dishId] && this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity>0){
-            this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity-=1;
-            this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+=1;
-            if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity>=0){
-                if(this.state.dishUnavailableSet && this.state.dishUnavailableSet[dish.dishId]){
-                    delete this.state.dishUnavailableSet[dish.dishId];   //todo: need setstate to ensure dish actualy quantity text is gone?      
-                }
+           this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity-=1;
+           this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+=1;
+           if(this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity>=0){
+              if(this.state.dishUnavailableSet && this.state.dishUnavailableSet[dish.dishId]){
+                 delete this.state.dishUnavailableSet[dish.dishId];   //todo: need setstate to ensure dish actualy quantity text is gone?      
+              }
             }
             if(this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity===0){
-                delete this.state.shoppingCart[this.state.selectedTime][dish.dishId];
-                if(Object.keys(this.state.shoppingCart[this.state.selectedTime])===0){
-                    delete this.state.shoppingCart[this.state.selectedTime];
-                }
+               delete this.state.shoppingCart[this.state.selectedTime][dish.dishId];
+               if(Object.keys(this.state.shoppingCart[this.state.selectedTime])===0){
+                  delete this.state.shoppingCart[this.state.selectedTime];
+               }
             }
         } 
         this.getTotalPrice();
