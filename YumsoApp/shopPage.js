@@ -188,12 +188,15 @@ class ShopPage extends Component {
                       shopPicturesMedium.push(this.state.chef.chefShopPicUrls[oneShopPhoto].medium)
                   }
                }
+               
+            // Temporarily deprecate this chunk because the image quality of medium pictures are not good 
+            //    if(shopPicturesMedium && shopPicturesMedium.length>0){
+            //       var shopPictures = shopPicturesMedium;
+            //    }else{
+            //       var shopPictures = this.state.chef.shopPictures;
+            //    }
 
-               if(shopPicturesMedium && shopPicturesMedium.length>0){
-                  var shopPictures = shopPicturesMedium;
-               }else{
-                  var shopPictures = this.state.chef.shopPictures;
-               }
+               var shopPictures = this.state.chef.shopPictures;
 
                return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
                             <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={false}
