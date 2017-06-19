@@ -251,6 +251,13 @@ class ChefListPage extends Component {
                                  </View>;
         }
 
+        var yumsoExclusiveLabelView = null;
+        if(chef.yumsoExclusiveBadge){
+           yumsoExclusiveLabelView = <View style={styleChefListPage.yumsoExclusiveLabelView}>
+                                          <Text style={styleChefListPage.yumsoExclusiveLabelText}>Yumso Exclusive</Text>
+                                     </View>
+        }
+
         if(chef.chefProfilePicUrls && chef.chefProfilePicUrls.small){
            var chefProfilePic = chef.chefProfilePicUrls.small;
         }else{
@@ -274,6 +281,7 @@ class ChefListPage extends Component {
                           })}
                     </Swiper>
                     {nextDeliverTimeView}
+                    {yumsoExclusiveLabelView}
                 </View>
                 <TouchableHighlight underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
                 <View style={styleChefListPage.shopInfoView}>
@@ -1089,7 +1097,22 @@ var styleChefListPage = StyleSheet.create({
     nextDeliverTimeText:{
         color:'#4A4A4A',
         fontSize:12
-    }    
+    },
+    yumsoExclusiveLabelView:{
+        marginTop:-windowHeight*0.221,
+        paddingHorizontal:7,
+        paddingVertical:3,
+        flexDirection: 'column',
+        alignItems:'center',
+        justifyContent:'center',
+        alignSelf:'flex-end',
+        backgroundColor:'#ff5000',
+    },
+    yumsoExclusiveLabelText:{
+        color:'#fff',
+        fontSize:12*windowHeight/667,
+        fontWeight:'500',
+    },   
 });
 
 var styleFilterPage = StyleSheet.create({
