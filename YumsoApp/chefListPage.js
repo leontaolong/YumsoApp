@@ -1099,14 +1099,18 @@ var styleChefListPage = StyleSheet.create({
         fontSize:12
     },
     yumsoExclusiveLabelView:{
-        marginTop:-windowHeight*0.221,
-        paddingHorizontal:7,
-        paddingVertical:3,
+        marginTop:-windowHeight*0.24,
+        paddingHorizontal:7*windowHeight/667,
+        paddingVertical:3*windowHeight/667,
         flexDirection: 'column',
         alignItems:'center',
         justifyContent:'center',
         alignSelf:'flex-end',
         backgroundColor:'#ff5000',
+        borderRadius: 7*windowHeight/667, 
+        borderWidth: 0, 
+        overflow: 'hidden',
+        marginRight:7,
     },
     yumsoExclusiveLabelText:{
         color:'#fff',
