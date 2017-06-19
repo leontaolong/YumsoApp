@@ -129,7 +129,8 @@ class OrderDetailPage extends Component {
     renderHeader(){
         //Render 'delivered' status
         var ETAView=null;
-        if(this.state.showDeliverStatusView){  
+        if(this.state.showDeliverStatusView){
+           //if(this.state.order.orderStatus.toLowerCase()=='delivered' || this.state.order.orderStatus.toLowerCase()=='arrived'){  
            if(this.state.order.orderStatus.toLowerCase()=='delivered'){
               var deliverTimeView = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverTimeView}>
                                         <Text style={styleOrderDetailPage.deliverTimeText}>
@@ -189,7 +190,7 @@ class OrderDetailPage extends Component {
                                       Got problem with your order? Call us at  
                                    </Text> 
                                    <Text style={styles.infoBannerLink} onPress={()=>this.dialThisNumber('2066012584')}>
-                                      (206)601-2584
+                                      (206)225-8636
                                    </Text>
                                 </View>
             return [deliverTimeView,ETAView,contactUsView];
