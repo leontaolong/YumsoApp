@@ -1080,7 +1080,7 @@ var styleChefListPage = StyleSheet.create({
         alignSelf:'center',
     },
     nextDeliverTimeView:{
-        marginTop:-windowHeight*0.388+7,
+        marginTop:-windowHeight*0.388+7*windowHeight/667,
         paddingHorizontal:7,
         paddingVertical:3,
         flexDirection: 'column',
@@ -1099,7 +1099,7 @@ var styleChefListPage = StyleSheet.create({
         fontSize:12
     },
     yumsoExclusiveLabelView:{
-        marginTop:-windowHeight*0.24,
+        marginTop:windowHeight*0.305,
         paddingHorizontal:7*windowHeight/667,
         paddingVertical:3*windowHeight/667,
         flexDirection: 'column',
