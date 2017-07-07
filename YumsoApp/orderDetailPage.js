@@ -189,7 +189,7 @@ class OrderDetailPage extends Component {
                                    <Text style={styles.infoBannerText}>
                                       Got problem with your order? Call us at  
                                    </Text> 
-                                   <Text style={styles.infoBannerLink} onPress={()=>this.dialThisNumber('2066012584')}>
+                                   <Text style={styles.infoBannerLink} onPress={()=>this.dialThisNumber('2062258636')}>
                                       (206)225-8636
                                    </Text>
                                 </View>

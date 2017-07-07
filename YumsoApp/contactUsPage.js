@@ -41,7 +41,7 @@ class ContactUsPage extends Component {
                <View style={styleContactUsPage.contentTextView}>
                   <Text style={styleContactUsPage.contentText}>If you have any question or concern about using our App, becoming a chef or just want to chat with us, don't hesitate to let us know.</Text>
                   <Text style={styleContactUsPage.contactTitle}>Phone:</Text>
-                  <Text onPress={()=>this.dialThisNumber('2066012584')} style={styleContactUsPage.contentEmail}>(206)601-2584</Text>
+                  <Text onPress={()=>this.dialThisNumber('2062258636')} style={styleContactUsPage.contentEmail}>(206)225-8636</Text>
                   <Text style={styleContactUsPage.contactTitle}>Email:</Text>
                   <Text onPress={()=>this.openEmailApp()} style={styleContactUsPage.contentEmail}>customerservice@yumso.com</Text>
                </View>
