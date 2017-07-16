@@ -60,7 +60,7 @@ class ShoppingCartPage extends Component {
         if(this.state.chef.bestReviewBadge){
             chefAllBadges.push(2);
         }
-        var oneBadgeViewLength = windowWidth/chefAllBadges.length;
+        var oneBadgeViewLength = (windowWidth - 2 * windowWidth/20.7)/chefAllBadges.length; //subtract padding from windowWidth
         var chefAllBadgesViews=[];
         for(var onebadge of chefAllBadges){
            chefAllBadgesViews.push(<View key={badges[onebadge].label} style={{flexDirection:'column', width:oneBadgeViewLength,justifyContent:'center'}}>
@@ -74,32 +74,32 @@ class ShoppingCartPage extends Component {
         var chefStoryView=null;
         if(this.state.chef.storeDescription){
            chefStoryView = <View style={styleShoppingCartPage.chefStoryView}>
-                                <Text style={styleShoppingCartPage.myStoryTitleText}>My Story</Text>
-                                <Text style={styleShoppingCartPage.myStoryContentText}>{this.state.chef.storeDescription}</Text>
+                                <Text style={styles.pageSubTitle}>My Story</Text>
+                                <Text style={styles.pageText}>{this.state.chef.storeDescription}</Text>
                            </View>
         }    
                
         return (
             <View style={styles.container}>
-               <View style={[styles.headerBannerView, {borderColor:'white'}]}>  // hide banner border specifically for this page
+               <View style={styles.headerBannerView}> 
                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToShopPage()}>
                        <View style={styles.backButtonView}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
                        </View>
-                    </TouchableHighlight>    
-                    <View style={styles.headerRightView}>            
-                    </View>
+                    </TouchableHighlight>  
+                    <View style={styles.titleView}></View>  
+                    <View style={styles.headerRightView}></View>     
                </View>
-               <ScrollView>
+               <ScrollView style={styles.scrollViewContainer}>
                     <View style={styleShoppingCartPage.oneListingView}>
                           <View style={styleShoppingCartPage.chefInfoView}>
-                              <Text style={styleShoppingCartPage.chefNameText}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
+                              <Text style={styles.pageTitle}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
                               <Text style={styleShoppingCartPage.chefLocationText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>                                        
                           </View>
                           <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
                     </View>
                     <View style={styleShoppingCartPage.verificationView}>
-                        <Text style={styleShoppingCartPage.verificationTitle}>Verification</Text>
+                        <Text style={styles.pageSubTitle}>Verification</Text>
                         <View style={styleShoppingCartPage.badgeView}>
                             {chefAllBadgesViews}
                         </View>
@@ -120,7 +120,7 @@ var styleShoppingCartPage = StyleSheet.create({
     oneListingView:{
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
-        height:windowWidth*0.310,
+        height:windowWidth*0.330,
     },
     chefPhoto:{
         borderRadius: windowWidth*0.22/2,
@@ -132,15 +132,8 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1,
         height:windowWidth*0.344,
         flexDirection:'column',
-        paddingLeft:windowWidth/20.7,
         paddingRight:windowWidth/27.6,
         paddingBottom:windowHeight/73.6,
-    },
-    chefNameText:{
-        fontSize:30*windowHeight/677,
-        fontWeight:'bold',
-        color:'#4A4A4A',
-        marginBottom:windowHeight*0.005,
     },
     chefLocationText:{
         fontSize:14*windowHeight/677,
@@ -149,15 +142,7 @@ var styleShoppingCartPage = StyleSheet.create({
     verificationView: {
         borderTopWidth:1,
         borderColor:'#EAEAEA',
-        width:windowWidth,
         height:windowWidth*0.380,
-    },
-    verificationTitle: {
-        fontSize:windowHeight/35.5,
-        fontWeight:'600',
-        color:'#4A4A4A',
-        marginVertical:windowHeight*0.0200,
-        paddingLeft:windowWidth/20.7,
     },
     badgeView:{
         height:windowWidth*0.25,
@@ -176,24 +161,10 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     chefStoryView:{
         height:windowHeight*0.317,
-        width:windowWidth,
         flexDirection:'column',
-        paddingHorizontal:windowHeight*0.0264,
         borderTopWidth:1,
         borderColor:'#EAEAEA',
     },
-    myStoryTitleText:{
-        fontSize:windowHeight/35.5,
-        fontWeight:'600',
-        color:'#4A4A4A',
-        marginVertical:windowHeight*0.0200, 
-    },
-    myStoryContentText:{
-        fontSize:14*windowHeight/677,
-        color:'#4A4A4A',
-        textAlign:'justify',
-        lineHeight:17*windowHeight/677
-    }
 });
 
 module.exports = ShoppingCartPage;
