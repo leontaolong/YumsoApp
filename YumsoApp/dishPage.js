@@ -4,7 +4,7 @@ var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
 var Swiper = require('react-native-swiper');
-var backIcon = require('./icons/icon-back.png');
+var closeIcon = require('./icons/icon-close.png');
 var notlikedIcon = require('./icons/icon-unliked-onheader.png')
 var likedIcon = require('./icons/icon-liked-onheader.png');
 var bowlIcon = require('./icons/icon_bowl.png');
@@ -30,6 +30,7 @@ import React, {
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
+var widthWithPaddingOffset = windowWidth - windowWidth/10.35;
 
 class DishPage extends Component {
     constructor(props){
@@ -57,36 +58,47 @@ class DishPage extends Component {
 
     
     render() {
+        var notesView;
+        if (this.state.dish.notes)
+            notesView = <Text style={styles.pageText}></Text>;
+        else {
+            notesView = <View style={styles.greyBox}>
+                            <Text style={styles.greyBoxText}>No notes were left</Text>
+                        </View>
+        }
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToShop()}>
                       <View style={styles.backButtonView}>
-                         <Image source={backIcon} style={styles.backButtonIcon}/>
+                         <Image source={closeIcon} style={styles.backButtonIcon}/>
                       </View>
-                   </TouchableHighlight>    
-                   <View style={styles.titleView}>
-                      <Text style={styles.titleText}>{commonWidget.getTextLengthLimited(this.state.dish.dishName,28)}</Text>
-                   </View>
-                   <View style={styles.headerRightView}>
-                   </View>
+                   </TouchableHighlight>
+                   <View style={styles.titleView}></View>  
+                   <View style={styles.headerRightView}></View>   
                </View>
-               <ScrollView>
-                <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={true}
-                            dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
-                            {this.state.dish.pictures.map((picture) => {
-                                return <Image key={picture} source={{ uri: picture }} style={styleDishPage.oneDishPicture}/>
-                            }) }
-                </Swiper>
-                <View style={styleDishPage.oneDishNameDiscriptionView}>                  
-                        <Text style={styleDishPage.oneDishNameText}>{this.state.dish.dishName}</Text>
-                        <Text style={styleDishPage.oneDishIngredientText}>{this.state.dish.ingredients}</Text>
-                        <Text style={styleDishPage.oneDishDiscriptionText}>{this.state.dish.description}</Text>
+               <ScrollView style={styles.scrollViewContainer}>
+                <View style={styles.pageTitleView}>
+                    <Text style={styles.pageTitle}>{this.state.dish.dishName}</Text>
                 </View>
-                <View style={styleDishPage.priceView}>
-                    <View style={styleDishPage.priceTextView}>
-                        <Text style={styleDishPage.priceText}>${this.state.dish.price}</Text>
-                    </View>
+                <View>                                                            
+                    <Swiper showsButtons={false} height={windowHeight*0.3025} width={widthWithPaddingOffset} horizontal={true} autoplay={true}
+                                dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
+                                {this.state.dish.pictures.map((picture) => {
+                                    return <Image key={picture} source={{ uri: picture }} style={styleDishPage.oneDishPicture}/>
+                                }) }
+                    </Swiper>
+                </View>
+                <View style={styleDishPage.oneDishNameDiscriptionView}> 
+                        <Text style={styles.pageText}>{this.state.dish.description}</Text>             
+                </View>
+                <View style={styleDishPage.oneDishIngredientView}> 
+                    <Text style={styles.pageSubTitle}>Ingredients</Text>
+                    <Text style={styles.pageText}>{this.state.dish.ingredients}</Text>
+                </View>
+                <View style={styleDishPage.oneDishNotesView}> 
+                    <Text style={styles.pageSubTitle}>Notes</Text>
+                    {notesView}
                 </View>
                 </ScrollView>
             </View>
@@ -159,42 +171,20 @@ var styleDishPage = StyleSheet.create({
     oneDishNameDiscriptionView:{
         flex: 1,
         flexDirection: 'column',
-        paddingHorizontal: windowWidth*0.07,
-        paddingTop: windowHeight*0.03,
-        paddingBottom:windowHeight*0.005,
+        paddingTop: windowHeight*0.010,
+        paddingBottom:windowHeight*0.030,
+        borderBottomWidth:1,
+        borderColor:'#EAEAEA',
     },
-    oneDishNameDiscriptionTextView:{
-        flex: 1,
-        paddingLeft:windowWidth/27.6,
-        justifyContent:'center',
-    },
-    oneDishNameText:{
-        fontSize:windowHeight/35.5,
-        fontWeight:'bold',
-        color:'#4A4A4A',
-    },
-    oneDishIngredientText:{
-        fontSize:windowHeight/40.57,
-        color:'#9B9B9B',
-        marginTop:windowHeight*0.0088,
-        textAlign:'justify', 
-    },
-    oneDishDiscriptionText:{
-        fontSize:windowHeight/47.33,
-        color:'#9B9B9B',
-        marginTop:windowHeight*0.0088,
-        textAlign:'justify',
+    oneDishIngredientView: {
+        paddingBottom:windowHeight*0.025,
+        borderBottomWidth:1,
+        borderColor:'#EAEAEA', 
     },   
-    priceView:{
+    oneDishNotesView: {
         flex: 1,
-        flexDirection: 'row',
-        backgroundColor: '#fff',
-        paddingHorizontal:windowWidth*0.07,
-        paddingVertical:windowHeight*0.0352,
-    },
-    priceTextView:{
-        flex: 0.66,
         flexDirection: 'column',
+        paddingBottom:windowHeight*0.070,
     },
     chooseQuantityView:{
         flex: 0.34,
