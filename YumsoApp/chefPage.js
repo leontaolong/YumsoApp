@@ -15,8 +15,8 @@ var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 var badges=[
             {icon:yumsoVerifiedIcon, label:'Yumso Verified'},
-            {icon:yumsoExclusiveIcon, label:'Yumso Exclusive'},
-            {icon:bestReviewedIcon, label:'Best Reviewed'},
+            {icon:yumsoExclusiveIcon, label:'Chef Verified'},
+            {icon:bestReviewedIcon, label:'Award Verified'},
            ];
 
 
@@ -66,7 +66,7 @@ class ShoppingCartPage extends Component {
            chefAllBadgesViews.push(<View key={badges[onebadge].label} style={{flexDirection:'column', width:oneBadgeViewLength,justifyContent:'center'}}>
                                       <Image source={badges[onebadge].icon} style={styleShoppingCartPage.badgeIcon}/>
                                       <View style={styleShoppingCartPage.badgeLabelView}>
-                                        <Text style={{fontSize:windowHeight/43.69,color:'#979797', fontWeight:'400', alignSelf:'center',textAlign:'center',}}>{badges[onebadge].label}</Text>
+                                        <Text style={{fontSize:12*windowHeight/677,color:'#979797', fontWeight:'400', alignSelf:'center',textAlign:'center',}}>{badges[onebadge].label}</Text>
                                       </View>
                                    </View>)  
         }
@@ -81,28 +81,28 @@ class ShoppingCartPage extends Component {
                
         return (
             <View style={styles.container}>
-               <View style={styles.headerBannerView}>    
+               <View style={[styles.headerBannerView, {borderColor:'white'}]}>  // hide banner border specifically for this page
                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToShopPage()}>
                        <View style={styles.backButtonView}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
                        </View>
                     </TouchableHighlight>    
-                    <View style={styles.titleView}>
-                       <Text style={styles.titleText}>About the Chef</Text>
-                    </View>
                     <View style={styles.headerRightView}>            
                     </View>
                </View>
                <ScrollView>
                     <View style={styleShoppingCartPage.oneListingView}>
-                          <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
                           <View style={styleShoppingCartPage.chefInfoView}>
                               <Text style={styleShoppingCartPage.chefNameText}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
                               <Text style={styleShoppingCartPage.chefLocationText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>                                        
                           </View>
+                          <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
                     </View>
-                    <View style={styleShoppingCartPage.badgeView}>
-                        {chefAllBadgesViews}
+                    <View style={styleShoppingCartPage.verificationView}>
+                        <Text style={styleShoppingCartPage.verificationTitle}>Verification</Text>
+                        <View style={styleShoppingCartPage.badgeView}>
+                            {chefAllBadgesViews}
+                        </View>
                     </View>
                     {chefStoryView}
                </ScrollView>
@@ -120,11 +120,13 @@ var styleShoppingCartPage = StyleSheet.create({
     oneListingView:{
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
-        height:windowWidth*0.344,
+        height:windowWidth*0.310,
     },
     chefPhoto:{
-        width:windowWidth*0.344,
-        height:windowWidth*0.344,
+        borderRadius: windowWidth*0.22/2,
+        marginRight: windowWidth/20.7, 
+        width:windowWidth*0.22,
+        height:windowWidth*0.22,
     },
     chefInfoView:{
         flex:1,
@@ -132,35 +134,44 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'column',
         paddingLeft:windowWidth/20.7,
         paddingRight:windowWidth/27.6,
-        paddingVertical:windowHeight/73.6,
+        paddingBottom:windowHeight/73.6,
     },
     chefNameText:{
-        fontSize:windowHeight/33.41,
+        fontSize:30*windowHeight/677,
         fontWeight:'bold',
         color:'#4A4A4A',
-        marginTop:windowHeight*0.012,
-        marginBottom:windowHeight*0.07,
+        marginBottom:windowHeight*0.005,
     },
     chefLocationText:{
-        fontSize:windowHeight/40.57,
+        fontSize:14*windowHeight/677,
         color:'#979797',
     },
-    badgeView:{
-        width:windowWidth,
-        height:windowWidth*0.45,
-        flexDirection:'row',
+    verificationView: {
         borderTopWidth:1,
         borderColor:'#EAEAEA',
+        width:windowWidth,
+        height:windowWidth*0.380,
+    },
+    verificationTitle: {
+        fontSize:windowHeight/35.5,
+        fontWeight:'600',
+        color:'#4A4A4A',
+        marginVertical:windowHeight*0.0200,
+        paddingLeft:windowWidth/20.7,
+    },
+    badgeView:{
+        height:windowWidth*0.25,
+        flexDirection:'row',
     },
     badgeIcon:{
-        width:windowHeight*0.14,
-        height:windowHeight*0.14,
+        width:windowHeight*0.07,
+        height:windowHeight*0.07,
         alignSelf:'center'
     },
     badgeLabelView:{
        alignSelf:'center',
        justifyContent:'center',
-       height:windowHeight*0.07,
+       height:windowHeight*0.04,
        width:windowWidth*0.28,
     },
     chefStoryView:{
@@ -175,8 +186,7 @@ var styleShoppingCartPage = StyleSheet.create({
         fontSize:windowHeight/35.5,
         fontWeight:'600',
         color:'#4A4A4A',
-        textAlign:'center',
-        marginVertical:windowHeight*0.0264,    
+        marginVertical:windowHeight*0.0200, 
     },
     myStoryContentText:{
         fontSize:14*windowHeight/677,
