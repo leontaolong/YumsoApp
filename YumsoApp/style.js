@@ -43,8 +43,8 @@ module.exports = StyleSheet.create({
     },
     headerBannerView:{
       flexDirection:'row',
-      borderBottomWidth:1,
-      borderColor:'#EAEAEA',
+      // borderBottomWidth:1,
+      // borderColor:'#EAEAEA', //07/15/2017: remove banner border for V2 UI update
       height:windowHeight*0.066,
       backgroundColor:'#FFFFFF',
     },
@@ -57,6 +57,7 @@ module.exports = StyleSheet.create({
     backButtonView:{
       justifyContent:'center',
       flexDirection:'column',
+      paddingLeft:windowWidth/20.7,
     },
     footerView:{ 
         flexDirection:'row', 
@@ -77,8 +78,8 @@ module.exports = StyleSheet.create({
        alignSelf: 'center',
     },
     backButtonIcon:{
-      width:windowWidth*0.106,
-      height:windowWidth*0.106,
+      width:windowWidth*0.050,
+      height:windowWidth*0.050,
     },
     refreshButtonIcon:{
       width:17,
@@ -98,7 +99,7 @@ module.exports = StyleSheet.create({
       flexDirection:'row',
       width:windowWidth*4/6.0,
       justifyContent:'center',  
-      alignItems:'center'   
+      alignItems:'center' 
     },
     titleText:{
       fontSize:windowHeight/37.06,
@@ -421,4 +422,39 @@ module.exports = StyleSheet.create({
         padding:3,  
         position: 'relative',
     },  
+    pageTitle: {
+        fontSize:28*windowHeight/677,
+        fontWeight:'bold',
+        color:'#4A4A4A',
+        marginVertical:windowHeight*0.005,
+    },
+    pageTitleView: {
+        marginBottom:windowHeight*0.0540,
+    },
+    pageSubTitle: {
+        fontSize:windowHeight/35.5,
+        fontWeight:'600',
+        color:'#4A4A4A',
+        marginVertical:windowHeight*0.0200,
+    },
+    scrollViewContainer: {
+        paddingHorizontal:windowWidth/20.7,
+    },
+    pageText: {
+        fontSize:15*windowHeight/677,
+        fontWeight:'500',
+        color:'#9B9B9B',
+        textAlign:'justify', 
+    },
+    greyBox: {
+        flex:1,
+        flexDirection:'column',
+        backgroundColor:'#F5F5F5',
+        paddingVertical:windowHeight*0.025,
+    },
+    greyBoxText: {
+        fontSize:15*windowHeight/677,
+        color:'#9B9B9B',
+        textAlign:'center', 
+    }
 });

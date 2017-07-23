@@ -16,7 +16,7 @@ var windowWidth = Dimensions.get('window').width;
 var badges=[
             {icon:yumsoVerifiedIcon, label:'Yumso Verified'},
             {icon:yumsoExclusiveIcon, label:'Yumso Exclusive'},
-            {icon:bestReviewedIcon, label:'Best Reviewed'},
+            {icon:bestReviewedIcon, label:'Award Verified'},
            ];
 
 
@@ -60,13 +60,13 @@ class ShoppingCartPage extends Component {
         if(this.state.chef.bestReviewBadge){
             chefAllBadges.push(2);
         }
-        var oneBadgeViewLength = windowWidth/chefAllBadges.length;
+        var oneBadgeViewLength = (windowWidth - 2 * windowWidth/20.7)/chefAllBadges.length; //subtract padding from windowWidth
         var chefAllBadgesViews=[];
         for(var onebadge of chefAllBadges){
            chefAllBadgesViews.push(<View key={badges[onebadge].label} style={{flexDirection:'column', width:oneBadgeViewLength,justifyContent:'center'}}>
                                       <Image source={badges[onebadge].icon} style={styleShoppingCartPage.badgeIcon}/>
                                       <View style={styleShoppingCartPage.badgeLabelView}>
-                                        <Text style={{fontSize:windowHeight/43.69,color:'#979797', fontWeight:'400', alignSelf:'center',textAlign:'center',}}>{badges[onebadge].label}</Text>
+                                        <Text style={{fontSize:12*windowHeight/677,color:'#979797', fontWeight:'400', alignSelf:'center',textAlign:'center',}}>{badges[onebadge].label}</Text>
                                       </View>
                                    </View>)  
         }
@@ -74,35 +74,35 @@ class ShoppingCartPage extends Component {
         var chefStoryView=null;
         if(this.state.chef.storeDescription){
            chefStoryView = <View style={styleShoppingCartPage.chefStoryView}>
-                                <Text style={styleShoppingCartPage.myStoryTitleText}>My Story</Text>
-                                <Text style={styleShoppingCartPage.myStoryContentText}>{this.state.chef.storeDescription}</Text>
+                                <Text style={styles.pageSubTitle}>My Story</Text>
+                                <Text style={styles.pageText}>{this.state.chef.storeDescription}</Text>
                            </View>
         }    
                
         return (
             <View style={styles.container}>
-               <View style={styles.headerBannerView}>    
+               <View style={styles.headerBannerView}> 
                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToShopPage()}>
                        <View style={styles.backButtonView}>
                           <Image source={backIcon} style={styles.backButtonIcon}/>
                        </View>
-                    </TouchableHighlight>    
-                    <View style={styles.titleView}>
-                       <Text style={styles.titleText}>About the Chef</Text>
-                    </View>
-                    <View style={styles.headerRightView}>            
-                    </View>
+                    </TouchableHighlight>  
+                    <View style={styles.titleView}></View>  
+                    <View style={styles.headerRightView}></View>     
                </View>
-               <ScrollView>
+               <ScrollView style={styles.scrollViewContainer}>
                     <View style={styleShoppingCartPage.oneListingView}>
-                          <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
                           <View style={styleShoppingCartPage.chefInfoView}>
-                              <Text style={styleShoppingCartPage.chefNameText}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
+                              <Text style={styles.pageTitle}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
                               <Text style={styleShoppingCartPage.chefLocationText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>                                        
                           </View>
+                          <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
                     </View>
-                    <View style={styleShoppingCartPage.badgeView}>
-                        {chefAllBadgesViews}
+                    <View style={styleShoppingCartPage.verificationView}>
+                        <Text style={styles.pageSubTitle}>Verification</Text>
+                        <View style={styleShoppingCartPage.badgeView}>
+                            {chefAllBadgesViews}
+                        </View>
                     </View>
                     {chefStoryView}
                </ScrollView>
@@ -120,70 +120,51 @@ var styleShoppingCartPage = StyleSheet.create({
     oneListingView:{
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
-        height:windowWidth*0.344,
+        height:windowWidth*0.330,
     },
     chefPhoto:{
-        width:windowWidth*0.344,
-        height:windowWidth*0.344,
+        borderRadius: windowWidth*0.22/2,
+        marginRight: windowWidth/20.7, 
+        width:windowWidth*0.22,
+        height:windowWidth*0.22,
     },
     chefInfoView:{
         flex:1,
         height:windowWidth*0.344,
         flexDirection:'column',
-        paddingLeft:windowWidth/20.7,
         paddingRight:windowWidth/27.6,
-        paddingVertical:windowHeight/73.6,
-    },
-    chefNameText:{
-        fontSize:windowHeight/33.41,
-        fontWeight:'bold',
-        color:'#4A4A4A',
-        marginTop:windowHeight*0.012,
-        marginBottom:windowHeight*0.07,
+        paddingBottom:windowHeight/73.6,
     },
     chefLocationText:{
-        fontSize:windowHeight/40.57,
+        fontSize:14*windowHeight/677,
         color:'#979797',
     },
-    badgeView:{
-        width:windowWidth,
-        height:windowWidth*0.45,
-        flexDirection:'row',
+    verificationView: {
         borderTopWidth:1,
         borderColor:'#EAEAEA',
+        height:windowWidth*0.380,
+    },
+    badgeView:{
+        height:windowWidth*0.25,
+        flexDirection:'row',
     },
     badgeIcon:{
-        width:windowHeight*0.14,
-        height:windowHeight*0.14,
+        width:windowHeight*0.07,
+        height:windowHeight*0.07,
         alignSelf:'center'
     },
     badgeLabelView:{
        alignSelf:'center',
        justifyContent:'center',
-       height:windowHeight*0.07,
+       height:windowHeight*0.04,
        width:windowWidth*0.28,
     },
     chefStoryView:{
         height:windowHeight*0.317,
-        width:windowWidth,
         flexDirection:'column',
-        paddingHorizontal:windowHeight*0.0264,
         borderTopWidth:1,
         borderColor:'#EAEAEA',
     },
-    myStoryTitleText:{
-        fontSize:windowHeight/35.5,
-        fontWeight:'600',
-        color:'#4A4A4A',
-        textAlign:'center',
-        marginVertical:windowHeight*0.0264,    
-    },
-    myStoryContentText:{
-        fontSize:14*windowHeight/677,
-        color:'#4A4A4A',
-        textAlign:'justify',
-        lineHeight:17*windowHeight/677
-    }
 });
 
 module.exports = ShoppingCartPage;

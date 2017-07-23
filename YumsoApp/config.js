@@ -4,6 +4,7 @@ module.exports={
     baseUrl: 'http://10.104.200.111:8080',
     AppVersion:'1.6.1',
     gracePeriodLength:5,
+    timeoutLength:20000,
     googleApiName:'yumsoIOS	',
     googleApiKey:'AIzaSyBQdKxM-ZRQ2r95bkQLPlY10joKJeC6slw',
     googleGeoBaseUrl: 'https://maps.googleapis.com',
