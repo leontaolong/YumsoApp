@@ -15,7 +15,7 @@ var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 var badges=[
             {icon:yumsoVerifiedIcon, label:'Yumso Verified'},
-            {icon:yumsoExclusiveIcon, label:'Chef Verified'},
+            {icon:yumsoExclusiveIcon, label:'Yumso Exclusive'},
             {icon:bestReviewedIcon, label:'Award Verified'},
            ];
 
