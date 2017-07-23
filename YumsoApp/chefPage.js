@@ -64,8 +64,8 @@ class ChefPage extends Component {
         var chefAllBadgesViews=[];
         for(var onebadge of chefAllBadges){
            chefAllBadgesViews.push(<View key={badges[onebadge].label} style={{flexDirection:'column', width:oneBadgeViewLength,justifyContent:'center'}}>
-                                      <Image source={badges[onebadge].icon} style={styleShoppingCartPage.badgeIcon}/>
-                                      <View style={styleShoppingCartPage.badgeLabelView}>
+                                      <Image source={badges[onebadge].icon} style={styleChefPage.badgeIcon}/>
+                                      <View style={styleChefPage.badgeLabelView}>
                                         <Text style={{fontSize:12*windowHeight/677,color:'#979797', fontWeight:'400', alignSelf:'center',textAlign:'center',}}>{badges[onebadge].label}</Text>
                                       </View>
                                    </View>)  
@@ -73,7 +73,7 @@ class ChefPage extends Component {
 
         var chefStoryView=null;
         if(this.state.chef.storeDescription){
-           chefStoryView = <View style={styleShoppingCartPage.chefStoryView}>
+           chefStoryView = <View style={styleChefPage.chefStoryView}>
                                 <Text style={styles.pageSubTitle}>My Story</Text>
                                 <Text style={styles.pageText}>{this.state.chef.storeDescription}</Text>
                            </View>
@@ -91,16 +91,16 @@ class ChefPage extends Component {
                     <View style={styles.headerRightView}></View>     
                </View>
                <ScrollView style={styles.scrollViewContainer}>
-                    <View style={styleShoppingCartPage.oneListingView}>
-                          <View style={styleShoppingCartPage.chefInfoView}>
+                    <View style={styleChefPage.oneListingView}>
+                          <View style={styleChefPage.chefInfoView}>
                               <Text style={styles.pageTitle}>{this.state.chef.firstname+' '+this.state.chef.lastname}</Text>                                                                                                                      
-                              <Text style={styleShoppingCartPage.chefLocationText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>                                        
+                              <Text style={styleChefPage.chefLocationText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>                                        
                           </View>
-                          <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleShoppingCartPage.chefPhoto}/>
+                          <Image source={{ uri: this.state.chef.chefProfilePic }} style={styleChefPage.chefPhoto}/>
                     </View>
-                    <View style={styleShoppingCartPage.verificationView}>
+                    <View style={styleChefPage.verificationView}>
                         <Text style={styles.pageSubTitle}>Verification</Text>
-                        <View style={styleShoppingCartPage.badgeView}>
+                        <View style={styleChefPage.badgeView}>
                             {chefAllBadgesViews}
                         </View>
                     </View>
@@ -116,7 +116,7 @@ class ChefPage extends Component {
     
 }
 
-var styleShoppingCartPage = StyleSheet.create({
+var styleChefPage = StyleSheet.create({
     oneListingView:{
         backgroundColor:'#FFFFFF',  
         flexDirection:'row',
