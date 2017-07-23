@@ -1,7 +1,7 @@
 module.exports={
-    //baseUrl: 'https://www.yumso.com',
-    //baseUrl: 'http://ec2-35-160-206-47.us-west-2.compute.amazonaws.com',
-    baseUrl: 'http://10.104.200.111:8080',
+    // baseUrl: 'https://www.yumso.com',
+    baseUrl: 'http://ec2-52-43-125-181.us-west-2.compute.amazonaws.com',
+    // baseUrl: 'http://10.104.200.111:8080',
     AppVersion:'1.6.1',
     gracePeriodLength:5,
     timeoutLength:20000,
