@@ -34,7 +34,7 @@ import React, {
 } from 'react-native';
 
 
-class ShoppingCartPage extends Component {
+class ChefPage extends Component {
     constructor(props){
         super(props);
         var ds = new ListView.DataSource({
@@ -167,5 +167,5 @@ var styleShoppingCartPage = StyleSheet.create({
     },
 });
 
-module.exports = ShoppingCartPage;
+module.exports = ChefPage;
 
