@@ -253,6 +253,15 @@ class ShopPage extends Component {
                                 </View>
                                 <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
                             </View>
+                        </TouchableHighlight>),
+                        (<TouchableHighlight key={'chefIntroClickable'}  underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefIntroPage()}>
+                            <View style={styleShopPage.chefDetailView}>
+                                <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
+                                <View style={styleShopPage.chefDetailTextView}>
+                                   <Text style={styleShopPage.pickupAddressText}>Introduction</Text>
+                                </View>
+                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+                            </View>
                         </TouchableHighlight>), 
                        (<TouchableHighlight key={'chefReviewsClickable'} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefCommentsPage()}>
                             <View style={styleShopPage.chefDetailView}>
@@ -804,6 +813,15 @@ class ShopPage extends Component {
     navigateToChefPage(){
         this.props.navigator.push({
             name: 'ChefPage', 
+            passProps:{
+                chef:this.state.chef,
+            }
+        });      
+    }
+
+    navigateToChefIntroPage(){
+        this.props.navigator.push({
+            name: 'ChefIntroPage', 
             passProps:{
                 chef:this.state.chef,
             }
