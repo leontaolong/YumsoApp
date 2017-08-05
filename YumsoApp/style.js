@@ -40,6 +40,7 @@ module.exports = StyleSheet.create({
       flex:1,
       flexDirection:'column',
       backgroundColor:'#F5F5F5',
+      paddingLeft:windowWidth/20.7,
     },
     headerBannerView:{
       flexDirection:'row',
@@ -94,6 +95,12 @@ module.exports = StyleSheet.create({
       width:windowWidth/12.5,
       height:windowWidth/12.5,
     },
+    upperLeftBtnView:{
+      flex:0.4/6, 
+      flexDirection:'row',
+      width:windowWidth*4/6.0,
+      alignItems:'center',
+    },
     titleView:{
       flex:0.4/6, 
       flexDirection:'row',
@@ -141,13 +148,23 @@ module.exports = StyleSheet.create({
       height:windowHeight*0.0235,
     },
     filterIcon:{
-      width:20*windowHeight/667,
-      height:20*windowHeight/667,
+      marginTop:12*windowHeight/667,
+      marginRight:5*windowHeight/667,
+      width:22*windowHeight/667,
+      height:19*windowHeight/667,
+    },
+    likeIcon: {
+      marginTop:12*windowHeight/667,
+      marginRight:5*windowHeight/667,
+      width:22*windowHeight/667,
+      height:19*windowHeight/667,    
     },
     ballonIcon:{
-      marginTop:0.8*windowHeight/667,
-      width:25*windowHeight/667,
-      height:25*windowHeight/667,
+      marginVertical:2*windowHeight/667,
+      marginRight:8*windowHeight/667,
+      marginLeft:0,
+      width:18*windowHeight/667,
+      height:22*windowHeight/667,
     },
     searchIcon:{
       width:windowHeight/24.5,
@@ -440,6 +457,9 @@ module.exports = StyleSheet.create({
     scrollViewContainer: {
         paddingHorizontal:windowWidth/20.7,
     },
+    containerWithLeftPadding: {
+        // paddingLeft:windowWidth/20.7,      
+    },
     pageText: {
         fontSize:15*windowHeight/677,
         fontWeight:'500',
@@ -456,5 +476,12 @@ module.exports = StyleSheet.create({
         fontSize:15*windowHeight/677,
         color:'#9B9B9B',
         textAlign:'center', 
-    }
+    },
+    listViewContainer:{
+      marginTop:15,
+      flex:1,
+      flexDirection:'column',
+      paddingLeft:windowWidth/20.7,
+      backgroundColor:"#FFFFFF",
+    },
 });
