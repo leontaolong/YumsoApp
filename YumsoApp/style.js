@@ -40,7 +40,6 @@ module.exports = StyleSheet.create({
       flex:1,
       flexDirection:'column',
       backgroundColor:'#F5F5F5',
-      paddingLeft:windowWidth/20.7,
     },
     headerBannerView:{
       flexDirection:'row',
@@ -456,9 +455,6 @@ module.exports = StyleSheet.create({
     },
     scrollViewContainer: {
         paddingHorizontal:windowWidth/20.7,
-    },
-    containerWithLeftPadding: {
-        // paddingLeft:windowWidth/20.7,      
     },
     pageText: {
         fontSize:15*windowHeight/677,

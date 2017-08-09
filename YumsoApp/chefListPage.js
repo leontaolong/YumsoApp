@@ -350,7 +350,7 @@ class ChefListPage extends Component {
             loadingSpinnerView = <LoadingSpinnerViewFullScreen/>; 
         }
         
-        var  cheflistView = <RefreshableListView ref="listView"
+        var cheflistView = <RefreshableListView ref="listView"
                             dataSource = {this.state.dataSource}
                             renderRow={this.renderRow.bind(this)}
                             loadData={this.searchChef.bind(this)}
@@ -495,7 +495,7 @@ class ChefListPage extends Component {
         );
     }
     
-    onRefreshDone() {
+    onRefreshDone(){
         this.refs.listView.scrollTo({x:0, y:0, animated: true})
     }
 
@@ -1064,6 +1064,7 @@ var styleChefListPage = StyleSheet.create({
         // According to the discussion on GitHub, it seems to be a RN old version problem. 
         // Since we're not updating to the latest RN, I just simply bolden the text for now.
         // https://github.com/facebook/react-native/issues/29
+
         // borderBottomColor:'#FFCC33',
         // borderBottomWidth:3,
     },
