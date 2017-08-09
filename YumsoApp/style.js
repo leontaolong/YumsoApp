@@ -150,14 +150,14 @@ module.exports = StyleSheet.create({
     filterIcon:{
       marginTop:12*windowHeight/667,
       marginRight:5*windowHeight/667,
-      width:22*windowHeight/667,
-      height:19*windowHeight/667,
+      width:20*windowHeight/667,
+      height:20*windowHeight/667,
     },
     likeIcon: {
       marginTop:12*windowHeight/667,
       marginRight:5*windowHeight/667,
-      width:22*windowHeight/667,
-      height:19*windowHeight/667,    
+      width:25*windowHeight/667,
+      height:21*windowHeight/667,    
     },
     ballonIcon:{
       marginVertical:2*windowHeight/667,
@@ -477,11 +477,18 @@ module.exports = StyleSheet.create({
         color:'#9B9B9B',
         textAlign:'center', 
     },
-    listViewContainer:{
+    pageWrapper:{
       marginTop:15,
       flex:1,
       flexDirection:'column',
-      paddingLeft:windowWidth/20.7,
       backgroundColor:"#FFFFFF",
     },
+    promoBannerView:{
+        flexDirection:'row',   
+        alignItems:'center',     
+        justifyContent: 'center',
+        height:100, 
+        backgroundColor:'#F5F5F5'
+    }
+
 });
