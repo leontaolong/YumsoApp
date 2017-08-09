@@ -82,6 +82,7 @@ class ChefListPage extends Component {
             chefView: {},
             chefsDictionary: {},
             foodTagArr: [],
+            selectedFoodTag: null,
             city:'Seattle',
             state:'WA',
             pickedAddress:undefined,
@@ -167,9 +168,11 @@ class ChefListPage extends Component {
         }
 
         if(response && (response.statusCode==200 || response.statusCode==202) && response.data){
+            var self = this;
            var chefs = response.data.chefs;
            var chefView = {};
            var chefsDictionary = {};
+           var foodTags =[];
            for (var chef of chefs) {
                 if(chef){//Todo:undefined check for all
                     let starDishPictures=[];
@@ -180,11 +183,13 @@ class ChefListPage extends Component {
                     }
                     chefView[chef.chefId] = starDishPictures;
                     chefsDictionary[chef.chefId] = chef;
-                    if (!this.state.foodTagArr.contains(chef.foodTag))
-                        this.state.foodTag.push(chef.foodTag);
+                    console.log(chef.foodTag);
+                    if (!foodTags.includes(chef.foodTag)) {
+                        foodTags.push(chef.foodTag);
+                    }
                 }
            }
-           this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary, currentTime: new Date().getTime()});
+           this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary, currentTime: new Date().getTime(), foodTagArr:foodTags});
         }else{
             this.setState({showProgress: false,showNetworkUnavailableScreen:true});
             commonAlert.networkError(response);
@@ -416,12 +421,18 @@ class ChefListPage extends Component {
         }
 
         var foodTags = [];
-        for (foodTag of this.state.foodTagArr) {
-            foodTags.push(<Text name={foodTag} selectedStyle={{borderTopWidth:2,borderTopColor:'red'}}>{foodTag}</Text>);
+        for (let foodTag of this.state.foodTagArr) {
+            if (foodTag != 'Other')
+                foodTags.push(<Text name={foodTag} selectedStyle={{borderTopWidth:2,borderTopColor:'red'}}>{foodTag}</Text>);
         }
+
+        // put "Other" foodTag at last
+        if (this.state.foodTagArr.includes("Other"))
+            foodTags.push(<Text name={"Other"} selectedStyle={{borderTopWidth:2,borderTopColor:'red'}}>Other</Text>);
+
         var foodTagTabsView =   <View style={styleChefListPage.foodTagTabsView}>
                                     <Tabs selected={this.state.selectedFoodTag} style={{backgroundColor:'white'}}
-                                        selectedStyle={{color:'red'}} onSelect={el=>this.setState({selectedFoodTag:el.props.name})}>
+                                        selectedStyle={{color:'red'}} onSelect={el=>this.showChefsWithSpecificFoodTag(el.props.name)}>
                                     {foodTags}  
                                     </Tabs>
                                 </View>
@@ -431,7 +442,8 @@ class ChefListPage extends Component {
                 <View style={styles.listViewContainer}>                    
                     <View style={styleChefListPage.headerBannerView}>
                             {/* {
-                        07/29/2017: Remove the hamburger buttom for V2.0 UI Refresh, uncomment code below if necessary
+                        07/29/2017: Remove the hamburger buttom for V2.0 UI Refresh, 
+                                    uncomment code below or simply swpie left to access profile menu
                             }*/}
 
                           {/* <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
@@ -455,10 +467,10 @@ class ChefListPage extends Component {
                           <View style={styles.headerRightTextButtonView}>
                             <Image source={filterIcon} style={styles.filterIcon}/>
                           </View>
-                        </TouchableHighlight>
-                        {foodTagTabsView}
+                        </TouchableHighlight>  
                     </View>
-                    {updateAppBannerView}
+                    {foodTagTabsView}
+                    {updateAppBannerView}  
                     {networkUnavailableView}
                     {cheflistView}
                     {loadingSpinnerView}
@@ -526,6 +538,18 @@ class ChefListPage extends Component {
                 displayChefs.push(this.state.chefsDictionary[chefId]);
             }
         }
+        this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
+    }
+
+    showChefsWithSpecificFoodTag(foodTag){
+        let self = this;
+        this.setState({selectedFoodTag:foodTag});
+        let displayChefs = [];
+        Object.keys(this.state.chefsDictionary).forEach(function(chefId) {
+            let chef = self.state.chefsDictionary[chefId];
+            if (chef.foodTag == foodTag) 
+                displayChefs.push(chef);
+        });
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
     }
 
@@ -998,7 +1022,12 @@ var styleChefListPage = StyleSheet.create({
         justifyContent:'flex-end',
         alignItems:'center',
         flexDirection:'row',
-    },    
+    },
+    foodTagTabsView:{
+       flexDirection:'row',
+       height:windowHeight*0.066,
+       backgroundColor:'#fff',
+    }, 
     orangeTopBannerView:{
        backgroundColor:'#FFCC33',
        height:windowHeight*0.081,
