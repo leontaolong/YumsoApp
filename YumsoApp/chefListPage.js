@@ -453,7 +453,7 @@ class ChefListPage extends Component {
                     <View style={[styles.headerBannerView, styleChefListPage.customizedHeaderBannerRules]}>
                             {/* {
                         07/29/2017: Remove the hamburger buttom for V2.0 UI Refresh, 
-                                    uncomment code below or simply swpie left to access profile menu
+                                    uncomment code below or simply swpie right to access profile menu
                             }*/}
 
                           {/* <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
