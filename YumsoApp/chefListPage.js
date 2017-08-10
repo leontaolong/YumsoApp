@@ -85,7 +85,7 @@ class ChefListPage extends Component {
             selectedFoodTag: null,
             city:'Seattle',
             state:'WA',
-            zip:'98105',
+            zipcode:'98105',
             pickedAddress:undefined,
             dollarSign1: dollarSign1_Grey,
             dollarSign2: dollarSign2_Grey,
