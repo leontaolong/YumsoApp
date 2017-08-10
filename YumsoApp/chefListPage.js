@@ -254,13 +254,8 @@ class ChefListPage extends Component {
         if (this.state.eater && this.state.eater.favoriteChefs) {
             like = this.state.eater.favoriteChefs.indexOf(chef.chefId) !== -1;
         }
+        var likedIcon = <View style={styleChefListPage.iconCircle}><Image source={this.getCurrentLikeIcon(like)} style={styleChefListPage.likedIconView}/></View>
 
-        var likedIcon = null;
-        if(like==true) {
-            var likedIcon = <View style={styleChefListPage.iconCircle}><Image source={heartFillsIcon} style={styleChefListPage.likedIconView}/></View>
-        }else{
-            var likedIcon = <View style={styleChefListPage.iconCircle}><Image source={heartLineIcon} style={styleChefListPage.likedIconView}/></View>
-        } 
         //console.log(chef);
         var nextDeliverTimeView = null;
         var oneWeekLater = new Date().setHours(0, 0, 0, 0) + 7 * 24 * 60 * 60 * 1000;
@@ -434,7 +429,7 @@ class ChefListPage extends Component {
 
         var promoBannerView = null;
         if (this.state.showPromoAppBanner)
-        // placeholder, in real practice, will only be render after the data gets fetched back
+        // placeholder, in real practice, will only be rendered after the data gets fetched back
         promoBannerView = <View style={styles.promoBannerView}>
                                    <Text style={styles.infoBannerText}>
                                       Promotion Banner Goes Here 
@@ -475,7 +470,7 @@ class ChefListPage extends Component {
                         </TouchableHighlight>
                         <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.showFavoriteChefs()}>
                           <View style={styles.headerRightTextButtonView}>
-                            <Image source={this.getLikeIconInHeader()} style={styles.likeIcon}/>
+                            <Image source={this.getCurrentLikeIcon(this.state.showFavoriteChefsOnly)} style={styles.likeIcon}/>
                           </View>
                         </TouchableHighlight>
                         <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
@@ -499,11 +494,11 @@ class ChefListPage extends Component {
         this.refs.listView.scrollTo({x:0, y:0, animated: true})
     }
 
-    getLikeIconInHeader = function() {
-        if (!this.state.showFavoriteChefsOnly)
-            return heartLineIcon;
-        else
+    getCurrentLikeIcon = function(showFills) {
+        if (showFills)
             return heartFillsIcon;
+        else
+            return heartLineIcon;
     }
 
     clickDollarSign(priceLevel){
