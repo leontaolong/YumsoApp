@@ -188,7 +188,7 @@ class ChefListPage extends Component {
 
                     if (chef.foodTag == 'Other')
                         hasFoodTagOther = true;
-                    if (!foodTags.includes(chef.foodTag) && chef.foodTag != 'Other') {
+                    else if (!foodTags.includes(chef.foodTag)) {
                         foodTags.push(chef.foodTag);
                     }
                 }
