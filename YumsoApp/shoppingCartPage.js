@@ -513,7 +513,8 @@ class ShoppingCartPage extends Component {
             shippingAddress: this.state.deliveryAddress,
             couponCode:this.state.promotionCode,
         }; 
-        return this.client.postWithoutAuth(config.priceQuoteEndpoint, {orderDetail:orderQuote})
+        var eaterId = this.state.eater ? this.state.eater.eaterId : null;
+        return this.client.postWithoutAuth(config.priceQuoteEndpoint, {orderDetail:orderQuote, eaterId: eaterId})
         .then((response)=>{
             if(response.statusCode==200 || response.statusCode==202){
                 if(response.data.result===true){
