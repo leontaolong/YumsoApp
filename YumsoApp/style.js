@@ -94,6 +94,12 @@ module.exports = StyleSheet.create({
       width:windowWidth/12.5,
       height:windowWidth/12.5,
     },
+    upperLeftBtnView:{
+      flex:0.4/6, 
+      flexDirection:'row',
+      width:windowWidth*4/6.0,
+      alignItems:'center',
+    },
     titleView:{
       flex:0.4/6, 
       flexDirection:'row',
@@ -141,13 +147,23 @@ module.exports = StyleSheet.create({
       height:windowHeight*0.0235,
     },
     filterIcon:{
+      marginTop:12*windowHeight/667,
+      marginRight:5*windowHeight/667,
       width:20*windowHeight/667,
       height:20*windowHeight/667,
     },
-    ballonIcon:{
-      marginTop:0.8*windowHeight/667,
+    likeIcon: {
+      marginTop:12*windowHeight/667,
+      marginRight:5*windowHeight/667,
       width:25*windowHeight/667,
-      height:25*windowHeight/667,
+      height:21*windowHeight/667,    
+    },
+    ballonIcon:{
+      marginVertical:2*windowHeight/667,
+      marginRight:8*windowHeight/667,
+      marginLeft:0,
+      width:18*windowHeight/667,
+      height:22*windowHeight/667,
     },
     searchIcon:{
       width:windowHeight/24.5,
@@ -456,5 +472,19 @@ module.exports = StyleSheet.create({
         fontSize:15*windowHeight/677,
         color:'#9B9B9B',
         textAlign:'center', 
+    },
+    pageWrapper:{
+      marginTop:15,
+      flex:1,
+      flexDirection:'column',
+      backgroundColor:"#FFFFFF",
+    },
+    promoBannerView:{
+        flexDirection:'row',   
+        alignItems:'center',     
+        justifyContent: 'center',
+        height:100, 
+        backgroundColor:'#F5F5F5'
     }
+
 });

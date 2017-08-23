@@ -13,13 +13,15 @@ var commonAlert = require('./commonModules/commonAlert');
 var commonWidget = require('./commonModules/commonWidget');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var profileImgNoSignIn = require('./icons/defaultAvatar.jpg');
-var ballonIcon = require('./icons/icon-location-grey.png');
+var ballonIcon = require('./icons/icon-location-2.0.png');
 var whiteLikeIcon = require('./icons/icon-liked-white.png');
 var labelIcon = require('./icons/icon-label-grey.png');
 var menuIcon = require('./icons/icon-menu.webp');
 var filterIcon = require('./icons/icon-filter.png');
 var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked-red.png');
+var heartLineIcon = require('./icons/icon-heart-line.png');
+var heartFillsIcon = require('./icons/icon-heart-fills.png');
 var backIcon = require('./icons/icon-back.png');
 var dollarSign1_Grey = require('./icons/icon-dollar1-grey.webp');
 var dollarSign2_Grey = require('./icons/icon-dollar2-grey.webp');
@@ -33,6 +35,7 @@ var RefreshableListView = require('react-native-refreshable-listview');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 
 import Dimensions from 'Dimensions';
+import Tabs from 'react-native-tabs';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
@@ -78,8 +81,11 @@ class ChefListPage extends Component {
             showFavoriteChefsOnly:false,
             chefView: {},
             chefsDictionary: {},
+            foodTagArr: [],
+            selectedFoodTag: null,
             city:'Seattle',
             state:'WA',
+            zipcode:'98105',
             pickedAddress:undefined,
             dollarSign1: dollarSign1_Grey,
             dollarSign2: dollarSign2_Grey,
@@ -89,6 +95,7 @@ class ChefListPage extends Component {
             deviceToken: null,
             currentTime: new Date().getTime(),
             showUpdateAppBanner:false,
+            showPromoAppBanner:true,
         };
 
         this.responseHandler = function (response, msg) {
@@ -166,6 +173,8 @@ class ChefListPage extends Component {
            var chefs = response.data.chefs;
            var chefView = {};
            var chefsDictionary = {};
+           var foodTags =['ALL']; // put foodTag 'ALL' at first
+           var hasFoodTagOther = false;
            for (var chef of chefs) {
                 if(chef){//Todo:undefined check for all
                     let starDishPictures=[];
@@ -176,9 +185,19 @@ class ChefListPage extends Component {
                     }
                     chefView[chef.chefId] = starDishPictures;
                     chefsDictionary[chef.chefId] = chef;
+
+                    if (chef.foodTag == 'Other')
+                        hasFoodTagOther = true;
+                    else if (!foodTags.includes(chef.foodTag)) {
+                        foodTags.push(chef.foodTag);
+                    }
                 }
-           }
-           this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary, currentTime: new Date().getTime()});
+            }
+            // put foodTag 'Other' at last
+            if (hasFoodTagOther)
+                foodTags.push("Other");
+
+            this.setState({ dataSource: this.state.dataSource.cloneWithRows(chefs), showProgress: false, showNetworkUnavailableScreen:false, chefView: chefView, chefsDictionary: chefsDictionary, currentTime: new Date().getTime(), foodTagArr:foodTags});
         }else{
             this.setState({showProgress: false,showNetworkUnavailableScreen:true});
             commonAlert.networkError(response);
@@ -195,6 +214,7 @@ class ChefListPage extends Component {
                         .then((res) => {
                             var city = 'unknown';
                             var state = 'unknown';
+                            var zipcode = 'unknown';
                             if ((res.statusCode === 200 || res.statusCode === 202) && res.data.status === 'OK' && res.data.results.length > 0) {
                                 var results = res.data.results;
                                 var address = results[0].formatted_address;
@@ -206,9 +226,12 @@ class ChefListPage extends Component {
                                         if (type === 'administrative_area_level_1') {
                                             state = component.short_name;
                                         }
+                                        if (type === 'postal_code') {
+                                            zipcode = component.short_name;
+                                        }
                                     }
                                 }
-                                self.setState({ GPSproxAddress: { formatted_address: address, lat: position.coords.latitude, lng: position.coords.longitude, state: state, city: city }, city: city, state: state });
+                                self.setState({ GPSproxAddress: { formatted_address: address, lat: position.coords.latitude, lng: position.coords.longitude, state: state, city: city}, city: city, state: state, zipcode :zipcode});
                             }
                             resolve();
                         }).catch((err)=>{      
@@ -223,7 +246,7 @@ class ChefListPage extends Component {
         });
     }
 
-    renderRow(chef) {
+      renderRow(chef) {
         if(!chef){
            return null;
         }
@@ -231,13 +254,8 @@ class ChefListPage extends Component {
         if (this.state.eater && this.state.eater.favoriteChefs) {
             like = this.state.eater.favoriteChefs.indexOf(chef.chefId) !== -1;
         }
+        var likedIcon = <View style={styleChefListPage.iconCircle}><Image source={this.getCurrentLikeIcon(like)} style={styleChefListPage.likedIconView}/></View>
 
-        var likeIconView=null
-        if (like==true) {
-            likeIconView = <View style={styleChefListPage.likeIconView}>
-                             <Image source={likedIcon} style={styleChefListPage.likeIcon}></Image>
-                           </View>;
-        } 
         //console.log(chef);
         var nextDeliverTimeView = null;
         var oneWeekLater = new Date().setHours(0, 0, 0, 0) + 7 * 24 * 60 * 60 * 1000;
@@ -251,12 +269,10 @@ class ChefListPage extends Component {
                                  </View>;
         }
 
-        var yumsoExclusiveLabelView = null;
-        if(chef.yumsoExclusiveBadge){
-           yumsoExclusiveLabelView = <View style={styleChefListPage.yumsoExclusiveLabelView}>
-                                          <Text style={styleChefListPage.yumsoExclusiveLabelText}>Yumso Exclusive</Text>
-                                     </View>
-        }
+        var yumsoExclusiveTag = "";
+        if(chef.yumsoExclusiveBadge)
+           yumsoExclusiveTag = <Text style={[styleChefListPage.labelText, {color:"#7adfc3"}]}>, exclusive</Text>
+                             
 
         if(chef.chefProfilePicUrls && chef.chefProfilePicUrls.small){
            var chefProfilePic = chef.chefProfilePicUrls.small;
@@ -267,7 +283,7 @@ class ChefListPage extends Component {
         return (
             <View style={styleChefListPage.oneShopListView}>
                 <View style={styleChefListPage.oneShopPhotoView}>
-                    <Swiper showsButtons={false} height={windowHeight*0.388} horizontal={true} autoplay={false}
+                    <Swiper showsButtons={false} height={windowHeight*0.3} horizontal={true} autoplay={false}
                         dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
                         {this.state.chefView[chef.chefId].map((picture) => {
                             return (
@@ -281,17 +297,14 @@ class ChefListPage extends Component {
                           })}
                     </Swiper>
                     {nextDeliverTimeView}
-                    {yumsoExclusiveLabelView}
                 </View>
                 <TouchableHighlight underlayColor={'transparent'} onPress={() => this.navigateToShopPage(chef) }>
                 <View style={styleChefListPage.shopInfoView}>
-                    <Image source={{ uri: chefProfilePic }} style={styleChefListPage.chefPhoto}/>
                     <View style={styleChefListPage.shopInfoSection}>
                        <View style={styleChefListPage.shopInfoRow1}>
                          <View style={styleChefListPage.shopNameView}>
                             <Text style={styleChefListPage.oneShopNameText}>{chef.shopname}</Text>
                          </View>
-                         {likeIconView}
                        </View>
                        
                        <View style={styleChefListPage.shopInfoRow2}>
@@ -299,25 +312,28 @@ class ChefListPage extends Component {
                              <View style={{flexDirection:'row',alignSelf:'center'}}>
                              {rating.renderRating(chef.rating)}
                              </View>
-                             <Text style={styleChefListPage.reviewNumberText}>{chef.reviewCount} reviews</Text>
+                             <Text style={styleChefListPage.reviewNumberText}>({chef.reviewCount})</Text>
                           </View>
-                          <View style={styleChefListPage.distanceDollarSignView}>
-                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?(chef.distance>20?'>20':chef.distance)+' miles | ':''}{dollarSign.renderLevel(chef.priceLevel)}</Text>
-                          </View>   
                        </View>
                        
                        <View style={styleChefListPage.shopInfoRow3}>
                           <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.styleTag,15)}, {commonWidget.getTextLengthLimited(chef.foodTag,15)}</Text>
-                          </View>
-                          <View style={styleChefListPage.distanceDollarSignView}>
-                            <Text style={styleChefListPage.distanceDollarSignText}>{chef.pickupAddressDetail.city}</Text>
+                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.styleTag,8)}, {commonWidget.getTextLengthLimited(chef.foodTag,10)}{yumsoExclusiveTag}</Text>
                           </View>
                        </View>                       
                     </View>
+                    <View style={styleChefListPage.shopInfoSection2}>
+                        <View style={styleChefListPage.iconsView}>
+                            <Image source={{ uri: chefProfilePic }} style={styleChefListPage.chefPhoto}/>
+                            {likedIcon}
+                        </View>  
+                        <View style={styleChefListPage.distanceDollarSignView}>
+                             <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?(chef.distance>20?'20':chef.distance)+' miles | ':''}{dollarSign.renderLevel(chef.priceLevel)}</Text>
+                        </View> 
+                    </View>    
                 </View>
                 </TouchableHighlight>
-                <View style={styles.greyBorderView}></View>                   
+                <View style={styleChefListPage.chefListBorderView}></View>                   
             </View>
         );
     }
@@ -343,7 +359,7 @@ class ChefListPage extends Component {
         if(this.state.showLocSearch){
            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);   
         }else if(this.state.showChefSearch){
-           return <View style={styles.greyContainer}>
+           return <View style={styles.pageWrapper}>
                        <View style={styles.headerBannerView}>    
                             <TouchableHighlight style={styles.headerLeftView} onPress={() => this.setState({
                                                                 showChefSearch: false,
@@ -410,29 +426,62 @@ class ChefListPage extends Component {
                                     </TouchableHighlight>
                                  </View>
         }
+
+        var promoBannerView = null;
+        if (this.state.showPromoAppBanner)
+        // placeholder, in real practice, will only be rendered after the data gets fetched back
+        promoBannerView = <View style={styles.promoBannerView}>
+                                   <Text style={styles.infoBannerText}>
+                                      Promotion Banner Goes Here 
+                                   </Text>
+                            </View>
+
+        var foodTags = [];
+        for (let foodTag of this.state.foodTagArr) 
+            foodTags.push(<Text name={foodTag} key={foodTag} style={styleChefListPage.foodTagTabText}>{foodTag}</Text>);  
+
+        var foodTagTabsView =   <View style={styleChefListPage.foodTagTabsContainer}>
+                                    <Tabs selected={this.state.selectedFoodTag} style={styleChefListPage.foodTagTabsView}
+                                        selectedStyle={styleChefListPage.foodTagSelectedStyle} onSelect={el=>this.showChefsWithSpecificFoodTag(el.props.name)}>
+                                    {foodTags}  
+                                    </Tabs>
+                                </View>
         
         return (
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen} onChange={(isOpen) => this.openSideMenu(isOpen)}>
-                <View style={styles.greyContainer}>                    
-                    <View style={styleChefListPage.headerBannerView}>
-                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
+                <View style={styles.pageWrapper}>                    
+                    <View style={[styles.headerBannerView, styleChefListPage.customizedHeaderBannerRules]}>
+                            {/* {
+                        07/29/2017: Remove the hamburger buttom for V2.0 UI Refresh, 
+                                    uncomment code below or simply swpie right to access profile menu
+                            }*/}
+
+                          {/* <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
                           <View style={styles.menuButtonView}>
                             <Image source={menuIcon} style={styles.menuIcon}/>
                           </View>
-                        </TouchableHighlight>
-                        <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
-                        <View style={styles.titleView}>
+                        </TouchableHighlight>   */}
+
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
+                        <View style={styles.upperLeftBtnView}>
                             <Image source={ballonIcon} style={styles.ballonIcon}/>
-                            <Text style={styles.titleText}>{this.state.city?this.state.city:'unknow'}</Text>
+                            <Text style={styles.pageText}>{this.state.city?this.state.city:'unknown'} ({this.state.zipcode?this.state.zipcode:'unknown'})</Text>
                         </View>
                         </TouchableHighlight>
-                        <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
+                        <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.showFavoriteChefs()}>
+                          <View style={styles.headerRightTextButtonView}>
+                            <Image source={this.getCurrentLikeIcon(this.state.showFavoriteChefsOnly)} style={styles.likeIcon}/>
+                          </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
                           <View style={styles.headerRightTextButtonView}>
                             <Image source={filterIcon} style={styles.filterIcon}/>
                           </View>
-                        </TouchableHighlight>
+                        </TouchableHighlight>  
                     </View>
-                    {updateAppBannerView}
+                    {updateAppBannerView} 
+                    {foodTagTabsView}
+                    {promoBannerView} 
                     {networkUnavailableView}
                     {cheflistView}
                     {loadingSpinnerView}
@@ -443,6 +492,13 @@ class ChefListPage extends Component {
     
     onRefreshDone(){
         this.refs.listView.scrollTo({x:0, y:0, animated: true})
+    }
+
+    getCurrentLikeIcon = function(showFills) {
+        if (showFills)
+            return heartFillsIcon;
+        else
+            return heartLineIcon;
     }
 
     clickDollarSign(priceLevel){
@@ -496,6 +552,18 @@ class ChefListPage extends Component {
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
     }
 
+    showChefsWithSpecificFoodTag(foodTag){
+        let self = this;
+        this.setState({selectedFoodTag:foodTag});
+        let displayChefs = [];
+        Object.keys(this.state.chefsDictionary).forEach(function(chefId) {
+            let chef = self.state.chefsDictionary[chefId];
+            if (chef.foodTag == foodTag || foodTag== 'ALL') 
+                displayChefs.push(chef);
+        });
+        this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
+    }
+
     async openSideMenu(isOpen){
         if(isOpen===false){return;}
         this.setState({ isMenuOpen: true });
@@ -510,7 +578,7 @@ class ChefListPage extends Component {
             Alert.alert( '', 'Your search location is set to '+address.formatted_address,[ { text: 'OK' }]); 
             //todo: get chef use location info;                 
          }
-         this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, isMenuOpen: false, showProgress: true});
+         this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, zipcode: address.postal, isMenuOpen: false, showProgress: true});
          this.componentDidMount(); //todo: we refresh it like this?
     }
     
@@ -954,10 +1022,46 @@ var sideMenuStyle = StyleSheet.create({
 });
 
 var styleChefListPage = StyleSheet.create({
-    headerBannerView:{
-       flexDirection:'row',
-       height:windowHeight*0.066,
-       backgroundColor:'#fff',
+    customizedHeaderBannerRules:{
+        borderColor:'#F5F5F5', 
+        borderBottomWidth:2,
+        paddingLeft:windowWidth/20.7,
+    },
+    headerIconView:{
+        flex:0.1/6.0,
+        width:windowWidth/12,
+        justifyContent:'flex-end',
+        alignItems:'center',
+        flexDirection:'row',
+    },
+    foodTagTabsContainer:{
+        height:windowHeight*0.06,
+        backgroundColor:'#fff',
+        alignSelf:'flex-start',
+    },
+    foodTagTabsView:{
+        flex:1,
+        flexDirection: 'row',
+        justifyContent:'flex-start',
+        alignSelf:'flex-start',
+        paddingLeft:windowWidth/20.7
+    },
+    foodTagTabText:{
+        textAlign: 'center', 
+        marginRight:windowWidth*0.07, 
+        color:'#979797'
+    },
+    foodTagSelectedStyle:{
+        color:'#4A4A4A',
+        fontWeight: 'bold',
+        // 08/09/2017: 
+        // As I set the below rules on tab selected to display the yellow underline, it just doesn't work.
+        // According to the discussion on GitHub, it seems to be a RN old version problem. 
+        // Since we're not updating to the latest RN, I just simply bolden the text for now.
+        // https://github.com/facebook/react-native/issues/29
+
+        // borderBottomColor:'#FFCC33',
+        // borderBottomWidth:3,
     },
     orangeTopBannerView:{
        backgroundColor:'#FFCC33',
@@ -981,38 +1085,48 @@ var styleChefListPage = StyleSheet.create({
        alignSelf:'center',
     },
     oneShopListView:{
+       marginTop:windowHeight*0.03,
        alignSelf:'stretch',
        backgroundColor:'#FFFFFF',
+       paddingLeft:windowWidth/20.7,
     },
     oneShopPhotoView:{
-       height:windowHeight*0.388,
+       height:windowHeight*0.3,
        alignSelf:'stretch',
     },
     chefListViewChefShopPic:{
-       height:windowHeight*0.388,
-       width:windowWidth,
+       height:windowHeight*0.3,
+       width:windowWidth - 0.5 * windowWidth/20.7,
        alignSelf:'stretch',
+       marginLeft: - 1.5 * windowWidth/20.7,
     },
     shopInfoView:{
        flexDirection:'row',
        height:windowHeight*0.14,
        paddingTop:windowHeight*0.0225,
        paddingBottom:windowHeight*0.02698,
-       paddingHorizontal:windowWidth*0.032,
+       paddingRight:1 * windowWidth/20.7,
     },
     chefPhoto:{
-       marginRight:windowWidth*0.04,
-       height:windowWidth*0.16,
-       width:windowWidth*0.16,
-       borderRadius: 12, 
-       borderWidth: 0, 
-       overflow: 'hidden',
+       marginLeft:windowWidth*0.015,
+       height:windowWidth*0.1,
+       width:windowWidth*0.1,
+       borderRadius: windowWidth*0.1 / 2, 
+       alignItems:"center",
+       justifyContent:"center",
     },
     shopInfoSection:{
        flex:1,
        flexDirection:'column',
        justifyContent:'space-between',
        height:windowWidth*0.165,        
+    },
+    shopInfoSection2:{
+       flex:1,
+       flexDirection:'column',
+       justifyContent:'space-between',
+       height:windowWidth*0.165, 
+       alignItems:'flex-end',    
     },
     shopInfoRow1:{
        flexDirection:'row',
@@ -1027,11 +1141,6 @@ var styleChefListPage = StyleSheet.create({
        fontWeight:'500',
        color:'#4A4A4A',
     },
-    likeIconView:{
-       flex:0.07,
-       flexDirection:'row',
-       alignItems:'flex-end', 
-    }, 
     likeIcon:{
        width:windowWidth*0.06,
        height:windowWidth*0.06,
@@ -1051,17 +1160,38 @@ var styleChefListPage = StyleSheet.create({
        alignSelf:'center',
     },
     distanceDollarSignView:{
-        flex:0.25,
         flexDirection:'row',
         justifyContent:'flex-end',
+        paddingTop:windowHeight*0.0075,   
     },
     distanceDollarSignText:{
         fontSize:windowHeight/47.33,
         color:'#4A4A4A',
         textAlign:'left',
     },
+    iconsView: {
+        flexDirection:"row",
+        paddingRight:0,
+        marginBottom:windowHeight/90,
+    },
+    likedIconView:{
+        height:windowHeight*0.02,
+        width:windowWidth*0.04,
+    },
+    iconCircle:{
+        //TODO: make the shadow, it's just a circle for now
+        marginLeft:windowWidth*0.015,
+        height:windowWidth*0.1,
+        width:windowWidth*0.1,
+        borderWidth:windowWidth*0.001,
+        borderRadius: windowWidth*0.1 / 2, 
+        alignItems:"center",
+        justifyContent:"center",
+        borderColor:"#bbb",
+    },
     shopInfoRow3:{
         flexDirection:'row',
+        paddingTop:windowHeight*0.015,
     },
     labelView:{
         flexDirection:'row',
@@ -1080,43 +1210,29 @@ var styleChefListPage = StyleSheet.create({
         alignSelf:'center',
     },
     nextDeliverTimeView:{
-        marginTop:-windowHeight*0.388+7*windowHeight/667,
-        paddingHorizontal:7,
-        paddingVertical:3,
+        marginTop:-windowHeight*0.3,
+        paddingHorizontal:18,
+        paddingVertical:2,
         flexDirection: 'column',
         alignItems:'center',
         justifyContent:'center',
         alignSelf:'flex-end',
-        borderRadius: 8, 
-        borderWidth: 0, 
         overflow: 'hidden',
-        opacity:0.75,
-        backgroundColor:'#FFFFFF',
-        marginRight:7,
+        opacity:0.65,
+        backgroundColor:'#202020',
+        marginRight:windowWidth*0.05,
     },
     nextDeliverTimeText:{
-        color:'#4A4A4A',
+        color:'#FFFFFF',
         fontSize:12
     },
-    yumsoExclusiveLabelView:{
-        marginTop:windowHeight*0.305,
-        paddingHorizontal:7*windowHeight/667,
-        paddingVertical:3*windowHeight/667,
-        flexDirection: 'column',
-        alignItems:'center',
-        justifyContent:'center',
-        alignSelf:'flex-end',
-        backgroundColor:'#ff5000',
-        borderRadius: 7*windowHeight/667, 
-        borderWidth: 0, 
-        overflow: 'hidden',
-        marginRight:7,
-    },
-    yumsoExclusiveLabelText:{
-        color:'#fff',
-        fontSize:12*windowHeight/667,
-        fontWeight:'500',
-    },   
+    chefListBorderView:{
+        height:windowHeight/180,
+        width:windowWidth - 2 * windowWidth/20.7,
+        backgroundColor:'#FFFFFF',
+        borderBottomWidth:1.5,
+        borderBottomColor:'#FFFFFF',
+    }   
 });
 
 var styleFilterPage = StyleSheet.create({
