@@ -26,18 +26,15 @@ class ContactUsPage extends Component {
     render() {
         var contactUsPageUrl = config.baseUrl+"/contactus";         
         return (
-            <View style={styles.greyContainer}>
-               <View style={styles.headerBannerView}>    
+            <View style={styles.container}>
+               <View style={styles.headerBannerView}>
                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefListPage()}>
-                       <View style={styles.backButtonView}>
-                          <Image source={backIcon} style={styles.backButtonIcon}/>
-                       </View>
-                    </TouchableHighlight>    
-                    <View style={styles.titleView}>
-                       <Text style={styles.titleText}>Contact Us</Text>
-                    </View>
-                    <View style={styles.headerRightView}>            
-                    </View>
+                        <View style={styles.backButtonView}>
+                            <Image source={backIcon} style={styles.backButtonIcon} />
+                        </View>
+                    </TouchableHighlight>
+                    <View style={styles.titleView}></View>
+                    <View style={styles.headerRightView}></View>
                </View>
                <WebView
                automaticallyAdjustContentInsets={false}
