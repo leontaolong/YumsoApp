@@ -7,6 +7,7 @@ var {
   StyleSheet
 } = React;
 
+
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
@@ -29,6 +30,13 @@ module.exports = StyleSheet.create({
       flexDirection:'column',
       backgroundColor:'#fff',
     },
+    containerNew:{
+      paddingTop:0,
+      flex:1,
+      flexDirection:'column',
+      backgroundColor:'#fff',
+    },
+
     loaderView:{
       position:'absolute',
       top:0,
@@ -56,21 +64,20 @@ module.exports = StyleSheet.create({
     },
     headerBannerView:{
       flexDirection:'row',
-      // borderBottomWidth:1,
-      // borderColor:'#EAEAEA', //07/15/2017: remove banner border for V2 UI update
+      borderBottomWidth:1,
+      borderColor:'#EAEAEA',
       height:windowHeight*0.066,
       backgroundColor:'#FFFFFF',
     },
     headerLeftView:{
       flex:0.1/6.0,
-      width:windowWidth/6.0,
+      width:10,
       flexDirection:'row',
       justifyContent:'flex-start',
     },
     backButtonView:{
       justifyContent:'center',
       flexDirection:'column',
-      paddingLeft:windowWidth/20.7,
     },
     footerView:{
         flexDirection:'row',
@@ -86,13 +93,13 @@ module.exports = StyleSheet.create({
     },
     footerButtonText:{
        color:'#fff',
-       fontSize:windowHeight/37.056,
+       fontSize: windowHeight/35.5,
        fontWeight:'bold',
        alignSelf: 'center',
     },
     backButtonIcon:{
-      width:windowWidth*0.050,
-      height:windowWidth*0.050,
+      width:windowWidth*0.106,
+      height:windowWidth*0.106,
     },
     refreshButtonIcon:{
       width:17,
@@ -107,12 +114,6 @@ module.exports = StyleSheet.create({
       width:windowWidth/12.5,
       height:windowWidth/12.5,
     },
-    upperLeftBtnView:{
-      flex:0.4/6,
-      flexDirection:'row',
-      width:windowWidth*4/6.0,
-      alignItems:'center',
-    },
     titleView:{
       flex:0.4/6,
       flexDirection:'row',
@@ -120,12 +121,35 @@ module.exports = StyleSheet.create({
       justifyContent:'center',
       alignItems:'center'
     },
+    titleViewNew:{
+      width:windowWidth,
+      height: 78 * windowHeightRatio,
+      marginTop: 0,
+      marginLeft: 20 * windowWidthRatio,
+
+//backgroundColor: "#0000aa",
+    },
     titleText:{
       fontSize:windowHeight/37.06,
       color:'#4A4A4A',
       fontWeight:'500',
       alignSelf:'center',
       textAlign:'center'
+    },
+    titleTextNew:{
+      fontSize: h1,
+      height:45 * windowHeightRatio,
+      color:'#4A4A4A',
+      fontWeight:'500',
+      fontWeight: "bold",
+
+    //  backgroundColor: "#cccccc",
+      width: windowWidth - 40 * windowWidthRatio,
+      marginTop: 0,
+
+
+      //alignSelf:'center',
+      //textAlign:'center'
     },
     headerRightView:{
       flex:0.1/6.0,
@@ -160,23 +184,13 @@ module.exports = StyleSheet.create({
       height:windowHeight*0.0235,
     },
     filterIcon:{
-      marginTop:12*windowHeight/667,
-      marginRight:5*windowHeight/667,
       width:20*windowHeight/667,
       height:20*windowHeight/667,
     },
-    likeIcon: {
-      marginTop:12*windowHeight/667,
-      marginRight:5*windowHeight/667,
-      width:25*windowHeight/667,
-      height:21*windowHeight/667,
-    },
     ballonIcon:{
-      marginVertical:2*windowHeight/667,
-      marginRight:8*windowHeight/667,
-      marginLeft:0,
-      width:18*windowHeight/667,
-      height:22*windowHeight/667,
+      marginTop:0.8*windowHeight/667,
+      width:25*windowHeight/667,
+      height:25*windowHeight/667,
     },
     searchIcon:{
       width:windowHeight/24.5,
@@ -194,7 +208,7 @@ module.exports = StyleSheet.create({
       height:windowHeight/49,
     },
     locationText:{
-      fontSize:18,
+      fontSize:18  * windowHeightRatio,
       color:'#4A4A4A',
       fontWeight:'500',
       alignSelf:'center',
@@ -218,18 +232,42 @@ module.exports = StyleSheet.create({
       justifyContent:'center',
       borderBottomWidth:2,
       borderColor:'#EAEAEA',
-      alignSelf:'center'
+      alignSelf:'center',
+    },
+    loginInputViewNew:{
+      width:windowWidth-40 * windowWidthRatio,
+      flexDirection:'row',
+      justifyContent:'center',
+      borderBottomWidth:1,
+      borderBottomColor: "#EAEAEA",
+      borderColor:'#EAEAEA',
+      alignSelf:'center',
+      marginLeft: 0,
+      height: 34 * windowHeightRatio,
+    //  backgroundColor: "#00cd00",
     },
     loginInput:{
       width:windowWidth*0.8,
       height:windowHeight*0.08,
-      fontSize:20,
+      fontSize:h3,
       fontWeight:'bold',
-      color: '#fff',
+      color: '#4A4A4A',
       borderBottomWidth:1,
       borderColor:'#fff',
       paddingVertical:5,
       textAlign:'left',
+    },
+    loginInputNew:{
+      width:windowWidth-40 * windowWidthRatio,
+      height:34  * windowHeightRatio,
+      fontSize:b2,
+      fontWeight:'bold',
+      color: '#4A4A4A',
+      borderBottomWidth:1,
+      borderColor:'#fff',
+      paddingVertical:0,
+      textAlign:'left',
+      marginLeft: 0,
     },
     dot:{
       backgroundColor: 'rgba(0,0,0,.2)',
@@ -252,7 +290,7 @@ module.exports = StyleSheet.create({
       marginBottom: 3,
     },
     listViewEmptyText:{
-      fontSize:16,
+      fontSize:h4,
       color:'#9B9B9B',
       justifyContent:'center',
       textAlign:'center',
@@ -451,116 +489,6 @@ module.exports = StyleSheet.create({
         padding:3,
         position: 'relative',
     },
-    pageTitle: {
-        fontSize:28*windowHeight/677,
-        fontWeight:'bold',
-        color:'#4A4A4A',
-        marginVertical:windowHeight*0.005,
-    },
-    pageTitleView: {
-        marginBottom:windowHeight*0.0540,
-    },
-    pageSubTitle: {
-        fontSize:windowHeight/35.5,
-        fontWeight:'600',
-        color:'#4A4A4A',
-        marginVertical:windowHeight*0.0200,
-    },
-    scrollViewContainer: {
-        paddingHorizontal:windowWidth/20.7,
-    },
-    pageText: {
-        fontSize:15*windowHeight/677,
-        fontWeight:'500',
-        color:'#9B9B9B',
-        textAlign:'justify',
-    },
-    greyBox: {
-        flex:1,
-        flexDirection:'column',
-        backgroundColor:'#F5F5F5',
-        paddingVertical:windowHeight*0.025,
-    },
-    greyBoxText: {
-        fontSize:15*windowHeight/677,
-        color:'#9B9B9B',
-        textAlign:'center',
-    },
-    pageWrapper:{
-      marginTop:15,
-      flex:1,
-      flexDirection:'column',
-      backgroundColor:"#FFFFFF",
-    },
-    promoBannerView:{
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent: 'center',
-        height:100,
-        backgroundColor:'#F5F5F5'
-    },
-
-
-
-
-
-
-    titleViewNew:{
-    width:windowWidth,
-    height: 78 * windowHeightRatio,
-    marginTop: 0,
-    marginLeft: 20 * windowWidthRatio,
-    },
-
-    containerNew:{
-      paddingTop:0,
-      flex:1,
-      flexDirection:'column',
-      backgroundColor:'#fff',
-    },
-
-    titleTextNew:{
-      fontSize: h1,
-      height:45 * windowHeightRatio,
-      color:'#4A4A4A',
-      fontWeight:'500',
-      fontWeight: "bold",
-
-    //  backgroundColor: "#cccccc",
-      width: windowWidth - 120 * windowWidthRatio,
-      marginTop: 0,
-
-
-      //alignSelf:'center',
-      //textAlign:'center'
-    },
-    loginInputViewNew:{
-      width:windowWidth-40 * windowWidthRatio,
-      flexDirection:'row',
-      justifyContent:'center',
-      borderBottomWidth:1,
-      borderBottomColor: "#EAEAEA",
-      borderColor:'#EAEAEA',
-      alignSelf:'center',
-      marginLeft: 0,
-      height: 34 * windowHeightRatio,
-    //  backgroundColor: "#00cd00",
-    },
-
-    loginInputNew:{
-      width:windowWidth-40 * windowWidthRatio,
-      height:34  * windowHeightRatio,
-      fontSize:b2,
-      fontWeight:'bold',
-      color: '#4A4A4A',
-      borderBottomWidth:1,
-      borderColor:'#fff',
-      paddingVertical:0,
-      textAlign:'left',
-      marginLeft: 0,
-    },
-
-
     lineNew: {
       backgroundColor: "#EAEAEA",
       height: 1,
@@ -611,7 +539,6 @@ module.exports = StyleSheet.create({
     //  backgroundColor:'#000',
       height: 42* windowHeightRatio,
       marginTop : 20,
-    width: windowWidth/3,
     },
 
     backButtonViewsNew:{
@@ -619,7 +546,6 @@ module.exports = StyleSheet.create({
       paddingLeft: 20* windowWidthRatio,
       justifyContent:'center',
       flexDirection:'column',
-
     },
 
     backButtonIconsNew:{
@@ -646,7 +572,7 @@ module.exports = StyleSheet.create({
       flexDirection:'column',
     },
 
-    tabBarNew: {
+    tabBar: {
       height: 55* windowWidthRatio,
       //backgroundColor : "#000",
       width: windowWidth,
@@ -654,7 +580,7 @@ module.exports = StyleSheet.create({
       shadowColor: 'black',
       shadowOpacity: 0.3,
     },
-    tabBarButtonNew: {
+    tabBarButton: {
       flexDirection:'column',
       flex: 1,
       height: 44* windowWidthRatio,
@@ -662,49 +588,19 @@ module.exports = StyleSheet.create({
       alignItems: 'center',
 
     },
-    tabBarButtonImageNew: {
+    tabBarButtonImage: {
       height: 22 * windowHeightRatio,
       width:20 * windowWidthRatio,
       marginTop: 10 * windowHeightRatio,
     //  marginLeft: ((windowWidth/3)/2)- (22 * windowWidthRatio)/2,
     },
-    tabBarButtonTextOffNew: {
+    tabBarButtonTextOff: {
         fontSize: h5,
         color: "#979797",
     },
-    tabBarButtonTextOnNew: {
+    tabBarButtonTextOn: {
         fontSize: h5,
         color: "#FFCC33",
     },
-    infoBannerViewNew:{
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent: 'center',
-        borderColor: "#EAEAEA",
-        borderBottomWidth: 1,
-        paddingBottom: 20 * windowHeightRatio,
-        paddingTop: 20 * windowHeightRatio,
-        marginLeft:20 * windowWidthRatio,
-        marginRight:20 * windowWidthRatio,
-
-    },
-    infoBannerTextNew:{
-        fontSize:12 * windowHeightRatio,
-        fontWeight:'400',
-        color:'#4A4A4A',
-        alignSelf:'center',
-    },
-    infoBannerLinkViewNew:{
-        fontSize:12  * windowHeightRatio,
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        alignItems:'center',
-      //  width:80,
-        color:"#FFCC33",
-
-    },
-
-
-
 
 });
