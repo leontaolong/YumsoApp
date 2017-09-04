@@ -7,6 +7,7 @@ var rating = require('./rating');
 var dateRender = require('./commonModules/dateRender');
 var backIcon = require('./icons/icon-back.png');
 var defaultShopPic = require('./icons/defaultAvatar.jpg');
+var enterPic = require('./icons/enter.png');
 var RefreshableListView = require('react-native-refreshable-listview');
 var commonAlert = require('./commonModules/commonAlert');
 var commonWidget = require('./commonModules/commonWidget');
@@ -35,14 +36,26 @@ import Dimensions from 'Dimensions';
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
+var windowHeightRatio = windowHeight/677;
+var windowWidthRatio = windowWidth/375;
+
+
+var h1 = 28*windowHeight/677;
+var h2 = windowHeight/35.5;
+var h3 = windowHeight/33.41;
+var h4 = windowHeight/47.33;
+var h5 = 12;
+var b1 = 15*windowHeight/677;
+var b2 = 15*windowHeight/677;
+
 class HistoryOrderPage extends Component {
     constructor(props){
         super(props);
         var ds = new ListView.DataSource({
-           rowHasChanged: (r1, r2) => r1!=r2 
-        }); 
+           rowHasChanged: (r1, r2) => r1!=r2
+        });
         var routeStack = this.props.navigator.state.routeStack;
-        let eater = routeStack[routeStack.length-1].passProps.eater;      
+        let eater = routeStack[routeStack.length-1].passProps.eater;
         this.state = {
             dataSourceOrderPending: ds.cloneWithRows([]),
             dataSourceNeedReview: ds.cloneWithRows([]),
@@ -58,13 +71,13 @@ class HistoryOrderPage extends Component {
             orderListSelect:'orderCompleted',
             orders:[],
             comments:[],
-            lastSortKeyOrders:null, 
+            lastSortKeyOrders:null,
             lastSortKeyComments:null,
             isAllOrdersLoaded:false,
         };
         this.responseHandler = function (response, msg) {
             if(response.statusCode==400){
-               Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
+               Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);
             }else if (response.statusCode === 401) {
                 return AuthService.logOut()
                     .then(() => {
@@ -80,8 +93,8 @@ class HistoryOrderPage extends Component {
                         });
                     });
             } else {
-                 Alert.alert( 'Network or server error', 'Please try again later',[ { text: 'OK' }]); 
-                 this.setState({showProgress: false,showNetworkUnavailableScreen:true});  
+                 Alert.alert( 'Network or server error', 'Please try again later',[ { text: 'OK' }]);
+                 this.setState({showProgress: false,showNetworkUnavailableScreen:true});
             }
         };
     }
@@ -89,9 +102,9 @@ class HistoryOrderPage extends Component {
     componentDidMount(){
         this.client = new HttpsClient(config.baseUrl, true);
         this.setState({showProgress: true});
-        return this.fetchOrderAndComments(); 
+        return this.fetchOrderAndComments();
     }
-    
+
     async fetchOrderAndComments() {
         const currentTime = new Date().getTime();
         //const oneWeekAgo = currentTime - 7*24*60*60*1000;
@@ -113,7 +126,7 @@ class HistoryOrderPage extends Component {
            var start = 'start=0';
            var lastSortKeyCommentsString = 'lastSortKey=' + this.state.lastSortKeyComments;
            var queryStringComments = start + '&' + end + '&' + lastSortKeyCommentsString + '&' + nextString
-        }  
+        }
 
         let eater = await AuthService.getPrincipalInfo();
         try{
@@ -134,13 +147,13 @@ class HistoryOrderPage extends Component {
           commonAlert.networkError(err);
           return;
         }
-    
+
         if (resOrders && resOrders.statusCode != 200 && resOrders.statusCode != 202) {
             this.setState({showProgress:false,showProgressBottom:false,});
             return this.responseHandler(resOrders);
         }
         if (resComments && resComments.statusCode != 200 && resComments.statusCode != 202) {
-            this.setState({showProgress:false,showProgressBottom:false,});  
+            this.setState({showProgress:false,showProgressBottom:false,});
             return this.responseHandler(resComments);
         }
 
@@ -154,7 +167,7 @@ class HistoryOrderPage extends Component {
             }
 
             if(resOrders.data.lastSortKey && this.state.lastSortKeyOrders != resOrders.data.lastSortKey){
-               this.state.lastSortKeyOrders = resOrders.data.lastSortKey   
+               this.state.lastSortKeyOrders = resOrders.data.lastSortKey
             }else if(!resOrders.data.lastSortKey){
                this.setState({isAllOrdersLoaded:true});
             }else{
@@ -162,7 +175,7 @@ class HistoryOrderPage extends Component {
             }
 
             if(resComments.data.lastSortKey){
-               this.state.lastSortKeyComments = resComments.data.lastSortKey   
+               this.state.lastSortKeyComments = resComments.data.lastSortKey
             }
 
             for(var comment of this.state.comments){
@@ -201,10 +214,10 @@ class HistoryOrderPage extends Component {
                          });
         }
     }
-     
+
     loadMoreOrders(){
            console.log('loadMoreOrders');
-           this.setState({showProgressBottom:true});        
+           this.setState({showProgressBottom:true});
            this.fetchOrderAndComments();
     }
 
@@ -217,18 +230,27 @@ class HistoryOrderPage extends Component {
            }else{
               var action = "Delivering"
            }
-        }else{ 
+        }else{
            var action = "See Details"
         }
 
         if(order.orderStatus.toLowerCase() == 'cancelled'){
-           var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>
-                                 Cancelled
-                                 </Text>
+          var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>
+                                Cancelled
+                                </Text>
+
+          var orderStatusText2 = <Text style={styleHistoryOrderPage.completeTimeText}>
+                                Status: cancelled
+                                </Text>
+
         }else{
            var orderStatusText = <Text style={styleHistoryOrderPage.completeTimeText}>
-                                 Placed at {dateRender.renderDate2(order.orderCreatedTime)}
+                                 Order Placed: {dateRender.renderDate2(order.orderCreatedTime)}
                                  </Text>
+
+          var orderStatusText2 = <Text style={styleHistoryOrderPage.completeTimeText}>
+                                  Status: delivered
+                                  </Text>
         }
 
         if(order.shopPictures && order.shopPictures[0]){
@@ -236,38 +258,39 @@ class HistoryOrderPage extends Component {
         }else{
            var imageSrc = defaultShopPic;
         }
-     
+
         return  (
-                    <TouchableOpacity onPress={()=>this.navigateToOrderDetailPage(order)} activeOpacity={0.7}> 
+                    <TouchableOpacity onPress={()=>this.navigateToOrderDetailPage(order)} activeOpacity={0.7}>
+                    <View style={styleHistoryOrderPage.cell}>
                         <View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
-                            <Image source={imageSrc} style={styleHistoryOrderPage.shopPhoto}/>
+                          {/*  <Image source={imageSrc} style={styleHistoryOrderPage.shopPhoto}/> */}
                             <View style={styleHistoryOrderPage.orderInfoView}>
-                                <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text> 
-                                <Text style={styleHistoryOrderPage.completeTimeText}>
+                                <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>
+                                {/*<Text style={styleHistoryOrderPage.completeTimeText}>
                                 OrderId: {order.orderIdShort}
-                                </Text>                                                         
-                                {orderStatusText}           
-                                <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
+                                </Text>   */}
+                                {orderStatusText}
+                                {orderStatusText2}
+
+                              {/*  <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
                                 <View style={styleHistoryOrderPage.orderDetailsClickableView}>
-                                   <Text style={styleHistoryOrderPage.orderDetailsClickable}>{action}</Text>                                                                               
-                                </View>
+                                   <Text style={styleHistoryOrderPage.orderDetailsClickable}>{action}</Text>
+                                </View>*/}
                             </View>
+                            <Image source={enterPic} style={styleHistoryOrderPage.enterPicNew}/>
+                        </View>
+
                         </View>
                     </TouchableOpacity>
                  );
     }
 
-    renderFooter(){
-       console.log(this.state.orders)
-       if(this.state.orders && this.state.orders.length > 0 && this.state.orders.length >= firstTimeLoadPageSize){
-         return <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>;
-       }
-   }
-        
+
+
     render() {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>  
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>
         }
         var orderListView = null;
         var networkUnavailableView = null;
@@ -297,7 +320,6 @@ class HistoryOrderPage extends Component {
               var orderListView = <ListView
                                    dataSource = {this.state.dataSourceCompleted}
                                    renderRow={this.renderRow.bind(this) }
-                                   renderFooter={ this.renderFooter.bind(this) }
                                    pageSize={10}
                                    initialListSize={1}/>;
              if(this.state.orderCompleted && this.state.orderCompleted.length==0 && !this.state.showProgress){
@@ -305,28 +327,44 @@ class HistoryOrderPage extends Component {
               }
            }
         }
-        
+
         return (
-            <View style={styles.greyContainer}>
-               <View style={styles.headerBannerView}>    
-                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
+            <View style={styles.containerNew}>
+              {/* <View style={styles.headerBannerView}>
+                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#000'} onPress={() => this.navigateBackToChefList()}>
                       <View style={styles.backButtonView}>
                         <Image source={backIcon} style={styles.backButtonIcon}/>
                       </View>
-                   </TouchableHighlight>    
+                   </TouchableHighlight>
                    <View style={styles.titleView}>
                       <Text style={styles.titleText}>My Orders</Text>
                    </View>
                    <View style={styles.headerRightView}>
                    </View>
+               </View> */}
+
+               <View style={styles.headerBannerViewNew}>
+
+                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#fff'} onPress={() => this.navigateBackToChefList()}>
+                      <View style={styles.backButtonViewsNew}>
+                        <Image source={backIcon} style={styles.backButtonIconsNew}/>
+                      </View>
+                   </TouchableHighlight>
+
+                   <View style={styles.headerRightView}>
+                   </View>
                </View>
-               <View style={styleHistoryOrderPage.orderListSelectView}>
-                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderPending') } 
+               <View style={styles.titleViewNew}>
+                   <Text style={styles.titleTextNew}>Completed Orders</Text>
+               </View>
+
+            {/*   <View style={styleHistoryOrderPage.orderListSelectView}>
+                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderPending') }
                     style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',
                     backgroundColor:this.renderOrderListOnSelectColor('orderPending')}}>
                       <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Pending</Text>
                    </TouchableHighlight>
-                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderNeedReview') } 
+                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderNeedReview') }
                     style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',borderColor:'#F5F5F5', borderLeftWidth:1,borderRightWidth:1,
                     backgroundColor:this.renderOrderListOnSelectColor('orderNeedReview')}}>
                       <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Need Review</Text>
@@ -337,10 +375,11 @@ class HistoryOrderPage extends Component {
                       <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Completed</Text>
                    </TouchableHighlight>
                 </View>
+                */}
                {networkUnavailableView}
                {noOrderText}
                {orderListView}
-               {loadingSpinnerView}                   
+               {loadingSpinnerView}
             </View>
         );
     }
@@ -392,7 +431,7 @@ class HistoryOrderPage extends Component {
                            dataSourceOrderPending: new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2}).cloneWithRows(orderPending),
                            dataSourceNeedReview: new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2}).cloneWithRows(orderNeedReview),
                            dataSourceCompleted: new ListView.DataSource({rowHasChanged:(r1,r2)=>r1!==r2}).cloneWithRows(orderCompleted),
-                           showProgress:false, 
+                           showProgress:false,
                            orderPending:orderPending,
                            orderNeedReview:orderNeedReview,
                            orderCompleted:orderCompleted,
@@ -402,23 +441,23 @@ class HistoryOrderPage extends Component {
     navigateToOrderDetailPage(order){
         this.setState({ isMenuOpen: false });
         this.props.navigator.push({
-            name: 'OrderDetailPage', 
+            name: 'OrderDetailPage',
             passProps:{
                 eater:this.state.eater,
                 order:order,
                 callback: this.updateOneOrder.bind(this) //todo: force rerender or just setState
             }
-        });    
+        });
     }
 }
 
 var styleHistoryOrderPage = StyleSheet.create({
     oneListingView:{
-        backgroundColor:'#FFFFFF',  
+        backgroundColor:'#FFFFFF',
         flexDirection:'row',
         flex:1,
-        borderColor:'#F5F5F5',
-        borderBottomWidth:5,
+      //  borderColor:'#F5F5F5',
+        borderBottomWidth:0,
     },
     shopPhoto:{
         width:windowWidth*0.333,
@@ -426,16 +465,16 @@ var styleHistoryOrderPage = StyleSheet.create({
     },
     orderInfoView:{
         flex:1,
-        height:windowWidth*0.333,
+      //  height:windowWidth*0.333,
         flexDirection:'column',
-        paddingLeft:windowWidth*0.04,
-        paddingRight:windowWidth*0.048,
-        paddingTop:windowWidth*0.024,
-        paddingBottom:windowWidth*0.024,
+        paddingLeft:0,
+        paddingRight:0,
+        paddingTop:10 * windowHeightRatio,
+        paddingBottom:10 * windowHeightRatio,
     },
     shopNameText:{
-        fontSize:windowHeight/35.5,
-        fontWeight:'bold',
+        fontSize:h3,
+        //fontWeight:'bold',
         color:'#4A4A4A',
     },
     grandTotalText:{
@@ -445,14 +484,14 @@ var styleHistoryOrderPage = StyleSheet.create({
         marginTop:windowHeight*0.009,
     },
     completeTimeText:{
-        fontSize:windowHeight/51.636,
-        color:'#4A4A4A',
-        marginTop:windowHeight*0.009,
+        fontSize:h4,
+        color:'#979797',
+        //marginTop:windowHeight*0.009,
     },
     orderDetailsClickableView:{
         flexDirection:'row',
         justifyContent:'flex-end',
-        flex:1,    
+        flex:1,
     },
     orderDetailsClickable:{
         fontSize:windowHeight/51.636,
@@ -468,7 +507,27 @@ var styleHistoryOrderPage = StyleSheet.create({
         fontSize:windowHeight/40.88,
         color:'#4A4A4A',
         fontWeight:'500',
+    },
+    enterPicNew:{
+      top:35 * windowHeightRatio,
+        width:6 * windowWidthRatio,
+        height:13 * windowHeightRatio,
+        right: 0,
+    },
+    bottomLine: {
+      marginLeft: 20 * windowWidthRatio,
+      marginRight: 20 * windowWidthRatio,
+      backgroundColor: "#EAEAEA",
+      height: 1,
+    },
+
+    cell: {
+      borderBottomWidth: 1,
+      borderColor: "#EAEAEA",
+      marginRight:20 * windowWidthRatio,
+      marginLeft:20 * windowWidthRatio,
     }
-});    
+
+});
 
 module.exports = HistoryOrderPage;
