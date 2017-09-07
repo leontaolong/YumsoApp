@@ -501,9 +501,7 @@ module.exports = StyleSheet.create({
     },
 
 
-
-
-
+//**** new
 
     titleViewNew:{
     width:windowWidth,
@@ -527,7 +525,7 @@ module.exports = StyleSheet.create({
       fontWeight: "bold",
 
     //  backgroundColor: "#cccccc",
-      width: windowWidth - 120 * windowWidthRatio,
+    //  width: windowWidth - 40 * windowWidthRatio,
       marginTop: 0,
 
 

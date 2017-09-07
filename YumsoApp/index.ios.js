@@ -21,6 +21,7 @@ var ContactUsPage = require('./contactUsPage');
 var TermsPage = require('./termsPage');
 var ChefIntroPage = require('./chefIntroPage')
 var styles = require('./style');
+var OrderPage = require('./orderPage');
 
 import React, {
   AppRegistry,
@@ -35,7 +36,7 @@ import React, {
   Alert
 } from 'react-native';
 
-console.disableYellowBox = true; 
+console.disableYellowBox = true;
 let sceneConfig = Navigator.SceneConfigs.FloatFromRight;
 sceneConfig.gestures.pop = {};
 
@@ -52,7 +53,7 @@ class YumsoApp extends Component {
                   resolve(token);
                }else{
                   reject(new Error('Failed registering notification service'))
-               }  
+               }
             })
         });
     }
@@ -93,7 +94,7 @@ class YumsoApp extends Component {
         //           console.log('Out-for-delivery count: '+count);
         //           console.log('getBadgeCount: '+notification.getBadgeCount())
         //           PushNotificationIOS.setApplicationIconBadgeNumber(count+notification.getBadgeCount());
-        //        }   
+        //        }
         //    });
         // });
 
@@ -119,20 +120,20 @@ class YumsoApp extends Component {
     getInitialState(){
         this.setState({doneGettingEater:false});
     }
-    
+
     render() {
         if(!this.state.doneGettingEater){
-           //return <Image style={styles.pageBackgroundImage} source={backgroundImage}></Image> 
-           return <View style={{flex:1,backgroundColor:"#FFFFFF"}}></View> 
+           //return <Image style={styles.pageBackgroundImage} source={backgroundImage}></Image>
+           return <View style={{flex:1,backgroundColor:"#FFFFFF"}}></View>
         }else{
            if(!this.state.eater){
               return (<Navigator initialRoute={{ name: 'LoginPage' }}  renderScene={ this.renderScene } />);
            }else{
               return (<Navigator initialRoute={{ name: 'ChefListPage' }}  renderScene={ this.renderScene } />);
-           } 
+           }
         }
     }
-    
+
     renderScene(route, navigator) {
         if(route.name === 'ChefListPage') {
             return <ChefListPage navigator={navigator} />
@@ -176,8 +177,10 @@ class YumsoApp extends Component {
             return <TermsPage navigator={navigator}/>
         }else if (route.name==='ChefIntroPage'){
             return <ChefIntroPage navigator={navigator}/>
+        }else if (route.name==='OrderPage'){
+            return <OrderPage navigator={navigator}/>
         }
-    } 
+    }
 }
 
 AppRegistry.registerComponent('YumsoApp', () => YumsoApp);

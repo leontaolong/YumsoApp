@@ -647,7 +647,7 @@ onPressOrdersTabBtn(){
 
 
   this.props.navigator.push({
-      name: 'HistoryOrderPage',
+      name: 'OrderPage',
       passProps: {
          eater: this.props.eater
       }

@@ -194,7 +194,7 @@ class EaterPage extends Component {
 
                                 <Text style={styleEaterPage.textFieldTitle}>First Name  </Text>
                                 <View style={styles.loginInputViewNew}>
-                                    <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                                    <TextInput style={styleEaterPage.loginInputNew}  defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                                         maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ firstname: text }) }/>
                                 </View>
 
@@ -203,7 +203,6 @@ class EaterPage extends Component {
                                     <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.lastname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                                         maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ lastname: text }) }/>
                                 </View>
-
 
                                 <Text style={styleEaterPage.textFieldTitle}>Username</Text>
                                 <View style={styles.loginInputViewNew}>
@@ -382,7 +381,7 @@ class EaterPage extends Component {
                         <View style={styleEaterPage.profileBtnListLastNew}>
                             <TouchableHighlight style={styleEaterPage.profileBtnListLastNew} underlayColor={'#F5F5F5'} onPress={() => this.onPressEdit()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
-                                    <Text style={styleEaterPage.profileBtnListTextNew}>Log Out 3</Text>
+                                    <Text style={styleEaterPage.profileBtnListTextNew}>Log Out</Text>
                                 </View>
                             </TouchableHighlight>
                         </View>
@@ -685,7 +684,7 @@ var styleEaterPage = StyleSheet.create({
       width:windowWidth-40 * windowWidthRatio,
       height:34 * windowHeightRatio,
       fontSize:h2,
-      fontWeight:'bold',
+      fontWeight:'900',
       color: '#4A4A4A',
       borderBottomWidth:1,
       borderColor:'#fff',
