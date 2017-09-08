@@ -252,7 +252,7 @@ class OrderDetailPage extends Component {
 
 
 
-            return [headerNew,orderStatusTextNew,deliverTimeViewNew,ETAView,contactUsView,itemsTextNew];
+            return [headerNew,orderStatusTextNew,deliverTimeViewNew,contactUsView,itemsTextNew];
         }
     }
 
@@ -299,10 +299,19 @@ class OrderDetailPage extends Component {
        var line2 = this.state.order.shippingAddress.apartmentNumber;
        var line3 = this.state.order.shippingAddress.city + ', ' + this.state.order.shippingAddress.state + ', ' + this.state.order.shippingAddress.postal;
 
+
+
        if (line2 == null) {
-         fullDeliveryAddress = line1 + '\n' + line3;
+         fullDeliveryAddress =  <View>
+                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueAddressTopNew}>{line1}</Text>
+                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueAddressBottomNew}>{line3}</Text>
+                                </View>
        } else {
-         fullDeliveryAddress = line1 + '\n' + line2 + '\n' + line3;
+         fullDeliveryAddress = <View>
+                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueAddressTopNew}>{line1}</Text>
+                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>{line2}</Text>
+                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueAddressBottomNew}>{line3}</Text>
+                                </View>
        }
 
 
@@ -351,16 +360,16 @@ class OrderDetailPage extends Component {
                                 </View>),
                                (<View key={'addressView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                                    <View style={styleShoppingCartPage.orderSummaryBoxNew}>
-                                       <View style={styleShoppingCartPage.notesToChefTitleView}>
+                                       <View style={styleShoppingCartPage.notesToChefTitleAddressView}>
                                            <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Deliver to</Text>
                                        </View>
                                        <View style={styleShoppingCartPage.orderSummaryBoxViewAddressNew}>
-                                           <Text style={styleShoppingCartPage.orderSummaryBoxValueAddressNew}>{commonWidget.getTextLengthLimited(fullDeliveryAddress,20)}</Text>
+                                        {fullDeliveryAddress}
                                        </View>
-                                       <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'}
+                                      {/* <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'}
                                        onPress={()=> Alert.alert( 'Deliver Address', fullDeliveryAddress,[ { text: 'Close' }])}>
                                            <Text style={styleShoppingCartPage.addressMoreButtonTextNew}>View</Text>
-                                       </TouchableHighlight>
+                                       </TouchableHighlight> */}
                                    </View>
                                    <View style={styleShoppingCartPage.lineBackgroundNew}>
                                        <Text style= {styleShoppingCartPage.lineNew}></Text>
@@ -1610,8 +1619,8 @@ var styleShoppingCartPage = StyleSheet.create({
         fontWeight:'bold',
         color:'#4A4A4A',
         marginLeft: 15 * windowWidthRatio,
-        marginTop:20,
-        marginBottom: 20,
+        marginTop:20 * windowHeightRatio,
+        marginBottom: 20 * windowHeightRatio,
 
     },
 
@@ -1619,6 +1628,19 @@ var styleShoppingCartPage = StyleSheet.create({
         fontSize:h4,
         color:'#4A4A4A',
         marginRight: 15 * windowWidthRatio,
+    },
+    orderSummaryBoxValueAddressTopNew:{
+        fontSize:h4,
+        color:'#4A4A4A',
+        marginRight: 15 * windowWidthRatio,
+        marginTop:20 * windowHeightRatio,
+    },
+    orderSummaryBoxValueAddressBottomNew:{
+        fontSize:h4,
+        color:'#4A4A4A',
+        marginRight: 15 * windowWidthRatio,
+        marginBottom: 20 * windowHeightRatio,
+
     },
     orderSummaryBoxBoldValueNew:{
         fontSize:h4,
@@ -1642,6 +1664,7 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1/2.0,
         alignItems:'flex-end',
         alignSelf:'center',
+
     },
     lineBackgroundNew: {
         backgroundColor: "#FFFFFF",
@@ -1707,6 +1730,11 @@ var styleShoppingCartPage = StyleSheet.create({
         marginTop: 20 * windowHeightRatio,
     },
 
+    notesToChefTitleAddressView:{
+        flex:0.35,
+        alignItems:'flex-start',
+      //  alignSelf:'center',
+    },
 
 
 

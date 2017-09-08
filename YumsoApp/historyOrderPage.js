@@ -16,6 +16,7 @@ var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
 var LoadMoreBottomComponent = require('./loadMoreBottomComponent');
 const eaterOrderPageSize = 7;
 const firstTimeLoadPageSize = 14;
+var lastDataCount = 0;
 
 import React, {
   Component,
@@ -49,6 +50,7 @@ var b1 = 15*windowHeight/677;
 var b2 = 15*windowHeight/677;
 
 var selectedHeader = 'orderNeedReview';
+var footerView = null;
 
 class HistoryOrderPage extends Component {
     constructor(props){
@@ -208,7 +210,15 @@ class HistoryOrderPage extends Component {
                 }
             }
             console.log("AllOrder: ");
-            console.log(this.state.orders);
+            console.log(this.state.orders.length);
+            var dd = this.state.orders.length;
+          //  Alert.alert(String(dd));
+            if (dd > 10) {
+              footerView = <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>
+
+            } else {
+              footerView = null;
+            }
 
             this.setState({
                            dataSourceOrderPending: this.state.dataSourceOrderPending.cloneWithRows(this.state.orders),
@@ -297,7 +307,7 @@ class HistoryOrderPage extends Component {
     renderFooter(){
        console.log(this.state.orders)
        if(this.state.orders && this.state.orders.length > 0 && this.state.orders.length >= firstTimeLoadPageSize){
-         return <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>;
+         return footerView;
        }
     }
 
@@ -328,23 +338,31 @@ class HistoryOrderPage extends Component {
                  var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order needs review.</Text>
               }
               //console.log('orderNeedReview')
-              var orderListView =  <RefreshableListView
-                                    dataSource = {this.state.dataSourceNeedReview}
-                                    renderRow={this.renderRow.bind(this) }
-                                    renderFooter={ this.renderFooter.bind(this) }
-                                    pageSize={10}
-                                    initialListSize={1}
-                                    loadData={this.fetchOrderAndComments.bind(this)}/>;
+              else{
+
+                  var orderListView =  <RefreshableListView
+                                        dataSource = {this.state.dataSourceNeedReview}
+                                        renderRow={this.renderRow.bind(this) }
+                                        renderFooter={ this.renderFooter.bind(this) }
+                                        pageSize={10}
+                                        initialListSize={1}
+                                        loadData={this.fetchOrderAndComments.bind(this)}/>;
+              }
             }else{
               //console.log('completed')
-              var orderListView = <ListView
-                                   dataSource = {this.state.dataSourceCompleted}
-                                   renderRow={this.renderRow.bind(this) }
-                                   renderFooter={ this.renderFooter.bind(this) }
-                                   pageSize={10}
-                                   initialListSize={1}/>;
+
              if(this.state.orderCompleted && this.state.orderCompleted.length==0 && !this.state.showProgress){
                  var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order completed.</Text>
+              }
+              else{
+
+                  var orderListView = <ListView
+                                       dataSource = {this.state.dataSourceCompleted}
+                                       renderRow={this.renderRow.bind(this) }
+                                       renderFooter={ this.renderFooter.bind(this) }
+                                       pageSize={10}
+                                       initialListSize={1}/>;
+
               }
            }
         }

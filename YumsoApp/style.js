@@ -684,8 +684,6 @@ module.exports = StyleSheet.create({
         paddingTop: 20 * windowHeightRatio,
         marginLeft:20 * windowWidthRatio,
         marginRight:20 * windowWidthRatio,
-
-
     },
     infoBannerTextNew:{
         fontSize:12 * windowHeightRatio,
