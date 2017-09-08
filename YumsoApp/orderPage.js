@@ -27,6 +27,8 @@ var h5 = 12;
 var b1 = 15*windowHeight/677;
 var b2 = 15*windowHeight/677;
 
+var newMessage = '';
+
 import React, {
   Component,
   StyleSheet,
@@ -54,7 +56,10 @@ class OrderPage extends Component {
     this.state = {
       dataSource: ds.cloneWithRows(['row 1', 'row 2', 'row 2']),
     };
+
+       newMessage = <Image source={orange_dot} style={styless.dot} />
   }
+
 
 
     ShowHideTextComponentView = () =>{
@@ -122,7 +127,7 @@ class OrderPage extends Component {
           <TouchableOpacity style={styless.ongoingTouchable}  onPress={() => this.onPressNeedReviewsOrdersBtn()}>
               <View style={styless.reviewsView}>
                   <Text style={styless.ongoingText}>Orders Need Reviews</Text>
-                  <Image source={orange_dot} style={styless.dot} />
+                  {(1 == 1)?newMessage:null}
               </View>
           </TouchableOpacity>
 
@@ -130,6 +135,7 @@ class OrderPage extends Component {
           <TouchableOpacity style={styless.ongoingTouchable}  onPress={() => this.onPressCompleteOrdersBtn()}>
               <View style={styless.reviewsView}>
                   <Text style={styless.ongoingText}>Complete Orders</Text>
+                  {(1 == 0)?newMessage:null}
               </View>
           </TouchableOpacity>
 
@@ -152,16 +158,20 @@ class OrderPage extends Component {
       this.props.navigator.push({
           name: 'HistoryOrderPage',
           passProps: {
-             eater: this.props.eater
+             eater: this.props.eater,
+             orderType:'orderCompleted'
           }
       });
     }
 
     onPressNeedReviewsOrdersBtn(){
-      Alert.alert(
-        'Orders',
-        'Orders Need Reviews'
-      )
+      this.props.navigator.push({
+          name: 'HistoryOrderPage',
+          passProps: {
+             eater: this.props.eater,
+             orderType:'orderNeedReview'
+          }
+      });
     }
 
   }

@@ -685,6 +685,7 @@ module.exports = StyleSheet.create({
         marginLeft:20 * windowWidthRatio,
         marginRight:20 * windowWidthRatio,
 
+
     },
     infoBannerTextNew:{
         fontSize:12 * windowHeightRatio,
@@ -699,6 +700,7 @@ module.exports = StyleSheet.create({
         alignItems:'center',
       //  width:80,
         color:"#FFCC33",
+        fontWeight:'bold',
 
     },
 

@@ -218,8 +218,12 @@ class OrderDetailPage extends Component {
                                 <Text style={styles.titleTextNew}>Order Details</Text>
 
                             </View>
+            var orderStatusTextNew = <View style={{paddingBottom:20* windowHeightRatio, paddingLeft: 20 * windowWidthRatio}}>
+                                  <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Order Status</Text>
+                              </View>
 
-            var deliverTimeViewNew = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverTimeView}>
+
+            var deliverTimeViewNew = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverTimeViewNew}>
                                         <View style={{flexDirection: "row"}}>
                                             <Text style={styleOrderDetailPage.deliverTimeTextNew}>
                                                Order from
@@ -238,7 +242,7 @@ class OrderDetailPage extends Component {
                                       Got problem with your order? Call us at
                                    </Text>
                                    <Text style={styles.infoBannerLinkViewNew} onPress={()=>this.dialThisNumber('2062258636')}>
-                                      (206)225-8636
+                                      (206)225-8686
                                    </Text>
                                 </View>
 
@@ -248,7 +252,7 @@ class OrderDetailPage extends Component {
 
 
 
-            return [headerNew,deliverTimeViewNew,ETAView,contactUsView,itemsTextNew];
+            return [headerNew,orderStatusTextNew,deliverTimeViewNew,ETAView,contactUsView,itemsTextNew];
         }
     }
 
@@ -288,7 +292,22 @@ class OrderDetailPage extends Component {
       }
 
 
-      let fullDeliveryAddress = this.state.order.shippingAddress.apartmentNumber ? 'Apt/Suite '+this.state.order.shippingAddress.apartmentNumber+' '+this.state.order.shippingAddress.formatted_address:this.state.order.shippingAddress.formatted_address;
+      let fullDeliveryAddress = ''; //this.state.order.shippingAddress.apartmentNumber ? 'Apt/Suite '+this.state.order.shippingAddress.apartmentNumber+'\n '+this.state.order.shippingAddress.formatted_address:this.state.order.shippingAddress.formatted_address;
+      // fullDeliveryAddress = fullDeliveryAddress.split(",").join(",\n");
+       //Alert.alert('opps', this.state.order.shippingAddress);
+       var line1 = this.state.order.shippingAddress.streetNumber + ' ' + this.state.order.shippingAddress.streetName;
+       var line2 = this.state.order.shippingAddress.apartmentNumber;
+       var line3 = this.state.order.shippingAddress.city + ', ' + this.state.order.shippingAddress.state + ', ' + this.state.order.shippingAddress.postal;
+
+       if (line2 == null) {
+         fullDeliveryAddress = line1 + '\n' + line3;
+       } else {
+         fullDeliveryAddress = line1 + '\n' + line2 + '\n' + line3;
+       }
+
+
+
+
       var costBreakDownView = [(notesToChefView),
                                 (promotionDeductionView),
                                   (
@@ -1167,6 +1186,17 @@ var styleOrderDetailPage = StyleSheet.create({
         height: 80 * windowHeightRatio,
         fontWeight: '100',
     },
+    deliverTimeViewNew:{
+        flexDirection:'column',
+        justifyContent:'center',
+        //alignItems:'center',
+        height:windowHeight*0.0974,
+        backgroundColor:'#FFCC33',
+        marginRight: 20 * windowWidthRatio,
+        marginLeft: 20 * windowWidthRatio,
+        paddingLeft: 15 * windowWidthRatio,
+        paddingRight : 15 * windowWidthRatio,
+    },
 
 });
 
@@ -1601,7 +1631,7 @@ var styleShoppingCartPage = StyleSheet.create({
         fontSize:h4,
         color:'#7bcbbe',
         alignSelf:'center',
-        paddingTop: 20* windowWidthRatio,
+        paddingTop: 23* windowWidthRatio,
     },
 
     orderSummaryBoxValueAddressNew:{
@@ -1676,6 +1706,8 @@ var styleShoppingCartPage = StyleSheet.create({
         marginBottom: 20 * windowHeightRatio,
         marginTop: 20 * windowHeightRatio,
     },
+
+
 
 
 

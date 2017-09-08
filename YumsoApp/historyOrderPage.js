@@ -48,6 +48,8 @@ var h5 = 12;
 var b1 = 15*windowHeight/677;
 var b2 = 15*windowHeight/677;
 
+var selectedHeader = 'orderNeedReview';
+
 class HistoryOrderPage extends Component {
     constructor(props){
         super(props);
@@ -56,6 +58,13 @@ class HistoryOrderPage extends Component {
         });
         var routeStack = this.props.navigator.state.routeStack;
         let eater = routeStack[routeStack.length-1].passProps.eater;
+        let orderType = routeStack[routeStack.length-1].passProps.orderType;
+        if (orderType == 'orderNeedReview') {
+            selectedHeader = 'Orders Need Reviews';
+        }
+        else{
+            selectedHeader = 'Completed Orders';
+        }
         this.state = {
             dataSourceOrderPending: ds.cloneWithRows([]),
             dataSourceNeedReview: ds.cloneWithRows([]),
@@ -68,7 +77,7 @@ class HistoryOrderPage extends Component {
             orderPending:[],
             orderNeedReview:[],
             orderCompleted:[],
-            orderListSelect:'orderCompleted',
+            orderListSelect:orderType,
             orders:[],
             comments:[],
             lastSortKeyOrders:null,
@@ -202,7 +211,7 @@ class HistoryOrderPage extends Component {
             console.log(this.state.orders);
 
             this.setState({
-                           dataSourceOrderPending: this.state.dataSourceOrderPending.cloneWithRows(orderPending),
+                           dataSourceOrderPending: this.state.dataSourceOrderPending.cloneWithRows(this.state.orders),
                            dataSourceNeedReview: this.state.dataSourceNeedReview.cloneWithRows(orderNeedReview),
                            dataSourceCompleted: this.state.dataSourceCompleted.cloneWithRows(orderCompleted),
                            showProgress:false,
@@ -285,7 +294,12 @@ class HistoryOrderPage extends Component {
                  );
     }
 
-
+    renderFooter(){
+       console.log(this.state.orders)
+       if(this.state.orders && this.state.orders.length > 0 && this.state.orders.length >= firstTimeLoadPageSize){
+         return <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>;
+       }
+    }
 
     render() {
         var loadingSpinnerView = null;
@@ -305,6 +319,9 @@ class HistoryOrderPage extends Component {
               var orderListView = <RefreshableListView
                                             dataSource = {this.state.dataSourceOrderPending}
                                             renderRow={this.renderRow.bind(this) }
+                                            renderFooter={ this.renderFooter.bind(this) }
+                                            pageSize={10}
+                                            initialListSize={1}
                                             loadData={this.fetchOrderAndComments.bind(this)}/>
            }else if(this.state.orderListSelect=='orderNeedReview'){
               if(this.state.orderNeedReview && this.state.orderNeedReview.length==0 && !this.state.showProgress){
@@ -314,12 +331,16 @@ class HistoryOrderPage extends Component {
               var orderListView =  <RefreshableListView
                                     dataSource = {this.state.dataSourceNeedReview}
                                     renderRow={this.renderRow.bind(this) }
+                                    renderFooter={ this.renderFooter.bind(this) }
+                                    pageSize={10}
+                                    initialListSize={1}
                                     loadData={this.fetchOrderAndComments.bind(this)}/>;
             }else{
               //console.log('completed')
               var orderListView = <ListView
                                    dataSource = {this.state.dataSourceCompleted}
                                    renderRow={this.renderRow.bind(this) }
+                                   renderFooter={ this.renderFooter.bind(this) }
                                    pageSize={10}
                                    initialListSize={1}/>;
              if(this.state.orderCompleted && this.state.orderCompleted.length==0 && !this.state.showProgress){
@@ -355,10 +376,10 @@ class HistoryOrderPage extends Component {
                    </View>
                </View>
                <View style={styles.titleViewNew}>
-                   <Text style={styles.titleTextNew}>Completed Orders</Text>
+                   <Text style={styles.titleTextNew}>{selectedHeader}</Text>
                </View>
 
-            {/*   <View style={styleHistoryOrderPage.orderListSelectView}>
+            {/*}   <View style={styleHistoryOrderPage.orderListSelectView}>
                    <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderPending') }
                     style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',
                     backgroundColor:this.renderOrderListOnSelectColor('orderPending')}}>
@@ -374,8 +395,8 @@ class HistoryOrderPage extends Component {
                     backgroundColor:this.renderOrderListOnSelectColor('orderCompleted')}}>
                       <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Completed</Text>
                    </TouchableHighlight>
-                </View>
-                */}
+                </View> */}
+
                {networkUnavailableView}
                {noOrderText}
                {orderListView}
