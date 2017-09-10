@@ -254,7 +254,7 @@ class ChefListPage extends Component {
         if (this.state.eater && this.state.eater.favoriteChefs) {
             like = this.state.eater.favoriteChefs.indexOf(chef.chefId) !== -1;
         }
-        var likedIcon = <View style={styleChefListPage.iconCircle}><Image source={this.getCurrentLikeIcon(like)} style={styleChefListPage.likedIconView}/></View>
+        var likedIcon = <View style={styles.iconCircle}><Image source={this.getCurrentLikeIcon(like)} style={styles.likeIconCircled}/></View>
 
         //console.log(chef);
         var nextDeliverTimeView = null;
@@ -1173,21 +1173,6 @@ var styleChefListPage = StyleSheet.create({
         flexDirection:"row",
         paddingRight:0,
         marginBottom:windowHeight/90,
-    },
-    likedIconView:{
-        height:windowHeight*0.02,
-        width:windowWidth*0.04,
-    },
-    iconCircle:{
-        //TODO: make the shadow, it's just a circle for now
-        marginLeft:windowWidth*0.015,
-        height:windowWidth*0.1,
-        width:windowWidth*0.1,
-        borderWidth:windowWidth*0.001,
-        borderRadius: windowWidth*0.1 / 2, 
-        alignItems:"center",
-        justifyContent:"center",
-        borderColor:"#bbb",
     },
     shopInfoRow3:{
         flexDirection:'row',

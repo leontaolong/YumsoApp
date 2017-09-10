@@ -17,8 +17,8 @@ var mapIcon = require('./icons/icon-map.png');
 var chefPageIcon = require('./icons/icon-chefpage.png');
 var reviewIcon = require('./icons/icon-reviews.png');
 var labelIcon = require('./icons/icon-label-grey.png');
-var notlikedIcon = require('./icons/icon-unliked.png')
-var likedIcon = require('./icons/icon-liked.png');
+var heartLineIcon = require('./icons/icon-heart-line.png');
+var heartFillsIcon = require('./icons/icon-heart-fills.png');
 var dollarSign = require('./commonModules/dollarIconRender');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var ActivityView = require('react-native-activity-view');
@@ -32,6 +32,7 @@ var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 
 import Dimensions from 'Dimensions';
 import ModalPicker from 'react-native-modal-picker'
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
 import React, {
   Component,
@@ -170,109 +171,109 @@ class ShopPage extends Component {
     }
     
     renderHeader(){               
-               if(this.state.like){
-                  var  likeIcon = likedIcon;
-               }else{
-                  var  likeIcon = notlikedIcon;
-               }
-
-               if(this.state.chef.chefProfilePicUrls && this.state.chef.chefProfilePicUrls.small){
-                  var chefProfilePic = this.state.chef.chefProfilePicUrls.small;
-               }else{
-                  var chefProfilePic = this.state.chef.chefProfilePic;
-               }
-
-               if(this.state.chef.chefShopPicUrls){
-                  var shopPicturesMedium = [];
-                  for(var oneShopPhoto in this.state.chef.chefShopPicUrls){
-                      shopPicturesMedium.push(this.state.chef.chefShopPicUrls[oneShopPhoto].medium)
-                  }
-               }
-               
-            // Temporarily deprecate this chunk because the image quality of medium pictures are not good 
-            //    if(shopPicturesMedium && shopPicturesMedium.length>0){
-            //       var shopPictures = shopPicturesMedium;
+            //    if(this.state.like){
+            //       var  likeIcon = heartFillsIcon;
             //    }else{
-            //       var shopPictures = this.state.chef.shopPictures;
+            //       var  likeIcon = heartLineIcon;
             //    }
 
-               var shopPictures = this.state.chef.shopPictures;
+            //    if(this.state.chef.chefProfilePicUrls && this.state.chef.chefProfilePicUrls.small){
+            //       var chefProfilePic = this.state.chef.chefProfilePicUrls.small;
+            //    }else{
+            //       var chefProfilePic = this.state.chef.chefProfilePic;
+            //    }
 
-               return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
-                            <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={false}
-                                dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
-                                {shopPictures.map((shopPicture) => {
-                                    return <Image key={'shopPicture'} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
-                                }) }
-                            </Swiper>
-                        </View>),                        
-                       (<View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
-                          <TouchableHighlight style={styleShopPage.chefPhotoView} underlayColor={'transparent'}>
-                            <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
-                          </TouchableHighlight>
+            //    if(this.state.chef.chefShopPicUrls){
+            //       var shopPicturesMedium = [];
+            //       for(var oneShopPhoto in this.state.chef.chefShopPicUrls){
+            //           shopPicturesMedium.push(this.state.chef.chefShopPicUrls[oneShopPhoto].medium)
+            //       }
+            //    }
+               
+            // // Temporarily deprecate this chunk because the image quality of medium pictures are not good 
+            // //    if(shopPicturesMedium && shopPicturesMedium.length>0){
+            // //       var shopPictures = shopPicturesMedium;
+            // //    }else{
+            // //       var shopPictures = this.state.chef.shopPictures;
+            // //    }
+
+            //    var shopPictures = this.state.chef.shopPictures;
+
+            //    return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
+            //                 <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={false}
+            //                     dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
+            //                     {shopPictures.map((shopPicture) => {
+            //                         return <Image key={'shopPicture'} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
+            //                     }) }
+            //                 </Swiper>
+            //             </View>),                        
+            //            (<View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
+            //               <TouchableHighlight style={styleShopPage.chefPhotoView} underlayColor={'transparent'}>
+            //                 <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
+            //               </TouchableHighlight>
                             
-                          <View style={styleShopPage.shopInfoSection}>
-                            <View style={styleShopPage.shopInfoRow1}>
-                                <View style={styleShopPage.shopNameView}>
-                                    <Text style={styleShopPage.oneShopNameText}>{this.state.chef.shopname}</Text>
-                                </View>
-                                <TouchableHighlight style={styleShopPage.likeIconView} underlayColor={'transparent'} onPress={()=>{this.addToFavorite()}}>
-                                    <Image source={likeIcon} style={styleShopPage.likeIcon}></Image>
-                                </TouchableHighlight>
-                            </View>
+            //               <View style={styleShopPage.shopInfoSection}>
+            //                 <View style={styleShopPage.shopInfoRow1}>
+            //                     <View style={styleShopPage.shopNameView}>
+            //                         <Text style={styleShopPage.oneShopNameText}>{this.state.chef.shopname}</Text>
+            //                     </View>
+            //                     <TouchableHighlight style={styleShopPage.likeIconView} underlayColor={'transparent'} onPress={()=>{this.addToFavorite()}}>
+            //                         <Image source={likeIcon} style={styleShopPage.likeIcon}></Image>
+            //                     </TouchableHighlight>
+            //                 </View>
                             
-                            <View style={styleShopPage.shopInfoRow2}>
-                                <View style={styleShopPage.shopRatingView}>
-                                    <View style={{flexDirection:'row',alignSelf:'center'}}>
-                                    {rating.renderRating(this.state.chef.rating)}
-                                    </View>
-                                    <Text style={styleShopPage.reviewNumberText}>({this.state.chef.rating}) {dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
-                                </View>
-                            </View>
+            //                 <View style={styleShopPage.shopInfoRow2}>
+            //                     <View style={styleShopPage.shopRatingView}>
+            //                         <View style={{flexDirection:'row',alignSelf:'center'}}>
+            //                         {rating.renderRating(this.state.chef.rating)}
+            //                         </View>
+            //                         <Text style={styleShopPage.reviewNumberText}>({this.state.chef.rating}) {dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
+            //                     </View>
+            //                 </View>
                             
-                            <View style={styleShopPage.shopInfoRow3}>
-                                <View style={styleShopPage.labelView}>
-                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
-                                </View>
-                            </View>                       
-                          </View>
-                        </View>),
-                       (<View key={'chefLivingAreaView'}>
-                         <View style={styleShopPage.chefDetailView}>
-                            <Image source={mapIcon} style={styleShopPage.pickupAddressIcon}/>
-                            <View style={styleShopPage.chefDetailTextView}>
-                                <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
-                            </View>
-                          </View>
-                        </View>), 
-                       (<TouchableHighlight key={'chefPageClickableView'}  underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
-                            <View style={styleShopPage.chefDetailView}>
-                                <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
-                                <View style={styleShopPage.chefDetailTextView}>
-                                   <Text style={styleShopPage.pickupAddressText}>Chef page</Text>
-                                </View>
-                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                            </View>
-                        </TouchableHighlight>),
-                        (<TouchableHighlight key={'chefIntroClickable'}  underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefIntroPage()}>
-                            <View style={styleShopPage.chefDetailView}>
-                                <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
-                                <View style={styleShopPage.chefDetailTextView}>
-                                   <Text style={styleShopPage.pickupAddressText}>Introduction</Text>
-                                </View>
-                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                            </View>
-                        </TouchableHighlight>), 
-                       (<TouchableHighlight key={'chefReviewsClickable'} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefCommentsPage()}>
-                            <View style={styleShopPage.chefDetailView}>
-                                <Image source={reviewIcon} style={styleShopPage.pickupAddressIcon}/>
-                                <View style={styleShopPage.chefDetailTextView}>
-                                    <Text style={styleShopPage.pickupAddressText}>{this.state.chef.reviewCount} reviews</Text>
-                                </View>
-                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                            </View>
-                        </TouchableHighlight>),
-                       (<View key={'greyBorderView'} style={styles.greyBorderView}></View>)];
+            //                 <View style={styleShopPage.shopInfoRow3}>
+            //                     <View style={styleShopPage.labelView}>
+            //                         <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
+            //                     </View>
+            //                 </View>                       
+            //               </View>
+            //             </View>),
+            //            (<View key={'chefLivingAreaView'}>
+            //              <View style={styleShopPage.chefDetailView}>
+            //                 <Image source={mapIcon} style={styleShopPage.pickupAddressIcon}/>
+            //                 <View style={styleShopPage.chefDetailTextView}>
+            //                     <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
+            //                 </View>
+            //               </View>
+            //             </View>), 
+            //            (<TouchableHighlight key={'chefPageClickableView'}  underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
+            //                 <View style={styleShopPage.chefDetailView}>
+            //                     <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
+            //                     <View style={styleShopPage.chefDetailTextView}>
+            //                        <Text style={styleShopPage.pickupAddressText}>Chef page</Text>
+            //                     </View>
+            //                     <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+            //                 </View>
+            //             </TouchableHighlight>),
+            //             (<TouchableHighlight key={'chefIntroClickable'}  underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefIntroPage()}>
+            //                 <View style={styleShopPage.chefDetailView}>
+            //                     <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
+            //                     <View style={styleShopPage.chefDetailTextView}>
+            //                        <Text style={styleShopPage.pickupAddressText}>Introduction</Text>
+            //                     </View>
+            //                     <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+            //                 </View>
+            //             </TouchableHighlight>), 
+            //            (<TouchableHighlight key={'chefReviewsClickable'} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefCommentsPage()}>
+            //                 <View style={styleShopPage.chefDetailView}>
+            //                     <Image source={reviewIcon} style={styleShopPage.pickupAddressIcon}/>
+            //                     <View style={styleShopPage.chefDetailTextView}>
+            //                         <Text style={styleShopPage.pickupAddressText}>{this.state.chef.reviewCount} reviews</Text>
+            //                     </View>
+            //                     <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
+            //                 </View>
+            //             </TouchableHighlight>),
+            //            (<View key={'greyBorderView'} style={styles.greyBorderView}></View>)];
     }
 
     renderRow(dish){
@@ -540,33 +541,183 @@ class ShopPage extends Component {
                           </TouchableOpacity>
                        </View>
         }
-            
-        return (<View style={styles.container}>
-                        <View style={styles.headerBannerView}>    
-                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
-                                <View style={styles.backButtonView}>
-                                    <Image source={backIcon} style={styles.backButtonIcon}/>
-                                </View>
-                            </TouchableHighlight>    
+
+        if(this.state.like){
+            var  likeIcon = heartFillsIcon;
+         }else{
+            var  likeIcon = heartLineIcon;
+         }
+
+         if(this.state.chef.chefProfilePicUrls && this.state.chef.chefProfilePicUrls.small){
+            var chefProfilePic = this.state.chef.chefProfilePicUrls.small;
+         }else{
+            var chefProfilePic = this.state.chef.chefProfilePic;
+         }
+
+         if(this.state.chef.chefShopPicUrls){
+            var shopPicturesMedium = [];
+            for(var oneShopPhoto in this.state.chef.chefShopPicUrls){
+                shopPicturesMedium.push(this.state.chef.chefShopPicUrls[oneShopPhoto].medium)
+            }
+         }
+         
+      // Temporarily deprecate this chunk because the image quality of medium pictures are not good 
+      //    if(shopPicturesMedium && shopPicturesMedium.length>0){
+      //       var shopPictures = shopPicturesMedium;
+      //    }else{
+      //       var shopPictures = this.state.chef.shopPictures;
+      //    }
+
+         var shopPictures = this.state.chef.shopPictures;
+         var headerBanner = <View style={[styles.headerBannerView, {paddingTop:windowHeight * 0.035}]}>      
+                            <View style={styles.headerLeftView}></View>
                             <View style={styles.titleView}>
                                 <Text style={styles.titleText}>{this.state.chef.shopname}</Text>
                             </View>
-                            <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={()=>this.share()}>
-                                <View style={styles.likeShareButtonView}>
-                                   <View>
-                                      <Image source={shareIcon} style={styles.shareButtonIcon}/>
-                                   </View>
-                                </View>
-                            </TouchableHighlight>
+                        <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={()=>this.share()}>
+                            <View style={styles.headerRightTextButtonView}>
+                                <Image source={shareIcon} style={styleShopPage.headerShareIcon}/>
+                            </View>
+                        </TouchableHighlight> 
+
+                        <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={()=>this.addToFavorite()}>
+                            <View style={styles.headerRightTextButtonView}>
+                                <Image source={likeIcon} style={styleShopPage.headerLikeIcon}/>
+                            </View>
+                        </TouchableHighlight> 
+
                         </View>
-                        {scheduleSelectionView}
-                        {chefNoticeView}
-                        {updateAppBannerView}
-                        {networkUnavailableView}
-                        {dishListView}
-                        {loadingSpinnerView}
-                        {footerView}
-                </View>);
+
+         var parallaxHeaderView = <View><View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
+                      <Swiper showsButtons={false} height={SHOP_PIC_HEIGHT} horizontal={true} autoplay={false}
+                          dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
+                          {shopPictures.map((shopPicture) => {
+                              return <Image key={'shopPicture'} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
+                          })}
+                      </Swiper>
+                  </View>                       
+                 <View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
+
+                    <TouchableHighlight style={[styles.iconCircle, styleShopPage.shareIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.share()}}>
+                              <Image source={shareIcon} style={styles.shareIconCircled}></Image>
+                    </TouchableHighlight>
+                    
+                    <TouchableHighlight style={[styles.iconCircle, styleShopPage.likeIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.addToFavorite()}}>
+                              <Image source={likeIcon} style={styles.likeIconCircled}></Image>
+                    </TouchableHighlight>
+
+                    <TouchableHighlight style={styleShopPage.chefPhotoView} underlayColor={'transparent'}>
+                      <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
+                    </TouchableHighlight>
+                      
+                    <View style={styleShopPage.shopInfoSection}>
+                      <View style={styleShopPage.shopInfoRow1}>
+                          <View style={styleShopPage.shopNameView}>
+                              <Text style={styleShopPage.oneShopNameText}>{this.state.chef.shopname}</Text>
+                          </View>
+                      </View>
+                      
+                      <View style={styleShopPage.shopInfoRow2}>
+                          <View style={styleShopPage.shopRatingView}>
+                              <View style={{flexDirection:'row',alignSelf:'center'}}>
+                              {rating.renderRating(this.state.chef.rating)}
+                              </View>
+                              <Text style={styleShopPage.reviewNumberText}>({this.state.chef.rating}) {dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
+                          </View>
+                      </View>
+                      
+                      <View style={styleShopPage.shopInfoRow3}>
+                          <View style={styleShopPage.labelView}>
+                              <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
+                          </View>
+                      </View>                       
+                    </View>
+                  </View>
+                <View style={styleShopPage.chefDetailRowView}>
+                 {/* <View key={'chefLivingAreaView'}>
+                   <View style={styleShopPage.chefDetailView}>
+                      <View style={styleShopPage.chefDetailTextView}>
+                          <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
+                      </View>
+                    </View>
+                  </View> */}
+                 <TouchableHighlight key={'chefPageClickableView'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
+                          <View style={styleShopPage.chefDetailTextView}>
+                             <Text style={styleShopPage.pickupAddressText}>Chef Page</Text>
+                          </View>
+                  </TouchableHighlight>
+                  <TouchableHighlight key={'chefIntroClickable'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefIntroPage()}>
+                          <View style={styleShopPage.chefDetailTextView}>
+                             <Text style={styleShopPage.pickupAddressText}>Introduction</Text>
+                          </View>
+                  </TouchableHighlight> 
+                 <TouchableHighlight key={'chefReviewsClickable'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefCommentsPage()}>
+                          <View style={styleShopPage.chefDetailTextView}>
+                              <Text style={styleShopPage.pickupAddressText}>Reviews ({this.state.chef.reviewCount})</Text>
+                          </View>
+                  </TouchableHighlight>
+                  </View>
+                 <View key={'greyBorderView'} style={styles.greyBorderView}></View></View>;
+            
+        return (
+            <View style={{ flex: 1 }}>
+            <ParallaxScrollView
+            stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
+            parallaxHeaderHeight={ PARALLAX_HEADER_HEIGHT }
+            backgroundColor={'#fff'}
+            fadeOutForeground={true}
+
+
+            renderForeground={() => (
+              <View key="parallax-header" style={styleShopPage.parallaxHeader }>
+                {parallaxHeaderView}
+              </View>
+            )}
+
+            renderStickyHeader={() => (
+              <View key="sticky-header" style={styleShopPage.stickySection}>
+              {headerBanner}
+                {/* <Text style={styles.stickySectionText}>Rich Hickey Talks</Text> */}
+              </View>
+            )}
+
+            renderFixedHeader={() => (
+              <View key="fixed-header" style={styleShopPage.fixedSection}>
+              <TouchableHighlight style={styles.headerLeftView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
+                <View style={styles.backButtonView}>
+                    <Image source={backIcon} style={styles.backButtonIcon}/>
+                </View>
+            </TouchableHighlight>  
+              </View>
+            )}/>
+            {loadingSpinnerView}
+            {footerView}
+          </View>
+        // <View style={styles.container}>
+        //                 <View style={styles.headerBannerView}>    
+        //                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
+        //                         <View style={styles.backButtonView}>
+        //                             <Image source={backIcon} style={styles.backButtonIcon}/>
+        //                         </View>
+        //                     </TouchableHighlight>    
+        //                     <View style={styles.titleView}>
+        //                         <Text style={styles.titleText}>{this.state.chef.shopname}</Text>
+        //                     </View>
+        //                     <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={()=>this.share()}>
+        //                         <View style={styles.likeShareButtonView}>
+        //                            <View>
+        //                               <Image source={shareIcon} style={styles.shareButtonIcon}/>
+        //                            </View>
+        //                         </View>
+        //                     </TouchableHighlight>
+        //                 </View>
+        //                 {chefNoticeView}
+        //                 {updateAppBannerView}
+        //                 {networkUnavailableView}
+        //                 {dishListView}
+        //                 {scheduleSelectionView}
+        //         </View>
+                );
     }
 
     getTotalPrice(){
@@ -829,9 +980,31 @@ class ShopPage extends Component {
     }
 }
 
+const SHOP_PIC_HEIGHT = windowHeight*0.215;
+const PARALLAX_HEADER_HEIGHT = windowHeight*0.4;
+const STICKY_HEADER_HEIGHT = windowHeight*0.08;
+
 var styleShopPage = StyleSheet.create({
+    stickySection: {
+        height: STICKY_HEADER_HEIGHT,
+        backgroundColor:'#fff',
+        width: windowWidth,
+        borderBottomWidth:1,
+        borderColor:'#EAEAEA',
+    },
+    fixedSection: {
+        position: 'absolute',
+        bottom: 10,
+        left: windowWidth/500,
+    },
+    parallaxHeader: {
+        alignItems: 'center',
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor:'#fff',
+    },
     shopPictureView:{
-        height: windowHeight*0.4419,
+        height: SHOP_PIC_HEIGHT,
     },
     oneDishNameView:{
         flexDirection:'row',
@@ -840,7 +1013,7 @@ var styleShopPage = StyleSheet.create({
         flexWrap:'wrap',
     },
     chefRecommendLabelView:{
-        marginTop:-windowHeight*0.4419,
+        marginTop:-SHOP_PIC_HEIGHT,
         paddingHorizontal:7,
         paddingVertical:3,
         flexDirection: 'column',
@@ -856,9 +1029,10 @@ var styleShopPage = StyleSheet.create({
     },  
     shopPicture:{
         width: windowWidth,
-        height: windowHeight*0.4419,
+        height: windowHeight*0.315,
     },
     shopInfoView:{
+        width: windowWidth,
         flexDirection:'row',
         height:windowHeight*0.14,
         backgroundColor:'#FFFFFF',
@@ -895,6 +1069,17 @@ var styleShopPage = StyleSheet.create({
        fontWeight:'500',
        color:'#4A4A4A',
     },
+    headerShareIcon: {
+        marginRight:10*windowHeight/667,
+        width:12*windowHeight/667,
+        height:20*windowHeight/667,        
+    },
+    headerLikeIcon: {
+        marginTop:2.7*windowHeight/667,      
+        marginRight:10*windowHeight/667,
+        width:18*windowHeight/667,
+        height:15*windowHeight/667,        
+    },
     likeIconView:{
        height:windowWidth*0.06,
        flex:0.15,
@@ -906,6 +1091,18 @@ var styleShopPage = StyleSheet.create({
         width:windowWidth*0.05,
         height:windowWidth*0.05,
         alignSelf:'center',
+    },
+    shareIconPositioning:{
+        position:'absolute',
+        top: -20,
+        right: windowWidth*0.20,
+        backgroundColor: '#fff',
+    },    
+    likeIconPositioning:{
+        position:'absolute',
+        top: -20,
+        right: windowWidth*0.08,
+        backgroundColor: '#fff',
     },
     shopInfoRow2:{
         flexDirection:'row',
@@ -939,33 +1136,34 @@ var styleShopPage = StyleSheet.create({
         color:'#4A4A4A',
         marginLeft:windowWidth/82.8,
         alignSelf:'center',
-    },    
-    chefDetailView:{
+    },  
+    chefDetailRowView: {
+        width: windowWidth,
+        paddingVertical: windowHeight*0.01,
         flexDirection: 'row',
-        height:windowHeight*0.065,
-        paddingLeft: windowWidth/27.6,
-        alignItems:'center',
-        borderColor: '#F5F5F5',
+        justifyContent:'center',
+        borderColor: '#eee',
         borderTopWidth: 1,
-        backgroundColor: '#fff'        
+        borderBottomWidth:1,
+    },  
+    chefDetailView:{
+        flex:1/3,
+        paddingHorizontal: windowWidth/27.6/2,
+        alignItems:'center',
+        alignSelf:'center',
+        backgroundColor: '#fff',
+        borderColor: '#eee',
+        borderLeftWidth:1,       
     },
     chefDetailTextView:{
-        flex: 1,
-        paddingLeft:windowWidth/27.6,
-        justifyContent:'center',
+        justifyContent:'center', 
+        height:windowHeight*0.03,
+        fontSize:windowHeight/40,
     },
     pickupAddressText:{ 
         fontSize: windowHeight/47.33, 
         fontWeight:'400',
         color: '#979797'
-    },
-    pickupAddressIcon:{ 
-        width: windowHeight/36.8, 
-        height: windowHeight/36.8,
-    },
-    forwardIcon:{
-        width: windowHeight*0.06, 
-        height: windowHeight*0.06,
     },
     timeSelectorView:{
         flexDirection:'row',
