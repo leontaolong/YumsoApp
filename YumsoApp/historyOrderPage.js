@@ -62,7 +62,7 @@ class HistoryOrderPage extends Component {
         let eater = routeStack[routeStack.length-1].passProps.eater;
         let orderType = routeStack[routeStack.length-1].passProps.orderType;
         if (orderType == 'orderNeedReview') {
-            selectedHeader = 'Orders Need Reviews';
+            selectedHeader = 'Orders Need Review';
         }
         else{
             selectedHeader = 'Completed Orders';
