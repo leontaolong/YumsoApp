@@ -498,7 +498,7 @@ class ChefListPage extends Component {
                     <View style = {styles.tabBarNew}>
                         <View style={{flex: 1, flexDirection: 'row'}}>
                               <View style={{width: windowWidth/3, height: 44}}>
-                                  <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressShopsTabBtn()}>
+                                  <TouchableHighlight underlayColor={'#F5F5F5'}>
                                     <View style={styles.tabBarButtonNew}>
                                       <Image source={shopsOn}  style={styles.tabBarButtonImageNew}/>
                                       <View>
@@ -637,29 +637,52 @@ class ChefListPage extends Component {
         this.searchChef(true);
     }
 
-    onPressShopsTabBtn(){
-    Alert.alert(
-  'Shops',
-  'All Shops',
-  )
-}
-onPressOrdersTabBtn(){
 
+    onPressOrdersTabBtn(){
+        if(!this.state.eater){
+            this.props.navigator.push({
+                  name: 'LoginPage',
+                  passProps: {
+                      callback: function(eater,principal){
+                          this.setState({eater:eater,principal:principal})
+                      }.bind(this)
+                  }
+           });
+           return
+        }
 
-  this.props.navigator.push({
-      name: 'OrderPage',
-      passProps: {
-         eater: this.props.eater
-      }
-  });
+        this.props.navigator.push({
+            name: 'OrderPage',
+            passProps: {
+                eater: this.state.eater,
+                principal:this.state.principal,
+            }
+        });
+    }
+    onPressMeTabBtn(){
+        if(!this.state.eater){
+            this.props.navigator.push({
+                  name: 'LoginPage',
+                  passProps: {
+                      callback: function(eater,principal){
+                          this.setState({eater:eater,principal:principal})
+                      }.bind(this)
+                  }
+           });
+           return
+        }
 
-}
-onPressMeTabBtn(){
-  Alert.alert(
-'Me',
-'Me btn',
-)
-}
+        this.props.navigator.push({
+            name: 'EaterPage',
+            passProps:{
+                eater:this.state.eater,
+                principal:this.state.principal,
+                callback: function(eater){
+                    this.props.caller.setState({eater:eater});
+                }.bind(this)
+            }
+        });
+    }
 
     linkToAppStore(){
         Linking.openURL('itms://itunes.apple.com/us/app/apple-store/id1125810059?mt=8')

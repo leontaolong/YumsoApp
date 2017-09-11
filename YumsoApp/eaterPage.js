@@ -15,6 +15,15 @@ var paypalIcon = require('./icons/icon-paypal.png');
 var ResetPasswordPage = require('./resetPasswordPage');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 var validator = require('validator');
+var meOff = require('./icons/me_off.png');
+var meOn = require('./icons/me_on.png');
+
+var ordersOff = require('./icons/orders_off.png');
+var ordersOn = require('./icons/orders_on.png');
+
+var shopsOff = require('./icons/shops_off.png');
+var shopsOn = require('./icons/shops_on.png');
+
 import Dimensions from 'Dimensions';
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
@@ -80,9 +89,6 @@ class EaterPage extends Component {
             editHomeAddress:false,
             editWorkAddress:false,
             showResetPassword:false,
-            homeAddress:eater.homeAddress,
-            workAddress:eater.workAddress,
-            addressList:eater.addressList
         };
 
         if(routeStack.length >1 && routeStack[routeStack.length-2].name == "LoginPage"){
@@ -94,9 +100,6 @@ class EaterPage extends Component {
             this.state.gender = this.state.eater.gender;
             this.state.phoneNumber = this.state.eater.phoneNumber;
             this.state.email = this.state.eater.email;
-            this.state.homeAddress = this.state.eater.homeAddress;
-            this.state.workAddress = this.state.eater.workAddress;
-            this.state.addressList = this.state.eater.addressList;
         }
 
         this.responseHandler = function (response, msg) {
@@ -388,12 +391,42 @@ class EaterPage extends Component {
 
 
                         </ScrollView>
+                        <View style = {styles.tabBarNew}>
+                            <View style={{flex: 1, flexDirection: 'row'}}>
+                                <View style={{width: windowWidth/3, height: 44}}>
+                                    <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressShopsTabBtn()}>
+                                        <View style={styles.tabBarButtonNew}>
+                                        <Image source={shopsOff}  style={styles.tabBarButtonImageNew}/>
+                                        <View>
+                                            <Text style={styles.tabBarButtonTextOffNew}>Shops</Text>
+                                        </View>
+                                        </View>
+                                    </TouchableHighlight>
+                                </View>
+                                <View style={{width: windowWidth/3, height: 44}}>
+                                    <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressOrdersTabBtn()}>
+                                        <View style={styles.tabBarButtonNew}>
+                                        <Image source={ordersOff}  style={styles.tabBarButtonImageNew}/>
+                                        <View>
+                                            <Text style={styles.tabBarButtonTextOffNew}>Orders</Text>
+                                        </View>
+                                        </View>
+                                    </TouchableHighlight>
+                                </View>
+                                <View style={{width: windowWidth/3, height: 44}}>
+                                    <TouchableHighlight underlayColor={'#F5F5F5'}>
+                                        <View style={styles.tabBarButtonNew}>
+                                        <Image source={meOn}  style={styles.tabBarButtonImageNew}/>
+                                        <View>
+                                            <Text style={styles.tabBarButtonTextOnNew}>Me</Text>
+                                        </View>
+                                        </View>
+                                    </TouchableHighlight>
+                                </View>
+                            </View>
+                        </View>
 
-
-
-
-
-                    </View>);
+                </View>);
            }
      }
 
@@ -479,9 +512,6 @@ class EaterPage extends Component {
         eater.gender = this.state.gender;
         eater.phoneNumber = this.state.phoneNumber ? this.state.phoneNumber : null;
         eater.email = this.state.email ? this.state.email : null;
-        eater.homeAddress = this.state.homeAddress ? this.state.homeAddress : null;
-        eater.workAddress = this.state.workAddress ? this.state.workAddress : null;
-        eater.addressList = this.state.addressList;
         this.setState({showProgress:true});
         return this.client.postWithAuth(config.eaterUpdateEndpoint, { eater: eater })
             .then((res) => {
@@ -561,6 +591,22 @@ class EaterPage extends Component {
 
     navigateBack(){
         this.props.navigator.pop();
+    }
+
+    onPressShopsTabBtn(){
+        this.props.navigator.push({
+            name: 'ChefListPage',
+        });
+    }
+
+    onPressOrdersTabBtn(){
+        this.props.navigator.push({
+            name: 'OrderPage',
+            passProps: {
+                eater: this.state.eater,
+                principal:this.state.principal,
+            }
+        });
     }
 }
 

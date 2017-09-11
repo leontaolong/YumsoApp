@@ -9,10 +9,18 @@ var backgroundImage = require('./resourceImages/background@3x.jpg');
 var commonAlert = require('./commonModules/commonAlert');
 var validator = require('validator');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
-import Dimensions from 'Dimensions';
 var enterPic = require('./icons/enter.png');
 var orange_dot = require('./icons/orange_dot.png');
+var meOff = require('./icons/me_off.png');
+var meOn = require('./icons/me_on.png');
 
+var ordersOff = require('./icons/orders_off.png');
+var ordersOn = require('./icons/orders_on.png');
+
+var shopsOff = require('./icons/shops_off.png');
+var shopsOn = require('./icons/shops_on.png');
+
+import Dimensions from 'Dimensions';
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
@@ -50,14 +58,19 @@ const facebookPermissions = ["public_profile"];
 
 class OrderPage extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    var routeStack = this.props.navigator.state.routeStack;
+    let eater = routeStack[routeStack.length-1].passProps.eater;
+    let principal = routeStack[routeStack.length-1].passProps.principal;
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
+      eater: eater,
+      principal:principal,
       dataSource: ds.cloneWithRows(['row 1', 'row 2', 'row 2']),
     };
 
-       newMessage = <Image source={orange_dot} style={styless.dot} />
+       newMessage = <Image source={orange_dot} style={styleOrderPage.dot} />
   }
 
 
@@ -92,30 +105,30 @@ class OrderPage extends Component {
                     <Text style={styles.titleTextNew}>Orders</Text>
             </View>
 
-          <View style={styless.ongoingView}>
-            <TouchableOpacity style={styless.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
-              <Text style={styless.ongoingTextTop}>Ongoing Orders</Text>
+          <View style={styleOrderPage.ongoingView}>
+            <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
+              <Text style={styleOrderPage.ongoingTextTop}>Ongoing Orders</Text>
             </TouchableOpacity>
           </View>
 
-          {!this.state.status ? <View style={styless.listView}>
+          {!this.state.status ? <View style={styleOrderPage.listView}>
               <ListView
                     dataSource={this.state.dataSource}
                     renderRow={(rowData) => <View>
 
                           <TouchableOpacity  activeOpacity={0.7}>
-                              <View style={styless.cell}>
-                                  <View style={styless.oneListingView}>
-                                      <View style={styless.orderInfoView}>
-                                          <Text style={styless.shopNameText}>Shop Name</Text>
-                                          <Text style={styless.completeTimeText}>
+                              <View style={styleOrderPage.cell}>
+                                  <View style={styleOrderPage.oneListingView}>
+                                      <View style={styleOrderPage.orderInfoView}>
+                                          <Text style={styleOrderPage.shopNameText}>Shop Name</Text>
+                                          <Text style={styleOrderPage.completeTimeText}>
                                                 Order Placed: 10/11/2016 6:12 PM
                                           </Text>
-                                          <Text style={styless.completeTimeText}>
+                                          <Text style={styleOrderPage.completeTimeText}>
                                                   Status: processing
                                           </Text>
                                       </View>
-                                      <Image source={enterPic} style={styless.enterPicNew}/>
+                                      <Image source={enterPic} style={styleOrderPage.enterPicNew}/>
                                   </View>
                               </View>
                           </TouchableOpacity>
@@ -123,23 +136,59 @@ class OrderPage extends Component {
               />
           </View> : null}
 
-          <View style={styless.dividerView}><Text style={styless.dividerLineTop}></Text></View>
-          <TouchableOpacity style={styless.ongoingTouchable}  onPress={() => this.onPressNeedReviewsOrdersBtn()}>
-              <View style={styless.reviewsView}>
-                  <Text style={styless.ongoingText}>Orders Need Reviews</Text>
+          <View style={styleOrderPage.dividerView}><Text style={styleOrderPage.dividerLineTop}></Text></View>
+          <TouchableOpacity style={styleOrderPage.ongoingTouchable}  onPress={() => this.onPressNeedReviewsOrdersBtn()}>
+              <View style={styleOrderPage.reviewsView}>
+                  <Text style={styleOrderPage.ongoingText}>Orders Need Review</Text>
                   {(1 == 1)?newMessage:null}
               </View>
           </TouchableOpacity>
 
-          <View style={styless.dividerView}><Text style={styless.dividerLine}></Text></View>
-          <TouchableOpacity style={styless.ongoingTouchable}  onPress={() => this.onPressCompleteOrdersBtn()}>
-              <View style={styless.reviewsView}>
-                  <Text style={styless.ongoingText}>Complete Orders</Text>
+          <View style={styleOrderPage.dividerView}><Text style={styleOrderPage.dividerLine}></Text></View>
+          <TouchableOpacity style={styleOrderPage.ongoingTouchable}  onPress={() => this.onPressCompleteOrdersBtn()}>
+              <View style={styleOrderPage.reviewsView}>
+                  <Text style={styleOrderPage.ongoingText}>Completed Orders</Text>
                   {(1 == 0)?newMessage:null}
               </View>
           </TouchableOpacity>
 
-          <View style={styless.dividerView}><Text style={styless.dividerLine}></Text></View>
+          <View style={styleOrderPage.dividerView}><Text style={styleOrderPage.dividerLine}></Text></View>
+
+          <View style={styleOrderPage.placeHolderView}></View>
+          <View style = {styles.tabBarNew}>
+            <View style={{flex: 1, flexDirection: 'row'}}>
+                  <View style={{width: windowWidth/3, height: 44}}>
+                      <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressShopsTabBtn()}>
+                        <View style={styles.tabBarButtonNew}>
+                          <Image source={shopsOff}  style={styles.tabBarButtonImageNew}/>
+                          <View>
+                            <Text style={styles.tabBarButtonTextOffNew}>Shops</Text>
+                          </View>
+                        </View>
+                      </TouchableHighlight>
+                  </View>
+                  <View style={{width: windowWidth/3, height: 44}}>
+                      <TouchableHighlight underlayColor={'#F5F5F5'}>
+                        <View style={styles.tabBarButtonNew}>
+                          <Image source={ordersOn}  style={styles.tabBarButtonImageNew}/>
+                          <View>
+                            <Text style={styles.tabBarButtonTextOnNew}>Orders</Text>
+                          </View>
+                        </View>
+                      </TouchableHighlight>
+                  </View>
+                  <View style={{width: windowWidth/3, height: 44}}>
+                      <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressMeTabBtn()}>
+                        <View style={styles.tabBarButtonNew}>
+                          <Image source={meOff}  style={styles.tabBarButtonImageNew}/>
+                          <View>
+                            <Text style={styles.tabBarButtonTextOffNew}>Me</Text>
+                          </View>
+                        </View>
+                      </TouchableHighlight>
+                  </View>
+            </View>
+        </View>
 
         </View>
 
@@ -174,11 +223,29 @@ class OrderPage extends Component {
       });
     }
 
+    onPressShopsTabBtn(){
+        this.props.navigator.push({
+          name: 'ChefListPage',
+        });
+    }
+
+    onPressMeTabBtn(){
+      this.props.navigator.push({
+          name: 'EaterPage',
+          passProps:{
+              eater:this.state.eater,
+              principal:this.state.principal,
+              callback: function(eater){
+                  this.props.caller.setState({eater:eater});
+              }.bind(this)
+          }
+      });
+    }
   }
 
 
 
-  var styless = StyleSheet.create({
+  var styleOrderPage = StyleSheet.create({
 
   container:{
     flex:1,
@@ -295,6 +362,9 @@ class OrderPage extends Component {
       height:13 * windowHeightRatio,
       right: 0,
   },
+  placeHolderView:{
+    flex:1,
+  }
 });
 
 module.exports = OrderPage;
