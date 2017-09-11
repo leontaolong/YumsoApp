@@ -570,88 +570,89 @@ class ShopPage extends Component {
 
          var shopPictures = this.state.chef.shopPictures;
          var headerBanner = <View style={[styles.headerBannerView, {paddingTop:windowHeight * 0.035}]}>      
-                            <View style={styles.headerLeftView}></View>
-                            <View style={styles.titleView}>
-                                <Text style={styles.titleText}>{this.state.chef.shopname}</Text>
-                            </View>
-                        <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={()=>this.share()}>
-                            <View style={styles.headerRightTextButtonView}>
-                                <Image source={shareIcon} style={styleShopPage.headerShareIcon}/>
-                            </View>
-                        </TouchableHighlight> 
+                                <View style={styles.headerLeftView}></View>
+                                <View style={styles.titleView}>
+                                    <Text style={styles.titleText}>{this.state.chef.shopname}</Text>
+                                </View>
+                                <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={()=>this.share()}>
+                                    <View style={styles.headerRightTextButtonView}>
+                                        <Image source={shareIcon} style={styleShopPage.headerShareIcon}/>
+                                    </View>
+                                </TouchableHighlight> 
 
-                        <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={()=>this.addToFavorite()}>
-                            <View style={styles.headerRightTextButtonView}>
-                                <Image source={likeIcon} style={styleShopPage.headerLikeIcon}/>
+                                <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={()=>this.addToFavorite()}>
+                                    <View style={styles.headerRightTextButtonView}>
+                                        <Image source={likeIcon} style={styleShopPage.headerLikeIcon}/>
+                                    </View>
+                                </TouchableHighlight> 
                             </View>
-                        </TouchableHighlight> 
 
-                        </View>
-
-         var parallaxHeaderView = <View><View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
-                      <Swiper showsButtons={false} height={SHOP_PIC_HEIGHT} horizontal={true} autoplay={false}
+         var parallaxHeaderView = <View>
+                    <View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
+                        <Swiper showsButtons={false} height={SHOP_PIC_HEIGHT} horizontal={true} autoplay={false}
                           dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
                           {shopPictures.map((shopPicture) => {
                               return <Image key={'shopPicture'} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
                           })}
-                      </Swiper>
-                  </View>                       
-                 <View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
-
-                    <TouchableHighlight style={[styles.iconCircle, styleShopPage.shareIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.share()}}>
-                              <Image source={shareIcon} style={styles.shareIconCircled}></Image>
-                    </TouchableHighlight>
-                    
-                    <TouchableHighlight style={[styles.iconCircle, styleShopPage.likeIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.addToFavorite()}}>
-                              <Image source={likeIcon} style={styles.likeIconCircled}></Image>
-                    </TouchableHighlight>
+                        </Swiper>
+                    </View>                       
+                    <View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
+                        <TouchableHighlight style={[styles.iconCircle, styleShopPage.shareIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.share()}}>
+                            <Image source={shareIcon} style={styles.shareIconCircled}></Image>
+                        </TouchableHighlight>
+                        
+                        <TouchableHighlight style={[styles.iconCircle, styleShopPage.likeIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.addToFavorite()}}>
+                            <Image source={likeIcon} style={styles.likeIconCircled}></Image>
+                        </TouchableHighlight>
                       
-                    <View style={styleShopPage.shopInfoSection}>
-                      <View style={styleShopPage.shopInfoRow1}>
-                          <View style={styleShopPage.shopNameView}>
-                              <Text style={styleShopPage.oneShopNameText}>{this.state.chef.shopname}</Text>
-                          </View>
-                      </View>
-                      
-                      <View style={styleShopPage.shopInfoRow}>
-                        <View style={styleShopPage.shopRatingView}>
-                            {rating.renderRating(this.state.chef.rating)}
-                        </View>
-                        <View style={styleShopPage.shopInfoRightColumnView}>
-                                <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
-                        </View>
-                      </View>
-                      
-                      <View style={styleShopPage.shopInfoRow}>
-                            <View style={styleShopPage.labelView}>
-                                <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
+                        <View style={styleShopPage.shopInfoSection}>
+                            <View style={styleShopPage.shopInfoRow}>
+                                <View style={styleShopPage.shopNameView}>
+                                    <Text style={styleShopPage.oneShopNameText}>{this.state.chef.shopname}</Text>
+                                </View>
                             </View>
+                        
+                            <View style={styleShopPage.shopInfoRow}>
+                                <View style={styleShopPage.shopRatingView}>
+                                    {rating.renderRating(this.state.chef.rating)}
+                                </View>
                             <View style={styleShopPage.shopInfoRightColumnView}>
-                                <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.distance!=undefined && this.state.chef.distance!=null?(this.state.chef.distance>20?'20':this.state.chef.distance)+' miles | ':''}{dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
-                            </View> 
-                      </View>                       
+                                <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
+                            </View>
+                        </View>
+                        
+                        <View style={styleShopPage.shopInfoRow}>
+                                <View style={styleShopPage.labelView}>
+                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
+                                </View>
+                                <View style={styleShopPage.shopInfoRightColumnView}>
+                                    <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.distance!=undefined && this.state.chef.distance!=null?(this.state.chef.distance>20?'20':this.state.chef.distance)+' miles | ':''}{dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
+                                </View> 
+                        </View>                       
                     </View>
-                  </View>
+                </View>
+
                 <View style={styleShopPage.chefDetailRowView}>
                 {/* add style rule to the first item to remove border on the left */}
-                 <TouchableHighlight key={'chefPageClickableView'} style={[styleShopPage.chefDetailView, {borderLeftWidth:0}]} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
-                          <View style={styleShopPage.chefDetailTextView}>
-                             <Text style={styleShopPage.pickupAddressText}>Chef Page</Text>
-                             <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
-                          </View>
-                  </TouchableHighlight>
-                  <TouchableHighlight key={'chefIntroClickable'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefIntroPage()}>
-                          <View style={styleShopPage.chefDetailTextView}>
-                             <Text style={styleShopPage.pickupAddressText}>Introduction</Text>
-                          </View>
-                  </TouchableHighlight> 
-                 <TouchableHighlight key={'chefReviewsClickable'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefCommentsPage()}>
-                          <View style={styleShopPage.chefDetailTextView}>
-                              <Text style={styleShopPage.pickupAddressText}>Reviews ({this.state.chef.reviewCount})</Text>
-                          </View>
-                  </TouchableHighlight>
-                  </View>
-                 <View key={'greyBorderView'} style={styles.greyBorderView}></View></View>;
+                    <TouchableHighlight key={'chefPageClickableView'} style={[styleShopPage.chefDetailView, {borderLeftWidth:0}]} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
+                        <View style={styleShopPage.chefDetailTextView}>
+                            <Text style={styleShopPage.pickupAddressText}>Chef Page</Text>
+                            <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight key={'chefIntroClickable'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefIntroPage()}>
+                        <View style={styleShopPage.chefDetailTextView}>
+                            <Text style={styleShopPage.pickupAddressText}>Introduction</Text>
+                        </View>
+                    </TouchableHighlight> 
+                    <TouchableHighlight key={'chefReviewsClickable'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefCommentsPage()}>
+                        <View style={styleShopPage.chefDetailTextView}>
+                            <Text style={styleShopPage.pickupAddressText}>Reviews ({this.state.chef.reviewCount})</Text>
+                        </View>
+                    </TouchableHighlight>
+                </View>
+                <View key={'greyBorderView'} style={styles.greyBorderView}></View>
+            </View>;
             
         return (
             <View style={{ flex: 1 }}>
@@ -661,32 +662,32 @@ class ShopPage extends Component {
             backgroundColor={'#fff'}
             fadeOutForeground={true}
 
-
             renderForeground={() => (
-              <View key="parallax-header" style={styleShopPage.parallaxHeader }>
-                {parallaxHeaderView}
-              </View>
+                <View key="parallax-header" style={styleShopPage.parallaxHeader }>
+                    {parallaxHeaderView}
+                </View>
             )}
 
             renderStickyHeader={() => (
-              <View key="sticky-header" style={styleShopPage.stickySection}>
-              {headerBanner}
-                {/* <Text style={styles.stickySectionText}>Rich Hickey Talks</Text> */}
-              </View>
+                <View key="sticky-header" style={styleShopPage.stickySection}>
+                    {headerBanner}
+                </View>
             )}
 
             renderFixedHeader={() => (
-              <View key="fixed-header" style={styleShopPage.fixedSection}>
-              <TouchableHighlight style={styles.headerLeftView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
-                <View style={styles.backButtonView}>
-                    <Image source={backIcon} style={styles.backButtonIcon}/>
-                </View>
-            </TouchableHighlight>  
+                <View key="fixed-header" style={styleShopPage.fixedSection}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
+                        <View style={styles.backButtonView}>
+                            <Image source={backIcon} style={styles.backButtonIcon}/>
+                        </View>
+                    </TouchableHighlight>  
               </View>
             )}/>
+
             {loadingSpinnerView}
             {footerView}
-          </View>
+            
+            </View>
         // <View style={styles.container}>
         //                 <View style={styles.headerBannerView}>    
         //                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
@@ -1052,9 +1053,6 @@ var styleShopPage = StyleSheet.create({
         justifyContent:'space-between',
         height:windowWidth*0.165,  
         paddingLeft:windowWidth/27.6,     
-    },
-    shopInfoRow1:{
-        flexDirection:'row',
     },
     shopNameView:{
        flex:0.85,
