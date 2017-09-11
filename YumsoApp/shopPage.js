@@ -167,6 +167,7 @@ class ShopPage extends Component {
             dishes:dishes, 
             scheduleMapping:scheduleMapping, 
             timeData:timeData,
+            renderedSchedules:this.getDeliverySchedules(),
             dishesInDisplay:dishes,
         });
         if (!this.state.showScheduleSelection) {
@@ -179,10 +180,10 @@ class ShopPage extends Component {
     
     renderHeader(){
         var menuTitle = null;
-        if (!this.state.showScheduleSelection) {
+        if (this.state.showScheduleSelection) {
             menuTitle = <View style={styleShopPage.menuTitleView1}>
                             <Text style={styleShopPage.menuTitleTextTitle}>Menu</Text>
-                            <Text style={styleShopPage.menuTitleTextPrompt}>Select a menu at your scheduled out-for-delivery time</Text>
+                            <Text style={[styleShopPage.menuTitleTextPrompt, {alignSelf:'flex-start'}]}>Select a menu at your scheduled out-for-delivery time</Text>
                         </View>
         } else {
             menuTitle = <View style={styleShopPage.menuTitleView2}>
@@ -190,7 +191,7 @@ class ShopPage extends Component {
                                 <Text style={styleShopPage.menuTitleTextTitle}>Menu · </Text>
                                 <Text style={styleShopPage.menuTitleTextPrompt}>{this.state.selectedTimeRendered}</Text>
                             </View>
-                            <Text style={[styleShopPage.menuTitleTextPrompt, {marginRight: windowWidth*0.065,textAlign:'left',color:'#7BCBBE'}]}>Change</Text>
+                            <Text style={[styleShopPage.menuTitleTextPrompt, {marginRight: windowWidth*0.065,textAlign:'left',color:'#7BCBBE'}]} onPress={()=>this.displaySchedule()}>Change</Text>
                         </View>           
         }
         return (
@@ -201,6 +202,18 @@ class ShopPage extends Component {
         );
     }
 
+    renderFooter(){
+        if (this.state.showScheduleSelection) {
+            return (
+                <TouchableHighlight style={styleShopPage.fullMenuBox} underlayColor={'#eee'} onPress={()=>this.selectSchedule("All Dishes")}>
+                    <Text style={styleShopPage.fullMenuText}>Explore Full Menu</Text> 
+                </TouchableHighlight>
+            );
+        }
+        return null;
+    }
+
+
     renderRow(dish){
         let imageSrc = defaultDishPic;
         if(dish.pictures && dish.pictures!=null && dish.pictures.length!=0){
@@ -208,12 +221,15 @@ class ShopPage extends Component {
         }
         if (this.state.showScheduleSelection) {
             var scheduleView = null;
-            if (this.state.timeData.length <= 0) {
+            if (this.state.timeData.length = 0) {
                 scheduleView = <View style={styles.greyBox}>
                                     <Text style={styles.greyBoxText}>Currently no dishes are available to deliver</Text>
                                </View>
             } else {
-                scheduleView = <Text style={styleShopPage.orderStatusText}>{dish.label}</Text>
+                scheduleView =
+                                <TouchableHighlight style={styleShopPage.scheduleBox} underlayColor={'#eee'} onPress={()=>this.selectSchedule(dish.key)}>
+                                    <Text style={styleShopPage.scheduleBoxText}>{dish.label}</Text>
+                               </TouchableHighlight>
             }
             return (scheduleView);
         } else {
@@ -607,6 +623,7 @@ class ShopPage extends Component {
                             dataSource = {this.state.dataSource}
                             renderRow={this.renderRow.bind(this) } 
                             renderHeader={this.renderHeader.bind(this)}
+                            renderFooter={this.renderFooter.bind(this)}
                             loadData={this.fetchDishesAndSchedules.bind(this)}
                             renderScrollComponent={props => (parallaxScrollView)}
                             />
@@ -714,6 +731,16 @@ class ShopPage extends Component {
         let dishes = this.moveHighlightedDishToTop(JSON.parse(JSON.stringify(displayDishes)));
         this.getTotalPrice();
         this.setState({dataSource:this.state.dataSource.cloneWithRows(dishes), dishesInDisplay:dishes,showProgress:false, selectedTime:selectedTime});
+    }
+
+    displaySchedule(){
+        console.log("SHCEDULEEEEEE", this.state.renderedSchedules)
+        this.setState({showScheduleSelection:true, dataSource:this.state.dataSource.cloneWithRows(this.state.renderedSchedules)});
+    }
+
+    selectSchedule(selectedTime){
+        this.setState({showScheduleSelection:false});
+        this.displayDish(selectedTime);
     }
    
     addToShoppingCart(dish){
@@ -1333,7 +1360,7 @@ var styleShopPage = StyleSheet.create({
     },
     menuTitleView1: {
         flexDirection:'column',
-        justifyContent:'flex-start',
+        justifyContent:'center',
         alignItems:'flex-start',
         paddingVertical:windowHeight*0.025,
         paddingLeft: windowWidth/20.7,
@@ -1352,8 +1379,40 @@ var styleShopPage = StyleSheet.create({
     },
     menuTitleTextPrompt: {
         alignSelf:'center',
+        textAlign:'left',
         fontSize:windowHeight/51.636,
         color:'#9B9B9B',
+        paddingLeft:0,
+        marginLeft:0,
+    },
+    scheduleBox: {
+        flex:1,
+        flexDirection:'column',
+        backgroundColor:'#7BCBBE',
+        paddingVertical:windowHeight*0.025,
+        marginHorizontal:windowWidth/20.7,
+        marginVertical:windowHeight*0.005,
+    },
+    scheduleBoxText: {
+        fontSize:15*windowHeight/677,
+        color:'#fff',
+        fontWeight:'700',
+        textAlign:'center', 
+    },
+    fullMenuBox: {
+        flex:1,
+        flexDirection:'column',
+        paddingVertical:windowHeight*0.025,
+        marginHorizontal:windowWidth/20.7,
+        marginVertical:windowHeight*0.005,
+        borderColor:'#7BCBBE',
+        borderWidth:1,
+    },
+    fullMenuText: {
+        fontSize:15*windowHeight/677,
+        color:'#7BCBBE',
+        fontWeight:'700',
+        textAlign:'center', 
     }
 });
 
