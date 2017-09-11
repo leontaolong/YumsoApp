@@ -521,26 +521,8 @@ class ShopPage extends Component {
 
         var networkUnavailableView = null;
         var dishListView = null;
+        var parallaxScrollView = null;
         var footerView = null;
-        if(this.state.showNetworkUnavailableScreen){
-           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchDishesAndSchedules.bind(this)} />
-        }else{
-           dishListView = <ListView style={styles.dishListView}
-                           dataSource = {this.state.dataSource}
-                           renderRow={this.renderRow.bind(this) } 
-                           renderHeader={this.renderHeader.bind(this)}
-                           loadData={this.fetchDishesAndSchedules.bind(this)}/>
-           footerView = <View style={styleShopPage.footerView}>
-                          <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Dishes'? '' : 'Subtotal: $'+Number(this.state.totalPrice.toFixed(2))}</Text>
-                          </View>
-                          <TouchableOpacity style={styleShopPage.checkoutButtonView} activeOpacity={0.7} onPress={() => this.navigateToShoppingCart()}> 
-                             <View style={styleShopPage.checkoutButtonWrapper}>
-                                <Text style={styleShopPage.checkoutButton}>SHOPPING CART</Text>
-                             </View>
-                          </TouchableOpacity>
-                       </View>
-        }
 
         if(this.state.like){
             var  likeIcon = heartFillsIcon;
@@ -653,65 +635,147 @@ class ShopPage extends Component {
                 </View>
                 <View key={'greyBorderView'} style={styles.greyBorderView}></View>
             </View>;
+        
+        parallaxScrollView = <ParallaxScrollView
+                                    dataSource={ this.state.dataSource }
+                                    stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
+                                    parallaxHeaderHeight={ PARALLAX_HEADER_HEIGHT }
+                                    backgroundColor={'#fff'}
+                                    fadeOutForeground={true}
+
+                                    renderForeground={() => (
+                                        <View key="parallax-header" style={styleShopPage.parallaxHeader }>
+                                            {parallaxHeaderView}
+                                        </View>
+                                    )}
+
+                                    renderStickyHeader={() => (
+                                        <View key="sticky-header" style={styleShopPage.stickySection}>
+                                            {headerBanner}
+                                        </View>
+                                    )}
+
+                                    renderFixedHeader={() => (
+                                        <View key="fixed-header" style={styleShopPage.fixedSection}>
+                                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
+                                                <View style={styles.backButtonView}>
+                                                    <Image source={backIcon} style={styles.backButtonIcon}/>
+                                                </View>
+                                            </TouchableHighlight>  
+                                    </View>
+                                    )}                      
+                                />
             
+        if(this.state.showNetworkUnavailableScreen){
+           networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchDishesAndSchedules.bind(this)} />
+        }else{
+           dishListView = <ListView style={styles.dishListView}
+                            dataSource = {this.state.dataSource}
+                            renderRow={this.renderRow.bind(this) } 
+                            renderHeader={this.renderHeader.bind(this)}
+                            loadData={this.fetchDishesAndSchedules.bind(this)}
+                            renderScrollComponent={props => (parallaxScrollView)}
+                            />
+
+           footerView = <View style={styleShopPage.footerView}>
+                          <View style={styleShopPage.shoppingCartTimeView}>
+                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Dishes'? '' : 'Subtotal: $'+Number(this.state.totalPrice.toFixed(2))}</Text>
+                          </View>
+                          <TouchableOpacity style={styleShopPage.checkoutButtonView} activeOpacity={0.7} onPress={() => this.navigateToShoppingCart()}> 
+                             <View style={styleShopPage.checkoutButtonWrapper}>
+                                <Text style={styleShopPage.checkoutButton}>SHOPPING CART</Text>
+                             </View>
+                          </TouchableOpacity>
+                       </View>
+        }  
+        
         return (
-            <View style={{ flex: 1 }}>
-            <ParallaxScrollView
-            stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
-            parallaxHeaderHeight={ PARALLAX_HEADER_HEIGHT }
-            backgroundColor={'#fff'}
-            fadeOutForeground={true}
-
-            renderForeground={() => (
-                <View key="parallax-header" style={styleShopPage.parallaxHeader }>
-                    {parallaxHeaderView}
-                </View>
-            )}
-
-            renderStickyHeader={() => (
-                <View key="sticky-header" style={styleShopPage.stickySection}>
-                    {headerBanner}
-                </View>
-            )}
-
-            renderFixedHeader={() => (
-                <View key="fixed-header" style={styleShopPage.fixedSection}>
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
-                        <View style={styles.backButtonView}>
-                            <Image source={backIcon} style={styles.backButtonIcon}/>
-                        </View>
-                    </TouchableHighlight>  
-              </View>
-            )}/>
-
-            {loadingSpinnerView}
-            {footerView}
-            
+            <View style={[styles.container, {paddingTop:0}]}>
+                {chefNoticeView}
+                {updateAppBannerView}
+                {networkUnavailableView}
+                {dishListView}
+                {scheduleSelectionView}
+                {footerView}
+                {loadingSpinnerView}
             </View>
+
+            // <ListView
+            //     ref="ListView"
+            //     dataSource={ this.state.dataSource }
+            //     renderHeader={() =>                    <View>
+            //             {/* {loadingSpinnerView}
+            //             {chefNoticeView}
+            //             {updateAppBannerView}
+            //             {networkUnavailableView} */}
+            //             {dishListView}
+            //             {scheduleSelectionView}
+            //             {footerView}
+            //         </View>}
+            //     renderRow={
+            //         () => <View>
+            //             {dishListView}
+            //         </View> 
+            //     }
+
+            // />
+
+
+    //   <View style={{ flex: 1 }}>
+    //     <View style={{ flex: 1, flexDirection: 'row' }}>
+    //       <ParallaxScrollView
+    //           style={{ flex: 1, backgroundColor: 'hotpink', overflow: 'hidden' }}
+    //           renderBackground={() => <Image source={{ uri: `https://placekitten.com/414/350`, width: window.width, height: 350 }}/>}
+    //           renderFixedHeader={() => <Text style={{ textAlign: 'right', color: 'white', padding: 5, fontSize: 20 }}>Hello</Text>}
+    //           parallaxHeaderHeight={ 350 }>
+    //         <View style={{ alignItems: 'center' }}><Text style={{ fontSize: 30 }}>Meow!</Text></View>
+    //       </ParallaxScrollView>
+    //     </View>
+    //   </View>
+
+            // <View style={{ flex: 1 }}>
+            //     <ParallaxScrollView
+            //     stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
+            //     parallaxHeaderHeight={ PARALLAX_HEADER_HEIGHT }
+            //     backgroundColor={'#fff'}
+            //     fadeOutForeground={true}
+
+            //     renderForeground={() => (
+            //         <View key="parallax-header" style={styleShopPage.parallaxHeader }>
+            //             {parallaxHeaderView}
+            //         </View>
+            //     )}
+
+            //     renderStickyHeader={() => (
+            //         <View key="sticky-header" style={styleShopPage.stickySection}>
+            //             {headerBanner}
+            //         </View>
+            //     )}
+
+            //     renderFixedHeader={() => (
+            //         <View key="fixed-header" style={styleShopPage.fixedSection}>
+            //             <TouchableHighlight style={styles.headerLeftView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
+            //                 <View style={styles.backButtonView}>
+            //                     <Image source={backIcon} style={styles.backButtonIcon}/>
+            //                 </View>
+            //             </TouchableHighlight>  
+            //     </View>
+            //     )}>
+            //     {loadingSpinnerView}
+            //     {chefNoticeView}
+            //     {updateAppBannerView}
+            //     {networkUnavailableView}
+            //     {dishListView}
+            //     {scheduleSelectionView}
+            //     {footerView}
+            //     </ParallaxScrollView>
+
+            // </View>
         // <View style={styles.container}>
-        //                 <View style={styles.headerBannerView}>    
-        //                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
-        //                         <View style={styles.backButtonView}>
-        //                             <Image source={backIcon} style={styles.backButtonIcon}/>
-        //                         </View>
-        //                     </TouchableHighlight>    
-        //                     <View style={styles.titleView}>
-        //                         <Text style={styles.titleText}>{this.state.chef.shopname}</Text>
-        //                     </View>
-        //                     <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={()=>this.share()}>
-        //                         <View style={styles.likeShareButtonView}>
-        //                            <View>
-        //                               <Image source={shareIcon} style={styles.shareButtonIcon}/>
-        //                            </View>
-        //                         </View>
-        //                     </TouchableHighlight>
-        //                 </View>
         //                 {chefNoticeView}
         //                 {updateAppBannerView}
         //                 {networkUnavailableView}
-        //                 {dishListView}
-        //                 {scheduleSelectionView}
-        //         </View>
+        // </View>
                 );
     }
 
