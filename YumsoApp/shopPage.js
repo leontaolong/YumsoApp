@@ -605,10 +605,6 @@ class ShopPage extends Component {
                     <TouchableHighlight style={[styles.iconCircle, styleShopPage.likeIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.addToFavorite()}}>
                               <Image source={likeIcon} style={styles.likeIconCircled}></Image>
                     </TouchableHighlight>
-
-                    <TouchableHighlight style={styleShopPage.chefPhotoView} underlayColor={'transparent'}>
-                      <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
-                    </TouchableHighlight>
                       
                     <View style={styleShopPage.shopInfoSection}>
                       <View style={styleShopPage.shopInfoRow1}>
@@ -617,33 +613,31 @@ class ShopPage extends Component {
                           </View>
                       </View>
                       
-                      <View style={styleShopPage.shopInfoRow2}>
-                          <View style={styleShopPage.shopRatingView}>
-                              <View style={{flexDirection:'row',alignSelf:'center'}}>
-                              {rating.renderRating(this.state.chef.rating)}
-                              </View>
-                              <Text style={styleShopPage.reviewNumberText}>({this.state.chef.rating}) {dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
-                          </View>
+                      <View style={styleShopPage.shopInfoRow}>
+                        <View style={styleShopPage.shopRatingView}>
+                            {rating.renderRating(this.state.chef.rating)}
+                        </View>
+                        <View style={styleShopPage.shopInfoRightColumnView}>
+                                <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
+                        </View>
                       </View>
                       
-                      <View style={styleShopPage.shopInfoRow3}>
-                          <View style={styleShopPage.labelView}>
-                              <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
-                          </View>
+                      <View style={styleShopPage.shopInfoRow}>
+                            <View style={styleShopPage.labelView}>
+                                <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
+                            </View>
+                            <View style={styleShopPage.shopInfoRightColumnView}>
+                                <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.distance!=undefined && this.state.chef.distance!=null?(this.state.chef.distance>20?'20':this.state.chef.distance)+' miles | ':''}{dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
+                            </View> 
                       </View>                       
                     </View>
                   </View>
                 <View style={styleShopPage.chefDetailRowView}>
-                 {/* <View key={'chefLivingAreaView'}>
-                   <View style={styleShopPage.chefDetailView}>
-                      <View style={styleShopPage.chefDetailTextView}>
-                          <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
-                      </View>
-                    </View>
-                  </View> */}
-                 <TouchableHighlight key={'chefPageClickableView'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
+                {/* add style rule to the first item to remove border on the left */}
+                 <TouchableHighlight key={'chefPageClickableView'} style={[styleShopPage.chefDetailView, {borderLeftWidth:0}]} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
                           <View style={styleShopPage.chefDetailTextView}>
                              <Text style={styleShopPage.pickupAddressText}>Chef Page</Text>
+                             <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
                           </View>
                   </TouchableHighlight>
                   <TouchableHighlight key={'chefIntroClickable'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefIntroPage()}>
@@ -980,11 +974,13 @@ class ShopPage extends Component {
     }
 }
 
+// parameters for defining Parallax Scroll View
 const SHOP_PIC_HEIGHT = windowHeight*0.215;
 const PARALLAX_HEADER_HEIGHT = windowHeight*0.4;
 const STICKY_HEADER_HEIGHT = windowHeight*0.08;
 
-var styleShopPage = StyleSheet.create({
+var styleShopPage = StyleSheet.create({  
+    /* Defining Parallax Scroll View */
     stickySection: {
         height: STICKY_HEADER_HEIGHT,
         backgroundColor:'#fff',
@@ -1003,6 +999,8 @@ var styleShopPage = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor:'#fff',
     },
+    /* Defining Parallax Scroll View */
+
     shopPictureView:{
         height: SHOP_PIC_HEIGHT,
     },
@@ -1040,13 +1038,11 @@ var styleShopPage = StyleSheet.create({
         paddingBottom:windowHeight*0.02698,
         paddingLeft:windowWidth*0.032,
     },
-    chefPhotoView:{
-        marginRight:windowWidth*0.04, 
-    },
     chefPhoto:{
-        height:windowWidth*0.16,
-        width:windowWidth*0.16,
-        borderRadius: 12, 
+        marginLeft:windowWidth*0.02,
+        height:windowWidth*0.05,
+        width:windowWidth*0.05,
+        borderRadius: 10, 
         borderWidth: 0, 
         overflow: 'hidden',
     },
@@ -1054,7 +1050,8 @@ var styleShopPage = StyleSheet.create({
         flex:1,
         flexDirection:'column',
         justifyContent:'space-between',
-        height:windowWidth*0.165,        
+        height:windowWidth*0.165,  
+        paddingLeft:windowWidth/27.6,     
     },
     shopInfoRow1:{
         flexDirection:'row',
@@ -1104,26 +1101,29 @@ var styleShopPage = StyleSheet.create({
         right: windowWidth*0.08,
         backgroundColor: '#fff',
     },
-    shopInfoRow2:{
+    shopInfoRow:{
+        flex:1,
         flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        marginRight:windowWidth/27.6,  
     },
     shopRatingView:{
-        flex:0.72,
         flexDirection:'row',
-        alignItems:'flex-start',
     },
-    reviewNumberText:{
+    shopInfoRightColumnView:{
+        flexDirection:'row',
+        marginRight: windowWidth*0.02, 
+    },
+    shopInfoRightColumnText:{
         fontSize:windowHeight/51.636,
-        color:'#4A4A4A',
-        marginLeft:windowWidth*0.0187,
-        alignSelf:'center',
-    },
-    shopInfoRow3:{
-        flexDirection:'row',
+        color:'#9B9B9B',
+        textAlign:'left',
     },
     labelView:{
         flexDirection:'row',
         justifyContent:'flex-start',
+        alignItems:'center',
         marginRight:windowWidth*0.04,
     },   
     labelIcon:{
@@ -1132,7 +1132,7 @@ var styleShopPage = StyleSheet.create({
         alignSelf:'center',
     },
     labelText:{
-        fontSize:windowHeight/47.33,
+        fontSize:windowHeight/51.636,
         color:'#4A4A4A',
         marginLeft:windowWidth/82.8,
         alignSelf:'center',
@@ -1140,6 +1140,7 @@ var styleShopPage = StyleSheet.create({
     chefDetailRowView: {
         width: windowWidth,
         paddingVertical: windowHeight*0.01,
+        paddingHorizontal:windowWidth/27.6,
         flexDirection: 'row',
         justifyContent:'center',
         borderColor: '#eee',
@@ -1148,7 +1149,6 @@ var styleShopPage = StyleSheet.create({
     },  
     chefDetailView:{
         flex:1/3,
-        paddingHorizontal: windowWidth/27.6/2,
         alignItems:'center',
         alignSelf:'center',
         backgroundColor: '#fff',
@@ -1156,9 +1156,11 @@ var styleShopPage = StyleSheet.create({
         borderLeftWidth:1,       
     },
     chefDetailTextView:{
+        flexDirection:'row',
         justifyContent:'center', 
         height:windowHeight*0.03,
         fontSize:windowHeight/40,
+        color:'#4A4A4A',
     },
     pickupAddressText:{ 
         fontSize: windowHeight/47.33, 
