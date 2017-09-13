@@ -282,19 +282,10 @@ class HistoryOrderPage extends Component {
                     <TouchableOpacity onPress={()=>this.navigateToOrderDetailPage(order)} activeOpacity={0.7}>
                     <View style={styleHistoryOrderPage.cell}>
                         <View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
-                          {/*  <Image source={imageSrc} style={styleHistoryOrderPage.shopPhoto}/> */}
                             <View style={styleHistoryOrderPage.orderInfoView}>
                                 <Text style={styleHistoryOrderPage.shopNameText}>{order.shopname}</Text>
-                                {/*<Text style={styleHistoryOrderPage.completeTimeText}>
-                                OrderId: {order.orderIdShort}
-                                </Text>   */}
                                 {orderStatusText}
                                 {orderStatusText2}
-
-                              {/*  <Text style={styleHistoryOrderPage.grandTotalText}>Total: ${order.price.grandTotal}</Text>
-                                <View style={styleHistoryOrderPage.orderDetailsClickableView}>
-                                   <Text style={styleHistoryOrderPage.orderDetailsClickable}>{action}</Text>
-                                </View>*/}
                             </View>
                             <Image source={enterPic} style={styleHistoryOrderPage.enterPicNew}/>
                         </View>
@@ -335,7 +326,7 @@ class HistoryOrderPage extends Component {
                                             loadData={this.fetchOrderAndComments.bind(this)}/>
            }else if(this.state.orderListSelect=='orderNeedReview'){
               if(this.state.orderNeedReview && this.state.orderNeedReview.length==0 && !this.state.showProgress){
-                 var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order needs review.</Text>
+                 var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order to review.</Text>
               }
               //console.log('orderNeedReview')
               else{

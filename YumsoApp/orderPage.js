@@ -2,13 +2,20 @@
 var HttpsClient = require('./httpsClient');
 var AuthService = require('./authService');
 var styles = require('./style');
+var config = require('./config');
 var {FBLogin} = require('react-native-facebook-login');
 var backIcon = require('./icons/icon-back.png');
 var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/background@3x.jpg');
 var commonAlert = require('./commonModules/commonAlert');
+var commonWidget = require('./commonModules/commonWidget');
 var validator = require('validator');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+var NetworkUnavailableScreen = require('./networkUnavailableScreen');
+var LoadMoreBottomComponent = require('./loadMoreBottomComponent');
+const eaterOrderPageSize = 7;
+const firstTimeLoadPageSize = 14;
+var lastDataCount = 0;
 var enterPic = require('./icons/enter.png');
 var orange_dot = require('./icons/orange_dot.png');
 var meOff = require('./icons/me_off.png');
@@ -55,7 +62,7 @@ import React, {
 } from 'react-native';
 
 const facebookPermissions = ["public_profile"];
-
+var footerView = null;
 class OrderPage extends Component {
 
   constructor(props) {
@@ -67,11 +74,96 @@ class OrderPage extends Component {
     this.state = {
       eater: eater,
       principal:principal,
-      dataSource: ds.cloneWithRows(['row 1', 'row 2', 'row 2']),
+      dataSourceOrderPending: ds.cloneWithRows([]),
+      orderPending:[],
+      lastSortKeyOrders:null,
+      isAllOrdersLoaded:false,
+      orders:[],
+      showNetworkUnavailableScreen:false,
+      showProgress:false,
+      showProgressBottom:false,
     };
 
        newMessage = <Image source={orange_dot} style={styleOrderPage.dot} />
   }
+
+  componentDidMount(){
+    this.client = new HttpsClient(config.baseUrl, true);
+    this.setState({showProgress: true});
+    return this.fetchOrders();
+}
+
+  async fetchOrders() {
+        const currentTime = new Date().getTime();
+        //const oneWeekAgo = currentTime - 7*24*60*60*1000;
+        const end = 'end=' + currentTime;
+        const nextString = 'next=' + eaterOrderPageSize;
+        if(!this.state.lastSortKeyOrders){//first time load all 7 days order
+          var start = 'start=0';
+          var queryStringOrders = start + '&' + end + '&next=' + firstTimeLoadPageSize;
+        }else{
+          var start = 'start=0';
+          var lastSortKeyOrdersString = 'lastSortKey=' + this.state.lastSortKeyOrders;
+          var queryStringOrders = start + '&' + end + '&' + lastSortKeyOrdersString + '&' + nextString
+        }
+
+        let eater = await AuthService.getPrincipalInfo();
+        try{
+          var resOrders = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+queryStringOrders);
+          this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:false})
+        }catch(err){
+          this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:true});
+          commonAlert.networkError(err);
+          return;
+        }
+
+        if (resOrders && resOrders.statusCode != 200 && resOrders.statusCode != 202) {
+            this.setState({showProgress:false,showProgressBottom:false,});
+            return this.responseHandler(resOrders);
+        }
+
+        if (resOrders.data){
+            if(!this.state.lastSortKeyOrders){
+              this.state.orders = resOrders.data.orders;
+            }else{
+              this.state.orders = this.state.orders.concat(resOrders.data.orders);
+            }
+
+            if(resOrders.data.lastSortKey && this.state.lastSortKeyOrders != resOrders.data.lastSortKey){
+              this.state.lastSortKeyOrders = resOrders.data.lastSortKey
+            }else if(!resOrders.data.lastSortKey){
+              this.setState({isAllOrdersLoaded:true});
+            }else{
+              return;
+            }
+
+            var orderPending = [];
+
+            for(var oneOrder of this.state.orders){
+                if(commonWidget.isOrderPending(oneOrder)){
+                  orderPending.push(oneOrder);
+                }else if(commonWidget.isOrderCommentable(oneOrder)){
+                  console.log('You need review!!');
+               }
+            }
+
+            var dd = this.state.orders.length;
+            if (dd > 10) {
+              footerView = <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>
+
+            } else {
+              footerView = null;
+            }
+
+            this.setState({
+                          dataSourceOrderPending: this.state.dataSourceOrderPending.cloneWithRows(this.state.orders),
+                          showProgress:false,
+                          showProgressBottom:false,
+                          orderPending:orderPending,
+                          orders:JSON.parse(JSON.stringify(this.state.orders)),
+                        });
+        }
+    }
 
 
 
@@ -87,23 +179,50 @@ class OrderPage extends Component {
       }
     }
 
+    renderRow(order){
+      return  (
+        <TouchableOpacity  activeOpacity={0.7}>
+        <View style={styleOrderPage.cell}>
+            <View style={styleOrderPage.oneListingView}>
+                <View style={styleOrderPage.orderInfoView}>
+                    <Text style={styleOrderPage.shopNameText}>{order.shopname}</Text>
+                    <Text style={styleOrderPage.completeTimeText}>
+                    Order Placed: {dateRender.renderDate2(order.orderCreatedTime)}
+                    </Text>
+                    <Text style={styleOrderPage.completeTimeText}>
+                    Status: processing
+                    </Text>
+                </View>
+                <Image source={enterPic} style={styleOrderPage.enterPicNew}/>
+            </View>
+        </View>
+      </TouchableOpacity>
+     );
+    }
+
+    renderFooter(){
+      console.log(this.state.orders)
+      if(this.state.orders && this.state.orders.length > 0 && this.state.orders.length >= firstTimeLoadPageSize){
+        return footerView;
+      }
+    }
+
+
     render(){
       return(
-
         <View style={styles.containerNew}>
-            <View style={styles.headerBannerViewNew}>
-                <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
-                  <View style={styles.backButtonViewsNew}>
-                      <Image source={backIcon} style={styles.backButtonIconsNew}/>
-                  </View>
-                </TouchableHighlight>
-
-                <View style={styles.headerRightView}>
-                </View>
+          <View style={styles.headerBannerViewNew}>
+            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
+              <View style={styles.backButtonViewsNew}>
+                <Image source={backIcon} style={styles.backButtonIconsNew}/>
+              </View>
+            </TouchableHighlight>
+            <View style={styles.headerRightView}>
             </View>
-            <View style={styles.titleViewNew}>
-                    <Text style={styles.titleTextNew}>Orders</Text>
-            </View>
+          </View>
+          <View style={styles.titleViewNew}>
+            <Text style={styles.titleTextNew}>Orders</Text>
+          </View>
 
           <View style={styleOrderPage.ongoingView}>
             <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
@@ -113,26 +232,11 @@ class OrderPage extends Component {
 
           {!this.state.status ? <View style={styleOrderPage.listView}>
               <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={(rowData) => <View>
-
-                          <TouchableOpacity  activeOpacity={0.7}>
-                              <View style={styleOrderPage.cell}>
-                                  <View style={styleOrderPage.oneListingView}>
-                                      <View style={styleOrderPage.orderInfoView}>
-                                          <Text style={styleOrderPage.shopNameText}>Shop Name</Text>
-                                          <Text style={styleOrderPage.completeTimeText}>
-                                                Order Placed: 10/11/2016 6:12 PM
-                                          </Text>
-                                          <Text style={styleOrderPage.completeTimeText}>
-                                                  Status: processing
-                                          </Text>
-                                      </View>
-                                      <Image source={enterPic} style={styleOrderPage.enterPicNew}/>
-                                  </View>
-                              </View>
-                          </TouchableOpacity>
-                      </View>}
+                    dataSource = {this.state.dataSourceOrderPending}
+                    renderRow={this.renderRow.bind(this) }
+                    renderFooter={ this.renderFooter.bind(this) }
+                    pageSize={10}
+                    initialListSize={1}
               />
           </View> : null}
 
