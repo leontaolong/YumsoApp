@@ -248,7 +248,7 @@ class OrderDetailPage extends Component {
 
           var itemsTextNew = <View style={{paddingTop: 20 * windowHeightRatio, paddingBottom:20* windowHeightRatio, paddingLeft: 20 * windowWidthRatio}}>
                               <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Items</Text>
-                          </View>
+                            </View>
 
 
 
@@ -1200,7 +1200,7 @@ var styleOrderDetailPage = StyleSheet.create({
         justifyContent:'center',
         //alignItems:'center',
         height:windowHeight*0.0974,
-        backgroundColor:'#FFCC33',
+        backgroundColor:'#FFF3D1',
         marginRight: 20 * windowWidthRatio,
         marginLeft: 20 * windowWidthRatio,
         paddingLeft: 15 * windowWidthRatio,
@@ -1562,7 +1562,7 @@ var styleShoppingCartPage = StyleSheet.create({
     orderSummaryNew: {
       // marginLeft:20 * windowWidthRatio,
       // marginRight:20 * windowWidthRatio,
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#F5F5F5",
      paddingLeft:20 * windowWidthRatio,
       height: 54 * windowHeightRatio,
     //  alignItems: "center",
@@ -1574,13 +1574,13 @@ var styleShoppingCartPage = StyleSheet.create({
       color:"#4A4A4A",
     },
     receiptTopBottomImageViewNew: {
-        backgroundColor: "#EAEAEA",
+        backgroundColor: "#F5F5F5",
 
     },
     receiptTopImageNew: {
       height:8 * windowHeightRatio,
       width: windowWidth - (20 * windowWidthRatio)*2,
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#F5F5F5",
      marginLeft:20 * windowWidthRatio,
      marginRight:20 * windowWidthRatio,
     },
@@ -1588,14 +1588,14 @@ var styleShoppingCartPage = StyleSheet.create({
     receiptBottomImageNew: {
       height:8 * windowHeightRatio,
       width: windowWidth - (20 * windowWidthRatio)*2,
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#F5F5F5",
      marginLeft:20 * windowWidthRatio,
      marginRight:20 * windowWidthRatio,
      marginBottom: 30 * windowHeightRatio,
     },
 
     orderSummaryRowNew: {
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#F5F5F5",
   //    paddingLeft:20 * windowWidthRatio,
       //height: 65 * windowHeightRatio,
       justifyContent: "center",

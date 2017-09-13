@@ -697,7 +697,7 @@ module.exports = StyleSheet.create({
         justifyContent:'flex-start',
         alignItems:'center',
       //  width:80,
-        color:"#FFCC33",
+        color:"#FFF3D1",
         fontWeight:'bold',
 
     },

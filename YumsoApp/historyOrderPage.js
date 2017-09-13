@@ -50,7 +50,7 @@ var b1 = 15*windowHeight/677;
 var b2 = 15*windowHeight/677;
 
 var selectedHeader = 'orderNeedReview';
-var footerView = null;
+//var footerView = null;
 
 class HistoryOrderPage extends Component {
     constructor(props){
@@ -211,14 +211,14 @@ class HistoryOrderPage extends Component {
             }
             console.log("AllOrder: ");
             console.log(this.state.orders.length);
-            var dd = this.state.orders.length;
-          //  Alert.alert(String(dd));
-            if (dd > 10) {
-              footerView = <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>
-
-            } else {
-              footerView = null;
-            }
+            // var dd = this.state.orders.length;
+            //
+            // if (dd > 10) {
+            //   footerView = <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>
+            //
+            // } else {
+            //   footerView = null;
+            // }
 
             this.setState({
                            dataSourceOrderPending: this.state.dataSourceOrderPending.cloneWithRows(this.state.orders),
@@ -307,7 +307,15 @@ class HistoryOrderPage extends Component {
     renderFooter(){
        console.log(this.state.orders)
        if(this.state.orders && this.state.orders.length > 0 && this.state.orders.length >= firstTimeLoadPageSize){
-         return footerView;
+
+         var dd = this.state.orders.length;
+
+         if (dd > 10) {
+           return <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>;
+
+         } else {
+           return null
+         }
        }
     }
 

@@ -92,36 +92,45 @@ class OrderPage extends Component {
                     <Text style={styles.titleTextNew}>Orders</Text>
             </View>
 
-          <View style={styless.ongoingView}>
-            <TouchableOpacity style={styless.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
-              <Text style={styless.ongoingTextTop}>Ongoing Orders</Text>
-            </TouchableOpacity>
-          </View>
 
-          {!this.state.status ? <View style={styless.listView}>
-              <ListView
-                    dataSource={this.state.dataSource}
-                    renderRow={(rowData) => <View>
 
-                          <TouchableOpacity  activeOpacity={0.7}>
-                              <View style={styless.cell}>
-                                  <View style={styless.oneListingView}>
-                                      <View style={styless.orderInfoView}>
-                                          <Text style={styless.shopNameText}>Shop Name</Text>
-                                          <Text style={styless.completeTimeText}>
-                                                Order Placed: 10/11/2016 6:12 PM
-                                          </Text>
-                                          <Text style={styless.completeTimeText}>
-                                                  Status: processing
-                                          </Text>
+          {!this.state.status ?
+            <View>
+                <View style={styless.ongoingView}>
+                  <TouchableOpacity style={styless.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
+                    <Text style={styless.ongoingTextTop}>Ongoing Orders</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styless.listView}>
+                  <ListView
+                        dataSource={this.state.dataSource}
+                        renderRow={(rowData) => <View>
+
+                              <TouchableOpacity  activeOpacity={0.7}>
+                                  <View style={styless.cell}>
+                                      <View style={styless.oneListingView}>
+                                          <View style={styless.orderInfoView}>
+                                              <Text style={styless.shopNameText}>Shop Name</Text>
+                                              <Text style={styless.completeTimeText}>
+                                                    Order Placed: 10/11/2016 6:12 PM
+                                              </Text>
+                                              <Text style={styless.completeTimeText}>
+                                                      Status: processing
+                                              </Text>
+                                          </View>
+                                          <Image source={enterPic} style={styless.enterPicNew}/>
                                       </View>
-                                      <Image source={enterPic} style={styless.enterPicNew}/>
                                   </View>
-                              </View>
-                          </TouchableOpacity>
-                      </View>}
-              />
-          </View> : null}
+                              </TouchableOpacity>
+                          </View>}
+                  />
+              </View>
+          </View> :
+          <TouchableOpacity style={styless.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
+              <View style={styless.ongoingView}>
+                  <Text style={styless.ongoingText2Top}>Ongoing Orders</Text>
+              </View>
+          </TouchableOpacity>}
 
           <View style={styless.dividerView}><Text style={styless.dividerLineTop}></Text></View>
           <TouchableOpacity style={styless.ongoingTouchable}  onPress={() => this.onPressNeedReviewsOrdersBtn()}>
@@ -180,25 +189,9 @@ class OrderPage extends Component {
 
   var styless = StyleSheet.create({
 
-  container:{
-    flex:1,
-    flexDirection: 'column',
-    backgroundColor: '#FFFFFF'
-  },
-  headerView:{
-    flexDirection:'row',
-    marginTop: 40,
-    marginLeft: 20
-  },
-  headerText:{
-    fontWeight: 'bold',
-    fontSize: 30,
-    color: '#000'
-  },
-
   ongoingView:{
 
-    marginLeft: 20
+    marginLeft: 20 * windowWidthRatio,
   },
   ongoingTouchable:{
     width: windowWidth,
@@ -209,12 +202,23 @@ class OrderPage extends Component {
     fontSize: h2,
     color: '#4a4a4a',
   //  backgroundColor: '#cc0000',
+  paddingTop: 20 * windowHeightRatio,
+  paddingBottom:  20 * windowHeightRatio,
   },
   ongoingTextTop:{
     fontWeight: 'bold',
     fontSize: h2,
     color: '#4a4a4a',
     paddingBottom: 5 * windowHeightRatio,
+    paddingBottom:  15 * windowHeightRatio,
+  //  backgroundColor: '#cc0000',
+  },
+  ongoingText2Top:{
+    fontWeight: 'bold',
+    fontSize: h2,
+    color: '#4a4a4a',
+    // paddingBottom: 5 * windowHeightRatio,
+    paddingBottom:  20 * windowHeightRatio,
   //  backgroundColor: '#cc0000',
   },
   listView:{
@@ -223,6 +227,7 @@ class OrderPage extends Component {
     width:windowWidth - 76 * windowWidthRatio,
 
     marginLeft: 56 * windowWidthRatio,
+    paddingBottom: 15 * windowHeightRatio,
   },
 
   dividerView:{
@@ -236,8 +241,8 @@ class OrderPage extends Component {
     width: windowWidth - 40 * windowWidthRatio,
     marginLeft: 20 * windowWidthRatio,
     marginRight: 20* windowWidthRatio,
-    marginTop: 20 * windowHeightRatio,
-    marginBottom:  20 * windowHeightRatio,
+    // marginTop: 20 * windowHeightRatio,
+    // marginBottom:  20 * windowHeightRatio,
   },
   dividerLineTop:{
     height: 1,
@@ -245,8 +250,8 @@ class OrderPage extends Component {
     width: windowWidth - 40 * windowWidthRatio,
     marginLeft: 20 * windowWidthRatio,
     marginRight: 20* windowWidthRatio,
-    marginTop: 15 * windowHeightRatio,
-    marginBottom:  20 * windowHeightRatio,
+    //marginTop: 15 * windowHeightRatio,
+    //marginBottom:  20 * windowHeightRatio,
   },
 
   reviewsView:{
@@ -265,6 +270,7 @@ class OrderPage extends Component {
     borderBottomWidth: 1,
     borderColor: "#EAEAEA",
     width:windowWidth - 76 * windowWidthRatio,
+  //  paddingBottom:20,
 
     // marginRight:20 * windowWidthRatio,
   //  marginLeft:56 * windowWidthRatio,
