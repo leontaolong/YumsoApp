@@ -228,7 +228,7 @@ class OrderDetailPage extends Component {
                                             <Text style={styleOrderDetailPage.deliverTimeTextNew}>
                                                Order from
                                             </Text>
-                                            <Text style={styleOrderDetailPage.orderFromNameNew}>Morning Cafe</Text>
+                                            <Text style={styleOrderDetailPage.orderFromNameNew}> {this.state.order.shopname}</Text>
                                         </View>
 
 
@@ -248,7 +248,7 @@ class OrderDetailPage extends Component {
 
           var itemsTextNew = <View style={{paddingTop: 20 * windowHeightRatio, paddingBottom:20* windowHeightRatio, paddingLeft: 20 * windowWidthRatio}}>
                               <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Items</Text>
-                          </View>
+                            </View>
 
 
 
@@ -557,28 +557,7 @@ class OrderDetailPage extends Component {
                                     <View style={{paddingTop: 30 * windowHeightRatio, paddingBottom:20* windowHeightRatio}}>
                                         <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Reviews</Text>
                                     </View>
-
-
-                                  {/*  <View style={styleOrderDetailPage.ratingCommentTimeView}>
-                                        <View style={styleOrderDetailPage.ratingView}>
-                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
-                                            <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
-                                            </TouchableHighlight>
-                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
-                                            <Image source={this.state.ratingIcon2} style={styleOrderDetailPage.ratingIcon}/>
-                                            </TouchableHighlight>
-                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
-                                            <Image source={this.state.ratingIcon3} style={styleOrderDetailPage.ratingIcon}/>
-                                            </TouchableHighlight>
-                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
-                                            <Image source={this.state.ratingIcon4} style={styleOrderDetailPage.ratingIcon}/>
-                                            </TouchableHighlight>
-                                            <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
-                                            <Image source={this.state.ratingIcon5} style={styleOrderDetailPage.ratingIcon}/>
-                                            </TouchableHighlight>
-                                        </View>
-                                    </View>*/}
-                                    <TextInput placeholder="Order created 7 days ago cannot be reviewed" style={styleOrderDetailPage.commentTextInput2New} editable={false}/>
+                                    <TextInput placeholder="Order created 7 days ago is closed for review" style={styleOrderDetailPage.commentTextInput2New} editable={false}/>
                                  </View>),
                                 (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
        }else if(this.state.order.orderStatus.toLowerCase() != 'delivered'){//if order is not delivered,show comment suggestion
@@ -1168,7 +1147,7 @@ var styleOrderDetailPage = StyleSheet.create({
         padding:15 * windowWidthRatio,
         fontSize:b2,
         color:'#4A4A4A',
-        backgroundColor: "#EAEAEA",
+        backgroundColor: "#F5F5F5",
         marginBottom:20 * windowHeightRatio,
         height: 50 * windowHeightRatio,
         // marginLeft: 20 * windowWidthRatio,
@@ -1200,7 +1179,7 @@ var styleOrderDetailPage = StyleSheet.create({
         justifyContent:'center',
         //alignItems:'center',
         height:windowHeight*0.0974,
-        backgroundColor:'#FFCC33',
+        backgroundColor:'#FFF3D1',
         marginRight: 20 * windowWidthRatio,
         marginLeft: 20 * windowWidthRatio,
         paddingLeft: 15 * windowWidthRatio,
@@ -1562,7 +1541,7 @@ var styleShoppingCartPage = StyleSheet.create({
     orderSummaryNew: {
       // marginLeft:20 * windowWidthRatio,
       // marginRight:20 * windowWidthRatio,
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#F5F5F5",
      paddingLeft:20 * windowWidthRatio,
       height: 54 * windowHeightRatio,
     //  alignItems: "center",
@@ -1574,13 +1553,13 @@ var styleShoppingCartPage = StyleSheet.create({
       color:"#4A4A4A",
     },
     receiptTopBottomImageViewNew: {
-        backgroundColor: "#EAEAEA",
+        backgroundColor: "#F5F5F5",
 
     },
     receiptTopImageNew: {
       height:8 * windowHeightRatio,
       width: windowWidth - (20 * windowWidthRatio)*2,
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#F5F5F5",
      marginLeft:20 * windowWidthRatio,
      marginRight:20 * windowWidthRatio,
     },
@@ -1588,14 +1567,14 @@ var styleShoppingCartPage = StyleSheet.create({
     receiptBottomImageNew: {
       height:8 * windowHeightRatio,
       width: windowWidth - (20 * windowWidthRatio)*2,
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#F5F5F5",
      marginLeft:20 * windowWidthRatio,
      marginRight:20 * windowWidthRatio,
      marginBottom: 30 * windowHeightRatio,
     },
 
     orderSummaryRowNew: {
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#F5F5F5",
   //    paddingLeft:20 * windowWidthRatio,
       //height: 65 * windowHeightRatio,
       justifyContent: "center",

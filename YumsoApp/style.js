@@ -690,6 +690,7 @@ module.exports = StyleSheet.create({
         fontWeight:'400',
         color:'#4A4A4A',
         alignSelf:'center',
+        marginRight:3*windowWidthRatio,
     },
     infoBannerLinkViewNew:{
         fontSize:12  * windowHeightRatio,
@@ -699,7 +700,6 @@ module.exports = StyleSheet.create({
       //  width:80,
         color:"#FFCC33",
         fontWeight:'bold',
-
     },
 
 

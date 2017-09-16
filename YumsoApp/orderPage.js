@@ -212,11 +212,8 @@ class OrderPage extends Component {
       return(
         <View style={styles.containerNew}>
           <View style={styles.headerBannerViewNew}>
-            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
-              <View style={styles.backButtonViewsNew}>
-                <Image source={backIcon} style={styles.backButtonIconsNew}/>
-              </View>
-            </TouchableHighlight>
+            <View style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
+            </View>
             <View style={styles.headerRightView}>
             </View>
           </View>
@@ -224,21 +221,30 @@ class OrderPage extends Component {
             <Text style={styles.titleTextNew}>Orders</Text>
           </View>
 
-          <View style={styleOrderPage.ongoingView}>
-            <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
-              <Text style={styleOrderPage.ongoingTextTop}>Ongoing Orders</Text>
-            </TouchableOpacity>
-          </View>
 
-          {!this.state.status ? <View style={styleOrderPage.listView}>
-              <ListView
-                    dataSource = {this.state.dataSourceOrderPending}
-                    renderRow={this.renderRow.bind(this) }
-                    renderFooter={ this.renderFooter.bind(this) }
-                    pageSize={10}
-                    initialListSize={1}
-              />
-          </View> : null}
+
+          {!this.state.status ?
+            <View>
+                <View style={styleOrderPage.ongoingView}>
+                  <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
+                    <Text style={styleOrderPage.ongoingTextTop}>Ongoing Orders</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styleOrderPage.listView}>
+                  <ListView
+                  dataSource = {this.state.dataSourceOrderPending}
+                  renderRow={this.renderRow.bind(this) }
+                  renderFooter={ this.renderFooter.bind(this) }
+                  pageSize={10}
+                  initialListSize={1}
+                  />
+              </View>
+          </View> :
+          <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
+              <View style={styleOrderPage.ongoingView}>
+                  <Text style={styleOrderPage.ongoingText2Top}>Ongoing Orders</Text>
+              </View>
+          </TouchableOpacity>}
 
           <View style={styleOrderPage.dividerView}><Text style={styleOrderPage.dividerLineTop}></Text></View>
           <TouchableOpacity style={styleOrderPage.ongoingTouchable}  onPress={() => this.onPressNeedReviewsOrdersBtn()}>
@@ -292,10 +298,8 @@ class OrderPage extends Component {
                       </TouchableHighlight>
                   </View>
             </View>
+          </View>
         </View>
-
-        </View>
-
       );
     }
 
@@ -348,28 +352,11 @@ class OrderPage extends Component {
   }
 
 
-
   var styleOrderPage = StyleSheet.create({
-
-  container:{
-    flex:1,
-    flexDirection: 'column',
-    backgroundColor: '#FFFFFF'
-  },
-  headerView:{
-    flexDirection:'row',
-    marginTop: 40,
-    marginLeft: 20
-  },
-  headerText:{
-    fontWeight: 'bold',
-    fontSize: 30,
-    color: '#000'
-  },
 
   ongoingView:{
 
-    marginLeft: 20
+    marginLeft: 20 * windowWidthRatio,
   },
   ongoingTouchable:{
     width: windowWidth,
@@ -380,12 +367,23 @@ class OrderPage extends Component {
     fontSize: h2,
     color: '#4a4a4a',
   //  backgroundColor: '#cc0000',
+  paddingTop: 20 * windowHeightRatio,
+  paddingBottom:  20 * windowHeightRatio,
   },
   ongoingTextTop:{
     fontWeight: 'bold',
     fontSize: h2,
     color: '#4a4a4a',
     paddingBottom: 5 * windowHeightRatio,
+    paddingBottom:  15 * windowHeightRatio,
+  //  backgroundColor: '#cc0000',
+  },
+  ongoingText2Top:{
+    fontWeight: 'bold',
+    fontSize: h2,
+    color: '#4a4a4a',
+    // paddingBottom: 5 * windowHeightRatio,
+    paddingBottom:  20 * windowHeightRatio,
   //  backgroundColor: '#cc0000',
   },
   listView:{
@@ -394,6 +392,7 @@ class OrderPage extends Component {
     width:windowWidth - 76 * windowWidthRatio,
 
     marginLeft: 56 * windowWidthRatio,
+    paddingBottom: 15 * windowHeightRatio,
   },
 
   dividerView:{
@@ -407,8 +406,8 @@ class OrderPage extends Component {
     width: windowWidth - 40 * windowWidthRatio,
     marginLeft: 20 * windowWidthRatio,
     marginRight: 20* windowWidthRatio,
-    marginTop: 20 * windowHeightRatio,
-    marginBottom:  20 * windowHeightRatio,
+    // marginTop: 20 * windowHeightRatio,
+    // marginBottom:  20 * windowHeightRatio,
   },
   dividerLineTop:{
     height: 1,
@@ -416,8 +415,8 @@ class OrderPage extends Component {
     width: windowWidth - 40 * windowWidthRatio,
     marginLeft: 20 * windowWidthRatio,
     marginRight: 20* windowWidthRatio,
-    marginTop: 15 * windowHeightRatio,
-    marginBottom:  20 * windowHeightRatio,
+    //marginTop: 15 * windowHeightRatio,
+    //marginBottom:  20 * windowHeightRatio,
   },
 
   reviewsView:{
@@ -430,6 +429,42 @@ class OrderPage extends Component {
     height: 10 * windowWidthRatio,
     width: 10 * windowWidthRatio,
     marginTop:-15,
+  },
+
+  cell: {
+    borderBottomWidth: 1,
+    borderColor: "#EAEAEA",
+    width:windowWidth - 76 * windowWidthRatio,
+  //  paddingBottom:20,
+
+    // marginRight:20 * windowWidthRatio,
+  //  marginLeft:56 * windowWidthRatio,
+  },
+  oneListingView:{
+      backgroundColor:'#FFFFFF',
+      flexDirection:'row',
+      flex:1,
+      borderBottomWidth:0,
+  },
+  orderInfoView:{
+      flex:1,
+    //  height:windowWidth*0.333,
+      flexDirection:'column',
+      paddingLeft:0,
+      paddingRight:0,
+      paddingTop:10 * windowHeightRatio,
+      paddingBottom:10 * windowHeightRatio,
+  },
+  completeTimeText:{
+      fontSize:h4,
+      color:'#979797',
+      //marginTop:windowHeight*0.009,
+  },
+  enterPicNew:{
+    top:35 * windowHeightRatio,
+      width:6 * windowWidthRatio,
+      height:13 * windowHeightRatio,
+      right: 0,
   },
 
   cell: {
