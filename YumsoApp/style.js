@@ -701,6 +701,13 @@ module.exports = StyleSheet.create({
         color:"#FFCC33",
         fontWeight:'bold',
     },
+    footerText:{
+      color:'#fff',
+      fontSize: windowHeight/35.5,
+      fontWeight:'bold',
+      alignSelf:'center',
+
+    },
 
 
 
