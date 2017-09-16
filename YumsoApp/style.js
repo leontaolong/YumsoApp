@@ -35,6 +35,11 @@ module.exports = StyleSheet.create({
       alignSelf:'center',
       marginTop:windowHeight*0.3,
     },
+    transparentHeaderBannerView:{
+      flexDirection:'row',
+      height:windowHeight*0.066,
+      backgroundColor:'rgba(0,0,0,0)',
+    },
     greyContainer:{
       marginTop:15,
       flex:1,
@@ -148,6 +153,12 @@ module.exports = StyleSheet.create({
       marginTop:0.8*windowHeight/667,
       width:25*windowHeight/667,
       height:25*windowHeight/667,
+    },
+    bottomButtonView:{
+      color:'#fff',
+      fontSize:windowHeight/30.6,
+      fontWeight:'bold',
+      alignSelf:'center',
     },
     searchIcon:{
       width:windowHeight/24.5,
