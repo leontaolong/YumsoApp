@@ -504,5 +504,12 @@ module.exports = StyleSheet.create({
     shareIconCircled: {
       height:windowHeight*0.025,
       width:windowWidth*0.025, 
-    }
+    },
+    listViewBorder:{
+      marginHorizontal:windowWidth/20.7,
+      height:windowHeight*0.0005,
+      backgroundColor:'#fff',
+      borderBottomWidth:1,
+      borderBottomColor:'#eee',
+  },
 });
