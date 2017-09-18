@@ -98,10 +98,13 @@ class ShoppingCartPage extends Component {
     }
 
     renderHeader(){
+//this.state.ben = "bijender";
+//Alert.alert("ben",this.state.quotedOrder)
+
       var headerNew = <View style={styles.titleViewNew}>
                           <Text style={styles.titleTextNew}>Cart</Text>
-
                       </View>
+
         var view1 = <View key={'chefShopNameView'} style={styleShoppingCartPage.chefShopNameView}>
                         <Text style={styleShoppingCartPage.chefShopNameText}>{this.state.shopName}</Text>
                     </View>
@@ -110,34 +113,103 @@ class ShoppingCartPage extends Component {
                         <Text style={styleShoppingCartPage.deliverTimeText}>To be out for delivery at {dateRender.renderDate2(this.state.selectedTime)}</Text>
                     </View>
 
-        var addressHeader = <View key={'addressHeader'} style={styleShoppingCartPage.noteViewNew}>
+                    var addressHeader = <View key={'addressHeader'} style={styleShoppingCartPage.noteViewNew}>
+
+                                           <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
+                                               <Text style={styleShoppingCartPage.orderSummaryTextNew}>Delivery Address</Text>
+                                              {/* <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio}}>{this.state.eater.addressList[0].formatted_address}</Text>
+                                               <View style={styleShoppingCartPage.addressTextView}>*/}
+                                               {this.state.deliveryAddress!=undefined ?
+                                                 <View>
+                                                      {this.state.deliveryAddress.formatted_address!=undefined ?
+                                                       <Text style={styleShoppingCartPage.addressLineNew}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.formatted_address !=undefined ? this.state.deliveryAddress.formatted_address.replace(/,/g, '').split(this.state.deliveryAddress.city)[0]:''}</Text>
+                                                       :
+                                                       null}
+                                                       {this.state.deliveryAddress.city !=undefined ?
+                                                       <Text style={styleShoppingCartPage.addressLineNew}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.city !=undefined ? this.state.deliveryAddress.city:''} {this.state.deliveryAddress!=null?this.state.deliveryAddress.state:''}</Text>
+                                                       :
+                                                       null}
+                                                       {this.state.deliveryAddress.postal !=undefined ?
+                                                       <Text style={styleShoppingCartPage.addressLineNew}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.postal !=undefined ? this.state.deliveryAddress.postal:''}</Text>
+                                                       :
+                                                       null}
+                                                       {this.state.deliveryAddress.apartmentNumber !=undefined ?
+                                                       <Text style={styleShoppingCartPage.addressLineNew}>{this.state.deliveryAddress!=undefined && this.state.deliveryAddress.apartmentNumber !=undefined ? 'Apt/Suite# ' + this.state.deliveryAddress.apartmentNumber:''}</Text>
+                                                       :
+                                                       null}
+                                                  </View>
+                                                   :
+                                                   null}
+
+                                           </View>
+                                           <View style={styleShoppingCartPage.notesToChefTextView}>
+                                               <Text style={styleShoppingCartPage.notesToChefText}></Text>
+                                           </View>
+                                           {this.state.deliveryAddress!=undefined ?
+                                           <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''}  onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                                               <Text style={styleShoppingCartPage.viewTextNew}>    Edit</Text>
+                                           </TouchableHighlight>
+                                           :
+                                           <TouchableHighlight style={{ flex:0.40, alignItems:'flex-end', alignSelf:'stretch', justifyContent:'center' }} underlayColor={''}  onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                                               <Text style={styleShoppingCartPage.addAddressViewTextNew}>  Add Address</Text>
+                                           </TouchableHighlight>
+                                         }
+
+                                       </View>
+
+
+        var addressEditHeader = <View key={'addressHeader'} style={styleShoppingCartPage.noteViewNew}>
 
                                <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
                                    <Text style={styleShoppingCartPage.orderSummaryTextNew}>Delivery Address</Text>
-                                   <Text style={{fontSize:b2, color:"4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>123 4th, Ave, Seattle, WA 454525</Text>
-
+                                   <TextInput placeholder="Address" style={styleShoppingCartPage.inputText} autoCorrect={false} placeholderTextColor='#979797' returnKeyType = {'done'} maxLength={100} />
                                </View>
                                <View style={styleShoppingCartPage.notesToChefTextView}>
                                    <Text style={styleShoppingCartPage.notesToChefText}></Text>
                                </View>
-                               <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Address', "123 4th, Ave, Seattle, WA 454525" ,[ { text: 'Close' }])}>
-                                   <Text style={styleShoppingCartPage.viewTextNew}>    Edit</Text>
+                               <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''} onPress={() => this.editAddress()}>
+                                   <Text style={styleShoppingCartPage.okViewTextNew}>    Ok</Text>
                                </TouchableHighlight>
                            </View>
+
+
+
         var phoneNoHeader = <View key={'phoneNoHeader'} style={styleShoppingCartPage.noteViewNew}>
 
                                <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
                                    <Text style={styleShoppingCartPage.orderSummaryTextNew}>Phone</Text>
-                                   <Text style={{fontSize:b2, color:"4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>206-345-6789</Text>
-
+                                   <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>{this.state.eater && this.state.eater.phoneNumber? this.state.eater.phoneNumber:''}</Text>
                                </View>
                                <View style={styleShoppingCartPage.notesToChefTextView}>
                                    <Text style={styleShoppingCartPage.notesToChefText}></Text>
                                </View>
-                               <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Phone', "206-345-6789" ,[ { text: 'Close' }])}>
+                               <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''} onPress={() => this.editPhoneNo()}>
                                    <Text style={styleShoppingCartPage.viewTextNew}>    Edit</Text>
                                </TouchableHighlight>
                            </View>
+
+
+        var phoneNoEditHeader = <View key={'phoneNoHeader'} style={styleShoppingCartPage.noteViewNew}>
+
+                               <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
+                                   <Text style={styleShoppingCartPage.orderSummaryTextNew}>Phone</Text>
+
+                                   <TextInput style={styleShoppingCartPage.inputText} placeholder="Phone Number" placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'}
+                                   maxLength={15} returnKeyType = {'done'} keyboardType = { 'phone-pad'} onChangeText = {(text) => this.setState({ phoneNumber: text })} onSubmitEditing={()=>this.scrollToShowTotalPrice()} onBlur={()=>this.scrollToShowTotalPrice()}/>
+                               </View>
+                               <View style={styleShoppingCartPage.notesToChefTextView}>
+                                   <Text style={styleShoppingCartPage.notesToChefText}></Text>
+                               </View>
+                               <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''} onPress={() => this.editPhoneNo()}>
+                                   <Text style={styleShoppingCartPage.okViewTextNew}>    Ok</Text>
+                               </TouchableHighlight>
+                           </View>
+
+
+
+
+
+
         var orderStatusTextNew = <View style={{paddingBottom:15* windowHeightRatio, paddingLeft: 20 * windowWidthRatio, marginTop: 20 * windowWidthRatio}}>
                                     <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Order Details</Text>
                                 </View>
@@ -148,7 +220,7 @@ class ShoppingCartPage extends Component {
                                         <Text style={styleShoppingCartPage.deliverTimeTextNew}>
                                            Order from
                                         </Text>
-                                        <Text style={styleShoppingCartPage.orderFromNameNew}>Morning Cafe</Text>
+                                        <Text style={styleShoppingCartPage.orderFromNameNew}> {this.state.shopName}</Text>
                                     </View>
 
 
@@ -158,7 +230,18 @@ class ShoppingCartPage extends Component {
                                     </Text>
                                </View>);
 
-        return[headerNew,addressHeader,phoneNoHeader,orderStatusTextNew,deliverTimeViewNew]
+
+        var addressView = null
+        {this.state.isAddressEdating == true ? addressView =  addressEditHeader :  addressView =  addressHeader}
+
+        var phoneNoView = null
+        {this.state.editPhoneNo == true ? phoneNoView =  phoneNoEditHeader :  phoneNoView =  phoneNoHeader}
+
+
+
+
+
+        return[headerNew,addressView,phoneNoView,orderStatusTextNew,deliverTimeViewNew]
     }
 
     renderRow(cartItem){
@@ -180,7 +263,7 @@ class ShoppingCartPage extends Component {
                     <Text style={styleShoppingCartPage.dishNameTextNew}>{dish.dishName}</Text>
                     <View style={styleShoppingCartPage.bottomViewNew}>
 
-                        <View style={styleShoppingCartPage.quantityTotalPriceView}>
+
                             <View style={styleShoppingCartPage.quantityView2New}>
                                   <Text style={styleShoppingCartPage.dishPriceTextNew}>${(dish.price*quantity).toFixed(2)}</Text>
                                   <Text style={styleShoppingCartPage.quantityTextNew}>10 serves left</Text>
@@ -199,13 +282,10 @@ class ShoppingCartPage extends Component {
                                     <Image source={plusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
                                 </TouchableHighlight>
                             </View>
-                            {/*}<View style={styleShoppingCartPage.totalPriceView}>
-                                 {actualQuantityText}
-                                 <Text style={styleShoppingCartPage.totalPriceText}>${(dish.price*quantity).toFixed(2)}</Text>
-                            </View>*/}
+
                         </View>
 
-                    </View>
+
                 </View>
 
                 <View style={{backgroundColor: "#EAEAEA", height: 1,}}>
@@ -257,37 +337,78 @@ class ShoppingCartPage extends Component {
       var notesToChefView = null;
       // if(this.state.order.notesToChef && this.state.order.notesToChef.trim()){
       if(1 == 1){   // this is for only show this filed commont this and uncomment abow "if" condition
-         notesToChefView = (<View key={'noteView'} style={styleShoppingCartPage.noteViewNew}>
+          var notesToChefMainView = (<View key={'noteView'} style={styleShoppingCartPage.noteViewNew}>
 
                                 <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
                                     <Text style={styleShoppingCartPage.orderSummaryTextNew}>Note to Chef</Text>
-                                    <Text style={{fontSize:b2, color:"4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>Please warm both croissants, thank you!</Text>
+                                    <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>Please warm both croissants, thank you!</Text>
 
                                 </View>
                                 <View style={styleShoppingCartPage.notesToChefTextView}>
                                     <Text style={styleShoppingCartPage.notesToChefText}></Text>
                                 </View>
-                                <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Note to Chef','Please warm both croissants, thank you!' ,[ { text: 'Close' }])}>
+                                <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''} onPress={() => this.editChefNote()}>
                                     <Text style={styleShoppingCartPage.viewTextNew}>    Edit</Text>
                                 </TouchableHighlight>
                             </View>);
+
+        var notesToChefEditView = (<View key={'noteView'} style={styleShoppingCartPage.noteViewNew}>
+
+                               <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
+                                   <Text style={styleShoppingCartPage.orderSummaryTextNew}>Note to Chef</Text>
+                                   <TextInput placeholder="Note to Chef" clearButtonMode={'while-editing'}  style={styleShoppingCartPage.inputText} autoCorrect={false} placeholderTextColor='#979797' returnKeyType = {'done'} maxLength={100} />
+
+                               </View>
+                               <View style={styleShoppingCartPage.notesToChefTextView}>
+                                   <Text style={styleShoppingCartPage.notesToChefText}></Text>
+                               </View>
+                               <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''} onPress={() => this.editChefNote()}>
+                                   <Text style={styleShoppingCartPage.okViewTextNew}>    Ok</Text>
+                               </TouchableHighlight>
+                           </View>);
+
+
+
+        {this.state.editChefNote == true ? notesToChefView = notesToChefEditView  :  notesToChefView =  notesToChefMainView}
+
       }
 
       var promotionDeductionView = null;
 //      if(this.state.order.price && this.state.order.price.couponValue){
     if(1 == 1){  // this is for only show this filed commont this and uncomment abow "if" condition
-         promotionDeductionView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalViewNew}>
+         var promotionDeductionMainView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalViewNew}>
                                          <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
                                              <Text style={styleShoppingCartPage.orderSummaryTextNew}>Promotion Code</Text>
-                                             <Text style={{fontSize:b2, color:"4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>2s)^-wo#-456 (-$5.00)</Text>
+                                             {this.state.promotionCode ?
+                                             <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>{this.state.promotionCode}</Text>
+                                             :
+                                             null
+                                           }
                                          </View>
                                          <View style={styleShoppingCartPage.notesToChefTextView}>
                                              <Text style={styleShoppingCartPage.notesToChefText}></Text>
                                          </View>
-                                         <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={'#F5F5F5'} onPress={()=> Alert.alert( 'Promotion Code', "2s)^-wo#-456 (-$5.00)" ,[ { text: 'Close' }])}>
+                                         <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''} onPress={() => this.editPromotionCode()}>
                                              <Text style={styleShoppingCartPage.viewTextNew}>    Edit</Text>
                                          </TouchableHighlight>
                                     </View>);
+
+          var promotionDeductionEditView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalViewNew}>
+                                          <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
+                                              <Text style={styleShoppingCartPage.orderSummaryTextNew}>Promotion Code</Text>
+
+                                              <TextInput placeholder="Promotion Code" placeholderTextColor='#979797' defaultValue={this.state.promotionCode} style={styleShoppingCartPage.inputText} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text.trim()})}
+                                               maxLength={20} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
+                                          </View>
+                                          <View style={styleShoppingCartPage.notesToChefTextView}>
+                                              <Text style={styleShoppingCartPage.notesToChefText}></Text>
+                                          </View>
+                                          <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''} onPress={() => this.editPromotionCode()}>
+                                              <Text style={styleShoppingCartPage.okViewTextNew}>    Ok</Text>
+                                          </TouchableHighlight>
+                                     </View>);
+
+          {this.state.editPromotionCode == true ? promotionDeductionView = promotionDeductionEditView  :  promotionDeductionView =  promotionDeductionMainView}
       }
 
 
@@ -354,7 +475,7 @@ class ShoppingCartPage extends Component {
                         <Text style={styleShoppingCartPage.orderSummaryBoxTitleTopNew}>Subtotal</Text>
                     </View>
                     <View style={styleShoppingCartPage.priceNumberTopView}>
-                        <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>$565</Text>
+                        <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>${this.state.totalPrice ? Number(this.state.totalPrice.toFixed(2)) : '0'}</Text>
                     </View>
                 </View>
                 <View style={styleShoppingCartPage.lineBackgroundNew}>
@@ -368,7 +489,7 @@ class ShoppingCartPage extends Component {
                         <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Delivery Fee</Text>
                     </View>
                     <View style={styleShoppingCartPage.priceNumberView}>
-                        <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>$6</Text>
+                        <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>-</Text>
                     </View>
                 </View>
                 <View style={styleShoppingCartPage.lineBackgroundNew}>
@@ -384,7 +505,7 @@ class ShoppingCartPage extends Component {
                          <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Discount</Text>
                      </View>
                      <View style={styleShoppingCartPage.priceNumberView}>
-                         <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>(-$5.00)</Text>
+                         <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>-</Text>
                      </View>
                  </View>
                  <View style={styleShoppingCartPage.lineBackgroundNew}>
@@ -399,7 +520,7 @@ class ShoppingCartPage extends Component {
                           <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Tax</Text>
                       </View>
                       <View style={styleShoppingCartPage.priceNumberView}>
-                          <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>$2.20</Text>
+                          <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>-</Text>
                       </View>
                   </View>
                   <View style={styleShoppingCartPage.lineBackgroundNew}>
@@ -413,17 +534,18 @@ class ShoppingCartPage extends Component {
                         <Text style={styleShoppingCartPage.orderSummaryBoxTitleBottomNew}>TOTAL</Text>
                     </View>
                     <View style={styleShoppingCartPage.priceNumberBottomView}>
-                        <Text style={styleShoppingCartPage.orderSummaryBoxBoldValueNew}>$26.36</Text>
+                        <Text style={styleShoppingCartPage.orderSummaryBoxBoldValueNew}>${this.state.totalPrice ? Number(this.state.totalPrice.toFixed(2)) : '0'}</Text>
                     </View>
                 </View>
 
              </View>),
 
+
              (
              <View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
                  <Image source={receiptBottom} style={styleShoppingCartPage.receiptBottomImageNew} />
-             </View>)/*,
-
+             </View>),
+/*
               (<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
                         <View style={styleShoppingCartPage.priceTitleView}>
                             <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
@@ -453,10 +575,11 @@ class ShoppingCartPage extends Component {
                                 <Text style={styleShoppingCartPage.addressChangeButtonText}>{this.state.deliveryAddress==undefined?'Add Address': 'Change Address'}</Text>
                             </View>
                         </TouchableHighlight>
-                    </View>),*/
+                    </View>),
+*/
                     ];
        }else{//if price quoted
-            var promotionDeductionView=null;
+          //  var promotionDeductionView=null;
             if(this.state.quotedOrder && this.state.quotedOrder.price && this.state.quotedOrder.price.couponValue){
                 /*promotionDeductionView=(<View key={'promotionDeductionView'} style={styleShoppingCartPage.promotionDeductionView}>
                                                 <View style={styleShoppingCartPage.couponTitleView}>
@@ -468,7 +591,105 @@ class ShoppingCartPage extends Component {
                                         </View>);*/
             }
 
-            return [(<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
+            return [
+              notesToChefView,
+              promotionDeductionView,
+              (
+            <View key={'orderSummary'} style={styleShoppingCartPage.orderSummaryNew}>
+                <Text style={styleShoppingCartPage.orderSummaryTextNew}>Order Summary</Text>
+            </View>),
+
+            (
+            <View key={'receiptTop'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
+                <Image source={receiptTop} style={styleShoppingCartPage.receiptTopImageNew} />
+            </View>),
+
+
+
+           (<View key={'subtotalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+                <View style={styleShoppingCartPage.orderSummaryBoxNew}>
+                    <View style={styleShoppingCartPage.priceTitleView}>
+                        <Text style={styleShoppingCartPage.orderSummaryBoxTitleTopNew}>Subtotal</Text>
+                    </View>
+                    <View style={styleShoppingCartPage.priceNumberTopView}>
+                        <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>${this.state.quotedOrder.price.subTotal}</Text>
+                    </View>
+                </View>
+                <View style={styleShoppingCartPage.lineBackgroundNew}>
+                    <Text style= {styleShoppingCartPage.lineNew}></Text>
+                </View>
+            </View>),
+
+            (<View key={'deliveryFeeView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+                <View style={styleShoppingCartPage.orderSummaryBoxNew}>
+                    <View style={styleShoppingCartPage.priceTitleView}>
+                        <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Delivery Fee</Text>
+                    </View>
+                    <View style={styleShoppingCartPage.priceNumberView}>
+                        <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>${this.state.quotedOrder.price.deliveryFee}</Text>
+                    </View>
+                </View>
+                <View style={styleShoppingCartPage.lineBackgroundNew}>
+                    <Text style= {styleShoppingCartPage.lineNew}></Text>
+                </View>
+
+             </View>),
+
+
+             (<View key={'discountView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+                 <View style={styleShoppingCartPage.orderSummaryBoxNew}>
+                     <View style={styleShoppingCartPage.priceTitleView}>
+                         <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Discount</Text>
+                     </View>
+                     <View style={styleShoppingCartPage.priceNumberView}>
+                         <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>-</Text>
+                     </View>
+                 </View>
+                 <View style={styleShoppingCartPage.lineBackgroundNew}>
+                     <Text style= {styleShoppingCartPage.lineNew}></Text>
+                 </View>
+
+              </View>),
+
+              (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+                  <View style={styleShoppingCartPage.orderSummaryBoxNew}>
+                      <View style={styleShoppingCartPage.priceTitleView}>
+                          <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Tax</Text>
+                      </View>
+                      <View style={styleShoppingCartPage.priceNumberView}>
+                          <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>${this.state.quotedOrder.price.tax}</Text>
+                      </View>
+                  </View>
+                  <View style={styleShoppingCartPage.lineBackgroundNew}>
+                      <Text style= {styleShoppingCartPage.lineNew}></Text>
+                  </View>
+
+               </View>),
+            (<View key={'totalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+                <View style={styleShoppingCartPage.orderSummaryBoxNew}>
+                    <View style={styleShoppingCartPage.priceTitleView}>
+                        <Text style={styleShoppingCartPage.orderSummaryBoxTitleBottomNew}>TOTAL</Text>
+                    </View>
+                    <View style={styleShoppingCartPage.priceNumberBottomView}>
+                        <Text style={styleShoppingCartPage.orderSummaryBoxBoldValueNew}>${this.state.quotedOrder.price.grandTotal}</Text>
+                    </View>
+                </View>
+
+             </View>),
+             (
+             <View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
+                 <Image source={receiptBottom} style={styleShoppingCartPage.receiptBottomImageNew} />
+             </View>),
+
+
+
+
+
+/*
+
+
+
+              (<View key={'subtotalView'} style={styleShoppingCartPage.subtotalView}>
                         <View style={styleShoppingCartPage.priceTitleView}>
                             <Text style={styleShoppingCartPage.priceTitleText}>Subtotal</Text>
                         </View>
@@ -476,14 +697,14 @@ class ShoppingCartPage extends Component {
                             <Text style={styleShoppingCartPage.priceNumberText}>${this.state.quotedOrder.price.subTotal}</Text>
                         </View>
                     </View>),
-                    notesToChefView,
+
                     (<View key={'promotionCodeView'} style={styleShoppingCartPage.promotionCodeView}>
                         <View style={styleShoppingCartPage.promotionCodeTitleView}>
                             <Text style={styleShoppingCartPage.priceTitleText}>Promotion Code</Text>
                         </View>
                         {promotionCodeInputView}
                     </View>),
-                    promotionDeductionView,
+
                     (<View key={'deliveryFeeView'} style={styleShoppingCartPage.deliveryFeeView}>
                         <View style={styleShoppingCartPage.priceTitleView}>
                             <Text style={styleShoppingCartPage.priceTitleText}>Delivery Fee</Text>
@@ -530,7 +751,7 @@ class ShoppingCartPage extends Component {
                         <View style={styleShoppingCartPage.priceNumberView}>
                             <Text style={styleShoppingCartPage.totalPriceNumberText}>${this.state.quotedOrder.price.grandTotal}</Text>
                         </View>
-                    </View>)];
+                    </View>)*/];
         }
     }
 
@@ -585,7 +806,7 @@ class ShoppingCartPage extends Component {
                                 renderRow={this.renderRow.bind(this) }
                                 renderFooter={this.renderFooter.bind(this)}/>
                {loadingSpinnerView}
-               {/*<View style={styleShoppingCartPage.footerView}>
+               <View style={styleShoppingCartPage.footerView}>
                     <TouchableHighlight onPress={() => this.getPrice() }>
                         <View style={styleShoppingCartPage.getPriceButtonView}>
                             <Text style={styleShoppingCartPage.bottomButtonText}>Get Price</Text>
@@ -593,10 +814,10 @@ class ShoppingCartPage extends Component {
                     </TouchableHighlight>
                     {payNowButtonView}
                </View>
-               */}
+               {/*
                <TouchableOpacity activeOpacity={0.7} style={styles.footerView}>
                     <Text style={styles.footerText}>Check Out</Text>
-               </TouchableOpacity>
+               </TouchableOpacity>*/}
             </View>
         );
     }
@@ -722,6 +943,41 @@ class ShoppingCartPage extends Component {
            this.getPrice();
         }
     }
+
+    editAddress() {
+        if (this.state.isAddressEdating == true) {
+            this.setState({isAddressEdating: false})
+        }
+        else{
+          this.setState({isAddressEdating: true})
+        }
+    }
+
+    editPhoneNo() {
+        if (this.state.editPhoneNo == true) {
+            this.setState({editPhoneNo: false})
+        }
+        else{
+          this.setState({editPhoneNo: true})
+        }
+    }
+    editChefNote() {
+        if (this.state.editChefNote == true) {
+            this.setState({editChefNote: false})
+        }
+        else{
+          this.setState({editChefNote: true})
+        }
+    }
+    editPromotionCode() {
+        if (this.state.editPromotionCode == true) {
+            this.setState({editPromotionCode: false})
+        }
+        else{
+          this.setState({editPromotionCode: true})
+        }
+    }
+
 
     changeDeliveryAddress(){
         //todo: onSelect address list and assign it to deliveryAddress set State.
@@ -1237,7 +1493,7 @@ var styleShoppingCartPage = StyleSheet.create({
     quantityTotalPriceView:{
       //  flex:1,
         flexDirection:'row',
-    //   backgroundColor: "#aaccaa",
+       backgroundColor: "#aaccaa",
       width: 155 * windowWidthRatio,
     },
     quantityView:{
@@ -1264,12 +1520,12 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'column',
         justifyContent:'center',
         alignItems:'center',
-        // paddingLeft:7,
-        // paddingRight:7,
+        paddingLeft:7 * windowWidthRatio,
+        paddingRight:7* windowWidthRatio,
     },
     quantityText:{
-        fontSize:windowHeight/33.41,
-        fontWeight:'500',
+        fontSize:h3,
+      //  fontWeight:'500',
         color:'#4A4A4A',
     },
     quantityTextView:{
@@ -1381,6 +1637,27 @@ var styleShoppingCartPage = StyleSheet.create({
 
       //  backgroundColor: "#aaaa00",
     },
+    addAddressViewTextNew:{
+        fontSize: h2,
+        color:'#7bcbbe',
+        alignSelf:'center',
+        // marginBottom: 20 * windowHeightRatio,
+         marginTop: 35 * windowHeightRatio,
+        height:60 * windowHeightRatio
+
+      //  backgroundColor: "#aaaa00",
+    },
+
+    okViewTextNew:{
+        fontSize: h2,
+        color:'#7bcbbe',
+        alignSelf:'center',
+        // marginBottom: 20 * windowHeightRatio,
+         marginTop: 20 * windowHeightRatio,
+        height:60 * windowHeightRatio
+
+      //  backgroundColor: "#aaaa00",
+    },
 
     deliverTimeViewNew:{
         flexDirection:'column',
@@ -1432,7 +1709,7 @@ var styleShoppingCartPage = StyleSheet.create({
         //paddingVertical:windowHeight/73.6,
     },
     dishNameTextNew:{
-        fontSize:h3,
+        fontSize:h2,
         fontWeight:'bold',
         color:'#4A4A4A',
         height: 70*windowHeightRatio,
@@ -1440,16 +1717,21 @@ var styleShoppingCartPage = StyleSheet.create({
     bottomViewNew: {
       position: "absolute",
       bottom:0,
+    //  backgroundColor:"#000",
+      right:0,
+      left:0,
+      flexDirection:'row',
+      paddingLeft:10 * windowWidthRatio,
     },
 
     dishPriceTextNew:{
-        fontSize:windowHeight/37.056,
+        fontSize:b1,
         fontWeight:'bold',
         color:'#4A4A4A',
     },
 
     quantityTextNew:{
-        fontSize:windowHeight/51.636,
+        fontSize:h5,
         color:'#9B9B9B',
     },
     actualQuantityViewNew:{
@@ -1463,19 +1745,20 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'column',
       //  height : windowHeight*0.062,
       //  backgroundColor : "#ffaacc",
-    //    width: 100 * windowWidthRatio,
+      // width: 170 * windowWidthRatio,
         alignItems:'flex-start',
         //left: 0 ,
     },
 
     quantityViewNew:{
-        flex:1.5,
+        flex:1,
         flexDirection:'row',
-        height : windowHeight*0.055,
-      //  backgroundColor : "#ccaacc",
+        height : windowHeight*0.048,
+      // backgroundColor : "#ccaacc",
         // width: 80 * windowWidthRatio,
         alignItems:'flex-end',
         //left: 0 ,
+        right:0,
     },
 
     subtotalViewNew:{
@@ -1621,6 +1904,22 @@ var styleShoppingCartPage = StyleSheet.create({
      marginRight:20 * windowWidthRatio,
      marginBottom: 30 * windowHeightRatio,
     },
+
+    inputText: {fontSize:b2,
+      color:"#4a4a4a",
+      marginTop: 5 * windowHeightRatio,
+      backgroundColor: "#EAEAEA",
+      width:windowWidth - 40 * windowWidthRatio,
+      height:34  * windowHeightRatio,
+      paddingLeft: 15 * windowWidthRatio,
+    },
+
+    addressLineNew: {
+      fontSize:b2,
+      color:"#4a4a4a",
+      width:windowWidth - 80 * windowWidthRatio
+    }
+
 
 });
 
