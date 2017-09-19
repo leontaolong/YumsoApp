@@ -14,10 +14,17 @@ var commonAlert = require('./commonModules/commonAlert');
 var RefreshableListView = require('react-native-refreshable-listview');
 var commonWidget = require('./commonModules/commonWidget');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
+var defaultAvatar = require('./icons/defaultAvatar.jpg');
+
 
 var receiptBottom = require('./icons/receipt_bottom.png');
 var receiptTop = require('./icons/receipt_top.png');
 var demoFood = require('./icons/demoFood.jpeg');
+var star0 = require('./icons/icon-0-starview.png');
+var star1 = require('./icons/icon-1-starview.png');
+var star2 = require('./icons/icon-2-starview.png');
+var star3 = require('./icons/icon-3-starview.png');
+var star4 = require('./icons/icon-4-starview.png');
 var star5 = require('./icons/icon-5-starview.png');
 
 
@@ -258,6 +265,7 @@ class OrderDetailPage extends Component {
 
     renderFooter(){
 
+
       var notesToChefView = null;
       // if(this.state.order.notesToChef && this.state.order.notesToChef.trim()){
       if(1 == 1){   // this is for only show this filed commont this and uncomment abow "if" condition
@@ -438,36 +446,66 @@ class OrderDetailPage extends Component {
                                      <Image source={receiptBottom} style={styleShoppingCartPage.receiptBottomImageNew} />
                                  </View>)];
         var commentBoxView = [];
+      //  Alert.alert('ben',this.state.eater)
         if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.order.comment && this.state.order.comment.starRating){//if rated,show rating/comment
            if(this.state.order.comment.chefComment && this.state.order.comment.chefComment.trim()){//if chef replied,show reply content
           //   if(1 == 1){
               var chefReplyView = <View key={'chefReplyView'}  style={{marginLeft: 72 * windowWidthRatio,marginRight: 20 * windowWidthRatio, marginTop:10 * windowHeightRatio, borderColor:'#EAEAEA', borderTopWidth:1, paddingTop:10}}>
                                     <View style={{flexDirection:'row'}}>
-                                        <Text style={{fontSize:b2, color:"4a4a4a", fontWeight: 'bold',marginBottom: 10*windowHeightRatio}}>Kung Fu Tea</Text>
+                                        <Text style={{fontSize:b2, color:"4a4a4a", fontWeight: 'bold',marginBottom: 10*windowHeightRatio}}>{this.state.order.comment.shopname}</Text>
                                         <View style={styleOrderDetailPage.commentTimeView}>
-                                            <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(new Date().getTime())}</Text>
+                                            <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(this.state.order.comment.chefCommentTime)}</Text>
                                         </View>
                                     </View>
-                                    <Text style={{fontSize:b2, color:"4a4a4a",marginBottom: 40*windowHeightRatio}}>Thank you so much, we appreciate your review. We are glad that you like it. </Text>
+                                    <Text style={{fontSize:b2, color:"4a4a4a",marginBottom: 40*windowHeightRatio}}>{this.state.order.comment.chefComment}</Text>
 
                                   </View>
            }
+
+          var rIcon = null
+
+           if (this.state.order.comment.starRating == 0) {
+              rIcon = star0;
+           } else if (this.state.order.comment.starRating == 1) {
+             rIcon = star1;
+           } else if (this.state.order.comment.starRating == 2) {
+             rIcon = star2;
+           } else if (this.state.order.comment.starRating == 3) {
+             rIcon = star3;
+           } else if (this.state.order.comment.starRating == 4) {
+             rIcon = star4;
+           } else if (this.state.order.comment.starRating == 5) {
+             rIcon = star5;
+           }
+
+          /* var allImages = [];
+
+           for (var i = 0; i < this.state.dataSource._dataBlob.s1.length; i++) {
+          //  Alert.alert('dataSource', this.state.dataSource._dataBlob.s1[i])
+        } */
+
            commentBoxView = [(<View style={styleOrderDetailPage.commentBoxNew}>
                                  <View style={{paddingTop: 30 * windowHeightRatio, paddingBottom:20* windowHeightRatio}}>
                                      <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Reviews</Text>
                                  </View>
                                  <View style={{ height:img36Height, flexDirection:'row'}}>
-                                     <Image source={demoFood} style={{height:img36Height, width: img36Height, borderRadius: img36Height*0.5}}/>
+                                    {this.state.order.eaterProfilePic ?
+                                        <Image source={{uri:this.state.order.eaterProfilePic}} style={{height:img36Height, width: img36Height, borderRadius: img36Height*0.5}}/>
+                                        :
+                                        <Image source={defaultAvatar} style={{height:img36Height, width: img36Height, borderRadius: img36Height*0.5}}/>
+
+                                    }
+
                                      <View  style={{paddingLeft:16*windowWidthRatio}}>
                                          <Text style={{fontSize:12, color:"4a4a4a"}}>natalieh</Text>
-                                         <Image source={star5} style={{height:10*windowHeightRatio,marginTop:5*windowHeightRatio, width: 70*windowWidthRatio}}/>
+                                         <Image source={rIcon} style={{height:10*windowHeightRatio,marginTop:5*windowHeightRatio, width: 70*windowWidthRatio}}/>
                                      </View>
                                      <View style={styleOrderDetailPage.commentTimeView}>
-                                         <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(new Date().getTime())}</Text>
+                                         <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(this.state.order.comment.eaterCommentTime)}</Text>
                                      </View>
                                  </View>
                                  <View style={{marginLeft: 52 * windowWidthRatio, marginTop:10 * windowHeightRatio}}>
-                                     <Text style={{fontSize:b2, color:"4a4a4a"}}>Love it! I will totally order it adain!</Text>
+                                     <Text style={{fontSize:b2, color:"4a4a4a"}}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
                                      <View style={{flexDirection:'row', marginTop:10* windowHeightRatio, paddingBottom:10* windowHeightRatio}}>
 
                                          <Image source={demoFood} style={styleOrderDetailPage.uploadImageNew}/>
