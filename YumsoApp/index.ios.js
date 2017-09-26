@@ -3,6 +3,7 @@ var ShoppingCartPage = require('./shoppingCartPage');
 var PaymentPage = require('./paymentPage');
 var ShopPage = require('./shopPage');
 var ChefPage = require('./chefPage');
+var ChefIntroPage = require('./chefIntroPage');
 var HistoryOrderPage = require('./historyOrderPage');
 var EaterPage = require('./eaterPage');
 var AddressBookPage = require('./addressBookPage');
@@ -167,6 +168,8 @@ class YumsoApp extends Component {
             return <OrderDetailPage navigator={navigator}/>
         }else if (route.name==='ChefPage'){
             return <ChefPage navigator={navigator}/>
+        }else if (route.name==='ChefIntroPage'){
+            return <ChefIntroPage navigator={navigator}/>
         }else if (route.name==='ContactUsPage'){
             return <ContactUsPage navigator={navigator}/>
         }else if (route.name==='AboutPage'){
