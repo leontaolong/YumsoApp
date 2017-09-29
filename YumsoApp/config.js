@@ -1,8 +1,9 @@
 module.exports={
     //baseUrl: 'https://www.yumso.com',
-    //baseUrl: 'http://ec2-35-160-206-47.us-west-2.compute.amazonaws.com',
-    baseUrl: 'http://10.104.200.111:8080',
-    AppVersion:'1.6.1',
+    //baseUrl: 'http://ec2-52-43-125-181.us-west-2.compute.amazonaws.com',
+    baseUrl: 'http://192.168.0.110:8080',
+    AppVersion:'1.7.1',
+    timeoutLength:20000,
     gracePeriodLength:5,
     googleApiName:'yumsoIOS	',
     googleApiKey:'AIzaSyBQdKxM-ZRQ2r95bkQLPlY10joKJeC6slw',
