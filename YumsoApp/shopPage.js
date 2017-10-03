@@ -17,8 +17,8 @@ var mapIcon = require('./icons/icon-map.png');
 var chefPageIcon = require('./icons/icon-chefpage.png');
 var reviewIcon = require('./icons/icon-reviews.png');
 var labelIcon = require('./icons/icon-label-grey.png');
-var notlikedIcon = require('./icons/icon-unliked.png')
-var likedIcon = require('./icons/icon-liked.png');
+var heartLineIcon = require('./icons/icon-heart-line.png');
+var heartFillsIcon = require('./icons/icon-heart-fills.png');
 var dollarSign = require('./commonModules/dollarIconRender');
 var defaultDishPic = require('./icons/defaultAvatar.jpg');
 var ActivityView = require('react-native-activity-view');
@@ -32,6 +32,7 @@ var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 
 import Dimensions from 'Dimensions';
 import ModalPicker from 'react-native-modal-picker'
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
 import React, {
   Component,
@@ -75,9 +76,12 @@ class ShopPage extends Component {
             shoppingCart:{}, 
             currentLocation:currentLocation, 
             selectedTime:'All Dishes',
+            selectedTimeRendered:'All Dishes',
             totalPrice:0,
             eater:eater,
-            showUpdateAppBanner:showUpdateAppBanner
+            showUpdateAppBanner:showUpdateAppBanner,
+            showScheduleSelection:true,
+            renderedSchedules:null,
         };            
     }
     
@@ -162,266 +166,215 @@ class ShopPage extends Component {
         }
         this.setState({
             dishes:dishes, 
-            dataSource:this.state.dataSource.cloneWithRows(dishes), 
             scheduleMapping:scheduleMapping, 
             timeData:timeData,
             dishesInDisplay:dishes,
         });
+        if (!this.state.showScheduleSelection) {
+            var currentDataSource = dishes;
+        } else {
+            var currentDataSource = this.getDeliverySchedules();
+            this.setState({renderedSchedules:currentDataSource});
+        }
+        this.setState({dataSource:this.state.dataSource.cloneWithRows(currentDataSource)});
     }
     
-    renderHeader(){               
-               if(this.state.like){
-                  var  likeIcon = likedIcon;
-               }else{
-                  var  likeIcon = notlikedIcon;
-               }
-
-               if(this.state.chef.chefProfilePicUrls && this.state.chef.chefProfilePicUrls.small){
-                  var chefProfilePic = this.state.chef.chefProfilePicUrls.small;
-               }else{
-                  var chefProfilePic = this.state.chef.chefProfilePic;
-               }
-
-               if(this.state.chef.chefShopPicUrls){
-                  var shopPicturesMedium = [];
-                  for(var oneShopPhoto in this.state.chef.chefShopPicUrls){
-                      shopPicturesMedium.push(this.state.chef.chefShopPicUrls[oneShopPhoto].medium)
-                  }
-               }
-               
-            // Temporarily deprecate this chunk because the image quality of medium pictures are not good 
-            //    if(shopPicturesMedium && shopPicturesMedium.length>0){
-            //       var shopPictures = shopPicturesMedium;
-            //    }else{
-            //       var shopPictures = this.state.chef.shopPictures;
-            //    }
-
-               var shopPictures = this.state.chef.shopPictures;
-
-               return [(<View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
-                            <Swiper showsButtons={false} height={windowHeight*0.4419} horizontal={true} autoplay={false}
-                                dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
-                                {shopPictures.map((shopPicture) => {
-                                    return <Image key={'shopPicture'} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
-                                }) }
-                            </Swiper>
-                        </View>),                        
-                       (<View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
-                          <TouchableHighlight style={styleShopPage.chefPhotoView} underlayColor={'transparent'}>
-                            <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
-                          </TouchableHighlight>
-                            
-                          <View style={styleShopPage.shopInfoSection}>
-                            <View style={styleShopPage.shopInfoRow1}>
-                                <View style={styleShopPage.shopNameView}>
-                                    <Text style={styleShopPage.oneShopNameText}>{this.state.chef.shopname}</Text>
-                                </View>
-                                <TouchableHighlight style={styleShopPage.likeIconView} underlayColor={'transparent'} onPress={()=>{this.addToFavorite()}}>
-                                    <Image source={likeIcon} style={styleShopPage.likeIcon}></Image>
-                                </TouchableHighlight>
+    renderHeader(){
+        var menuTitle = null;
+        if (this.state.showScheduleSelection) {
+            menuTitle = <View style={styleShopPage.menuTitleView1}>
+                            <Text style={styleShopPage.menuTitleTextTitle}>Menu</Text>
+                            <Text style={[styleShopPage.menuTitleTextPrompt, {alignSelf:'flex-start'}]}>Select a menu at your scheduled out-for-delivery time</Text>
+                        </View>
+        } else {
+            menuTitle = <View style={styleShopPage.menuTitleView2}>
+                            <View style={{flexDirection:'row'}}>
+                                <Text style={styleShopPage.menuTitleTextTitle}>Menu · </Text>
+                                <Text style={styleShopPage.menuTitleTextPrompt}>{this.state.selectedTimeRendered}</Text>
                             </View>
-                            
-                            <View style={styleShopPage.shopInfoRow2}>
-                                <View style={styleShopPage.shopRatingView}>
-                                    <View style={{flexDirection:'row',alignSelf:'center'}}>
-                                    {rating.renderRating(this.state.chef.rating)}
-                                    </View>
-                                    <Text style={styleShopPage.reviewNumberText}>({this.state.chef.rating}) {dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
-                                </View>
-                            </View>
-                            
-                            <View style={styleShopPage.shopInfoRow3}>
-                                <View style={styleShopPage.labelView}>
-                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
-                                </View>
-                            </View>                       
-                          </View>
-                        </View>),
-                       (<View key={'chefLivingAreaView'}>
-                         <View style={styleShopPage.chefDetailView}>
-                            <Image source={mapIcon} style={styleShopPage.pickupAddressIcon}/>
-                            <View style={styleShopPage.chefDetailTextView}>
-                                <Text style={styleShopPage.pickupAddressText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
-                            </View>
-                          </View>
-                        </View>), 
-                       (<TouchableHighlight key={'chefPageClickableView'}  underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
-                            <View style={styleShopPage.chefDetailView}>
-                                <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
-                                <View style={styleShopPage.chefDetailTextView}>
-                                   <Text style={styleShopPage.pickupAddressText}>Chef page</Text>
-                                </View>
-                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                            </View>
-                        </TouchableHighlight>),
-                        (<TouchableHighlight key={'chefIntroClickable'}  underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefIntroPage()}>
-                            <View style={styleShopPage.chefDetailView}>
-                                <Image source={chefPageIcon} style={styleShopPage.pickupAddressIcon}/>
-                                <View style={styleShopPage.chefDetailTextView}>
-                                   <Text style={styleShopPage.pickupAddressText}>Introduction</Text>
-                                </View>
-                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                            </View>
-                        </TouchableHighlight>), 
-                       (<TouchableHighlight key={'chefReviewsClickable'} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefCommentsPage()}>
-                            <View style={styleShopPage.chefDetailView}>
-                                <Image source={reviewIcon} style={styleShopPage.pickupAddressIcon}/>
-                                <View style={styleShopPage.chefDetailTextView}>
-                                    <Text style={styleShopPage.pickupAddressText}>{this.state.chef.reviewCount} reviews</Text>
-                                </View>
-                                <Image source={forwardIcon} style={styleShopPage.forwardIcon}/>
-                            </View>
-                        </TouchableHighlight>),
-                       (<View key={'greyBorderView'} style={styles.greyBorderView}></View>)];
+                            <Text style={[styleShopPage.menuTitleTextPrompt, {marginRight: windowWidth*0.065,textAlign:'left',color:'#7BCBBE'}]} onPress={()=>this.displaySchedule()}>Change</Text>
+                        </View>           
+        }
+        return (
+            <View>
+                <View style={styles.greyBorderView}></View>
+                {menuTitle}
+            </View>
+        );
     }
 
-    renderRow(dish){
-        let imageSrc = defaultDishPic;
-        if(dish.pictures && dish.pictures!=null && dish.pictures.length!=0){
-           imageSrc={uri:dish.pictures[0]};   
+    renderFooter(){
+        if (this.state.showScheduleSelection) {
+            var noScheduleAvailableView =   <View style={[styles.greyBox, {marginHorizontal:windowWidth/20.7,marginBottom:windowHeight*0.02}]}>
+                                                <Text style={styles.greyBoxText}>Currently no dishes are available to deliver</Text>
+                                            </View>
+
+            var fullMenuButtonView = <TouchableHighlight style={styleShopPage.fullMenuButton} underlayColor={'#eee'} onPress={()=>this.selectSchedule("All Dishes")}>
+                                        <Text style={styleShopPage.fullMenuButtonText}>Explore Full Menu</Text> 
+                                    </TouchableHighlight>
+            if (this.state.renderedSchedules && this.state.renderedSchedules.length == 0) {
+                return (<View>
+                        {noScheduleAvailableView} 
+                        {fullMenuButtonView}
+                    </View>
+                )
+            } else {
+                return (fullMenuButtonView);
+            }
         }
-        
-        if(dish.isHighlightDish){
-           if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][dish.dishId] && this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantityImmutable == 0){
-              var shopPageDishImageView = <Image source={imageSrc} style={styleShopPage.oneDishPictureSoldOut}/>
-              var chooseQuantityView = <View style={styleShopPage.chooseQuantityView}>
-                                            <View style={styleShopPage.quantitySelectionView}>
-                                            </View>
-                                            <View style={styleShopPage.leftQuantityView}>
-                                                <Text style={styleShopPage.orderStatusText}>
-                                                   Sold Out
-                                                </Text> 
-                                            </View>                       
-                                      </View>
-           }else if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][dish.dishId] && this.state.scheduleMapping[this.state.selectedTime][dish.dishId].latestOrderTime < new Date().getTime()){
-              var shopPageDishImageView = <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
-              var chooseQuantityView = <View style={styleShopPage.chooseQuantityView}>
-                                            <View style={styleShopPage.lateNoteView}>
-                                                <Text style={styleShopPage.lateNoteText}>
-                                                    Chef requires order {dateRender.renderTime1(new Date(this.state.selectedTime).getTime()-this.state.scheduleMapping[this.state.selectedTime][dish.dishId].latestOrderTime)} ahead
-                                                </Text>
-                                            </View>
-                                            <View style={styleShopPage.leftQuantityView}>
-                                                <Text style={styleShopPage.orderStatusText}>
-                                                    {this.state.selectedTime === 'All Dishes' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' left'} 
-                                                </Text> 
-                                            </View>                       
-                                      </View>
-           }else{
-              var shopPageDishImageView = <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
-              var chooseQuantityView = <View style={styleShopPage.chooseQuantityView}>
-                                            <View style={styleShopPage.quantitySelectionView}>
-                                                <TouchableHighlight style={styleShopPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={() => this.removeFromShoppingCart(dish) }>
-                                                    <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
-                                                </TouchableHighlight>
-                                                <View style={styleShopPage.quantityTextView}>
-                                                    <Text style={styleShopPage.quantityText}>
-                                                        {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity: ' '}
-                                                    </Text>
+        return null;
+    }
+
+
+    renderRow(data){
+        if (this.state.showScheduleSelection) { // schedule selection listview
+            return (<TouchableHighlight style={styleShopPage.scheduleBox} underlayColor={'#eee'} onPress={()=>this.selectSchedule(data)}>
+                        <Text style={styleShopPage.scheduleBoxText}>{data.label}</Text>
+                    </TouchableHighlight>);
+        } else { // dishes listview
+            let imageSrc = defaultDishPic;
+            if(data.pictures && data.pictures!=null && data.pictures.length!=0){
+               imageSrc={uri:data.pictures[0]};   
+            }
+            if(data.isHighlightDish){ // highlighted dishes
+                // sold out
+                if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][data.dishId] && this.state.scheduleMapping[this.state.selectedTime][data.dishId].leftQuantityImmutable == 0){
+                    var shopPageDishImageView = <Image source={imageSrc} style={styleShopPage.oneDishPictureSoldOut}/>
+                    var chooseQuantityView = <View style={styleShopPage.chooseQuantityView}>
+                                                <View style={styleShopPage.leftQuantityAndPriceView}>
+                                                    <Text style={styleShopPage.priceText}>${data.price}</Text>
+                                                    <Text style={styleShopPage.orderStatusText}>
+                                                        Sold Out
+                                                    </Text> 
                                                 </View>
-                                                <TouchableHighlight style={styleShopPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={() => this.addToShoppingCart(dish) }>
-                                                    <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
-                                                </TouchableHighlight>
+                                                <View style={styleShopPage.quantitySelectionView}></View>                       
+                                            </View>                                        
+                // late order
+                }else if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][data.dishId] && this.state.scheduleMapping[this.state.selectedTime][data.dishId].latestOrderTime < new Date().getTime()){
+                    var shopPageDishImageView = <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
+                    var chooseQuantityView = <View style={styleShopPage.chooseQuantityView}>
+                                                    <View style={styleShopPage.leftQuantityAndPriceView}>
+                                                        <Text style={styleShopPage.priceText}>${data.price}</Text>
+                                                        <Text style={styleShopPage.orderStatusText}>
+                                                            {this.state.selectedTime === 'All Dishes' || this.state.scheduleMapping[this.state.selectedTime][data.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][data.dishId].leftQuantity+' left'} 
+                                                        </Text> 
+                                                    </View> 
+
+                                                    <View style={styleShopPage.lateNoteView}>
+                                                        <Text style={styleShopPage.lateNoteText}>
+                                                            Chef requires order {dateRender.renderTime1(new Date(this.state.selectedTime).getTime()-this.state.scheduleMapping[this.state.selectedTime][data.dishId].latestOrderTime)} ahead
+                                                        </Text>
+                                                    </View>                      
                                             </View>
-                                            <View style={styleShopPage.leftQuantityView}>
+                }else{
+                    var shopPageDishImageView = <Image source={imageSrc} style={styleShopPage.oneDishPicture}/>
+                    var chooseQuantityView = <View style={styleShopPage.chooseQuantityView}>
+                                                    <View style={styleShopPage.leftQuantityAndPriceView}>
+                                                        <Text style={styleShopPage.priceText}>${data.price}</Text>  
+                                                        <Text style={styleShopPage.orderStatusText}>
+                                                            {this.state.selectedTime === 'All Dishes' || this.state.scheduleMapping[this.state.selectedTime][data.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][data.dishId].leftQuantity+' left'} 
+                                                        </Text> 
+                                                    </View>
+                                                    <View style={styleShopPage.quantitySelectionView}>
+                                                        <TouchableHighlight style={styleShopPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={() => this.removeFromShoppingCart(data) }>
+                                                            <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
+                                                        </TouchableHighlight>
+                                                        <View style={styleShopPage.quantityTextView}>
+                                                            <Text style={styleShopPage.quantityText}>
+                                                                {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][data.dishId] ? this.state.shoppingCart[this.state.selectedTime][data.dishId].quantity: ' '}
+                                                            </Text>
+                                                        </View>
+                                                        <TouchableHighlight style={styleShopPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={() => this.addToShoppingCart(data) }>
+                                                            <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
+                                                        </TouchableHighlight>
+                                                    </View>                       
+                                            </View>
+                }
+
+                return (<TouchableOpacity onPress={()=>this.navigateToDishPage(data)} activeOpacity={0.7} style={styleShopPage.oneDishInListView}>
+                                <View style={styleShopPage.oneDishPicture}>
+                                    {shopPageDishImageView}
+                                </View>
+                                <View style={styleShopPage.oneDishNameDiscriptionView}>
+                                    <Text>
+                                        <Text style={styleShopPage.oneDishNameText}>{data.dishName}</Text>
+                                        <Text style={styleShopPage.oneDishSpecialTag}> / Chef's Special</Text>
+                                    </Text>
+                                </View>
+                                <View>
+                                    {chooseQuantityView}
+                                </View>
+                                <View style={styles.listViewBorder}></View>
+                            </TouchableOpacity>);
+                }else{ // un-highlighted dishes
+                    
+                    // sold out
+                    if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][data.dishId] && this.state.scheduleMapping[this.state.selectedTime][data.dishId].leftQuantityImmutable == 0){
+                        var shopPageDishImageView = <Image source={imageSrc} style={styleShoppingCartPage.oneDishPictureUnhighlightSoldOut}/>;
+                        var chooseQuantityView = <View style={styleShoppingCartPage.chooseQuantityView}>
+                        <View style={styleShopPage.leftQuantityAndPriceView}>
+                            <Text style={styleShopPage.priceText}>${data.price}</Text>
+                            <Text style={styleShopPage.orderStatusText}>
+                                Sold Out
+                            </Text> 
+                        </View>
+                        <View style={styleShopPage.quantitySelectionView}></View>                       
+                    </View> 
+
+                    // late order
+                    }else if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][data.dishId] && this.state.scheduleMapping[this.state.selectedTime][data.dishId].latestOrderTime < new Date().getTime()){
+                        var shopPageDishImageView = <Image source={imageSrc} style={styleShoppingCartPage.oneDishPictureUnhighlight}/>;              
+                        var chooseQuantityView = <View style={styleShoppingCartPage.chooseQuantityView}>
+                                            <View style={styleShopPage.leftQuantityAndPriceView}>
+                                                <Text style={styleShopPage.priceText}>${data.price}</Text>
                                                 <Text style={styleShopPage.orderStatusText}>
-                                                    {this.state.selectedTime === 'All Dishes' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' left'} 
+                                                    {this.state.selectedTime === 'All Dishes' || this.state.scheduleMapping[this.state.selectedTime][data.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][data.dishId].leftQuantity+' left'} 
                                                 </Text> 
-                                            </View>                       
-                                       </View>
-           }
+                                            </View> 
 
-           return (<TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7} style={styleShopPage.oneDishInListView}>
-                        <View style={styleShopPage.oneDishPicture}>
-                            {shopPageDishImageView}
-                            <View style={styleShopPage.chefRecommendLabelView}>
-                                    <Text style={styleShopPage.chefRecommendLabelText}>Chef's Special</Text>
-                            </View>
-                        </View>
-                        <View style={styleShopPage.oneDishNameDiscriptionView}>
-                            <Text style={styleShopPage.oneDishNameText}>{dish.dishName}</Text>
-                            <Text style={styleShopPage.oneDishIngredientText}>{dish.ingredients}</Text>
-                        </View>
-                        <View style={styleShopPage.priceView}>
-                            <View style={styleShopPage.priceTextView}>
-                                <Text style={styleShopPage.priceText}>${dish.price}</Text>
-                            </View>
-                            {chooseQuantityView}
-                        </View>
-                        <View style={styles.greyBorderView}></View>
-                    </TouchableOpacity>);
-        }else{
-           if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][dish.dishId] && this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantityImmutable == 0){
-              var shopPageDishImageView = <Image source={imageSrc} style={styleShoppingCartPage.oneDishPictureUnhighlightSoldOut}/>;
-              var chooseQuantityView = <View style={styleShoppingCartPage.quantityTotalPriceView}>
-                                            <View style={styleShoppingCartPage.quantityView}>
-                                            </View>
-                                            <View style={styleShoppingCartPage.leftQuantityView}>
-                                                <Text style={styleShoppingCartPage.orderStatusText}>
-                                                   Sold Out
-                                                </Text>
-                                            </View>                              
-                                      </View>
-           }else if(this.state.selectedTime != 'All Dishes' && this.state.scheduleMapping[this.state.selectedTime][dish.dishId] && this.state.scheduleMapping[this.state.selectedTime][dish.dishId].latestOrderTime < new Date().getTime()){
-              var shopPageDishImageView = <Image source={imageSrc} style={styleShoppingCartPage.oneDishPictureUnhighlight}/>;
-              var chooseQuantityView = <View style={styleShoppingCartPage.quantityTotalPriceView}>
-                                            <View style={styleShoppingCartPage.quantityView}>
+                                            <View style={styleShoppingCartPage.lateNoteView}>
                                                 <Text style={styleShopPage.lateNoteText}>
-                                                    Chef requires order {dateRender.renderTime1(new Date(this.state.selectedTime).getTime()-this.state.scheduleMapping[this.state.selectedTime][dish.dishId].latestOrderTime)} ahead
+                                                    Chef requires order {dateRender.renderTime1(new Date(this.state.selectedTime).getTime()-this.state.scheduleMapping[this.state.selectedTime][data.dishId].latestOrderTime)} ahead
+                                                </Text>
+                                            </View>                      
+                                    </View>
+                    }else{
+                        var shopPageDishImageView = <Image source={imageSrc} style={styleShoppingCartPage.oneDishPictureUnhighlight}/>;
+                        var chooseQuantityView = <View style={styleShoppingCartPage.chooseQuantityView}>
+                                        <View style={styleShopPage.leftQuantityAndPriceView}>
+                                            <Text style={styleShopPage.priceText}>${data.price}</Text>  
+                                            <Text style={styleShopPage.orderStatusText}>
+                                                {this.state.selectedTime === 'All Dishes' || this.state.scheduleMapping[this.state.selectedTime][data.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][data.dishId].leftQuantity+' left'} 
+                                            </Text> 
+                                        </View>
+                                        <View style={styleShoppingCartPage.quantitySelectionView}>
+                                            <TouchableHighlight style={styleShopPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={() => this.removeFromShoppingCart(data) }>
+                                                <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
+                                            </TouchableHighlight>
+                                            <View style={styleShopPage.quantityTextView}>
+                                                <Text style={styleShopPage.quantityText}>
+                                                    {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][data.dishId] ? this.state.shoppingCart[this.state.selectedTime][data.dishId].quantity: ' '}
                                                 </Text>
                                             </View>
-                                            <View style={styleShoppingCartPage.leftQuantityView}>
-                                                <Text style={styleShoppingCartPage.orderStatusText}>
-                                                    {this.state.selectedTime === 'All Dishes' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' left'} 
-                                                </Text>
-                                            </View>                              
-                                       </View>
-           }else{
-              var shopPageDishImageView = <Image source={imageSrc} style={styleShoppingCartPage.oneDishPictureUnhighlight}/>;
-              var chooseQuantityView = <View style={styleShoppingCartPage.quantityTotalPriceView}>
-                                            <View style={styleShoppingCartPage.quantityView}>
-                                                <TouchableHighlight style={styleShoppingCartPage.plusMinusIconView} underlayColor={'#F5F5F5'}
-                                                    onPress={()=>this.removeFromShoppingCart(dish)}>                
-                                                    <Image source={minusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
-                                                </TouchableHighlight>
-                                                <View style={styleShoppingCartPage.quantityTextView}>
-                                                    <Text style={styleShoppingCartPage.quantityText}>
-                                                        {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][dish.dishId] ? this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity: '   '}
-                                                    </Text>
-                                                </View>  
-                                                <TouchableHighlight style={styleShoppingCartPage.plusMinusIconView} underlayColor={'#F5F5F5'}
-                                                    onPress={()=>this.addToShoppingCart(dish)}>
-                                                    <Image source={plusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
-                                                </TouchableHighlight>
-                                            </View>
-                                            <View style={styleShoppingCartPage.leftQuantityView}>
-                                                <Text style={styleShoppingCartPage.orderStatusText}>
-                                                    {this.state.selectedTime === 'All Dishes' || this.state.scheduleMapping[this.state.selectedTime][dish.dishId]==undefined ? '' : this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity+' left'} 
-                                                </Text>
-                                            </View>                              
-                                       </View>
-           }
-
-           return (<TouchableOpacity onPress={()=>this.navigateToDishPage(dish)} activeOpacity={0.7}>
-                     <View style={styleShoppingCartPage.oneListingView}>
-                        {shopPageDishImageView}
-                        <View style={styleShoppingCartPage.shoppingCartInfoView}>
-                            <View style={styleShoppingCartPage.dishNamePriceView}>
-                                <View style={styleShoppingCartPage.dishNameView}>
-                                    <Text style={styleShoppingCartPage.dishNameText}>{commonWidget.getTextLengthLimited(dish.dishName,28)}</Text>
+                                            <TouchableHighlight style={styleShopPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={() => this.addToShoppingCart(data) }>
+                                                <Image source={plusIcon} style={styleShopPage.plusMinusIcon}/>
+                                            </TouchableHighlight>
+                                        </View>                       
                                 </View>
-                                <View style={styleShoppingCartPage.dishPriceView}>
-                                    <Text style={styleShoppingCartPage.dishPriceText}>${dish.price}</Text>   
+                    }
+                    return (<TouchableOpacity onPress={()=>this.navigateToDishPage(data)} activeOpacity={0.7}>
+                                <View style={styleShoppingCartPage.oneListingView}>
+                                    {shopPageDishImageView}
+                                    <View style={styleShoppingCartPage.shoppingCartInfoView}>
+                                        <View style={styleShoppingCartPage.dishNameView}>
+                                            <Text style={styleShoppingCartPage.dishNameText}>{commonWidget.getTextLengthLimited(data.dishName,28)}</Text>
+                                        </View>                                                            
+                                        {chooseQuantityView}                  
+                                    </View>
                                 </View>
-                            </View>                         
-                            <View style={styleShoppingCartPage.dishIngredientView}>
-                                <Text style={styleShoppingCartPage.dishIngredientText}>{commonWidget.getTextLengthLimited(dish.ingredients,30)}</Text>
-                            </View>                                     
-                            {chooseQuantityView}                  
-                        </View>
-                     </View>
-                     <View style={styles.greyBorderView}></View>
-                  </TouchableOpacity>);
+                                <View style={styles.listViewBorder}></View>
+                            </TouchableOpacity>);
+            }
         }
     }
          
@@ -431,42 +384,6 @@ class ShopPage extends Component {
             loadingSpinnerView =<LoadingSpinnerViewFullScreen/>;  
         }
 
-        let scheduleSelectionView='';
-        if(this.state.timeData.length > 0){
-           let deliveryTimeRendered = [];
-           for(var oneTimeString of this.state.timeData){
-               if(oneTimeString.label=='All Dishes'){
-                  deliveryTimeRendered.push({key:oneTimeString.label, label: 'All Dishes'});
-               }else{
-                  let isAllSoldOut = true;
-                  for(var oneDishId in this.state.scheduleMapping[oneTimeString.label]){
-                      if (this.state.scheduleMapping[oneTimeString.label][oneDishId].leftQuantityImmutable > 0){
-                          isAllSoldOut = false
-                          break;
-                      }
-                  }
-                  if(isAllSoldOut){
-                     deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label) + "(Sold Out)"}); 
-                  }else{
-                     deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
-                  }
-               }
-           }
-           scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
-                                            <Text style={styleShopPage.openHourTitle}>Out for Delivery at</Text>
-                                            <ModalPicker
-                                             style={styleShopPage.modalPicker}
-                                             selectTextStyle={styleShopPage.modalPickerSelectText}
-                                             selectStyle={styleShopPage.modalPickerSelect}
-                                             data={deliveryTimeRendered}
-                                             initValue={'Select Time'}
-                                             onChange={(option)=>{ this.displayDish(`${option.key}`)}}/>
-                                    </View>);
-        }else{
-           scheduleSelectionView = (<View key={'timeSelectorView'} style={styleShopPage.timeSelectorView}>
-                                            <Text style={styleShopPage.openHourTitle}>NO DELIVERY SCHEDULE</Text>
-                                    </View>);
-        }
 
         var chefNoticeView = null
         if(this.state.chef.chefNotice){
@@ -520,53 +437,184 @@ class ShopPage extends Component {
 
         var networkUnavailableView = null;
         var dishListView = null;
+        var parallaxScrollView = null;
         var footerView = null;
+
+        if(this.state.like){
+            var  likeIcon = heartFillsIcon;
+         }else{
+            var  likeIcon = heartLineIcon;
+         }
+
+         if(this.state.chef.chefProfilePicUrls && this.state.chef.chefProfilePicUrls.small){
+            var chefProfilePic = this.state.chef.chefProfilePicUrls.small;
+         }else{
+            var chefProfilePic = this.state.chef.chefProfilePic;
+         }
+
+         if(this.state.chef.chefShopPicUrls){
+            var shopPicturesMedium = [];
+            for(var oneShopPhoto in this.state.chef.chefShopPicUrls){
+                shopPicturesMedium.push(this.state.chef.chefShopPicUrls[oneShopPhoto].medium)
+            }
+         }
+         
+      // Temporarily deprecate this chunk because the image quality of medium pictures are not good 
+      //    if(shopPicturesMedium && shopPicturesMedium.length>0){
+      //       var shopPictures = shopPicturesMedium;
+      //    }else{
+      //       var shopPictures = this.state.chef.shopPictures;
+      //    }
+
+         var shopPictures = this.state.chef.shopPictures;
+         var headerBanner = <View style={[styles.headerBannerView, {paddingTop:windowHeight * 0.035}]}>      
+                                <View style={styles.headerLeftView}></View>
+                                <View style={styles.titleView}>
+                                    <Text style={styles.titleText}>{this.state.chef.shopname}</Text>
+                                </View>
+                                <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={()=>this.share()}>
+                                    <View style={styles.headerRightTextButtonView}>
+                                        <Image source={shareIcon} style={styleShopPage.headerShareIcon}/>
+                                    </View>
+                                </TouchableHighlight> 
+
+                                <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={()=>this.addToFavorite()}>
+                                    <View style={styles.headerRightTextButtonView}>
+                                        <Image source={likeIcon} style={styleShopPage.headerLikeIcon}/>
+                                    </View>
+                                </TouchableHighlight> 
+                            </View>
+
+         var parallaxHeaderView = <View>
+                    <View key={'shopPictureView'} style={styleShopPage.shopPictureView}>
+                        <Swiper showsButtons={false} height={SHOP_PIC_HEIGHT} horizontal={true} autoplay={false}
+                          dot={<View style={styles.dot} />} activeDot={<View style={styles.activeDot} />} >
+                          {shopPictures.map((shopPicture) => {
+                              return <Image key={'shopPicture'} source={{ uri: shopPicture }} style={styleShopPage.shopPicture}/>
+                          })}
+                        </Swiper>
+                    </View>                       
+                    <View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
+                        <TouchableHighlight style={[styles.iconCircle, styleShopPage.shareIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.share()}}>
+                            <Image source={shareIcon} style={styles.shareIconCircled}></Image>
+                        </TouchableHighlight>
+                        
+                        <TouchableHighlight style={[styles.iconCircle, styleShopPage.likeIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.addToFavorite()}}>
+                            <Image source={likeIcon} style={styles.likeIconCircled}></Image>
+                        </TouchableHighlight>
+                      
+                        <View style={styleShopPage.shopInfoSection}>
+                            <View style={styleShopPage.shopInfoRow}>
+                                <View style={styleShopPage.shopNameView}>
+                                    <Text style={styleShopPage.oneShopNameText}>{this.state.chef.shopname}</Text>
+                                </View>
+                            </View>
+                        
+                            <View style={styleShopPage.shopInfoRow}>
+                                <View style={styleShopPage.shopRatingView}>
+                                    {rating.renderRating(this.state.chef.rating)}
+                                </View>
+                            <View style={styleShopPage.shopInfoRightColumnView}>
+                                <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
+                            </View>
+                        </View>
+                        
+                        <View style={styleShopPage.shopInfoRow}>
+                                <View style={styleShopPage.labelView}>
+                                    <Image style={styleShopPage.labelIcon} source={labelIcon}/><Text style={styleShopPage.labelText}>{this.state.chef.styleTag}, {this.state.chef.foodTag}</Text>
+                                </View>
+                                <View style={styleShopPage.shopInfoRightColumnView}>
+                                    <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.distance!=undefined && this.state.chef.distance!=null?(this.state.chef.distance>20?'20':this.state.chef.distance)+' miles | ':''}{dollarSign.renderLevel(this.state.chef.priceLevel)}</Text>
+                                </View> 
+                        </View>                       
+                    </View>
+                </View>
+
+                <View style={styleShopPage.chefDetailRowView}>
+                {/* remove border on the left for the first item* */}
+                    <TouchableHighlight key={'chefPageClickableView'} style={[styleShopPage.chefDetailView, {borderLeftWidth:0}]} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
+                        <View style={styleShopPage.chefDetailTextView}>
+                            <Text style={styleShopPage.pickupAddressText}>Chef Page</Text>
+                            <Image source={{ uri:chefProfilePic}} style={styleShopPage.chefPhoto}/>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight key={'chefIntroClickable'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefIntroPage()}>
+                        <View style={styleShopPage.chefDetailTextView}>
+                            <Text style={styleShopPage.pickupAddressText}>Introduction</Text>
+                        </View>
+                    </TouchableHighlight> 
+                    <TouchableHighlight key={'chefReviewsClickable'} style={styleShopPage.chefDetailView} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefCommentsPage()}>
+                        <View style={styleShopPage.chefDetailTextView}>
+                            <Text style={styleShopPage.pickupAddressText}>Reviews ({this.state.chef.reviewCount})</Text>
+                        </View>
+                    </TouchableHighlight>
+                </View>
+            </View>;
+        
+        parallaxScrollView = <ParallaxScrollView
+                                    dataSource={ this.state.dataSource }
+                                    stickyHeaderHeight={ STICKY_HEADER_HEIGHT }
+                                    parallaxHeaderHeight={ PARALLAX_HEADER_HEIGHT }
+                                    backgroundColor={'#fff'}
+                                    fadeOutForeground={true}
+
+                                    renderForeground={() => (
+                                        <View key="parallax-header" style={styleShopPage.parallaxHeader }>
+                                            {parallaxHeaderView}
+                                        </View>
+                                    )}
+
+                                    renderStickyHeader={() => (
+                                        <View key="sticky-header" style={styleShopPage.stickySection}>
+                                            {headerBanner}
+                                        </View>
+                                    )}
+
+                                    renderFixedHeader={() => (
+                                        <View key="fixed-header" style={styleShopPage.fixedSection}>
+                                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'transparent'} onPress={() => this.navigateBackToChefList()}>
+                                                <View style={styles.backButtonView}>
+                                                    <Image source={backIcon} style={styles.backButtonIcon}/>
+                                                </View>
+                                            </TouchableHighlight>  
+                                    </View>
+                                    )}                      
+                                />
+            
         if(this.state.showNetworkUnavailableScreen){
            networkUnavailableView = <NetworkUnavailableScreen onReload = {this.fetchDishesAndSchedules.bind(this)} />
         }else{
            dishListView = <ListView style={styles.dishListView}
-                           dataSource = {this.state.dataSource}
-                           renderRow={this.renderRow.bind(this) } 
-                           renderHeader={this.renderHeader.bind(this)}
-                           loadData={this.fetchDishesAndSchedules.bind(this)}/>
-           footerView = <View style={styleShopPage.footerView}>
-                          <View style={styleShopPage.shoppingCartTimeView}>
-                               <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Dishes'? '' : 'Subtotal: $'+Number(this.state.totalPrice.toFixed(2))}</Text>
-                          </View>
-                          <TouchableOpacity style={styleShopPage.checkoutButtonView} activeOpacity={0.7} onPress={() => this.navigateToShoppingCart()}> 
-                             <View style={styleShopPage.checkoutButtonWrapper}>
-                                <Text style={styleShopPage.checkoutButton}>SHOPPING CART</Text>
-                             </View>
-                          </TouchableOpacity>
-                       </View>
-        }
-            
-        return (<View style={styles.container}>
-                        <View style={styles.headerBannerView}>    
-                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
-                                <View style={styles.backButtonView}>
-                                    <Image source={backIcon} style={styles.backButtonIcon}/>
-                                </View>
-                            </TouchableHighlight>    
-                            <View style={styles.titleView}>
-                                <Text style={styles.titleText}>{this.state.chef.shopname}</Text>
-                            </View>
-                            <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={()=>this.share()}>
-                                <View style={styles.likeShareButtonView}>
-                                   <View>
-                                      <Image source={shareIcon} style={styles.shareButtonIcon}/>
-                                   </View>
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-                        {scheduleSelectionView}
-                        {chefNoticeView}
-                        {updateAppBannerView}
-                        {networkUnavailableView}
-                        {dishListView}
-                        {loadingSpinnerView}
-                        {footerView}
-                </View>);
+                            dataSource = {this.state.dataSource}
+                            renderRow={this.renderRow.bind(this) } 
+                            renderHeader={this.renderHeader.bind(this)}
+                            renderFooter={this.renderFooter.bind(this)}
+                            loadData={this.fetchDishesAndSchedules.bind(this)}
+                            renderScrollComponent={props => (parallaxScrollView)}
+                            />
+            if (!this.state.showScheduleSelection) {
+                footerView = <View style={styleShopPage.footerView}>
+                    <View style={styleShopPage.shoppingCartTimeView}>
+                        <Text style={styleShopPage.shoppingCartTimePriceText}>{this.state.selectedTime=='All Dishes'? '' : 'Subtotal: $'+Number(this.state.totalPrice.toFixed(2))}</Text>
+                    </View>
+                    <TouchableOpacity style={styleShopPage.checkoutButtonView} activeOpacity={0.7} onPress={() => this.navigateToShoppingCart()}> 
+                    <View style={styleShopPage.checkoutButtonWrapper}>
+                        <Text style={styleShopPage.checkoutButton}>Cart</Text>
+                    </View>
+                    </TouchableOpacity>
+                </View>
+            }
+        }  
+        
+        return (
+            <View style={[styles.container, {paddingTop:0}]}>
+                {chefNoticeView}
+                {updateAppBannerView}
+                {networkUnavailableView}
+                {dishListView}
+                {footerView}
+                {loadingSpinnerView}
+            </View>);
     }
 
     getTotalPrice(){
@@ -577,6 +625,27 @@ class ShopPage extends Component {
             total+=cartItem.dish.price * cartItem.quantity;
         }
         this.setState({shoppingCart:this.state.shoppingCart, totalPrice:total});
+    }
+
+    getDeliverySchedules() {
+        let deliveryTimeRendered = [];
+        for(var oneTimeString of this.state.timeData){
+            if(oneTimeString.label !=='All Dishes'){
+                let isAllSoldOut = true;
+                for(var oneDishId in this.state.scheduleMapping[oneTimeString.label]){
+                    if (this.state.scheduleMapping[oneTimeString.label][oneDishId].leftQuantityImmutable > 0){
+                        isAllSoldOut = false
+                        break;
+                    }
+                }
+                if(isAllSoldOut){
+                    deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label) + "(Sold Out)"}); 
+                }else{
+                    deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
+                }
+            }
+        }
+        return deliveryTimeRendered;
     }
 
     moveHighlightedDishToTop(dishes){
@@ -625,6 +694,22 @@ class ShopPage extends Component {
         let dishes = this.moveHighlightedDishToTop(JSON.parse(JSON.stringify(displayDishes)));
         this.getTotalPrice();
         this.setState({dataSource:this.state.dataSource.cloneWithRows(dishes), dishesInDisplay:dishes,showProgress:false, selectedTime:selectedTime});
+    }
+
+    displaySchedule(){
+        this.setState({showScheduleSelection:true, dataSource:this.state.dataSource.cloneWithRows(this.state.renderedSchedules)});
+    }
+
+    selectSchedule(selectedTime){
+        if (selectedTime==='All Dishes') {
+            var timeLabel = 'All Dishes';
+            var timeKey = 'All Dishes';
+        } else {
+            var timeLabel = selectedTime.label;
+            var timeKey = selectedTime.key;          
+        }
+        this.setState({showScheduleSelection:false, selectedTimeRendered:timeLabel});
+        this.displayDish(timeKey);
     }
    
     addToShoppingCart(dish){
@@ -829,9 +914,35 @@ class ShopPage extends Component {
     }
 }
 
-var styleShopPage = StyleSheet.create({
+// parameters for defining Parallax Scroll View
+const SHOP_PIC_HEIGHT = windowHeight*0.215;
+const PARALLAX_HEADER_HEIGHT = windowHeight*0.4;
+const STICKY_HEADER_HEIGHT = windowHeight*0.08;
+
+var styleShopPage = StyleSheet.create({  
+    /* Defining Parallax Scroll View */
+    stickySection: {
+        height: STICKY_HEADER_HEIGHT,
+        backgroundColor:'#fff',
+        width: windowWidth,
+        borderBottomWidth:1,
+        borderColor:'#EAEAEA',
+    },
+    fixedSection: {
+        position: 'absolute',
+        bottom: 10,
+        left: windowWidth/500,
+    },
+    parallaxHeader: {
+        alignItems: 'center',
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor:'#fff',
+    },
+    /* Defining Parallax Scroll View */
+
     shopPictureView:{
-        height: windowHeight*0.4419,
+        height: SHOP_PIC_HEIGHT,
     },
     oneDishNameView:{
         flexDirection:'row',
@@ -840,7 +951,7 @@ var styleShopPage = StyleSheet.create({
         flexWrap:'wrap',
     },
     chefRecommendLabelView:{
-        marginTop:-windowHeight*0.4419,
+        marginTop:-SHOP_PIC_HEIGHT,
         paddingHorizontal:7,
         paddingVertical:3,
         flexDirection: 'column',
@@ -856,23 +967,22 @@ var styleShopPage = StyleSheet.create({
     },  
     shopPicture:{
         width: windowWidth,
-        height: windowHeight*0.4419,
+        height: windowHeight*0.315,
     },
     shopInfoView:{
+        width: windowWidth,
         flexDirection:'row',
         height:windowHeight*0.14,
         backgroundColor:'#FFFFFF',
         paddingTop:windowHeight*0.0225,
         paddingBottom:windowHeight*0.02698,
-        paddingLeft:windowWidth*0.032,
-    },
-    chefPhotoView:{
-        marginRight:windowWidth*0.04, 
+        paddingLeft:windowWidth/20.7, 
     },
     chefPhoto:{
-        height:windowWidth*0.16,
-        width:windowWidth*0.16,
-        borderRadius: 12, 
+        marginLeft:windowWidth*0.02,
+        height:windowWidth*0.05,
+        width:windowWidth*0.05,
+        borderRadius: 10, 
         borderWidth: 0, 
         overflow: 'hidden',
     },
@@ -880,10 +990,7 @@ var styleShopPage = StyleSheet.create({
         flex:1,
         flexDirection:'column',
         justifyContent:'space-between',
-        height:windowWidth*0.165,        
-    },
-    shopInfoRow1:{
-        flexDirection:'row',
+        height:windowWidth*0.165,      
     },
     shopNameView:{
        flex:0.85,
@@ -894,6 +1001,17 @@ var styleShopPage = StyleSheet.create({
        fontSize:windowHeight/37.06,
        fontWeight:'500',
        color:'#4A4A4A',
+    },
+    headerShareIcon: {
+        marginRight:10*windowHeight/667,
+        width:12*windowHeight/667,
+        height:20*windowHeight/667,        
+    },
+    headerLikeIcon: {
+        marginTop:2.7*windowHeight/667,      
+        marginRight:10*windowHeight/667,
+        width:18*windowHeight/667,
+        height:15*windowHeight/667,        
     },
     likeIconView:{
        height:windowWidth*0.06,
@@ -907,26 +1025,41 @@ var styleShopPage = StyleSheet.create({
         height:windowWidth*0.05,
         alignSelf:'center',
     },
-    shopInfoRow2:{
+    shareIconPositioning:{
+        position:'absolute',
+        top: -20,
+        right: windowWidth*0.20,
+        backgroundColor: '#fff',
+    },    
+    likeIconPositioning:{
+        position:'absolute',
+        top: -20,
+        right: windowWidth*0.08,
+        backgroundColor: '#fff',
+    },
+    shopInfoRow:{
+        flex:1,
         flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        marginRight:windowWidth/27.6,  
     },
     shopRatingView:{
-        flex:0.72,
         flexDirection:'row',
-        alignItems:'flex-start',
     },
-    reviewNumberText:{
+    shopInfoRightColumnView:{
+        flexDirection:'row',
+        marginRight: windowWidth*0.02, 
+    },
+    shopInfoRightColumnText:{
         fontSize:windowHeight/51.636,
-        color:'#4A4A4A',
-        marginLeft:windowWidth*0.0187,
-        alignSelf:'center',
-    },
-    shopInfoRow3:{
-        flexDirection:'row',
+        color:'#9B9B9B',
+        textAlign:'left',
     },
     labelView:{
         flexDirection:'row',
         justifyContent:'flex-start',
+        alignItems:'center',
         marginRight:windowWidth*0.04,
     },   
     labelIcon:{
@@ -935,37 +1068,39 @@ var styleShopPage = StyleSheet.create({
         alignSelf:'center',
     },
     labelText:{
-        fontSize:windowHeight/47.33,
+        fontSize:windowHeight/51.636,
         color:'#4A4A4A',
         marginLeft:windowWidth/82.8,
         alignSelf:'center',
-    },    
-    chefDetailView:{
+    },  
+    chefDetailRowView: {
+        width: windowWidth,
+        paddingVertical: windowHeight*0.01,
         flexDirection: 'row',
-        height:windowHeight*0.065,
-        paddingLeft: windowWidth/27.6,
-        alignItems:'center',
-        borderColor: '#F5F5F5',
+        justifyContent:'center',
+        borderColor: '#eee',
         borderTopWidth: 1,
-        backgroundColor: '#fff'        
+        borderBottomWidth:1,
+    },  
+    chefDetailView:{
+        flex:1/3,
+        alignItems:'center',
+        alignSelf:'center',
+        backgroundColor: '#fff',
+        borderColor: '#eee',
+        borderLeftWidth:1,       
     },
     chefDetailTextView:{
-        flex: 1,
-        paddingLeft:windowWidth/27.6,
-        justifyContent:'center',
+        flexDirection:'row',
+        justifyContent:'center', 
+        height:windowHeight*0.03,
+        fontSize:windowHeight/40,
+        color:'#4A4A4A',
     },
     pickupAddressText:{ 
         fontSize: windowHeight/47.33, 
         fontWeight:'400',
         color: '#979797'
-    },
-    pickupAddressIcon:{ 
-        width: windowHeight/36.8, 
-        height: windowHeight/36.8,
-    },
-    forwardIcon:{
-        width: windowHeight*0.06, 
-        height: windowHeight*0.06,
     },
     timeSelectorView:{
         flexDirection:'row',
@@ -1009,17 +1144,15 @@ var styleShopPage = StyleSheet.create({
     },
     checkoutButtonWrapper:{ 
         height: windowHeight*0.044, 
-        width: windowWidth*0.35, 
+        width: windowWidth*0.25, 
         flexDirection:'row',
         alignSelf:'center',
-        borderRadius:6,
-        borderWidth:1.5,
-        borderColor:'#fff',
+        backgroundColor:'#fff',
         justifyContent:'center',
     },
     checkoutButton:{
-        color:'#fff',
-        fontSize:windowHeight/47.33,
+        color:'#FFCC33',
+        fontSize:windowHeight/50,
         fontWeight:'600',
         alignSelf:'center',
     },
@@ -1038,58 +1171,45 @@ var styleShopPage = StyleSheet.create({
     },
     oneDishInListView:{
         marginBottom:0,
+        marginTop:windowHeight*0.03,
     },
     oneDishPicture:{
-        width: windowWidth,
-        height: windowHeight*0.4419,
+        alignSelf:'center',
+        width: windowWidth - 2 *windowWidth/20.7,
+        height: windowHeight*0.32,
     },
     oneDishPictureSoldOut:{
-        width: windowWidth,
-        height: windowHeight*0.4419,
+        alignSelf:'center',
+        width: windowWidth - 2 *windowWidth/20.7,
+        height: windowHeight*0.32,
         opacity:0.3,
     },
     oneDishNameDiscriptionView:{
-        flex: 1,
-        flexDirection: 'column',
+        // flex: 1,
+        // flexDirection: 'row',
         backgroundColor:'#FFFFFF',
-        paddingHorizontal: windowWidth/27.6,
+        paddingHorizontal: windowWidth/20.7,
         paddingTop: windowHeight*0.03,
         paddingBottom:windowHeight*0.005,
-    },
-    oneDishNameDiscriptionTextView:{
-        flex: 1,
-        paddingLeft:windowWidth/27.6,
-        justifyContent:'center',
     },
     oneDishNameText:{
         fontSize:windowHeight/35.5,
         fontWeight:'bold',
         color:'#4A4A4A',
     },
-    oneDishIngredientText:{
-        fontSize:windowHeight/40.57,
+    oneDishSpecialTag:{
+        fontSize:windowHeight/55,
         color:'#9B9B9B',
-        marginTop:windowHeight*0.0088,
-        textAlign:'justify',
-    },
-    priceView:{
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: '#fff',
-        height:windowHeight/11.0,
-    },
-    priceTextView:{
-        width: windowWidth/2.76,
-        flexDirection: 'row',
-        justifyContent:'flex-start',
-        alignItems:'center',
-        paddingLeft:windowWidth/27.6,
     },
     chooseQuantityView:{
         flex: 1,
+        marginHorizontal:windowWidth/20.7,
         flexDirection: 'row',
-        marginLeft:windowWidth/20.7,       
-        marginRight:windowWidth/27.6,
+        justifyContent:'space-between',
+        alignItems:'center',
+        backgroundColor: '#fff',
+        marginTop:windowHeight*0.01,
+        marginBottom:windowHeight*0.02,
     },
     lateNoteView:{
         flex:0.6,
@@ -1106,8 +1226,9 @@ var styleShopPage = StyleSheet.create({
         alignSelf:'center',
     },
     quantitySelectionView:{
-        flex:0.6,
+        flex:0.3,
         flexDirection:'row',
+        marginRight:windowWidth*0.015,
     },
     plusMinusIcon:{
         width: windowHeight/27.6, 
@@ -1115,7 +1236,7 @@ var styleShopPage = StyleSheet.create({
         alignSelf:'center',
     },
     plusMinusIconView:{
-        flex:0.4,
+        flex:0.07,
         justifyContent:"center",
         alignItems:"center",
         flexDirection:'column',
@@ -1128,25 +1249,23 @@ var styleShopPage = StyleSheet.create({
     },
     quantityText:{
         fontSize:windowHeight/33.41,
-        fontWeight:'bold',
-        color:'#FFCC33',
+        color:'#9B9B9B',
     },
     priceText:{
-        fontSize:windowHeight/31.55,
+        fontSize:windowHeight/42,
         fontWeight:'bold',
-        color:'#F8C84E',
-        marginBottom:8,
+        color:'#4A4A4A',
+        marginBottom: windowHeight*0.005,
     },
-    leftQuantityView:{
-        flex:0.4,
-        flexDirection:'row',
-        justifyContent:'flex-end',
-        alignItems:'center',
+    leftQuantityAndPriceView:{
+        flex:1,
+        flexDirection:'column',
+        justifyContent:'flex-start',
+        alignItems:'flex-start',
     },
     orderStatusText:{
-        fontSize:windowHeight/40.57,
+        fontSize:windowHeight/60,
         color:'#9B9B9B',
-        marginTop:windowHeight*0.0035,
     },
     chefNoticeView:{
         flexDirection:'row',
@@ -1191,6 +1310,62 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'flex-end',
         alignItems:'center',
+    },
+    menuTitleView1: {
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'flex-start',
+        paddingVertical:windowHeight*0.025,
+        paddingLeft: windowWidth/20.7,
+    },
+    menuTitleView2: {
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        paddingTop:windowHeight*0.025,
+        paddingLeft: windowWidth/20.7,
+    },
+    menuTitleTextTitle: {
+        fontSize:windowHeight/37.06,
+        fontWeight:'600',
+        color:'#4A4A4A',
+    },
+    menuTitleTextPrompt: {
+        alignSelf:'center',
+        textAlign:'left',
+        fontSize:windowHeight/51.636,
+        color:'#9B9B9B',
+        paddingLeft:0,
+        marginLeft:0,
+    },
+    scheduleBox: {
+        flex:1,
+        flexDirection:'column',
+        backgroundColor:'#7BCBBE',
+        paddingVertical:windowHeight*0.025,
+        marginHorizontal:windowWidth/20.7,
+        marginVertical:windowHeight*0.005,
+    },
+    scheduleBoxText: {
+        fontSize:15*windowHeight/677,
+        color:'#fff',
+        fontWeight:'700',
+        textAlign:'center', 
+    },
+    fullMenuButton: {
+        flex:1,
+        flexDirection:'column',
+        paddingVertical:windowHeight*0.025,
+        marginHorizontal:windowWidth/20.7,
+        marginVertical:windowHeight*0.005,
+        borderColor:'#7BCBBE',
+        borderWidth:1,
+    },
+    fullMenuButtonText: {
+        fontSize:15*windowHeight/677,
+        color:'#7BCBBE',
+        fontWeight:'700',
+        textAlign:'center', 
     }
 });
 
@@ -1201,13 +1376,17 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1,
     },
     oneDishPictureUnhighlight:{
+        marginLeft:windowWidth/20.7,
+        marginTop:windowWidth/20.7,
         width:windowWidth/2.76,
-        height:windowWidth/2.76,
+        height:windowWidth/4,
         backgroundColor:'#FFFFFF',
     },
     oneDishPictureUnhighlightSoldOut:{
+        marginLeft:windowWidth/20.7,
+        marginTop:windowWidth/20.7,
         width:windowWidth/2.76,
-        height:windowWidth/2.76,
+        height:windowWidth/4,
         opacity:0.3
     },
     shoppingCartInfoView:{
@@ -1224,9 +1403,11 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row', 
     },
     dishNameView:{
-        flex:0.7,   
+        flex:1,  
+        justifyContent:'flex-start', 
         alignItems:'flex-start', 
-        flexDirection:'row', 
+        flexDirection:'row',
+        marginTop:windowHeight*0.015, 
     },
     dishNameText:{
         fontSize:windowHeight/40.89,
@@ -1234,6 +1415,21 @@ var styleShoppingCartPage = StyleSheet.create({
         color:'#4A4A4A',
         flex: 1, 
         flexWrap: 'wrap',
+    },
+    chooseQuantityView:{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        backgroundColor: '#fff',
+        marginTop:windowHeight*0.01,
+        marginBottom:windowHeight*0.02,
+    },
+    lateNoteView:{
+        flex:1,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
     },
     dishPriceView:{
         flex:0.3,
@@ -1287,6 +1483,11 @@ var styleShoppingCartPage = StyleSheet.create({
         fontSize:windowHeight/40.57,
         color:'#9B9B9B',
         marginTop:windowHeight*0.0035,
+    },
+    quantitySelectionView:{
+        flex:0.6,
+        flexDirection:'row',
+        marginRight:windowWidth*0.04,
     },
 });
 
