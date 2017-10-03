@@ -24,12 +24,6 @@ var heartLineIcon = require('./icons/icon-heart-line.png');
 var heartFillsIcon = require('./icons/icon-heart-fills.png');
 var backIcon = require('./icons/icon-back.png');
 var closeIcon = require('./icons/icon-close.png');
-var dollarSign1_Grey = require('./icons/icon-dollar1-grey.webp');
-var dollarSign2_Grey = require('./icons/icon-dollar2-grey.webp');
-var dollarSign3_Grey = require('./icons/icon-dollar3-grey.webp');
-var dollarSign1_Orange = require('./icons/icon-dollar1-orange.webp');
-var dollarSign2_Orange = require('./icons/icon-dollar2-orange.webp');
-var dollarSign3_Orange = require('./icons/icon-dollar3-orange.webp');
 var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.webp');
 var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.webp');
 var RefreshableListView = require('react-native-refreshable-listview');
@@ -88,9 +82,6 @@ class ChefListPage extends Component {
             state:'WA',
             zipcode:'98105',
             pickedAddress:undefined,
-            dollarSign1: dollarSign1_Grey,
-            dollarSign2: dollarSign2_Grey,
-            dollarSign3: dollarSign3_Grey,
             priceRankFilter:{},
             sortCriteriaIcon:sortCriteriaIconGrey,
             deviceToken: null,
@@ -99,6 +90,7 @@ class ChefListPage extends Component {
             showPromoAppBanner:true,
             selectedSortKey: null,
             selectedShopType: null,
+            selectedPriceLevels: [],
         };
 
         this.responseHandler = function (response, msg) {
@@ -139,10 +131,13 @@ class ChefListPage extends Component {
         }
         let principal = await AuthService.getPrincipalInfo();
         if(eater){
+            var priceLevels = [];
+            for (let i = 0; i <=2; i++) {
+                if (eater.chefFilterSettings.priceRankFilter[i]) 
+                    priceLevels.push(i + 1); // if true, add the price level to the priceLevels array  
+            }
            this.setState({ 
-                dollarSign1: eater.chefFilterSettings.priceRankFilter[1]==true? dollarSign1_Orange:dollarSign1_Grey,
-                dollarSign2: eater.chefFilterSettings.priceRankFilter[2]==true? dollarSign2_Orange:dollarSign2_Grey,
-                dollarSign3: eater.chefFilterSettings.priceRankFilter[3]==true? dollarSign3_Orange:dollarSign3_Grey,
+                selectedPriceLevels: priceLevels,
                 priceRankFilter:eater.chefFilterSettings.priceRankFilter, 
                 withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
                 priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
@@ -383,13 +378,13 @@ class ChefListPage extends Component {
                     <Text style={styleFilterPage.pageSubTitle}>Price</Text>
                            <View style={styleFilterPage.dollarSignSelectionView}>
                               <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(1)}>
-                                  <Image source={this.state.dollarSign1} style={styleFilterPage.dollarSign}/>
+                                    <Text style={this.getDollarSign(1)}>$</Text>
                               </TouchableHighlight>
                               <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(2)}>
-                                  <Image source={this.state.dollarSign2} style={styleFilterPage.dollarSign}/>
+                                    <Text style={this.getDollarSign(2)}>$$</Text>
                               </TouchableHighlight>
                               <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(3)}>
-                                  <Image source={this.state.dollarSign3} style={styleFilterPage.dollarSign}/>
+                                    <Text style={this.getDollarSign(3)}>$$$</Text>
                               </TouchableHighlight>
                            </View>
 
@@ -533,21 +528,22 @@ class ChefListPage extends Component {
             return styleFilterPage.sortCriteriaTitleText;
     }
 
+    getDollarSign(priceLevel) {
+        if (this.state.selectedPriceLevels.includes(priceLevel))
+            return styleFilterPage.dollarSignGreen;
+        else 
+            return styleFilterPage.dollarSignGrey;
+    }
+
     clickDollarSign(priceLevel){
         this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];
-        switch(priceLevel){
-            case 1:
-               this.setState({dollarSign1: this.state.priceRankFilter[priceLevel]==true? dollarSign1_Orange:dollarSign1_Grey}); 
-               break;
-            case 2:
-               this.setState({dollarSign2: this.state.priceRankFilter[priceLevel]==true? dollarSign2_Orange:dollarSign2_Grey}); 
-               break;
-            case 3:
-               this.setState({dollarSign3: this.state.priceRankFilter[priceLevel]==true? dollarSign3_Orange:dollarSign3_Grey}); 
-               break;
-        }
-          
-        this.setState({priceRankFilter:this.state.priceRankFilter});
+        var currentPriceLevels = this.state.selectedPriceLevels;     
+        // toggle price level selection for display
+        if (currentPriceLevels.includes(priceLevel))
+            currentPriceLevels = currentPriceLevels.filter((ele) => ele !== priceLevel);
+        else
+            currentPriceLevels.push(priceLevel);
+        this.setState({priceRankFilter:this.state.priceRankFilter, selectedPriceLevels: currentPriceLevels});
     }
     
     clickSortSelection(sortByKey){
@@ -1271,11 +1267,6 @@ var styleFilterPage = StyleSheet.create({
         width:windowWidth/3.0,
         justifyContent:'center',
     },
-    dollarSign:{
-        width:windowHeight*0.07,
-        height:windowHeight*0.07,
-        alignSelf:'center',
-    },
     applySearchButtonText:{
         color:'#fff',
         fontSize:windowHeight/35,
@@ -1342,6 +1333,16 @@ var styleFilterPage = StyleSheet.create({
         color:'#4A4A4A',
         marginVertical:windowHeight*0.0200,
         paddingLeft:windowWidth/20.7,
-    }
+    },
+    dollarSignGrey:{
+        fontSize:windowHeight/35.5,
+        fontWeight:'400',
+        color:'#979797',
+    },
+    dollarSignGreen:{
+        fontSize:windowHeight/35.5,
+        fontWeight:'400',
+        color:'#7adfc3',
+    },
 });
 module.exports = ChefListPage;
