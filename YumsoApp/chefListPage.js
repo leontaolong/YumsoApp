@@ -828,6 +828,9 @@ var Menu = React.createClass({
                     <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.navigateToContactUsPage}>
                        <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.navigateToInvitePage}>
+                       <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
                        <Text style={sideMenuStyle.paddingMenuItem}></Text>
                     </TouchableOpacity>
@@ -950,6 +953,12 @@ var Menu = React.createClass({
         });
     },
 
+    navigateToInvitePage: function() {
+        this.props.navigator.push({
+            name: 'InvitePage',
+        });
+    },
+    
     logOut: function(){
         return AuthService.logOut()
         .then(()=>{

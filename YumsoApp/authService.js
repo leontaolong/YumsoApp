@@ -58,7 +58,7 @@ class AuthService {
             }
         });
         if(response.statusCode==200 || response.statusCode==202){
-            Alert.alert( 'Verify Your Email', 'Please click to verify through the email just sent to you. Check spam in case you do not find it in inbox',[ { text: 'OK' }]); 
+            //Alert.alert( 'Verify Your Email', 'Please click to verify through the email just sent to you. Check spam in case you do not find it in inbox',[ { text: 'OK' }]); 
             return true;
         }else{
             Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);

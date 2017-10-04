@@ -147,7 +147,7 @@ class SignUpPage extends Component {
 
         return hasUpper && hasLower && hasNumber;
     }
-            
+
     async onSignUpPressed(){
         if(!this.state.firstname || !this.state.firstname.trim()){
             Alert.alert( 'Warning', 'Please enter your first name',[ { text: 'OK' }]);
@@ -198,14 +198,17 @@ class SignUpPage extends Component {
             }
             this.setState({ showProgress: false });
             this.props.navigator.push({
-                 name: 'LoginPage'
+                name: 'VerificationPage',
+                passProps: {
+                    email: this.state.email
+                }
             });
         }catch(err){
            this.setState({ showProgress: false });
            commonAlert.networkError(err);
         }
     }
-    
+
     navigateBack() {
         this.props.navigator.pop();
     }
