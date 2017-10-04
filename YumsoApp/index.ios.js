@@ -19,8 +19,10 @@ var OrderDetailPage = require('./orderDetailPage');
 var AboutPage = require('./aboutPage');
 var ContactUsPage = require('./contactUsPage');
 var TermsPage = require('./termsPage');
-var ChefIntroPage = require('./chefIntroPage')
+var ChefIntroPage = require('./chefIntroPage');
 var styles = require('./style');
+var VerificationPage = require('./verificationPage');
+var InvitePage = require('./invitePage');
 
 import React, {
   AppRegistry,
@@ -176,6 +178,10 @@ class YumsoApp extends Component {
             return <TermsPage navigator={navigator}/>
         }else if (route.name==='ChefIntroPage'){
             return <ChefIntroPage navigator={navigator}/>
+        }else if (route.name==='VerificationPage'){
+            return <VerificationPage navigator={navigator}/>
+        }else if (route.name==='InvitePage') {
+            return <InvitePage navigator={navigator}/>
         }
     } 
 }
