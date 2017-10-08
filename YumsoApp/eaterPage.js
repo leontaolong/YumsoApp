@@ -246,7 +246,7 @@ class EaterPage extends Component {
                                 </View>
 
                                 <TouchableOpacity activeOpacity={0.7} >
-                                     <Text style={styleEaterPage.textFieldTitle}>Logged in using Facebook</Text>
+                                     <Text style={styleEaterPage.textFieldTitle}>{this.state.principal.identityProvider === 'Yumso' ? `Logged in with Email: ${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
                                 </TouchableOpacity>
                             {loadingSpinnerView}
                         </ScrollView>
