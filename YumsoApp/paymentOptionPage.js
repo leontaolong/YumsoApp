@@ -18,6 +18,7 @@ var Swipeout = require('react-native-swipeout');
 var commonAlert = require('./commonModules/commonAlert');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+var backgroundImage = require('./resourceImages/background@3x.jpg');
 
 import Dimensions from 'Dimensions';
 
@@ -136,21 +137,21 @@ class PaymentOptionPage extends Component {
         
         if(this.state.isFromCheckOutPage){                 
             return (
-                <Swipeout backgroundColor={'#FFFFFF'} close={true} right={swipeoutBtns}>
-                    <TouchableHighlight style={stylePaymentOptionPage.checkBoxIconView} underlayColor={'transparent'} onPress={()=>this.onCardClick(card)}>
-                    <View style={stylePaymentOptionPage.paymentMethodView}>         
-                        <View style={stylePaymentOptionPage.checkBoxIconView}>
-                                <Image style={stylePaymentOptionPage.checkBoxIcon} source={checkBoxIcon}/>
-                        </View>
-                        <View  style={stylePaymentOptionPage.paymentMethodIconView}>
-                            {this.renderPaymentMethodType(card)}
-                        </View>
-                        <View style={stylePaymentOptionPage.paymentMethodInfoView}>
-                             <Text style={stylePaymentOptionPage.paymentMethodInfoText}>**** {card.last4}</Text>
-                        </View>
+                    <View style={stylePaymentOptionPage.paymentOverview}>   
+                        <TouchableHighlight underlayColor={'transparent'} onPress={()=>this.onCardClick(card)}>
+                            <View style={stylePaymentOptionPage.paymentMethodView}>         
+                                <View  style={stylePaymentOptionPage.paymentMethodIconView}>
+                                    {this.renderPaymentMethodType(card)}
+                                </View>      
+                                <View style={stylePaymentOptionPage.paymentMethodInfoView}>
+                                    <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                                </View>
+                                <View style={stylePaymentOptionPage.checkBoxIconView}>
+                                    <Image style={stylePaymentOptionPage.checkBoxIcon} source={checkBoxIcon}/>
+                                </View>
+                            </View>
+                        </TouchableHighlight>
                     </View>
-                    </TouchableHighlight>
-                </Swipeout>
             );
         }else{
             return (
@@ -185,32 +186,15 @@ class PaymentOptionPage extends Component {
         })
     }
     renderFooter(){
-        if(this.state.isFromCheckOutPage){  
-          return [
-             <View style={{height:9*windowHeight/667}}></View>,
-             <TouchableHighlight underlayColor={'#F5F5F5'} onPress={()=>this.addAPayment()}>
-             <View style={stylePaymentOptionPage.addCardView}>          
-               <View style={stylePaymentOptionPage.checkBoxIconView}>
-               </View>
-               <View style={stylePaymentOptionPage.addCardIconView}>
-                  <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
-               </View>
-               <View style={stylePaymentOptionPage.addCardTitleView}>
-                  <Text style={stylePaymentOptionPage.addCardTitleText}>Add Credit/Debit Card</Text>
-               </View>
-             </View>
-             </TouchableHighlight>];
-        }else{
-          return [
-             <View style={{height:9*windowHeight/667}}></View>,
-             <TouchableHighlight underlayColor={'#F5F5F5'} onPress={()=>this.addAPayment()}>
-             <View style={stylePaymentOptionPage.addCardView}>          
-               <View style={stylePaymentOptionPage.addCardTitleView}>
-                  <Text style={stylePaymentOptionPage.addCardTitleText}> + Add a card</Text>
-               </View>
-             </View>
-             </TouchableHighlight>];
-        }
+        return [
+            <View style={{height:9*windowHeight/667}}></View>,
+            <TouchableHighlight underlayColor={'rgba(0,0,0,0)'} onPress={()=>this.addAPayment()}>
+            <View style={stylePaymentOptionPage.addCardView}>          
+            <View style={stylePaymentOptionPage.addCardTitleView}>
+                <Text style={stylePaymentOptionPage.addCardTitleText}> + Add a card</Text>
+            </View>
+            </View>
+            </TouchableHighlight>];
     }
     
     render() {
@@ -221,9 +205,7 @@ class PaymentOptionPage extends Component {
         
         if(this.state.chosenCard && this.state.isFromCheckOutPage){
           var paymentSelectionConfirmButton= (<TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={()=>this.confirmSelection()}>
-                                                    <View style={stylePaymentOptionPage.bottomButton}>
-                                                        <Text style={stylePaymentOptionPage.bottomButtonText}>Choose this Card</Text>
-                                                    </View>
+                                                  <Text style={styles.bottomButtonView}>Confirm</Text>
                                               </TouchableOpacity>);
         }
 
@@ -237,30 +219,37 @@ class PaymentOptionPage extends Component {
            paymentListView = null;
         }
         
-        return (
-            <View style={styles.container}>
-                <View style={styles.transparentHeaderBannerView}>
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                        <View style={styles.backButtonView}>
-                            <Image source={backIcon} style={styles.backButtonIcon} />
-                        </View>
-                    </TouchableHighlight>
-                    <View style={styles.titleView}></View>
-                    <View style={styles.headerRightView}></View>
-                </View>
+        var overallContent = (<View>
+                                <View style={styles.transparentHeaderBannerView}>
+                                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                                        <View style={styles.backButtonView}>
+                                            <Image source={backIcon} style={styles.backButtonIcon} />
+                                        </View>
+                                    </TouchableHighlight>
+                                    <View style={styles.titleView}></View>
+                                    <View style={styles.headerRightView}></View>
+                                </View>
 
-                <View style={stylePaymentOptionPage.contentTextView}>
-                    <Text style={stylePaymentOptionPage.contentTitle}>Payment Options</Text>
-                
-                    {networkUnavailableView}
-                    {paymentListView}                   
-                    {paymentSelectionConfirmButton}
-                    {loadingSpinnerView} 
-               </View>
-
-            </View>
-
-        );
+                                <View style={stylePaymentOptionPage.contentTextView}>
+                                    <Text style={stylePaymentOptionPage.contentTitle}>Payment Options</Text>
+                                
+                                    {networkUnavailableView}
+                                    {paymentListView}                   
+                                    {loadingSpinnerView} 
+                                </View>
+                                </View>);
+        if (this.state.isFromCheckOutPage) {
+            return (<View style={styles.container}>
+                        <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                            {overallContent}
+                        </Image>
+                        {paymentSelectionConfirmButton}
+                    </View>);
+        } else {
+            return (<View style={styles.container}>
+                        {overallContent}
+                    </View>);
+        }
     }
 
     navigateBack() {
@@ -356,13 +345,14 @@ var stylePaymentOptionPage = StyleSheet.create({
     },
     paymentListView:{
         alignSelf:'stretch',
-        backgroundColor:'white',
         paddingBottom:20,
         flexDirection:'column',
-        height: windowHeight*8/10
+        height: windowHeight*8/10,
+        backgroundColor: 'rgba(0,0,0,0)', 
+        marginTop:windowHeight*0.0560,        
     }, 
     paymentOverview:{
-        paddingTop:windowHeight*0.0560, 
+        paddingVertical:windowHeight*0.01, 
     },
     paymentMethodView:{
         flex:1,
@@ -376,11 +366,11 @@ var stylePaymentOptionPage = StyleSheet.create({
     checkBoxIconView:{
         flex:0.1,
         flexDirection:'row',
-        justifyContent:'flex-start'  
+        justifyContent:'flex-start',
     },
     checkBoxIcon:{
-        width:25*windowHeight/667.0,
-        height:25*windowHeight/667.0,
+        width:23*windowHeight/700.0,
+        height:23*windowHeight/700.0,
         alignSelf:'center',
     },
     deleteText:{
@@ -422,29 +412,18 @@ var stylePaymentOptionPage = StyleSheet.create({
         flexDirection:'row',
         height:windowHeight*0.075,
         paddingLeft:15*windowHeight/667.0,
-        backgroundColor:'#fff',
+        backgroundColor:'rgba(0,0,0,0)',
     },
     addCardTitleView:{
         flex:0.75,
         flexDirection:'row',
         justifyContent:'flex-start',
-        backgroundColor:'#FFF'
+        backgroundColor:'rgba(0,0,0,0)'
     },
     addCardTitleText:{
         alignSelf:'center',
-        fontSize:windowHeight/51.636,
+        fontSize:windowHeight/40,
         color:'#60d1bc',
-    },
-    addCardIconView:{
-        flex:0.15,
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        backgroundColor:'#fff',
-    },
-    addCardIcon:{
-        width:30*windowHeight/667.0,
-        height:30*windowHeight/667.0,
-        alignSelf:'center',
     },
     bottomButton:{
       flexDirection:'row',        
