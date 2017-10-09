@@ -868,6 +868,7 @@ class ShopPage extends Component {
                 chefId:this.state.chefId,
                 chefProfilePic:this.state.chef.chefProfilePic,
                 shopName:this.state.chef.shopname,
+                reviewCount:this.state.chef.reviewCount,
             }
         });       
     }
