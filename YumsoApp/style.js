@@ -115,7 +115,7 @@ module.exports = StyleSheet.create({
     titleText:{
       fontSize:windowHeight/37.06,
       color:'#4A4A4A',
-      fontWeight:'500',
+      fontWeight:'200',
       alignSelf:'center',
       textAlign:'center'
     },
@@ -496,6 +496,31 @@ module.exports = StyleSheet.create({
         justifyContent: 'center',
         height:100, 
         backgroundColor:'#F5F5F5'
+    },    
+    iconCircle:{
+      //TODO: make the shadow, it's just a circle for now
+      marginLeft:windowWidth*0.015,
+      height:windowWidth*0.1,
+      width:windowWidth*0.1,
+      borderWidth:windowWidth*0.001,
+      borderRadius: windowWidth*0.1 / 2, 
+      alignItems:"center",
+      justifyContent:"center",
+      borderColor:"#bbb",
+    },
+    likeIconCircled:{
+      height:windowHeight*0.02,
+      width:windowWidth*0.04,
+    },
+    shareIconCircled: {
+      height:windowHeight*0.025,
+      width:windowWidth*0.025, 
+    },
+    listViewBorder:{
+      marginHorizontal:windowWidth/20.7,
+      height:windowHeight*0.0005,
+      backgroundColor:'#fff',
+      borderBottomWidth:1,
+      borderBottomColor:'#eee',
     }
-
 });
