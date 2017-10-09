@@ -6,9 +6,9 @@ var AuthService = require('./authService');
 var MapView = require('react-native-maps');
 var RCTUIManager = require('NativeModules').UIManager;
 var searchIcon = require('./icons/icon-search.png');
-var backIcon = require('./icons/icon-back.png');
 var locatorIcon = require('./icons/icon-location.png');
 var houseIcon = require('./icons/icon-grey-house.png');
+var closeIcon = require('./icons/icon-close.png');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 
 import Dimensions from 'Dimensions';
@@ -122,8 +122,21 @@ class MapPage extends Component {
             
             this.state.savedAddressesView = this.renderSavedAddresses(); //todo: also include home and work addresses for selection.
             let addressSelectionView=[];
+            var addressBookClickableView = null;
+            if(this.showHouseIcon){
+               addressBookClickableView = [(<Text key={'separator'} style={{fontSize:windowHeight/30.66,alignSelf:'center',color:'#D7D7D7'}}>|</Text>),
+                                           (<TouchableHighlight key={'addressBookButton'}  onPress={() => this.onPressHouseIcon()} style={styleMapPage.addressBookClickableView} underlayColor={'#F5F5F5'}>
+                                              <Text style={styleMapPage.currentLocationClickableText}>Address Book</Text>
+                                            </TouchableHighlight>)];
+            }
             if(!this.state.showMapView){
-               addressSelectionView.push(<View key={'addressSelectionView'} style={styleMapPage.addressSelectionView}>
+                addressSelectionView.push(<View key={'addressSelectionView'} style={styleMapPage.addressSelectionView}>
+                                            <View key={'addressSelectionTab'} style={{flexDirection:'row',justifyContent:'center'}}>
+                                                <TouchableHighlight onPress={()=>this.locateToCurrentAddress()} style={styleMapPage.currentLocationClickableView} underlayColor={'#F5F5F5'}> 
+                                                    <Text style={styleMapPage.currentLocationClickableText}>Current Location</Text>
+                                                </TouchableHighlight>
+                                                {addressBookClickableView}
+                                            </View>
                                           {this.state.savedAddressesView}               
                                          </View>);  
             }                       
@@ -134,28 +147,20 @@ class MapPage extends Component {
                                                  {this.state.searchAddressResultView}
                                                </View>);  
             }
-
-            var addressBookClickableView = null;
-            if(this.showHouseIcon){
-               addressBookClickableView = [(<Text key={'separator'} style={{fontSize:windowHeight/30.66,alignSelf:'center',color:'#D7D7D7'}}>|</Text>),
-                                           (<TouchableHighlight key={'addressBookButton'}  onPress={() => this.onPressHouseIcon()} style={styleMapPage.addressBookClickableView} underlayColor={'#F5F5F5'}>
-                                              <Text style={styleMapPage.currentLocationClickableText}>Address Book</Text>
-                                            </TouchableHighlight>)];
-            }
                                                 
             return (
                  <View style={styles.container}>
-                     <View style={styles.headerBannerView}>
-                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                             <View style={styles.backButtonView}>
-                                 <Image source={backIcon} style={styles.backButtonIcon}/>
-                             </View>
-                         </TouchableHighlight>
-                         <View style={styles.titleView}>
-                             <Text style={styles.titleText}>{this.state.city}</Text>
-                         </View>
-                         <View style={styles.headerRightView}>
-                         </View>
+                    <View style={styles.headerBannerView}>    
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                            <View style={styles.backButtonView}>
+                                <Image source={closeIcon} style={styles.backButtonIcon}/>
+                            </View>
+                        </TouchableHighlight>
+                        <View style={styles.titleView}></View>  
+                        <View style={styles.headerRightView}></View>   
+                    </View>
+                    <View style={[styles.pageTitleView, {marginBottom:0, paddingLeft:windowWidth/20.7}]}>
+                        <Text style={styles.pageTitle}>Delivery Address</Text>
                     </View>
                     
                     <View style={{alignSelf:'stretch', alignItems:'center'}}>
@@ -214,7 +219,6 @@ class MapPage extends Component {
                 <TouchableHighlight key={'homeAddress'} underlayColor={'#F5F5F5'} onPress={()=>this.useSavedAddress(homeAddress)}>
                 <View style={styleMapPage.oneAddressView}>
                     <View style={styleMapPage.oneAddressIconTitleView}>
-                        <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
                         <Text style={styleMapPage.oneAddressTitleText}>Home</Text>
                     </View>
                     <View style={styleMapPage.oneAddressTextView}>
@@ -231,7 +235,6 @@ class MapPage extends Component {
                 <TouchableHighlight key={'workAddress'} underlayColor={'#F5F5F5'} onPress={()=>this.useSavedAddress(workAddress)}>
                 <View style={styleMapPage.oneAddressView}>
                     <View style={styleMapPage.oneAddressIconTitleView}>
-                        <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
                         <Text style={styleMapPage.oneAddressTitleText}>Work</Text>
                     </View>
                     <View style={styleMapPage.oneAddressTextView}>
@@ -248,7 +251,6 @@ class MapPage extends Component {
                 <TouchableHighlight key={'otherAddresses'+i} underlayColor={'#F5F5F5'} onPress={()=>this.useSavedAddress(address)}>
                 <View style={styleMapPage.oneAddressView}>
                     <View style={styleMapPage.oneAddressIconTitleView}>
-                        <Image source={houseIcon} style={styleMapPage.oneAddressIcon}/>
                         <Text style={styleMapPage.oneAddressTitleText}>Other</Text>
                     </View>
                     <View style={styleMapPage.oneAddressTextView}>
@@ -712,8 +714,8 @@ var styleMapPage = StyleSheet.create({
         alignSelf:'center',
     },
     confirmAddressButtonText:{
-        fontSize:windowHeight/30.6,
-        fontWeight:'400',
+        fontSize:windowHeight/35,
+        fontWeight:'600',
         color:'#fff',
         alignSelf:'center', 
     },
@@ -740,36 +742,31 @@ var styleMapPage = StyleSheet.create({
     },
     oneAddressView:{
         flex:1,
-        flexDirection:'row', 
-        paddingLeft:windowWidth*0.01875,
-        paddingRight:windowWidth*0.0375,
+        flexDirection:'column', 
+        marginLeft: windowWidth/20.7,
+        marginRight: windowWidth/20.7,
+        paddingBottom: windowHeight*0.018,
+        borderBottomWidth:2,
+        borderBottomColor: '#eee',
     },
     oneAddressIconTitleView:{
-        flex:0.3,
-        flexDirection:'row',
         justifyContent:'flex-start',
         alignItems:'flex-start',        
     },
-    oneAddressIcon:{
-        width:windowHeight/25,
-        height:windowHeight/25,
-        marginTop:windowHeight/80,
-    },
     oneAddressTitleText:{
         marginTop:windowHeight/55.583,
-        fontSize:windowHeight/39.24,
+        fontSize:windowHeight/35,
+        fontWeight:'600',
     },
     oneAddressTextView:{
-        flex:0.7,
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        alignItems:'flex-start', 
+        paddingTop:windowHeight/90,
     },
     oneAddressText:{
-        marginTop:windowHeight/55.583,
-        fontSize:windowHeight/39.24,
+        fontSize:windowHeight/45,
         flexWrap:'wrap',
-        flex:1
+        flex:1,
+        fontWeight:'400',
+        color:'#777',
     },
     aptNumberView:{
         backgroundColor:'#fff', 

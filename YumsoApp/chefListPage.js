@@ -23,12 +23,7 @@ var likedIcon = require('./icons/icon-liked-red.png');
 var heartLineIcon = require('./icons/icon-heart-line.png');
 var heartFillsIcon = require('./icons/icon-heart-fills.png');
 var backIcon = require('./icons/icon-back.png');
-var dollarSign1_Grey = require('./icons/icon-dollar1-grey.webp');
-var dollarSign2_Grey = require('./icons/icon-dollar2-grey.webp');
-var dollarSign3_Grey = require('./icons/icon-dollar3-grey.webp');
-var dollarSign1_Orange = require('./icons/icon-dollar1-orange.webp');
-var dollarSign2_Orange = require('./icons/icon-dollar2-orange.webp');
-var dollarSign3_Orange = require('./icons/icon-dollar3-orange.webp');
+var closeIcon = require('./icons/icon-close.png');
 var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.webp');
 var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.webp');
 var RefreshableListView = require('react-native-refreshable-listview');
@@ -87,15 +82,15 @@ class ChefListPage extends Component {
             state:'WA',
             zipcode:'98105',
             pickedAddress:undefined,
-            dollarSign1: dollarSign1_Grey,
-            dollarSign2: dollarSign2_Grey,
-            dollarSign3: dollarSign3_Grey,
             priceRankFilter:{},
             sortCriteriaIcon:sortCriteriaIconGrey,
             deviceToken: null,
             currentTime: new Date().getTime(),
             showUpdateAppBanner:false,
             showPromoAppBanner:true,
+            selectedSortKey: null,
+            selectedShopType: null,
+            selectedPriceLevels: [],
         };
 
         this.responseHandler = function (response, msg) {
@@ -136,10 +131,13 @@ class ChefListPage extends Component {
         }
         let principal = await AuthService.getPrincipalInfo();
         if(eater){
+            var priceLevels = [];
+            for (let i = 0; i <=2; i++) {
+                if (eater.chefFilterSettings.priceRankFilter[i]) 
+                    priceLevels.push(i + 1); // if true, add the price level to the priceLevels array  
+            }
            this.setState({ 
-                dollarSign1: eater.chefFilterSettings.priceRankFilter[1]==true? dollarSign1_Orange:dollarSign1_Grey,
-                dollarSign2: eater.chefFilterSettings.priceRankFilter[2]==true? dollarSign2_Orange:dollarSign2_Grey,
-                dollarSign3: eater.chefFilterSettings.priceRankFilter[3]==true? dollarSign3_Orange:dollarSign3_Grey,
+                selectedPriceLevels: priceLevels,
                 priceRankFilter:eater.chefFilterSettings.priceRankFilter, 
                 withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
                 priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
@@ -254,7 +252,7 @@ class ChefListPage extends Component {
         if (this.state.eater && this.state.eater.favoriteChefs) {
             like = this.state.eater.favoriteChefs.indexOf(chef.chefId) !== -1;
         }
-        var likedIcon = <View style={styleChefListPage.iconCircle}><Image source={this.getCurrentLikeIcon(like)} style={styleChefListPage.likedIconView}/></View>
+        var likedIcon = <View style={styles.iconCircle}><Image source={this.getCurrentLikeIcon(like)} style={styles.likeIconCircled}/></View>
 
         //console.log(chef);
         var nextDeliverTimeView = null;
@@ -337,7 +335,20 @@ class ChefListPage extends Component {
             </View>
         );
     }
-    
+
+    renderPromoBanner() {
+        var promoBannerView = null;
+        if (this.state.showPromoAppBanner) {
+        // placeholder, in real practice, will only be rendered after the data gets fetched back
+        promoBannerView = <View style={styles.promoBannerView}>
+                                   <Text style={styles.infoBannerText}>
+                                      Promotion Banner Goes Here 
+                                   </Text>
+                            </View>
+        }
+        return promoBannerView;
+        
+    }    
     render() {
         var menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
         var loadingSpinnerView = null;
@@ -348,6 +359,7 @@ class ChefListPage extends Component {
         var cheflistView = <RefreshableListView ref="listView"
                             dataSource = {this.state.dataSource}
                             renderRow={this.renderRow.bind(this)}
+                            renderHeader={this.renderPromoBanner.bind(this)}
                             loadData={this.searchChef.bind(this)}
                             refreshDescription = "Pull to refresh "/>
         var networkUnavailableView = null;
@@ -360,55 +372,70 @@ class ChefListPage extends Component {
            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);   
         }else if(this.state.showChefSearch){
            return <View style={styles.pageWrapper}>
-                       <View style={styles.headerBannerView}>    
-                            <TouchableHighlight style={styles.headerLeftView} onPress={() => this.setState({
+                <View style={styles.headerBannerView}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({
                                                                 showChefSearch: false,
                                                                 isMenuOpen: false,
                                                                 priceRankFilter: JSON.stringify(this.state.priceRankFilterOrigin)==undefined ? null : JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
                                                                 withBestRatedSort: this.state.withBestRatedSortOrigin,
-                                                             })} underlayColor={'#F5F5F5'}>
-                                <View style={styles.backButtonView}>
-                                    <Image source={backIcon} style={styles.backButtonIcon}/>
-                                </View>
-                            </TouchableHighlight>    
-                            <View style={styles.titleView}>
-                                <Text style={styles.titleText}>Filter</Text>
-                            </View>
-                            <View style={styles.headerRightView}>
-                            </View>
-                        </View>     
-                        <View style={styleFilterPage.dollarSignSelectionView}>
+                                                             })}>
+                        <View style={styles.backButtonView}>
+                            <Image source={closeIcon} style={styles.backButtonIcon} />
+                        </View>
+                    </TouchableHighlight>
+                    <View style={styles.titleView}></View>
+                    <View style={styles.headerRightView}></View>
+                </View>
+                <View style={[styles.pageTitleView, {paddingLeft:windowWidth/20.7, marginBottom:windowHeight*0.04}]}>
+                        <Text style={styles.pageTitle}>Filter</Text>
+                </View>
+                    <Text style={styleFilterPage.pageSubTitle}>Price</Text>
                            <View style={styleFilterPage.dollarSignSelectionView}>
                               <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(1)}>
-                                  <Image source={this.state.dollarSign1} style={styleFilterPage.dollarSign}/>
+                                    <Text style={this.getDollarSign(1)}>$</Text>
                               </TouchableHighlight>
                               <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(2)}>
-                                  <Image source={this.state.dollarSign2} style={styleFilterPage.dollarSign}/>
+                                    <Text style={this.getDollarSign(2)}>$$</Text>
                               </TouchableHighlight>
                               <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(3)}>
-                                  <Image source={this.state.dollarSign3} style={styleFilterPage.dollarSign}/>
+                                    <Text style={this.getDollarSign(3)}>$$$</Text>
                               </TouchableHighlight>
                            </View>
-                        </View> 
-                    <View style={styleFilterPage.sortCriteriaSectionTitleView}>          
-                       <Text style={styleFilterPage.sortCriteriaSectionTitleText}>Sort by</Text>
-                    </View>
+
+                    <Text style={styleFilterPage.pageSubTitle}>Shop Type</Text>
                     <View style={styleFilterPage.sortCriteriaView}>
                        <View style={styleFilterPage.sortCriteriaTitleView}>
-                          <Text style={styleFilterPage.sortCriteriaTitleText}>Best Rated</Text>
+                          <Text style={this.getShopTypeText('withAllShopType')} onPress={() => {this.clickShopType('withAllShopType')}}>All</Text>
                        </View>
-                       <View style={styleFilterPage.sortCriteriaIconView}>
-                          <TouchableHighlight style={styleFilterPage.sortCriteriaIconWrapper} underlayColor={'transparent'} 
-                               onPress={() => this.clickSortSelection('withBestRatedSort')}>
-                              <Image source={this.state.sortCriteriaIcon} style={styleFilterPage.sortCriteriaIcon}/>
-                          </TouchableHighlight>
+                       <View style={styleFilterPage.sortCriteriaTitleView}>
+                          <Text style={this.getShopTypeText('withRestaurantsShopType')} onPress={() => {this.clickShopType('withRestaurantsShopType')}}>Restaurants</Text>
+                       </View>
+                       <View style={styleFilterPage.sortCriteriaTitleView}>
+                          <Text style={this.getShopTypeText('withHomeChefShopType')} onPress={() => {this.clickShopType('withHomeChefShopType')}}>Home Chefs</Text>
+                       </View>
+                    </View>
+
+
+                    <Text style={styleFilterPage.pageSubTitle}>Sort by</Text>
+                    <View style={styleFilterPage.sortCriteriaView}>
+                       <View style={styleFilterPage.sortCriteriaTitleView}>
+                          <Text style={this.getSortCriteriaTitleText('withBestRatedSort')} onPress={() => {this.clickSortSelection('withBestRatedSort')}}>Best Rated</Text>
+                       </View>
+                       <View style={styleFilterPage.sortCriteriaTitleView}>
+                          <Text style={this.getSortCriteriaTitleText('withMostPopularSort')} onPress={() => {this.clickSortSelection('withMostPopularSort')}}>Most Popular</Text>
+                       </View>
+                       <View style={styleFilterPage.sortCriteriaTitleView}>
+                          <Text style={this.getSortCriteriaTitleText('withSoonestDeliveryTimeSort')} onPress={() => {this.clickSortSelection('withSoonestDeliveryTimeSort')}}>Soonest Delivery Time</Text>
+                       </View>
+                       <View style={styleFilterPage.sortCriteriaTitleView}>
+                          <Text style={this.getSortCriteriaTitleText('withShortestDistanceSort')} onPress={() => {this.clickSortSelection('withShortestDistanceSort')}}>Shortest Distance</Text>
                        </View>
                     </View>
                     {loadingSpinnerView}
                     <View style={{flex:1}}>
                     </View>
                     <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.onPressApplySearchButton()}>
-                        <Text style={styleFilterPage.applySearchButtonText}>Apply and Search</Text>
+                        <Text style={styleFilterPage.applySearchButtonText}>Apply</Text>
                     </TouchableOpacity>                
                </View>                    
         }
@@ -426,15 +453,6 @@ class ChefListPage extends Component {
                                     </TouchableHighlight>
                                  </View>
         }
-
-        var promoBannerView = null;
-        if (this.state.showPromoAppBanner)
-        // placeholder, in real practice, will only be rendered after the data gets fetched back
-        promoBannerView = <View style={styles.promoBannerView}>
-                                   <Text style={styles.infoBannerText}>
-                                      Promotion Banner Goes Here 
-                                   </Text>
-                            </View>
 
         var foodTags = [];
         for (let foodTag of this.state.foodTagArr) 
@@ -481,7 +499,6 @@ class ChefListPage extends Component {
                     </View>
                     {updateAppBannerView} 
                     {foodTagTabsView}
-                    {promoBannerView} 
                     {networkUnavailableView}
                     {cheflistView}
                     {loadingSpinnerView}
@@ -494,35 +511,55 @@ class ChefListPage extends Component {
         this.refs.listView.scrollTo({x:0, y:0, animated: true})
     }
 
-    getCurrentLikeIcon = function(showFills) {
+    getCurrentLikeIcon(showFills) {
         if (showFills)
             return heartFillsIcon;
         else
             return heartLineIcon;
     }
 
+    getSortCriteriaTitleText(sortByKey) {
+        if (sortByKey == this.state.selectedSortKey)
+            return styleFilterPage.selectedSortCriteriaTitleText;
+        else 
+            return styleFilterPage.sortCriteriaTitleText;
+    }
+
+    getShopTypeText(shopType) {
+        if (shopType == this.state.selectedShopType)
+            return styleFilterPage.selectedSortCriteriaTitleText;
+        else 
+            return styleFilterPage.sortCriteriaTitleText;
+    }
+
+    getDollarSign(priceLevel) {
+        if (this.state.selectedPriceLevels.includes(priceLevel))
+            return styleFilterPage.dollarSignGreen;
+        else 
+            return styleFilterPage.dollarSignGrey;
+    }
+
     clickDollarSign(priceLevel){
         this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];
-        switch(priceLevel){
-            case 1:
-               this.setState({dollarSign1: this.state.priceRankFilter[priceLevel]==true? dollarSign1_Orange:dollarSign1_Grey}); 
-               break;
-            case 2:
-               this.setState({dollarSign2: this.state.priceRankFilter[priceLevel]==true? dollarSign2_Orange:dollarSign2_Grey}); 
-               break;
-            case 3:
-               this.setState({dollarSign3: this.state.priceRankFilter[priceLevel]==true? dollarSign3_Orange:dollarSign3_Grey}); 
-               break;
-        }
-          
-        this.setState({priceRankFilter:this.state.priceRankFilter});
+        var currentPriceLevels = this.state.selectedPriceLevels;     
+        // toggle price level selection for display
+        if (currentPriceLevels.includes(priceLevel))
+            currentPriceLevels = currentPriceLevels.filter((ele) => ele !== priceLevel);
+        else
+            currentPriceLevels.push(priceLevel);
+        this.setState({priceRankFilter:this.state.priceRankFilter, selectedPriceLevels: currentPriceLevels});
     }
     
     clickSortSelection(sortByKey){
-        this.setState({[sortByKey]:!this.state[sortByKey]});
+        this.setState({[sortByKey]:!this.state[sortByKey], selectedSortKey: sortByKey});
         this.setState({sortCriteriaIcon:this.state[sortByKey]? sortCriteriaIconOrange : sortCriteriaIconGrey})
     }
-    
+
+    clickShopType(shopType) { 
+        //TODO Add more code in applySearchSettings to implement newly added 'search by shopType' feature
+        this.setState({[shopType]:!this.state[shopType], selectedShopType: shopType});
+    }
+
     showFavoriteChefs(){
         if(!this.state.eater){
             this.props.navigator.push({
@@ -1174,21 +1211,6 @@ var styleChefListPage = StyleSheet.create({
         paddingRight:0,
         marginBottom:windowHeight/90,
     },
-    likedIconView:{
-        height:windowHeight*0.02,
-        width:windowWidth*0.04,
-    },
-    iconCircle:{
-        //TODO: make the shadow, it's just a circle for now
-        marginLeft:windowWidth*0.015,
-        height:windowWidth*0.1,
-        width:windowWidth*0.1,
-        borderWidth:windowWidth*0.001,
-        borderRadius: windowWidth*0.1 / 2, 
-        alignItems:"center",
-        justifyContent:"center",
-        borderColor:"#bbb",
-    },
     shopInfoRow3:{
         flexDirection:'row',
         paddingTop:windowHeight*0.015,
@@ -1249,15 +1271,10 @@ var styleFilterPage = StyleSheet.create({
         width:windowWidth/3.0,
         justifyContent:'center',
     },
-    dollarSign:{
-        width:windowHeight*0.07,
-        height:windowHeight*0.07,
-        alignSelf:'center',
-    },
     applySearchButtonText:{
         color:'#fff',
-        fontSize:windowHeight/30.6,
-        fontWeight:'400',
+        fontSize:windowHeight/35,
+        fontWeight:'600',
         alignSelf:'center',
     },
     sortCriteriaSectionTitleView:{
@@ -1276,23 +1293,30 @@ var styleFilterPage = StyleSheet.create({
     },
     sortCriteriaView:{
         width:windowWidth,
-        height:windowHeight*0.088,
-        flexDirection:'row', 
+        flexDirection:'column', 
         borderColor:'#F5F5F5',
         borderBottomWidth:1,    
         backgroundColor:'#FFFFFF',
     },
     sortCriteriaTitleView:{
         width:windowWidth*0.85,
-        height:windowHeight*0.088,
+        height:windowHeight*0.054,
         flexDirection:'row',
         alignItems:'flex-start',        
     },
     sortCriteriaTitleText:{
         alignSelf:'center',
         color:'#4A4A4A',
-        fontSize:windowHeight/40.572,
-        marginLeft:windowWidth*0.0406,
+        fontWeight:'300',
+        fontSize:windowHeight/35,
+        marginLeft:windowWidth/20.7, 
+    },
+    selectedSortCriteriaTitleText:{
+        alignSelf:'center',
+        color:'#7adfc3',
+        fontWeight:'300',
+        fontSize:windowHeight/35,
+        marginLeft:windowWidth/20.7,       
     },
     sortCriteriaIconView:{
         width:windowWidth*0.15,
@@ -1306,6 +1330,23 @@ var styleFilterPage = StyleSheet.create({
     sortCriteriaIcon:{
         width:windowHeight*0.050,
         height:windowHeight*0.050,
+    },
+    pageSubTitle:{
+        fontSize:windowHeight/35.5,
+        fontWeight:'600',
+        color:'#4A4A4A',
+        marginVertical:windowHeight*0.0200,
+        paddingLeft:windowWidth/20.7,
+    },
+    dollarSignGrey:{
+        fontSize:windowHeight/35.5,
+        fontWeight:'400',
+        color:'#979797',
+    },
+    dollarSignGreen:{
+        fontSize:windowHeight/35.5,
+        fontWeight:'400',
+        color:'#7adfc3',
     },
 });
 module.exports = ChefListPage;
