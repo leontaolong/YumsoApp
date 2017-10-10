@@ -276,9 +276,11 @@ class ShopPage extends Component {
                                                         </Text> 
                                                     </View>
                                                     <View style={styleShopPage.quantitySelectionView}>
+                                                        {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][data.dishId] && this.state.shoppingCart[this.state.selectedTime][data.dishId].quantity &&
+                                                        // show minus button if quantity's greater than 0
                                                         <TouchableHighlight style={styleShopPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={() => this.removeFromShoppingCart(data) }>
                                                             <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
-                                                        </TouchableHighlight>
+                                                        </TouchableHighlight>}
                                                         <View style={styleShopPage.quantityTextView}>
                                                             <Text style={styleShopPage.quantityText}>
                                                                 {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][data.dishId] ? this.state.shoppingCart[this.state.selectedTime][data.dishId].quantity: ' '}
@@ -348,9 +350,11 @@ class ShopPage extends Component {
                                             </Text> 
                                         </View>
                                         <View style={styleShoppingCartPage.quantitySelectionView}>
+                                            {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][data.dishId] && this.state.shoppingCart[this.state.selectedTime][data.dishId].quantity &&
+                                            // show minus button if quantity's greater than 0
                                             <TouchableHighlight style={styleShopPage.plusMinusIconView} underlayColor={'#F5F5F5'} onPress={() => this.removeFromShoppingCart(data) }>
                                                 <Image source={minusIcon} style={styleShopPage.plusMinusIcon}/>
-                                            </TouchableHighlight>
+                                            </TouchableHighlight>}
                                             <View style={styleShopPage.quantityTextView}>
                                                 <Text style={styleShopPage.quantityText}>
                                                     {this.state.shoppingCart[this.state.selectedTime] && this.state.shoppingCart[this.state.selectedTime][data.dishId] ? this.state.shoppingCart[this.state.selectedTime][data.dishId].quantity: ' '}
@@ -608,8 +612,10 @@ class ShopPage extends Component {
         
         return (
             <View style={[styles.container, {paddingTop:0}]}>
-                {chefNoticeView}
-                {updateAppBannerView}
+                {/*10/08/2017: temporarily hide chefNoticeView and updateAppBannerView*/}
+
+                {/* {chefNoticeView}
+                {updateAppBannerView} */}
                 {networkUnavailableView}
                 {dishListView}
                 {footerView}
@@ -862,6 +868,7 @@ class ShopPage extends Component {
                 chefId:this.state.chefId,
                 chefProfilePic:this.state.chef.chefProfilePic,
                 shopName:this.state.chef.shopname,
+                reviewCount:this.state.chef.reviewCount,
             }
         });       
     }

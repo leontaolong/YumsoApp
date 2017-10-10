@@ -39,6 +39,7 @@ class ChefCommentsPage extends Component {
         var chefId = routeStack[routeStack.length-1].passProps.chefId;
         var chefProfilePic = routeStack[routeStack.length-1].passProps.chefProfilePic;
         var shopName = routeStack[routeStack.length-1].passProps.shopName;
+        var reviewCount = routeStack[routeStack.length-1].passProps.reviewCount
         this.state = {
             dataSource: ds.cloneWithRows([]),
             showProgress:false,
@@ -48,6 +49,7 @@ class ChefCommentsPage extends Component {
             chefId: chefId,
             chefProfilePic:chefProfilePic,
             shopName:shopName,
+            reviewCount:reviewCount,
             lastSortKey:null,
             comments:[],
             isAllCommentLoaded:false,
@@ -178,18 +180,18 @@ class ChefCommentsPage extends Component {
 
         return (
             <View style={styles.container}>
-               <View style={styles.headerBannerView}>    
-                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefPage()}>
-                      <View style={styles.backButtonView}>
-                         <Image source={backIcon} style={styles.backButtonIcon}/>
-                      </View>
-                   </TouchableHighlight>    
-                   <View style={styles.titleView}>
-                      <Text style={styles.titleText}>Reviews</Text>
-                   </View>
-                   <View style={styles.headerRightView}>
-                   </View>
-               </View>
+                <View style={styles.headerBannerView}> 
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefPage()}>
+                       <View style={styles.backButtonView}>
+                          <Image source={backIcon} style={styles.backButtonIcon}/>
+                       </View>
+                    </TouchableHighlight>  
+                    <View style={styles.titleView}></View>  
+                    <View style={styles.headerRightView}></View>     
+                </View>
+                <View style={[styles.pageTitleView, {marginBottom:windowWidth*0.01, paddingLeft:windowWidth/20.7}]}>
+                        <Text style={styles.pageTitle}>Reviews ({this.state.reviewCount})</Text>
+                </View>
                {noReviewText}
                {networkUnavailableView}
                {commentListView}
@@ -211,7 +213,7 @@ var styleChefCommentsPage = StyleSheet.create({
        paddingBottom:windowHeight*0.015,
        borderBottomWidth:1,
        borderColor: '#EAEAEA',
-       width:windowWidth*0.9,
+       width:windowWidth*0.93,
        alignSelf:'center',
     },
     eaterPhotoView:{

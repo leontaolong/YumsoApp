@@ -346,6 +346,19 @@ class ChefListPage extends Component {
         );
     }
 
+    renderPromoBanner() {
+        var promoBannerView = null;
+        if (this.state.showPromoAppBanner) {
+        // placeholder, in real practice, will only be rendered after the data gets fetched back
+        promoBannerView = <View style={styles.promoBannerView}>
+                                   <Text style={styles.infoBannerText}>
+                                      Promotion Banner Goes Here 
+                                   </Text>
+                            </View>
+        }
+        return promoBannerView;
+        
+    }    
     render() {
         var menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
         var loadingSpinnerView = null;
@@ -356,6 +369,7 @@ class ChefListPage extends Component {
         var cheflistView = <RefreshableListView ref="listView"
                             dataSource = {this.state.dataSource}
                             renderRow={this.renderRow.bind(this)}
+                            renderHeader={this.renderPromoBanner.bind(this)}
                             loadData={this.searchChef.bind(this)}
                             refreshDescription = "Pull to refresh "/>
         var networkUnavailableView = null;
@@ -450,15 +464,6 @@ class ChefListPage extends Component {
                                  </View>
         }
 
-        var promoBannerView = null;
-        if (this.state.showPromoAppBanner)
-        // placeholder, in real practice, will only be rendered after the data gets fetched back
-        promoBannerView = <View style={styles.promoBannerView}>
-                                   <Text style={styles.infoBannerText}>
-                                      Promotion Banner Goes Here
-                                   </Text>
-                            </View>
-
         var foodTags = [];
         for (let foodTag of this.state.foodTagArr)
             foodTags.push(<Text name={foodTag} key={foodTag} style={styleChefListPage.foodTagTabText}>{foodTag}</Text>);
@@ -504,7 +509,6 @@ class ChefListPage extends Component {
                     </View>
                     {updateAppBannerView}
                     {foodTagTabsView}
-                    {promoBannerView}
                     {networkUnavailableView}
                     {cheflistView}
 
