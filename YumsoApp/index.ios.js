@@ -24,6 +24,7 @@ var styles = require('./style');
 var VerificationPage = require('./verificationPage');
 var InvitePage = require('./invitePage');
 var OrderPage = require('./orderPage');
+var WelcomePage = require('./welcomePage')
 
 import React, {
   AppRegistry,
@@ -129,7 +130,7 @@ class YumsoApp extends Component {
            return <View style={{flex:1,backgroundColor:"#FFFFFF"}}></View>
         }else{
            if(!this.state.eater){
-              return (<Navigator initialRoute={{ name: 'LoginPage' }}  renderScene={ this.renderScene } />);
+              return (<Navigator initialRoute={{ name: 'WelcomePage' }}  renderScene={ this.renderScene } />);
            }else{
               return (<Navigator initialRoute={{ name: 'ChefListPage' }}  renderScene={ this.renderScene } />);
            }
@@ -185,6 +186,8 @@ class YumsoApp extends Component {
             return <InvitePage navigator={navigator}/>
         }else if (route.name==='OrderPage'){
             return <OrderPage navigator={navigator}/>
+        }else if (route.name==='WelcomePage'){
+            return <WelcomePage navigator={navigator}/>
         }
     }
 }

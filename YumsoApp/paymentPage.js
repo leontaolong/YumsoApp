@@ -62,48 +62,52 @@ class PaymentPage extends Component {
         }
         
         if(this.state.paymentOption){
-          var selectPaymentMethodView=[(<View key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonView}>
-                                            <TouchableHighlight onPress={()=>this.selectPayment()}>
+          var selectPaymentMethodView=[(<TouchableOpacity activeOpacity={0.7} key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonContainer} onPress={()=>this.selectPayment()}>
                                             <View style={stylePaymentPage.selectPaymentbutton}>
                                                 <Text style={stylePaymentPage.selectPaymentbuttonText}>Change Payment Method</Text>
                                             </View>
-                                            </TouchableHighlight> 
-                                        </View>),
+                                        </TouchableOpacity>),
                                        (<View key={'selectedPaymentTextView'} style={stylePaymentPage.selectedPaymentTextView}>
                                             <Text style={stylePaymentPage.selectedPaymentText}>
                                               {this.state.paymentOption.cardType} **** {this.state.paymentOption.last4} has been chosen for this payment
                                             </Text>
                                         </View>)];
         }else{
-           var selectPaymentMethodView=[(<TouchableHighlight key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonContainer} onPress={()=>this.selectPayment()}>
+           var selectPaymentMethodView=[(<TouchableOpacity activeOpacity={0.7} key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonContainer} onPress={()=>this.selectPayment()}>
                                             <View style={stylePaymentPage.selectPaymentbutton}>
                                                 <Text style={stylePaymentPage.selectPaymentbuttonText}>other payment methods</Text>
                                             </View>
-                                        </TouchableHighlight> 
+                                        </TouchableOpacity> 
                                         )];
         }
         
         var turnOnNotificationTextView = null
-        if(this.state.deviceToken=='No_Device_Token'){
-           turnOnNotificationTextView = <View style={stylePaymentPage.turnOnNotificationTextView}>
-                                        <Text style={stylePaymentPage.turnOnNotificationText}>We recommend you turn on notification to receive status update for your order.</Text>
-                                      </View> 
-        }
+        // if(this.state.deviceToken=='No_Device_Token'){
+        //    turnOnNotificationTextView = <View style={stylePaymentPage.turnOnNotificationTextView}>
+        //                                 <Text style={stylePaymentPage.turnOnNotificationText}>We recommend you turn on notification to receive status update for your order.</Text>
+        //                               </View> 
+        // }
                 
         return (<View style={styles.greyContainer}>
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                         <View style={styles.transparentHeaderBannerView}>
                             <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={()=>this.navigateBackToShoppingCartPage()}>
                                 <View style={styles.backButtonView}>
-                                    <Image source={backIcon} style={styles.backButtonIcon}/>
+                                    <Image source={backIcon} style={styles.backButtonIconsNew}/>
                                 </View> 
                             </TouchableHighlight>
+                            <View style={styles.titleView}></View>
+                            <View style={styles.headerRightView}>
+                            </View>
                         </View>
                         <View style={stylePaymentPage.contentTextView}>
                             <Text style={stylePaymentPage.contentTitle}>Payment</Text>
                             <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>
                             <Text style={stylePaymentPage.contentText}>Select a payment method</Text>
                             {turnOnNotificationTextView}
+                            <TouchableOpacity activeOpacity={0.7} style={stylePaymentPage.secondaryButtonView} onPress={()=>this.onPressDefaultCreditCard()}>
+                                <Text style={styles.secondaryButtonText}>Default Credit Card</Text>
+                            </TouchableOpacity>
                             {selectPaymentMethodView}
                             <View style={{flex:1}}>
                             </View>
@@ -218,6 +222,10 @@ class PaymentPage extends Component {
         this.props.navigator.pop();
     }
 
+    onPressDefaultCreditCard(){
+        Alert.alert('Feature Coming Soon..')
+    }
+
     async selectPayment() {
         let deviceToken = await AuthService.getDeviceTokenFromCache();
         if(deviceToken){
@@ -297,6 +305,7 @@ var stylePaymentPage = StyleSheet.create({
       justifyContent:'flex-start',
       alignItems:'center',
       alignSelf:'center',
+      backgroundColor: 'rgba(0,0,0,0)',
     },
     selectedPaymentText:{
       color:'#A0A0A0',
@@ -315,6 +324,13 @@ var stylePaymentPage = StyleSheet.create({
       fontSize:windowHeight/37.056,
       fontWeight:'bold',
       alignSelf: 'center',
+    },
+    secondaryButtonView:{
+        flexDirection:'column',
+        marginVertical:windowHeight*0.005,
+        backgroundColor:'#7BCBBE',
+        height:windowHeight*0.075,
+        justifyContent:'center',
     },
 });
 

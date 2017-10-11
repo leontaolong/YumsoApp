@@ -341,8 +341,7 @@ class ShoppingCartPage extends Component {
 
                                 <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
                                     <Text style={styleShoppingCartPage.orderSummaryTextNew}>Note to Chef</Text>
-                                    <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>Please warm both croissants, thank you!</Text>
-
+                                    <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}></Text>
                                 </View>
                                 <View style={styleShoppingCartPage.notesToChefTextView}>
                                     <Text style={styleShoppingCartPage.notesToChefText}></Text>
@@ -374,24 +373,24 @@ class ShoppingCartPage extends Component {
       }
 
       var promotionDeductionView = null;
-//      if(this.state.order.price && this.state.order.price.couponValue){
-    if(1 == 1){  // this is for only show this filed commont this and uncomment abow "if" condition
+      //if(this.state.order.price && this.state.order.price.couponValue){
+      if(1 == 1){
          var promotionDeductionMainView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalViewNew}>
-                                         <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
-                                             <Text style={styleShoppingCartPage.orderSummaryTextNew}>Promotion Code</Text>
-                                             {this.state.promotionCode ?
-                                             <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>{this.state.promotionCode}</Text>
-                                             :
-                                             null
-                                           }
-                                         </View>
-                                         <View style={styleShoppingCartPage.notesToChefTextView}>
-                                             <Text style={styleShoppingCartPage.notesToChefText}></Text>
-                                         </View>
-                                         <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''} onPress={() => this.editPromotionCode()}>
-                                             <Text style={styleShoppingCartPage.viewTextNew}>    Edit</Text>
-                                         </TouchableHighlight>
-                                    </View>);
+                                            <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
+                                                <Text style={styleShoppingCartPage.orderSummaryTextNew}>Coupon</Text>
+                                                {this.state.promotionCode ?
+                                                <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>{this.state.promotionCode}</Text>
+                                                :
+                                                null
+                                            }
+                                            </View>
+                                            <View style={styleShoppingCartPage.notesToChefTextView}>
+                                                <Text style={styleShoppingCartPage.notesToChefText}></Text>
+                                            </View>
+                                            <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''} onPress={() => this.editPromotionCode()}>
+                                                <Text style={styleShoppingCartPage.viewTextNew}>    Edit</Text>
+                                            </TouchableHighlight>
+                                          </View>);
 
           var promotionDeductionEditView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalViewNew}>
                                           <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
@@ -780,22 +779,12 @@ class ShoppingCartPage extends Component {
 
         return (
             <View style={styles.containerNew}>
-               {/*<View style={styles.headerBannerView}>
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToDishList()}>
-                       <View style={styles.backButtonView}>
-                          <Image source={backIcon} style={styles.backButtonIcon}/>
-                       </View>
-                    </TouchableHighlight>
-                    <View style={styles.headerRightView}>
-                    </View>
-               </View>*/}
                <View style={styles.headerBannerViewNew}>
                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToDishList()}>
                      <View style={styles.backButtonViewsNew}>
                          <Image source={backIcon} style={styles.backButtonIconsNew}/>
                      </View>
                    </TouchableHighlight>
-
                    <View style={styles.headerRightView}>
                    </View>
                </View>
@@ -814,10 +803,6 @@ class ShoppingCartPage extends Component {
                     </TouchableHighlight>
                     {payNowButtonView}
                </View>
-               {/*
-               <TouchableOpacity activeOpacity={0.7} style={styles.footerView}>
-                    <Text style={styles.footerText}>Check Out</Text>
-               </TouchableOpacity>*/}
             </View>
         );
     }
@@ -962,20 +947,22 @@ class ShoppingCartPage extends Component {
         }
     }
     editChefNote() {
-        if (this.state.editChefNote == true) {
-            this.setState({editChefNote: false})
-        }
-        else{
-          this.setState({editChefNote: true})
-        }
+        Alert.alert('Feature Coming Soon...');
+        // if (this.state.editChefNote == true) {
+        //     this.setState({editChefNote: false})
+        // }
+        // else{
+        //   this.setState({editChefNote: true})
+        // }
     }
     editPromotionCode() {
-        if (this.state.editPromotionCode == true) {
-            this.setState({editPromotionCode: false})
-        }
-        else{
-          this.setState({editPromotionCode: true})
-        }
+        Alert.alert('Feature Coming Soon...');
+        // if (this.state.editPromotionCode == true) {
+        //     this.setState({editPromotionCode: false})
+        // }
+        // else{
+        //   this.setState({editPromotionCode: true})
+        // }
     }
 
 

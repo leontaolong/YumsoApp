@@ -464,11 +464,6 @@ class OrderDetailPage extends Component {
                                  </View>
                                  <View style={{marginLeft: 52 * windowWidthRatio, marginTop:10 * windowHeightRatio}}>
                                      <Text style={{fontSize:b2, color:'#4A4A4A'}}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
-                                     <View style={{flexDirection:'row', marginTop:10* windowHeightRatio, paddingBottom:10* windowHeightRatio}}>
-
-                                         <Image source={demoFood} style={styleOrderDetailPage.uploadImageNew}/>
-                                         <Image source={demoFood} style={styleOrderDetailPage.uploadImageNew}/>
-                                     </View>
                                  </View>
                             </View>),
                               chefReplyView];
@@ -479,7 +474,6 @@ class OrderDetailPage extends Component {
                                       <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Reviews</Text>
                                   </View>
                                   <View style={{ height:img36Height, flexDirection:'row'}}>
-                                      <Image source={demoFood} style={{height:img36Height, width: img36Height, borderRadius: img36Height*0.5}}/>
                                       <View  style={{paddingLeft:16*windowWidthRatio}}>
                                           <Text style={{fontSize:12, color:'#4A4A4A'}}>natalieh</Text>
                                           <Image source={star5} style={{height:10*windowHeightRatio,marginTop:5*windowHeightRatio, width: 70*windowWidthRatio}}/>
@@ -490,11 +484,6 @@ class OrderDetailPage extends Component {
                                   </View>
                                   <View style={{marginLeft: 52 * windowWidthRatio, marginTop:10 * windowHeightRatio}}>
                                       <Text style={{fontSize:b2, color:'#4A4A4A'}}>Love it! I will totally order it adain!</Text>
-                                      <View style={{flexDirection:'row', marginTop:10* windowHeightRatio, paddingBottom:10* windowHeightRatio}}>
-
-                                          <Image source={demoFood} style={styleOrderDetailPage.uploadImageNew}/>
-                                          <Image source={demoFood} style={styleOrderDetailPage.uploadImageNew}/>
-                                      </View>
                                   </View>
                              </View>
       }else if(commonWidget.isOrderCommentable(this.state.order)){//if the order is commentable, show commet input area
@@ -526,19 +515,6 @@ class OrderDetailPage extends Component {
                                             </TouchableHighlight>
                                         </View>
                                     </View>
-                                    <View style={{ paddingBottom:5* windowHeightRatio}}>
-                                        <Text style={{fontSize:h3 , color:"#4a4a4a"}}>Upload Images (Optional)</Text>
-                                    </View>
-
-                                    <View style={styleOrderDetailPage.uploadImageViewNew}>
-
-                                        <Image source={demoFood} style={styleOrderDetailPage.uploadImageNew}/>
-
-                                        <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.uploadImageNew}>
-                                                <Text style={styleOrderDetailPage.uploadBtnImageNew}>+</Text>
-                                        </TouchableHighlight>
-                                    </View>
-
                                     <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.submitCommentButton} onPress={()=>this.submitComment()}>
                                             <Text style={styleOrderDetailPage.submitCommentButtonText}>Submit</Text>
                                     </TouchableHighlight>

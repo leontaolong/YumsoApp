@@ -135,14 +135,6 @@ class EaterPage extends Component {
              return (<ResetPasswordPage userEmail={this.state.eater.email} navigator = {this.props.navigator} onCancel={this.onCancelPasswordReset.bind(this)}/>)
         }
 
-//*******
-// <View style={styles.headerBannerViewNew}>
-//
-//
-//     <View style={styles.headerRightView}>
-//     </View>
-// </View>
-//**//******
         if (this.state.edit) {
           var eaterProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
             if(this.state.fromLoginPage){
@@ -274,55 +266,9 @@ class EaterPage extends Component {
             }
 
             return (<View style={styles.containerNew}>
-                      {/*  <View style={styles.headerBannerView}>
-                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                                <View style={styles.backButtonView}>
-                                    <Image source={backIcon} style={styles.backButtonIcon}/>
-                                </View>
-                            </TouchableHighlight>
-                            <View style={styles.titleView}>
-                                <Text style={styles.titleText}>My Profile</Text>
-                            </View>
-                            <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress={() => this.onPressEdit()}>
-                                <View style={styles.headerRightTextButtonView}>
-                                    <Text style={styles.headerRightTextButtonText}>Edit</Text>
-                                </View>
-                            </TouchableHighlight>
-                        </View> */}
-
-
-
                         <View style={styles.headerBannerViewNew}>
-                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                                <View style={styles.backButtonViewsNew}>
-                                    <Image source={backIcon} style={styles.backButtonIconsNew}/>
-                                </View>
-                            </TouchableHighlight>
                         </View>
-
-                      {/*  <Image source={eaterProfile} style={styleEaterPage.eaterProfilePic}>
-                            <TouchableHighlight style={styleEaterPage.uploadPhotoButtonView} underlayColor={'transparent'} onPress={() => this.uploadPic() }>
-                                <Image source={uploadPhotoIcon} style={styleEaterPage.uploadPhotoIcon}/>
-                            </TouchableHighlight>
-                        </Image>
-
-                        <View style={styleEaterPage.eaterPageRowView}>
-                            <Text style={styleEaterPage.eaterNameText}>{this.state.eater.firstname} {this.state.eater.lastname} ({this.state.eater.eaterAlias}) </Text>
-                            <Text style={styleEaterPage.eaterPageGreyText}>{this.state.principal.identityProvider === 'Yumso' ? `Email: ${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
-                            {emailView}
-                            {photoNumberView}
-                            {resetPasswordButton}
-                        </View>
-                        <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.onPressEdit()}>
-                            <View style={styles.footerButtonYellowView}>
-                                <Text style={styles.footerButtonText}>Edit Profile</Text>
-                            </View>
-                        </TouchableOpacity>
-                        {loadingSpinnerView}*/}
-
-
                         <ScrollView style={styleEaterPage.scrollView}>
-
                         <View style={styleEaterPage.headerViewNew}>
                             <View style={styleEaterPage.titleViewNew}>
                                 <Text style={styles.titleTextNew}>{this.state.eater.firstname} {this.state.eater.lastname}</Text>
@@ -333,8 +279,6 @@ class EaterPage extends Component {
 
                             </View>
                         </View>
-
-
                         <View style={styleEaterPage.profileBtnListNew}>
                             <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.onPressEdit()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
@@ -658,7 +602,7 @@ class EaterPage extends Component {
         .then(()=>{
             //this.props.caller.setState({eater:undefined});
             this.props.navigator.push({
-                name: 'LoginPage',
+                name: 'WelcomePage',
                 // passProps:{
                 //     callback: this.props.caller.componentDidMount.bind(this.props.caller),
                 //     backCallback: this.props.caller.componentDidMount.bind(this.props.caller)

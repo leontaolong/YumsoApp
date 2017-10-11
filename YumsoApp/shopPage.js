@@ -1357,7 +1357,7 @@ var styleShopPage = StyleSheet.create({
         marginHorizontal:windowWidth/20.7,
         marginVertical:windowHeight*0.005,
         borderColor:'#7BCBBE',
-        borderWidth:1,
+        borderWidth:2,
     },
     fullMenuButtonText: {
         fontSize:15*windowHeight/677,

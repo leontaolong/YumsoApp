@@ -730,7 +730,6 @@ module.exports = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'flex-start',
         alignItems:'center',
-      //  width:80,
         color:"#FFCC33",
         fontWeight:'bold',
     },
@@ -739,10 +738,34 @@ module.exports = StyleSheet.create({
       fontSize: windowHeight/35.5,
       fontWeight:'bold',
       alignSelf:'center',
-
     },
-
-
-
-
+    secondaryButtonView:{
+      flexDirection:'column',
+      marginHorizontal:windowWidth/20.7,
+      marginVertical:windowHeight*0.005,
+      backgroundColor:'#7BCBBE',
+      height:windowHeight*0.075,
+      justifyContent:'center',
+    },
+    secondaryButtonText:{
+      fontSize:windowHeight/40,
+      fontWeight:'bold',
+      color:'#FFFFFF',
+      alignSelf:'center',
+    },
+    secondaryWhiteButtonText:{
+      fontSize:windowHeight/40,
+      fontWeight:'bold',
+      color:'#7BCBBE',
+      alignSelf:'center'
+    },
+    secondaryWhiteButtonView:{
+      flexDirection:'column',
+      marginHorizontal:windowWidth/20.7,
+      marginVertical:windowHeight*0.005,
+      borderColor:'#7BCBBE',
+      borderWidth:2,
+      justifyContent:'center',
+      height:windowHeight*0.075,
+    }
 });

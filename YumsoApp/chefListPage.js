@@ -475,7 +475,6 @@ class ChefListPage extends Component {
                                 </View>
 
         return (
-            <SideMenu menu={menu} isOpen={this.state.isMenuOpen} onChange={(isOpen) => this.openSideMenu(isOpen)}>
                 <View style={styles.pageWrapper}>
                     <View style={[styles.headerBannerView, styleChefListPage.customizedHeaderBannerRules]}>
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
@@ -534,11 +533,8 @@ class ChefListPage extends Component {
                               </View>
                         </View>
                     </View>
-
-
                     {loadingSpinnerView}
                 </View>
-            </SideMenu>
         );
     }
 

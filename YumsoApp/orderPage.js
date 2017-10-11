@@ -83,9 +83,11 @@ class OrderPage extends Component {
       showNetworkUnavailableScreen:false,
       showProgress:false,
       showProgressBottom:false,
+      orderPendingShow:false,
+      redStarShow:false
     };
 
-       newMessage = <Image source={orange_dot} style={styleOrderPage.dot} />
+    newMessage = <Image source={orange_dot} style={styleOrderPage.dot} />
   }
 
   componentDidMount(){
@@ -139,12 +141,13 @@ class OrderPage extends Component {
             }
 
             var orderPending = [];
-
+            var orderNeedReview = [];
             for(var oneOrder of this.state.orders){
                 if(commonWidget.isOrderPending(oneOrder)){
                    orderPending.push(oneOrder);
                 }else if(commonWidget.isOrderCommentable(oneOrder)){
-                   console.log('You need review!!');
+                  console.log('comment!')
+                  orderNeedReview.push(oneOrder);
                }
             }
 
@@ -161,22 +164,15 @@ class OrderPage extends Component {
                           showProgressBottom:false,
                           orderPending:orderPending,
                           orders:JSON.parse(JSON.stringify(this.state.orders)),
+                          orderPendingShow:(orderPending.length > 0),
+                          redStarShow:(orderNeedReview.length>0)
                         });
         }
     }
 
 
-
     ShowHideTextComponentView = () =>{
-
-      if(this.state.status == true)
-      {
-        this.setState({status: false})
-      }
-      else
-      {
-        this.setState({status: true})
-      }
+      this.setState({orderPendingShow: !this.state.orderPendingShow})
     }
 
     renderRow(order){
@@ -219,7 +215,7 @@ class OrderPage extends Component {
           <View style={styles.titleViewNew}>
             <Text style={styles.titleTextNew}>Orders</Text>
           </View>
-          {!this.state.status ?
+          {this.state.orderPendingShow ?
             <View>
                 <View style={styleOrderPage.ongoingView}>
                   <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
@@ -232,8 +228,7 @@ class OrderPage extends Component {
                   renderRow={this.renderRow.bind(this) }
                   renderFooter={ this.renderFooter.bind(this) }
                   pageSize={10}
-                  initialListSize={1}
-                  />
+                  initialListSize={1}/>
               </View>
           </View> :
           <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
@@ -245,8 +240,8 @@ class OrderPage extends Component {
           <View style={styleOrderPage.dividerView}><Text style={styleOrderPage.dividerLineTop}></Text></View>
           <TouchableOpacity style={styleOrderPage.ongoingTouchable}  onPress={() => this.onPressNeedReviewsOrdersBtn()}>
               <View style={styleOrderPage.reviewsView}>
-                  <Text style={styleOrderPage.ongoingText}>Orders Need Review</Text>
-                  {(1 == 1)?newMessage:null}
+                  <Text style={styleOrderPage.ongoingText}>Order(s) Need Review</Text>
+                  {this.state.redStarShow ? newMessage : null}
               </View>
           </TouchableOpacity>
 
@@ -254,7 +249,6 @@ class OrderPage extends Component {
           <TouchableOpacity style={styleOrderPage.ongoingTouchable}  onPress={() => this.onPressCompleteOrdersBtn()}>
               <View style={styleOrderPage.reviewsView}>
                   <Text style={styleOrderPage.ongoingText}>Completed Orders</Text>
-                  {(1 == 0)?newMessage:null}
               </View>
           </TouchableOpacity>
 
