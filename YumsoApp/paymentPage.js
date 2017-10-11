@@ -46,7 +46,6 @@ class PaymentPage extends Component {
             scheduleMapping:scheduleMapping,
         };
         this.client = new HttpsClient(config.baseUrl, true);
-        //console.log("eater: "+this.state.eater);
     }
 
     async componentWillMount(){

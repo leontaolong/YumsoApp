@@ -89,12 +89,8 @@ class LoginPage extends Component {
               <Image style={styles.pageBackgroundImage} source={backgroundImage}>
 
                   <View style={styles.headerBannerViewNew}>
-                      <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={()=>this.navigateBack()}>
-                          <View style={styles.backButtonViewsNew}>
-                             <Image source={backIcon} style={styles.backButtonIconsNew}/>
-                          </View>
-                      </TouchableHighlight>
-
+                      <View style={styles.headerLeftView}>
+                      </View>
                       <View style={styles.headerRightView}>
                       </View>
                   </View>

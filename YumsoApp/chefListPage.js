@@ -925,10 +925,6 @@ var Menu = React.createClass({
         );
     },
 
-    // _handleAppStateChange: function(appState) {
-    //     var LastAppState = ;
-    // },
-
     goToOrderHistory: function() {
         this.props.caller.setState({ isMenuOpen: false });
         if(!this.props.eater){

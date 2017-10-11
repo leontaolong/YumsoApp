@@ -343,14 +343,14 @@ class EaterPage extends Component {
                             </TouchableHighlight>
                         </View>
                         <View style={styleEaterPage.profileBtnListNew}>
-                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.onPressEdit()}>
+                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.goToPaymentOptionPage()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
                                     <Text style={styleEaterPage.profileBtnListTextNew}>Payment Options</Text>
                                 </View>
                             </TouchableHighlight>
                         </View>
                         <View style={styleEaterPage.profileBtnListNew}>
-                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.onPressAddressBook()}>
+                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.goToAddressBookPage()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
                                     <Text style={styleEaterPage.profileBtnListTextNew}>Address Book</Text>
                                 </View>
@@ -358,7 +358,7 @@ class EaterPage extends Component {
                         </View>
 
                         <View style={styleEaterPage.profileBtnListNew}>
-                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.onPressEdit()}>
+                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.goToCouponPage()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
                                     <Text style={styleEaterPage.profileBtnListTextNew}>Coupon</Text>
                                 </View>
@@ -366,7 +366,7 @@ class EaterPage extends Component {
                         </View>
 
                         <View style={styleEaterPage.profileBtnListNew}>
-                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.onPressEdit()}>
+                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.goToInvitePage()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
                                     <Text style={styleEaterPage.profileBtnListTextNew}>Invite Friends</Text>
                                 </View>
@@ -374,7 +374,7 @@ class EaterPage extends Component {
                         </View>
 
                         <View style={styleEaterPage.profileBtnListNew}>
-                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.navigateToContactUsPage()}>
+                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.goToContactUsPage()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
                                     <Text style={styleEaterPage.profileBtnListTextNew}>Contact Us</Text>
                                 </View>
@@ -382,7 +382,7 @@ class EaterPage extends Component {
                         </View>
 
                         <View style={styleEaterPage.profileBtnListLastNew}>
-                            <TouchableHighlight style={styleEaterPage.profileBtnListLastNew} underlayColor={'#F5F5F5'} onPress={() => this.onPressEdit()}>
+                            <TouchableHighlight style={styleEaterPage.profileBtnListLastNew} underlayColor={'#F5F5F5'} onPress={() => this.logOut()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
                                     <Text style={styleEaterPage.profileBtnListTextNew}>Log Out</Text>
                                 </View>
@@ -609,7 +609,7 @@ class EaterPage extends Component {
         });
     }
 
-    navigateToContactUsPage() {
+    goToContactUsPage() {
         this.props.navigator.push({
             name: 'ContactUsPage',
         });
@@ -618,6 +618,52 @@ class EaterPage extends Component {
     navigateToAboutPage() {
         this.props.navigator.push({
             name: 'AboutPage',
+        });
+    }
+
+    goToPaymentOptionPage() {
+        this.props.navigator.push({
+            name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
+            passProps:{
+                eater:this.state.eater
+            }
+        });
+    }
+
+    goToAddressBookPage() {
+        this.props.navigator.push({
+            name: 'AddressBookPage',
+            passProps:{
+                eater:this.state.eater,
+                currentLocation:this.props.currentLocation,
+            }
+        });
+    }
+
+    goToCouponPage(){
+        Alert.alert('Page Coming Soon...');
+    }
+
+    goToInvitePage(){
+        this.props.navigator.push({
+            name: 'InvitePage',
+            passProps:{
+                eater:this.state.eater,
+            }
+        });
+    }
+
+    logOut(){
+        return AuthService.logOut()
+        .then(()=>{
+            //this.props.caller.setState({eater:undefined});
+            this.props.navigator.push({
+                name: 'LoginPage',
+                // passProps:{
+                //     callback: this.props.caller.componentDidMount.bind(this.props.caller),
+                //     backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
+                // }
+            });
         });
     }
 }
@@ -830,8 +876,6 @@ var styleEaterPage = StyleSheet.create({
       height: 58 * windowHeightRatio,
       marginTop: 0,
       marginLeft: 20 * windowWidthRatio,
-
-//backgroundColor: "#0000aa",
     },
 
     profileBtnListNew: {
