@@ -313,7 +313,6 @@ var styleLoginPage = StyleSheet.create({
       width:windowWidth,
       backgroundColor:'#FFCC33',
       justifyContent: 'center',
-      fontSize: 22 * windowHeightRatio,
       marginTop: 60 * windowHeightRatio,
 
     },

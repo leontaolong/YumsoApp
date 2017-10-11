@@ -9,6 +9,7 @@ var logoIcon = require('./icons/icon-large-logo.png');
 var backgroundImage = require('./resourceImages/background@3x.jpg');
 var commonAlert = require('./commonModules/commonAlert');
 var commonWidget = require('./commonModules/commonWidget');
+var dateRender = require('./commonModules/dateRender');
 var validator = require('validator');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
@@ -124,35 +125,34 @@ class OrderPage extends Component {
 
         if (resOrders.data){
             if(!this.state.lastSortKeyOrders){
-              this.state.orders = resOrders.data.orders;
+               this.state.orders = resOrders.data.orders;
             }else{
-              this.state.orders = this.state.orders.concat(resOrders.data.orders);
+               this.state.orders = this.state.orders.concat(resOrders.data.orders);
             }
 
             if(resOrders.data.lastSortKey && this.state.lastSortKeyOrders != resOrders.data.lastSortKey){
-              this.state.lastSortKeyOrders = resOrders.data.lastSortKey
+               this.state.lastSortKeyOrders = resOrders.data.lastSortKey
             }else if(!resOrders.data.lastSortKey){
-              this.setState({isAllOrdersLoaded:true});
+               this.setState({isAllOrdersLoaded:true});
             }else{
-              return;
+               return;
             }
 
             var orderPending = [];
 
             for(var oneOrder of this.state.orders){
                 if(commonWidget.isOrderPending(oneOrder)){
-                  orderPending.push(oneOrder);
+                   orderPending.push(oneOrder);
                 }else if(commonWidget.isOrderCommentable(oneOrder)){
-                  console.log('You need review!!');
+                   console.log('You need review!!');
                }
             }
 
             var dd = this.state.orders.length;
             if (dd > 10) {
-              footerView = <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>
-
+                footerView = <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>
             } else {
-              footerView = null;
+                footerView = null;
             }
 
             this.setState({
@@ -181,7 +181,7 @@ class OrderPage extends Component {
 
     renderRow(order){
       return  (
-        <TouchableOpacity  activeOpacity={0.7}>
+        <TouchableOpacity  onPress={()=>this.navigateToOrderDetailPage(order)} activeOpacity={0.7}>
         <View style={styleOrderPage.cell}>
             <View style={styleOrderPage.oneListingView}>
                 <View style={styleOrderPage.orderInfoView}>
@@ -201,7 +201,6 @@ class OrderPage extends Component {
     }
 
     renderFooter(){
-      console.log(this.state.orders)
       if(this.state.orders && this.state.orders.length > 0 && this.state.orders.length >= firstTimeLoadPageSize){
         return footerView;
       }
@@ -220,9 +219,6 @@ class OrderPage extends Component {
           <View style={styles.titleViewNew}>
             <Text style={styles.titleTextNew}>Orders</Text>
           </View>
-
-
-
           {!this.state.status ?
             <View>
                 <View style={styleOrderPage.ongoingView}>
@@ -303,6 +299,11 @@ class OrderPage extends Component {
       );
     }
 
+    loadMoreOrders(){
+      this.setState({showProgressBottom:true});
+      this.fetchOrders();
+    }
+
     navigateBackToHistoryOrderPage(){
         if(this.callback && (this.state.order.orderStatus!=this.state.orderStatus||this.state.ratingSucceed)){
            console.log(this.state.order);
@@ -346,6 +347,17 @@ class OrderPage extends Component {
               callback: function(eater){
                   this.props.caller.setState({eater:eater});
               }.bind(this)
+          }
+      });
+    }
+
+    navigateToOrderDetailPage(order){
+      this.setState({ isMenuOpen: false });
+      this.props.navigator.push({
+          name: 'OrderDetailPage',
+          passProps:{
+              eater:this.state.eater,
+              order:order,
           }
       });
     }

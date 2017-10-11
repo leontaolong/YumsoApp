@@ -1101,8 +1101,6 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center', 
         height:windowHeight*0.03,
-        fontSize:windowHeight/40,
-        color:'#4A4A4A',
     },
     pickupAddressText:{ 
         fontSize: windowHeight/47.33, 
@@ -1113,28 +1111,23 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center', 
         height:windowHeight*0.08,
-        //backgroundColor:'#FFCC33'
     },
     openHourTitle:{
         alignSelf:'center',
         fontSize:windowHeight/46.0,
-        //color:'#FFFFFF',
         color:'#4A4A4A',
         fontWeight:'600',
         marginRight:windowWidth*0.015625,
     },
     modalPicker:{
         alignSelf:'center',
-        //backgroundColor:'#FFCC33'
     },
     modalPickerSelectText:{
         fontSize:windowHeight/46.0,
-        //color:'#FFFFFF',
         color:'#7BCBBE',
         fontWeight:'600',
     },
     modalPickerSelect:{
-        //borderColor:'#FFFFFF',
         borderColor:'#7BCBBE',
         borderWidth:1.5,
     },
@@ -1192,8 +1185,6 @@ var styleShopPage = StyleSheet.create({
         opacity:0.3,
     },
     oneDishNameDiscriptionView:{
-        // flex: 1,
-        // flexDirection: 'row',
         backgroundColor:'#FFFFFF',
         paddingHorizontal: windowWidth/20.7,
         paddingTop: windowHeight*0.03,

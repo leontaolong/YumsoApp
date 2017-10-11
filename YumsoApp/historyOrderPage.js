@@ -142,7 +142,6 @@ class HistoryOrderPage extends Component {
         let eater = await AuthService.getPrincipalInfo();
         try{
           var resOrders = await this.client.getWithAuth(config.orderHistoryEndpoint+eater.userId+'?'+queryStringOrders);
-          console.log(resOrders);
           this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:false})
         }catch(err){
           this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:true});
@@ -209,8 +208,7 @@ class HistoryOrderPage extends Component {
                    orderCompleted.push(oneOrder);
                 }
             }
-            console.log("AllOrder: ");
-            console.log(this.state.orders.length);
+
             // var dd = this.state.orders.length;
             //
             // if (dd > 10) {
@@ -235,7 +233,6 @@ class HistoryOrderPage extends Component {
     }
 
     loadMoreOrders(){
-           console.log('loadMoreOrders');
            this.setState({showProgressBottom:true});
            this.fetchOrderAndComments();
     }
@@ -279,7 +276,7 @@ class HistoryOrderPage extends Component {
         }
 
         return  (
-                    <TouchableOpacity onPress={()=>this.navigateToOrderDetailPage(order)} activeOpacity={0.7}>
+                <TouchableOpacity onPress={()=>this.navigateToOrderDetailPage(order)} activeOpacity={0.7}>
                     <View style={styleHistoryOrderPage.cell}>
                         <View key={order.orderId} style={styleHistoryOrderPage.oneListingView}>
                             <View style={styleHistoryOrderPage.orderInfoView}>
@@ -290,23 +287,19 @@ class HistoryOrderPage extends Component {
                             <Image source={enterPic} style={styleHistoryOrderPage.enterPicNew}/>
                         </View>
 
-                        </View>
-                    </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
                  );
     }
 
     renderFooter(){
-       console.log(this.state.orders)
        if(this.state.orders && this.state.orders.length > 0 && this.state.orders.length >= firstTimeLoadPageSize){
-
-         var dd = this.state.orders.length;
-
-         if (dd > 10) {
-           return <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>;
-
-         } else {
-           return null
-         }
+          var dd = this.state.orders.length;
+          if (dd > 10) {
+              return <LoadMoreBottomComponent isAllItemsLoaded={this.state.isAllOrdersLoaded} itemsName={'Orders'} isloading={this.state.showProgressBottom} pressToLoadMore={this.loadMoreOrders.bind(this)}/>;
+          } else {
+              return null
+          }
        }
     }
 

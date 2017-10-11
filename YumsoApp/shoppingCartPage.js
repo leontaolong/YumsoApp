@@ -146,7 +146,7 @@ class ShoppingCartPage extends Component {
                                                <Text style={styleShoppingCartPage.notesToChefText}></Text>
                                            </View>
                                            {this.state.deliveryAddress!=undefined ?
-                                           <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} underlayColor={''}  onPress={()=>this.setState({selectDeliveryAddress:true})}>
+                                           <TouchableHighlight style={styleShoppingCartPage.notesToChefButtonView} onPress={()=>this.setState({selectDeliveryAddress:true})}>
                                                <Text style={styleShoppingCartPage.viewTextNew}>    Edit</Text>
                                            </TouchableHighlight>
                                            :

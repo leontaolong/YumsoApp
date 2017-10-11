@@ -44,7 +44,6 @@ import Tabs from 'react-native-tabs';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
-console.log(windowHeight+" "+windowWidth);
 
 import React, {
     Component,
@@ -279,7 +278,7 @@ class ChefListPage extends Component {
 
         var yumsoExclusiveTag = "";
         if(chef.yumsoExclusiveBadge)
-           yumsoExclusiveTag = <Text style={[styleChefListPage.labelText, {color:"#7adfc3"}]}>, exclusive</Text>
+           yumsoExclusiveTag = <Text style={[styleChefListPage.labelText, {color:"#7adfc3"}]}>  Yumso Exclusive</Text>
 
 
         if(chef.chefProfilePicUrls && chef.chefProfilePicUrls.small){
@@ -479,17 +478,6 @@ class ChefListPage extends Component {
             <SideMenu menu={menu} isOpen={this.state.isMenuOpen} onChange={(isOpen) => this.openSideMenu(isOpen)}>
                 <View style={styles.pageWrapper}>
                     <View style={[styles.headerBannerView, styleChefListPage.customizedHeaderBannerRules]}>
-                            {/* {
-                        07/29/2017: Remove the hamburger buttom for V2.0 UI Refresh,
-                                    uncomment code below or simply swpie right to access profile menu
-                            }*/}
-
-                          {/* <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
-                          <View style={styles.menuButtonView}>
-                            <Image source={menuIcon} style={styles.menuIcon}/>
-                          </View>
-                        </TouchableHighlight>   */}
-
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.upperLeftBtnView}>
                             <Image source={ballonIcon} style={styles.ballonIcon}/>
@@ -840,7 +828,6 @@ class ChefListPage extends Component {
 
     navigateToShopPage(chef){
         this.setState({ isMenuOpen: false });
-        console.log('GPSproxAddress: '+this.state.GPSproxAddress)
         this.props.navigator.push({
             name: 'ShopPage',
             passProps:{

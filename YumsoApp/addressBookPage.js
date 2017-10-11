@@ -109,22 +109,6 @@ class addressBookPage extends Component {
              }
              otherAddressListRendered.push(
                      <View key={i} style={styleAddressBookPage.addressView}>
-                      {/*   <View style={styleAddressBookPage.addressTitleView}>
-                             <Image source={houseIcon} style={styleAddressBookPage.houseIcon}/>
-                             <Text style={styleAddressBookPage.addressTitleText}>Other</Text>
-                         </View>
-                         <View style={styleAddressBookPage.addressTextView}>
-                             <Text style={styleAddressBookPage.addressText}>
-                                 {this.state.eater.addressList[i].formatted_address}
-                             </Text>
-                             {aptNumberView}
-                         </View>
-                         <TouchableHighlight style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.removeAddress(this.state.eater.addressList[i]) }>
-                             <Text style={styleAddressBookPage.addressEditText}>Delete</Text>
-                         </TouchableHighlight> */}
-
-
-
                          <View  style={styleAddressBookPage.addressViewRow}>
                              <Text style={styleAddressBookPage.addressTitleTextNew}>Other</Text>
 
@@ -153,13 +137,8 @@ class addressBookPage extends Component {
              }
 
              var addAddressView =[ (<View key={'Home'} style={styleAddressBookPage.addressView}>
-                                      {/*  <View style={styleAddressBookPage.addressTitleView}>
-                                            <Image source={houseIcon} style={styleAddressBookPage.houseIcon}/>
-                                            <Text style={styleAddressBookPage.addressTitleText}>Home</Text>
-                                        </View> */}
                                         <View  style={styleAddressBookPage.addressViewRow}>
                                             <Text style={styleAddressBookPage.addressTitleTextNew}>Home</Text>
-
                                             <View style={styleAddressBookPage.addressTextView}>
                                                 <Text style={styleAddressBookPage.addressText}>
                                                     {this.state.eater.homeAddress != null ? this.state.eater.homeAddress.formatted_address : ''}
@@ -173,10 +152,6 @@ class addressBookPage extends Component {
 
                                 </View>),
                                 (<View key={'Work'} style={styleAddressBookPage.addressView}>
-                                      {/*  <View style={styleAddressBookPage.addressTitleView}>
-                                            <Image source={houseIcon} style={styleAddressBookPage.houseIcon}/>
-                                            <Text style={styleAddressBookPage.addressTitleText}>Work</Text>
-                                        </View> */}
                                         <View  style={styleAddressBookPage.addressViewRow}>
                                             <Text style={styleAddressBookPage.addressTitleTextNew}>Work</Text>
                                             <View style={styleAddressBookPage.addressTextView}>
@@ -327,22 +302,14 @@ var styleAddressBookPage = StyleSheet.create({
     // *** new
 
     addressTitleTextNew: {
-      //  paddingLeft: 20,
         fontSize: h2,
         fontWeight: "bold",
-      //  backgroundColor: "#ccaaca",
         marginTop: 10 * windowHeightRatio,
         color: "#4A4A4A",
-
     },
-
     addressViewRow:{
         flex:1,
-    //   flexDirection:'row',
-        //borderColor:'#D7D7D7',
-        //borderBottomWidth: 1,
     },
-
     addressView:{
         flex:1,
         flexDirection:'row',
@@ -351,7 +318,6 @@ var styleAddressBookPage = StyleSheet.create({
         marginLeft: 20 * windowWidthRatio,
         marginRight: 20 * windowWidthRatio,
     },
-
     addressTitleView:{
         flex:0.24,
         flexDirection:'row',
@@ -366,14 +332,11 @@ var styleAddressBookPage = StyleSheet.create({
     },
     addressTextView:{
         marginLeft:0,
-      //  flex:0.51,
         justifyContent:'flex-end',
-        //paddingVertical:windowWidth*0.0427,
         marginBottom: 10 * windowHeightRatio,
     },
     addressText:{
         fontSize:h4,
-        //paddingLeft:20,
         paddingRight: 5 * windowWidthRatio,
         color: "#4A4A4A",
     },
@@ -381,17 +344,12 @@ var styleAddressBookPage = StyleSheet.create({
         fontSize: h2,
         color:'#7bcbbe',
         alignSelf:'center',
-      //  backgroundColor: "#aaaa00",
-
     },
     addressEditView:{
-        //flex:0.30,
         flexDirection:'row',
         //marginRight:windowWidth*0.04,
         justifyContent:'flex-end',
-        //height:windowHeight*0.075,
         alignItems: "center",
-    //    backgroundColor: "#00aa00",
         height: 60 * windowHeightRatio,
         width: 70 * windowWidthRatio,
         marginTop: 10 * windowHeightRatio,

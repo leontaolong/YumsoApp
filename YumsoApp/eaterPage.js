@@ -374,7 +374,7 @@ class EaterPage extends Component {
                         </View>
 
                         <View style={styleEaterPage.profileBtnListNew}>
-                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.onPressEdit()}>
+                            <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.navigateToContactUsPage()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
                                     <Text style={styleEaterPage.profileBtnListTextNew}>Contact Us</Text>
                                 </View>
@@ -606,6 +606,18 @@ class EaterPage extends Component {
                 eater: this.state.eater,
                 principal:this.state.principal,
             }
+        });
+    }
+
+    navigateToContactUsPage() {
+        this.props.navigator.push({
+            name: 'ContactUsPage',
+        });
+    }
+
+    navigateToAboutPage() {
+        this.props.navigator.push({
+            name: 'AboutPage',
         });
     }
 }

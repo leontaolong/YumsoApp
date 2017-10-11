@@ -61,8 +61,6 @@ module.exports = StyleSheet.create({
     },
     headerBannerView:{
       flexDirection:'row',
-      // borderBottomWidth:1,
-      // borderColor:'#EAEAEA', //07/15/2017: remove banner border for V2 UI update
       height:windowHeight*0.066,
       backgroundColor:'#FFFFFF',
     },
