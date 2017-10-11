@@ -1,6 +1,10 @@
 var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
+var backgroundImage = require('./resourceImages/background@3x.jpg');
+var closeIcon = require('./icons/icon-close.png');
+var mealIcon = require('./icons/icon-meal.png');
+
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -9,6 +13,7 @@ import React, {
   Text,
   View,
   Image,
+  TouchableHighlight,
   TouchableOpacity,
   AsyncStorage,
   Alert
@@ -26,29 +31,32 @@ class OrderConfirmation extends Component {
     
     render() {  
         return (
-            <View style={styles.greyContainer}>
-                <View style={styles.headerBannerView}>    
-                    <View style={styles.headerLeftView}>
+           <View style={styles.greyContainer}>
+                <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                    <View style={styles.transparentHeaderBannerView}>
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
+                            <View style={styles.backButtonView}>
+                                <Image source={closeIcon} style={styles.backButtonIcon} />
+                            </View>
+                        </TouchableHighlight>
                     </View>
-                    <View style={styles.titleView}>
-                       <Text style={styles.titleText}>Confirmation</Text>
+                    <View style={styleConfirmationPage.contentTextView}>
+                        <Text style={styleConfirmationPage.contentTitle}>Enjoy your meal!</Text>
+                        <Image source={mealIcon} style={styleConfirmationPage.mealIconView}/>
+                        <Text style={styleConfirmationPage.contentText}>Order#</Text>
+                        <Text style={styleConfirmationPage.contentText}>We have confirm your order. Your food will be ready and out for delivery by the time you selected. Enjoy!</Text>
+                        <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.viewOrderButtonContainer} onPress={()=>this.navigateToOrderList()}>
+                            <View style={styleConfirmationPage.viewOrderButton}>
+                              <Text style={styleConfirmationPage.viewOrderText}>View Orders</Text>
+                            </View>
+                        </TouchableOpacity>   
                     </View>
-                    <View style={styles.headerRightView}>
-                    </View>
-                </View>
-                <View style={styleConfirmationPage.confirmTextView}>
-                    <Text style={styleConfirmationPage.enjoyYourMealText}>Your order is confirmed.</Text>
-                    <View style={styleConfirmationPage.orderConfirmedTextView}>
-                        <Text style={styleConfirmationPage.orderConfirmedText}>Please pay attention to your cell phone and turn on notification to receive status update. We may also call you when your order arrives.</Text>
-                    </View>   
-                </View>
-                <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.orderMoreMutton} onPress={()=>this.navigateBackToChefList()}>
-                    <Text style={styleConfirmationPage.orderMoreMuttonText}>Order More</Text>
-                </TouchableOpacity>
-                <View style={{flex:1}}></View>
-                <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={()=>this.navigateToOrderList()}>
-                    <Text style={styleConfirmationPage.orderMoreMuttonText}>Go to My Orders</Text>
-                </TouchableOpacity>     
+                    
+                    <View style={{flex:1}}></View>
+                </Image>
+                <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={()=>this.navigateBackToChefList()}>
+                    <Text style={styles.bottomButtonView}>Confirm</Text>
+                </TouchableOpacity>  
             </View>
         );
     }
@@ -73,46 +81,41 @@ class OrderConfirmation extends Component {
 }
 
 var styleConfirmationPage = StyleSheet.create({
-    confirmTextView:{
-      height:windowHeight*0.38,
-      justifyContent:'center',
-      alignItems:'center',
-      flexDirection:'column',
-      backgroundColor:'transparent'
+    contentTextView:{
+        paddingHorizontal:windowWidth/20.7,
     },
-    enjoyYourMealText:{
-      fontSize:30*windowHeight/667.0,
-      color:'#4A4A4A',
-      fontWeight:'300',
-      alignSelf:'center',
-      marginBottom:windowHeight*0.05
+    contentTitle:{
+        backgroundColor: 'rgba(0,0,0,0)',        
+        fontSize:28*windowHeight/677,
+        fontWeight:'bold',
     },
-    orderConfirmedText:{
-      fontSize:16*windowHeight/667.0,
-      color:'#4A4A4A',
-      fontWeight:'300',
-      alignSelf:'center',
-      textAlign:'center',
-      flex: 1, 
-      flexWrap: 'wrap',
+    contentText:{
+        backgroundColor: 'rgba(0,0,0,0)',
+        fontSize:windowHeight/35.5,
+        fontWeight:'600',
+        marginBottom:windowHeight*0.02,        
     },
-    orderConfirmedTextView:{
-        width:0.9*windowWidth,
-        justifyContent:'center',
-        flexDirection:'row',
-    },   
-    orderMoreMutton:{
-        width:windowWidth*0.62,
+    mealIconView: {
+        height: 101,
+        width: 81,
+        marginVertical:windowHeight*0.0560,
+    },
+    viewOrderButtonContainer:{
+        borderWidth: 2,        
+        borderColor:'#7BCBBE',
+        marginTop:windowHeight*0.1,  
+    },
+    viewOrderButton:{
         height:windowHeight*0.075,
         flexDirection:'row',
         justifyContent:'center',
         alignSelf:'center',
-        backgroundColor:'#7BCBBE',
+        backgroundColor: 'rgba(0,0,0,0)', 
     },
-    orderMoreMuttonText:{
+    viewOrderText:{
         fontSize:windowHeight/37.056,
         fontWeight:'600',
-        color:'#fff',
+        color:'#7BCBBE',
         alignSelf:'center',
     },
     pageBackgroundImage:{
