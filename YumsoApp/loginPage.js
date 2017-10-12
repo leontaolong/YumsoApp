@@ -121,11 +121,6 @@ class LoginPage extends Component {
                         <Text style={styleLoginPage.forgotPasswordText} onPress={this.onPressForgotPassword.bind(this)}>Forget password?</Text>
                     </View>
 
-
-                    <View style={styleLoginPage.askToSignUpView}>
-                        <Text style={styleLoginPage.askToSignUpText}>Do not have an account? </Text>
-                        <Text onPress={() => this.navigateToSignUp()} style={styleLoginPage.signUpText}>Sign up now!</Text>
-                    </View>
                  </ScrollView>
                  <TouchableOpacity activeOpacity={0.7} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
                      <Text style={styleLoginPage.signInButtonText}>Sign in</Text>

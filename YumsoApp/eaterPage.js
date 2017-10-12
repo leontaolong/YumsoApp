@@ -13,7 +13,8 @@ var uploadPhotoIconPen = require('./icons/pen.png');
 var houseIcon = require('./icons/icon-grey-house.png');
 var paypalIcon = require('./icons/icon-paypal.png');
 var ResetPasswordPage = require('./resetPasswordPage');
-var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
+var backgroundImage = require('./resourceImages/background@3x.jpg');
 var validator = require('validator');
 var meOff = require('./icons/me_off.png');
 var meOn = require('./icons/me_on.png');
@@ -151,7 +152,8 @@ class EaterPage extends Component {
 
             return (
 
-              <View style={styles.containerNew}>
+                <View style={styles.containerNew}>
+                    <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                         <View style={styles.headerBannerViewNew}>
                             {backButtonView}
 
@@ -163,73 +165,26 @@ class EaterPage extends Component {
                         </View>
 
                         <ScrollView style={{backgroundColor:'#fff'}}>
-                            {/*<View style={styleEaterPage.sectionTitleView}>
-                                <Text style={styleEaterPage.sectionTitleText}>{profilePageTitle}</Text>
-                            </View>
-                            */}
-
-                            <View style={styleEaterPage.headerViewNew}>
-                                <View style={styleEaterPage.titleViewNew2}>
-                                    <Text style={styles.titleTextNew}>Edit Profile</Text>
+                                <View style={styleEaterPage.headerViewNew}>
+                                    <View style={styleEaterPage.titleViewNew2}>
+                                        <Text style={styles.titleTextNew}>One More Step ...</Text>
+                                        <Text style={styleEaterPage.pageSubTitle}>Please fill in the following fields below</Text>
+                                    </View>
                                 </View>
-                                <View>
-
-                                    <Image source={eaterProfile} style={styleEaterPage.eaterProfilePicNew}>
-
-
-
-                                    </Image>
-                                    <TouchableHighlight style={styleEaterPage.uploadPhotoButtonViewNew} underlayColor={'transparent'} onPress={() => this.uploadPic() }>
-                                       <Image source={uploadPhotoIconPen} style={styleEaterPage.uploadPhotoIconNew}/>
-                                   </TouchableHighlight>
-
-                                </View>
-                            </View>
-
-
-                                <Text style={styleEaterPage.textFieldTitle}>First Name  </Text>
-                                <View style={styles.loginInputViewNew}>
-                                    <TextInput style={styleEaterPage.loginInputNew}  defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                        maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ firstname: text }) }/>
+                                <View style={{height:windowHeightRatio*70}}>
                                 </View>
 
-                                <Text style={styleEaterPage.textFieldTitle}>Last Name</Text>
-                                <View style={styles.loginInputViewNew}>
-                                    <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.lastname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                        maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ lastname: text }) }/>
-                                </View>
-
-                                <Text style={styleEaterPage.textFieldTitle}>Username</Text>
-                                <View style={styles.loginInputViewNew}>
-                                    <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                        maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
-                                </View>
-
-                                <Text style={styleEaterPage.textFieldTitle}>Gender</Text>
-                                <View style={styleEaterPage.genderSelectViewNew}>
-                                    <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleGender('Male') } style={styleEaterPage.oneGenderSelectView}>
-                                        <Text style={{ fontSize: h2,fontWeight: "bold" , color: this.renderGenderTextColor('Male'), alignSelf: 'center' }}>Male</Text>
-                                    </TouchableHighlight>
-                                    <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleGender('Female') } style={styleEaterPage.oneGenderSelectMiddleView}>
-                                        <Text style={{ fontSize: h2,fontWeight: "bold" , color: this.renderGenderTextColor('Female'), alignSelf: 'center' }}>Female</Text>
-                                    </TouchableHighlight>
-                                    <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleGender('Not to tell') } style={styleEaterPage.oneGenderSelectView}>
-                                        <Text style={{ fontSize: h2,fontWeight: "bold" , color: this.renderGenderTextColor('Not to tell'), alignSelf: 'center' }}>Not to tell</Text>
-                                    </TouchableHighlight>
-                                </View>
-
-                          {/*  <View style={styleEaterPage.genderSelectView}>
-
-                            </View> */}
-
-
-
-                                <Text style={styleEaterPage.textFieldTitle}>Phone</Text>
+                                <Text style={styleEaterPage.textFieldTitle}>Phone (We'll contact you when your order arrives)</Text>
                                 <View style={styles.loginInputViewNew}>
                                     <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.phoneNumber} keyboardType = { 'phone-pad'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
                                         maxLength={15} onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>
                                 </View>
 
+                                <Text style={styleEaterPage.textFieldTitle}>Username (Appears on your comments, orders)</Text>
+                                <View style={styles.loginInputViewNew}>
+                                    <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                                        maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
+                                </View>
 
                                 <Text style={styleEaterPage.textFieldTitle}>Email</Text>
                                 <View style={styles.loginInputViewNew}>
@@ -246,8 +201,8 @@ class EaterPage extends Component {
                         <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress = {this.submit.bind(this)}>
                              <Text style={styleEaterPage.updateButtonText}>Update</Text>
                         </TouchableOpacity>
-
-                    </View>);
+                    </Image>
+                </View>);
          }else{
             var eaterProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
             var emailView = null;
@@ -333,7 +288,6 @@ class EaterPage extends Component {
                             </TouchableHighlight>
                         </View>
 
-
                         </ScrollView>
                         <View style = {styles.tabBarNew}>
                             <View style={{flex: 1, flexDirection: 'row'}}>
@@ -369,7 +323,6 @@ class EaterPage extends Component {
                                 </View>
                             </View>
                         </View>
-
                 </View>);
            }
      }
@@ -415,20 +368,20 @@ class EaterPage extends Component {
 
     submit(){
         if (!this.state.firstname || !this.state.firstname.trim()) {
-            Alert.alert('Warning', 'Missing first name or first name is invalid', [{ text: 'OK' }]);
+            Alert.alert('Error', 'Missing first name or first name is invalid', [{ text: 'OK' }]);
             return;
         }
         if (!this.state.lastname || !this.state.lastname.trim()) {
-            Alert.alert('Warning', 'Missing last name or last name is invalid', [{ text: 'OK' }]);
+            Alert.alert('Error', 'Missing last name or last name is invalid', [{ text: 'OK' }]);
             return;
         }
         if (!this.state.eaterAlias) {
-            Alert.alert('Warning', 'Missing alias name. This will be displayed publicly to chef and other users', [{ text: 'OK' }]);
+            Alert.alert('Error', 'Missing username name. This will be displayed publicly to chef and other users', [{ text: 'OK' }]);
             return;
         }
 
         if (!this.state.phoneNumber) {
-            Alert.alert('Warning', 'Missing phone number.', [{ text: 'OK' }]);
+            Alert.alert('Phone Number Required','', [{ text: 'OK' }]);
             return;
         }
 
@@ -438,12 +391,12 @@ class EaterPage extends Component {
         }
 
         if (!this.state.email) {
-            Alert.alert('Warning', 'Missing email address.', [{ text: 'OK' }]);
+            Alert.alert('Error', 'Missing email address.', [{ text: 'OK' }]);
             return;
         }
 
         if(this.state.email && !validator.isEmail(this.state.email)){
-            Alert.alert( 'Warning', 'Invalid email.',[ { text: 'OK' }]);
+            Alert.alert( 'Error', 'Invalid email.',[ { text: 'OK' }]);
             return;
         }
 
@@ -845,13 +798,17 @@ var styleEaterPage = StyleSheet.create({
     },
 
     scrollView:{
-    //  alignItems:'center',
-    //  backgroundColor: "#cc0000",
       marginTop: 0,
       paddingTop: 0,
       marginLeft: 20 * windowWidthRatio,
       width: windowWidth - 40 * windowWidthRatio,
       flexDirection:'column',
+    },
+
+    pageSubTitle: {
+        fontSize:windowHeight/35.5,
+        fontWeight:'600',
+        color:'#4A4A4A',
     },
 
 });

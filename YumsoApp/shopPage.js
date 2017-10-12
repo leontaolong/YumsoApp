@@ -517,6 +517,7 @@ class ShopPage extends Component {
                             <View style={styleShopPage.shopInfoRow}>
                                 <View style={styleShopPage.shopRatingView}>
                                     {rating.renderRating(this.state.chef.rating)}
+                                    <Text style={styleShopPage.reviewNumberText}>  {this.state.chef.rating} ({this.state.chef.reviewCount})</Text>
                                 </View>
                             <View style={styleShopPage.shopInfoRightColumnView}>
                                 <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
@@ -535,7 +536,6 @@ class ShopPage extends Component {
                 </View>
 
                 <View style={styleShopPage.chefDetailRowView}>
-                {/* remove border on the left for the first item* */}
                     <TouchableHighlight key={'chefPageClickableView'} style={[styleShopPage.chefDetailView, {borderLeftWidth:0}]} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
                         <View style={styleShopPage.chefDetailTextView}>
                             <Text style={styleShopPage.pickupAddressText}>Chef Page</Text>
@@ -1487,6 +1487,12 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row',
         marginRight:windowWidth*0.04,
     },
+    reviewNumberText:{
+        fontSize:windowHeight/47.33,
+        color:'#4A4A4A',
+        marginLeft:windowWidth*0.0187,
+        alignSelf:'center',
+     }
 });
 
 module.exports = ShopPage;

@@ -62,7 +62,7 @@ class HistoryOrderPage extends Component {
         let eater = routeStack[routeStack.length-1].passProps.eater;
         let orderType = routeStack[routeStack.length-1].passProps.orderType;
         if (orderType == 'orderNeedReview') {
-            selectedHeader = 'Order(s) Need Review';
+            selectedHeader = 'Orders Need Review';
         }
         else{
             selectedHeader = 'Completed Orders';
@@ -118,7 +118,6 @@ class HistoryOrderPage extends Component {
 
     async fetchOrderAndComments() {
         const currentTime = new Date().getTime();
-        //const oneWeekAgo = currentTime - 7*24*60*60*1000;
         const end = 'end=' + currentTime;
         const nextString = 'next=' + eaterOrderPageSize;
         if(!this.state.lastSortKeyOrders){//first time load all 7 days order

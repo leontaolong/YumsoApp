@@ -35,9 +35,9 @@ class VerificationPage extends Component {
             <View style={styles.greyContainer}>
                 <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                     <View style={styles.transparentHeaderBannerView}>
-                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToShopPage()}>
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
                             <View style={styles.backButtonView}>
-                                <Image source={backIcon} style={styles.backButtonIcon} />
+                                <Image source={backIcon} style={styles.backButtonIcon}/>
                             </View>
                         </TouchableHighlight>
                         <View style={styles.titleView}></View>
@@ -45,8 +45,8 @@ class VerificationPage extends Component {
                     </View>
                     <View style={styleVerificationPage.contentTextView}>
                         <Text style={styleVerificationPage.contentTitle}>Verify Your Account</Text>
-                        <Image source={verifyIcon} style={styleVerificationPage.verifyIconView}/>
-                        <Text style={styleVerificationPage.contentText}>A confirmation email has been sent to {this.state.email}! Please vertify your email before signing up.</Text>
+                            <Image source={verifyIcon} style={styleVerificationPage.verifyIconView}/>
+                        <Text style={styleVerificationPage.contentText}>A confirmation email has been sent to {this.state.email}! Please verify your email before signing up.</Text>
                     </View>
                 </Image>
                 <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress = {() => this.navigateToLoginPage()}>
@@ -57,7 +57,7 @@ class VerificationPage extends Component {
     }
     
 
-    navigateBackToSignupPage(){
+    navigateBack(){
         this.props.navigator.pop();
     }
 

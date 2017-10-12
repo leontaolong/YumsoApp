@@ -319,7 +319,7 @@ class ChefListPage extends Component {
                              <View style={{flexDirection:'row',alignSelf:'center'}}>
                              {rating.renderRating(chef.rating)}
                              </View>
-                             <Text style={styleChefListPage.reviewNumberText}>({chef.reviewCount})</Text>
+                             <Text style={styleChefListPage.reviewNumberText}>{chef.rating} ({chef.reviewCount})</Text>
                           </View>
                        </View>
 

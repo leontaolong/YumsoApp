@@ -84,7 +84,8 @@ class OrderPage extends Component {
       showProgress:false,
       showProgressBottom:false,
       orderPendingShow:false,
-      redStarShow:false
+      hasOrderToReview:false,
+      hasOrderReply:false,
     };
 
     newMessage = <Image source={orange_dot} style={styleOrderPage.dot} />
@@ -98,7 +99,6 @@ class OrderPage extends Component {
 
   async fetchOrders() {
         const currentTime = new Date().getTime();
-        //const oneWeekAgo = currentTime - 7*24*60*60*1000;
         const end = 'end=' + currentTime;
         const nextString = 'next=' + eaterOrderPageSize;
         if(!this.state.lastSortKeyOrders){//first time load all 7 days order
@@ -108,6 +108,15 @@ class OrderPage extends Component {
           var start = 'start=0';
           var lastSortKeyOrdersString = 'lastSortKey=' + this.state.lastSortKeyOrders;
           var queryStringOrders = start + '&' + end + '&' + lastSortKeyOrdersString + '&' + nextString
+        }
+
+        if(!this.state.lastSortKeyComments){//first time load all 7 days order
+          const start = 'start=0';
+          var queryStringComments = start + '&' + end + '&next= ' + firstTimeLoadPageSize;
+        }else{
+          var start = 'start=0';
+          var lastSortKeyCommentsString = 'lastSortKey=' + this.state.lastSortKeyComments;
+          var queryStringComments = start + '&' + end + '&' + lastSortKeyCommentsString + '&' + nextString
         }
 
         let eater = await AuthService.getPrincipalInfo();
@@ -120,34 +129,59 @@ class OrderPage extends Component {
           return;
         }
 
+        try{
+          var resComments = await this.client.getWithAuth(config.orderCommentEndpoint+eater.userId+'?'+queryStringComments);
+          this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:false})
+        }catch(err){
+          this.setState({showProgress:false,showProgressBottom:false,showNetworkUnavailableScreen:true});
+          commonAlert.networkError(err);
+          return;
+        }
+
         if (resOrders && resOrders.statusCode != 200 && resOrders.statusCode != 202) {
             this.setState({showProgress:false,showProgressBottom:false,});
             return this.responseHandler(resOrders);
         }
+        if (resComments && resComments.statusCode != 200 && resComments.statusCode != 202) {
+            this.setState({showProgress:false,showProgressBottom:false,});
+            return this.responseHandler(resComments);
+        }
 
-        if (resOrders.data){
-            if(!this.state.lastSortKeyOrders){
-               this.state.orders = resOrders.data.orders;
+        if (resOrders.data || resComments.data){
+            if(!this.state.lastSortKeyOrders && !this.state.lastSortKeyComments){
+              this.state.orders = resOrders.data.orders;
+              this.state.comments = resComments.data.comments;
             }else{
-               this.state.orders = this.state.orders.concat(resOrders.data.orders);
+              this.state.orders = this.state.orders.concat(resOrders.data.orders);
+              this.state.comments = this.state.comments.concat(resComments.data.comments);
             }
 
             if(resOrders.data.lastSortKey && this.state.lastSortKeyOrders != resOrders.data.lastSortKey){
-               this.state.lastSortKeyOrders = resOrders.data.lastSortKey
+              this.state.lastSortKeyOrders = resOrders.data.lastSortKey
             }else if(!resOrders.data.lastSortKey){
-               this.setState({isAllOrdersLoaded:true});
+              this.setState({isAllOrdersLoaded:true});
             }else{
-               return;
+              return;
             }
 
+            if(resComments.data.lastSortKey){
+              this.state.lastSortKeyComments = resComments.data.lastSortKey
+            }
+
+            for(var comment of this.state.comments){
+                for(var order of this.state.orders){
+                    if(order.orderId == comment.orderId){
+                      order.comment = comment;
+                    }
+                }
+            }
             var orderPending = [];
             var orderNeedReview = [];
             for(var oneOrder of this.state.orders){
                 if(commonWidget.isOrderPending(oneOrder)){
                    orderPending.push(oneOrder);
                 }else if(commonWidget.isOrderCommentable(oneOrder)){
-                  console.log('comment!')
-                  orderNeedReview.push(oneOrder);
+                   orderNeedReview.push(oneOrder);
                }
             }
 
@@ -165,11 +199,10 @@ class OrderPage extends Component {
                           orderPending:orderPending,
                           orders:JSON.parse(JSON.stringify(this.state.orders)),
                           orderPendingShow:(orderPending.length > 0),
-                          redStarShow:(orderNeedReview.length>0)
+                          hasOrderToReview:(orderNeedReview.length > 0)
                         });
         }
     }
-
 
     ShowHideTextComponentView = () =>{
       this.setState({orderPendingShow: !this.state.orderPendingShow})
@@ -204,44 +237,51 @@ class OrderPage extends Component {
 
 
     render(){
+      var n = 0;
+      if(this.state.orderPending.length > 3){
+         n = 3;
+      }else{
+         n = this.state.orderPending.length;
+      }
+
       return(
         <View style={styles.containerNew}>
           <View style={styles.headerBannerViewNew}>
-            <View style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
-            </View>
-            <View style={styles.headerRightView}>
-            </View>
+              <View style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
+              </View>
+              <View style={styles.headerRightView}>
+              </View>
           </View>
           <View style={styles.titleViewNew}>
-            <Text style={styles.titleTextNew}>Orders</Text>
+              <Text style={styles.titleTextNew}>Orders</Text>
           </View>
           {this.state.orderPendingShow ?
-            <View>
-                <View style={styleOrderPage.ongoingView}>
-                  <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
+          <View>
+              <View style={styleOrderPage.ongoingView}>
+                <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
                     <Text style={styleOrderPage.ongoingTextTop}>Ongoing Orders</Text>
-                  </TouchableOpacity>
+                </TouchableOpacity>
                 </View>
-                <View style={styleOrderPage.listView}>
-                  <ListView
-                  dataSource = {this.state.dataSourceOrderPending}
-                  renderRow={this.renderRow.bind(this) }
-                  renderFooter={ this.renderFooter.bind(this) }
-                  pageSize={10}
-                  initialListSize={1}/>
-              </View>
+                <View style={{height: n * 80 * windowHeightRatio, alignItems: 'center', width:windowWidth - 76 * windowWidthRatio, marginLeft: 56 * windowWidthRatio, paddingBottom: 15 * windowHeightRatio,}}>
+                    <ListView
+                    dataSource = {this.state.dataSourceOrderPending}
+                    renderRow={this.renderRow.bind(this) }
+                    renderFooter={ this.renderFooter.bind(this) }
+                    pageSize={10}
+                    initialListSize={1}/>
+                </View>
           </View> :
           <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
               <View style={styleOrderPage.ongoingView}>
-                  <Text style={styleOrderPage.ongoingText2Top}>Ongoing Orders</Text>
+                 <Text style={styleOrderPage.ongoingText2Top}>Ongoing Orders</Text>
               </View>
           </TouchableOpacity>}
 
           <View style={styleOrderPage.dividerView}><Text style={styleOrderPage.dividerLineTop}></Text></View>
           <TouchableOpacity style={styleOrderPage.ongoingTouchable}  onPress={() => this.onPressNeedReviewsOrdersBtn()}>
               <View style={styleOrderPage.reviewsView}>
-                  <Text style={styleOrderPage.ongoingText}>Order(s) Need Review</Text>
-                  {this.state.redStarShow ? newMessage : null}
+                 <Text style={styleOrderPage.ongoingText}>Orders Need Review</Text>
+                  {this.state.hasOrderToReview ? newMessage : null}
               </View>
           </TouchableOpacity>
 
@@ -256,7 +296,7 @@ class OrderPage extends Component {
 
           <View style={styleOrderPage.placeHolderView}></View>
           <View style = {styles.tabBarNew}>
-            <View style={{flex: 1, flexDirection: 'row'}}>
+              <View style={{flex: 1, flexDirection: 'row'}}>
                   <View style={{width: windowWidth/3, height: 44}}>
                       <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressShopsTabBtn()}>
                         <View style={styles.tabBarButtonNew}>
@@ -287,10 +327,9 @@ class OrderPage extends Component {
                         </View>
                       </TouchableHighlight>
                   </View>
-            </View>
+              </View>
           </View>
-        </View>
-      );
+        </View>);
     }
 
     loadMoreOrders(){
@@ -300,7 +339,6 @@ class OrderPage extends Component {
 
     navigateBackToHistoryOrderPage(){
         if(this.callback && (this.state.order.orderStatus!=this.state.orderStatus||this.state.ratingSucceed)){
-           console.log(this.state.order);
            this.callback(this.state.order);
         }
         this.props.navigator.pop();
@@ -361,20 +399,17 @@ class OrderPage extends Component {
   var styleOrderPage = StyleSheet.create({
 
   ongoingView:{
-
     marginLeft: 20 * windowWidthRatio,
   },
   ongoingTouchable:{
     width: windowWidth,
-    //height: 30
   },
   ongoingText:{
     fontWeight: 'bold',
     fontSize: h2,
     color: '#4a4a4a',
-  //  backgroundColor: '#cc0000',
-  paddingTop: 20 * windowHeightRatio,
-  paddingBottom:  20 * windowHeightRatio,
+    paddingTop: 20 * windowHeightRatio,
+    paddingBottom:  20 * windowHeightRatio,
   },
   ongoingTextTop:{
     fontWeight: 'bold',
@@ -382,29 +417,16 @@ class OrderPage extends Component {
     color: '#4a4a4a',
     paddingBottom: 5 * windowHeightRatio,
     paddingBottom:  15 * windowHeightRatio,
-  //  backgroundColor: '#cc0000',
   },
   ongoingText2Top:{
     fontWeight: 'bold',
     fontSize: h2,
     color: '#4a4a4a',
-    // paddingBottom: 5 * windowHeightRatio,
     paddingBottom:  20 * windowHeightRatio,
-  //  backgroundColor: '#cc0000',
   },
-  listView:{
-    height: 245 * windowHeightRatio,
-    alignItems: 'center',
-    width:windowWidth - 76 * windowWidthRatio,
-
-    marginLeft: 56 * windowWidthRatio,
-    paddingBottom: 15 * windowHeightRatio,
-  },
-
   dividerView:{
     width: windowWidth,
     alignItems: 'center',
-    //backgroundColor: '#ccccff',
   },
   dividerLine:{
     height: 1,
@@ -412,8 +434,6 @@ class OrderPage extends Component {
     width: windowWidth - 40 * windowWidthRatio,
     marginLeft: 20 * windowWidthRatio,
     marginRight: 20* windowWidthRatio,
-    // marginTop: 20 * windowHeightRatio,
-    // marginBottom:  20 * windowHeightRatio,
   },
   dividerLineTop:{
     height: 1,
@@ -421,12 +441,9 @@ class OrderPage extends Component {
     width: windowWidth - 40 * windowWidthRatio,
     marginLeft: 20 * windowWidthRatio,
     marginRight: 20* windowWidthRatio,
-    //marginTop: 15 * windowHeightRatio,
-    //marginBottom:  20 * windowHeightRatio,
   },
 
   reviewsView:{
-  //  height: 80,
     marginLeft: 20* windowWidthRatio,
     alignItems : 'center',
     flexDirection: 'row'
