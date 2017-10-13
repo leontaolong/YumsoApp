@@ -29,12 +29,21 @@ var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.webp');
 var RefreshableListView = require('react-native-refreshable-listview');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
 
+var meOff = require('./icons/me_off.png');
+var meOn = require('./icons/me_on.png');
+
+var ordersOff = require('./icons/orders_off.png');
+var ordersOn = require('./icons/orders_on.png');
+
+var shopsOff = require('./icons/shops_off.png');
+var shopsOn = require('./icons/shops_on.png');
+
+
 import Dimensions from 'Dimensions';
 import Tabs from 'react-native-tabs';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
-console.log(windowHeight+" "+windowWidth);
 
 import React, {
     Component,
@@ -64,7 +73,7 @@ class ChefListPage extends Component {
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 != r2
         });
-        this.client = new HttpsClient(config.baseUrl, true);     
+        this.client = new HttpsClient(config.baseUrl, true);
         this.googleClient = new HttpsClient(config.googleGeoBaseUrl);
         this.state = {
             eater: eater,
@@ -95,7 +104,7 @@ class ChefListPage extends Component {
 
         this.responseHandler = function (response, msg) {
             if(response.statusCode==400){
-               Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
+               Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);
             }else if (response.statusCode === 401) {
                return AuthService.logOut()
                     .then(()=>{
@@ -108,10 +117,10 @@ class ChefListPage extends Component {
                                     this.componentDidMount();
                                 }.bind(this)
                             }
-                        });                     
+                        });
                     });
             } else {
-                 Alert.alert( 'Internal Error', 'Server under maintenance. Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Internal Error', 'Server under maintenance. Please try again later',[ { text: 'OK' }]);
             }
         };
     }
@@ -120,7 +129,7 @@ class ChefListPage extends Component {
         if(!this.state.pickedAddress){
            this.setState({showProgress:true});
            await this.getLocation().catch((err)=>{
-                 this.setState({GPSproxAddress:undefined,showProgress:false,pickedAddress:{lat:47.6062095, lng:-122.3320708}}); 
+                 this.setState({GPSproxAddress:undefined,showProgress:false,pickedAddress:{lat:47.6062095, lng:-122.3320708}});
                  //commonAlert.locationError(err);
            });//todo: really wait??
            this.setState({showProgress:false})
@@ -142,7 +151,7 @@ class ChefListPage extends Component {
                 withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
                 priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
                 withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort,
-                sortCriteriaIcon:eater.chefFilterSettings.withBestRatedSort ? sortCriteriaIconOrange:sortCriteriaIconGrey});            
+                sortCriteriaIcon:eater.chefFilterSettings.withBestRatedSort ? sortCriteriaIconOrange:sortCriteriaIconGrey});
         }
         this.setState({ principal: principal, eater: eater });
         this.fetchChefDishes();
@@ -157,7 +166,7 @@ class ChefListPage extends Component {
            query = '?lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
         }
         if(this.state.pickedAddress){
-           query = '?lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng; 
+           query = '?lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng;
         }
         try{
             var response = await this.client.getWithoutAuth(config.chefListEndpoint + query);
@@ -201,7 +210,7 @@ class ChefListPage extends Component {
             commonAlert.networkError(response);
         }
     }
-    
+
     getLocation(){
         var self = this;
         return new Promise((resolve, reject) => {
@@ -232,7 +241,7 @@ class ChefListPage extends Component {
                                 self.setState({ GPSproxAddress: { formatted_address: address, lat: position.coords.latitude, lng: position.coords.longitude, state: state, city: city}, city: city, state: state, zipcode :zipcode});
                             }
                             resolve();
-                        }).catch((err)=>{      
+                        }).catch((err)=>{
                             reject(new Error('Cannot get city name'));
                         });
                 },
@@ -269,8 +278,8 @@ class ChefListPage extends Component {
 
         var yumsoExclusiveTag = "";
         if(chef.yumsoExclusiveBadge)
-           yumsoExclusiveTag = <Text style={[styleChefListPage.labelText, {color:"#7adfc3"}]}>, exclusive</Text>
-                             
+           yumsoExclusiveTag = <Text style={[styleChefListPage.labelText, {color:"#7adfc3"}]}>  Yumso Exclusive</Text>
+
 
         if(chef.chefProfilePicUrls && chef.chefProfilePicUrls.small){
            var chefProfilePic = chef.chefProfilePicUrls.small;
@@ -288,7 +297,7 @@ class ChefListPage extends Component {
                                 <TouchableHighlight key={picture} onPress={() => this.navigateToShopPage(chef)} underlayColor='#C0C0C0'>
                                     <Image source={{ uri: picture }} style={styleChefListPage.chefListViewChefShopPic}
                                         onError={(e) => this.setState({ error: e.nativeEvent.error, loading: false })}>
-                                        
+
                                     </Image>
                                 </TouchableHighlight>
                             );
@@ -304,34 +313,34 @@ class ChefListPage extends Component {
                             <Text style={styleChefListPage.oneShopNameText}>{chef.shopname}</Text>
                          </View>
                        </View>
-                       
+
                        <View style={styleChefListPage.shopInfoRow2}>
                           <View style={styleChefListPage.shopRatingView}>
                              <View style={{flexDirection:'row',alignSelf:'center'}}>
                              {rating.renderRating(chef.rating)}
                              </View>
-                             <Text style={styleChefListPage.reviewNumberText}>({chef.reviewCount})</Text>
+                             <Text style={styleChefListPage.reviewNumberText}>{chef.rating} ({chef.reviewCount})</Text>
                           </View>
                        </View>
-                       
+
                        <View style={styleChefListPage.shopInfoRow3}>
                           <View style={styleChefListPage.labelView}>
                             <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.styleTag,8)}, {commonWidget.getTextLengthLimited(chef.foodTag,10)}{yumsoExclusiveTag}</Text>
                           </View>
-                       </View>                       
+                       </View>
                     </View>
                     <View style={styleChefListPage.shopInfoSection2}>
                         <View style={styleChefListPage.iconsView}>
                             <Image source={{ uri: chefProfilePic }} style={styleChefListPage.chefPhoto}/>
                             {likedIcon}
-                        </View>  
+                        </View>
                         <View style={styleChefListPage.distanceDollarSignView}>
                              <Text style={styleChefListPage.distanceDollarSignText}>{chef.distance!=undefined && chef.distance!=null?(chef.distance>20?'20':chef.distance)+' miles | ':''}{dollarSign.renderLevel(chef.priceLevel)}</Text>
-                        </View> 
-                    </View>    
+                        </View>
+                    </View>
                 </View>
                 </TouchableHighlight>
-                <View style={styleChefListPage.chefListBorderView}></View>                   
+                <View style={styleChefListPage.chefListBorderView}></View>
             </View>
         );
     }
@@ -353,9 +362,9 @@ class ChefListPage extends Component {
         var menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
-            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>; 
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;
         }
-        
+
         var cheflistView = <RefreshableListView ref="listView"
                             dataSource = {this.state.dataSource}
                             renderRow={this.renderRow.bind(this)}
@@ -369,7 +378,7 @@ class ChefListPage extends Component {
         }
 
         if(this.state.showLocSearch){
-           return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);   
+           return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);
         }else if(this.state.showChefSearch){
            return <View style={styles.pageWrapper}>
                 <View style={styles.headerBannerView}>
@@ -444,8 +453,8 @@ class ChefListPage extends Component {
         if(this.state.showUpdateAppBanner){
            updateAppBannerView = <View style={styles.infoBannerView}>
                                    <Text style={styles.infoBannerText}>
-                                      Yumso App has new version available.  
-                                   </Text> 
+                                      Yumso App has new version available.
+                                   </Text>
                                    <TouchableHighlight style={styles.infoBannerLinkView} onPress={()=>this.linkToAppStore()} underlayColor={'#ECECEC'}>
                                         <Text style={styles.infoBannerLink}>
                                             Tap to update
@@ -455,31 +464,19 @@ class ChefListPage extends Component {
         }
 
         var foodTags = [];
-        for (let foodTag of this.state.foodTagArr) 
-            foodTags.push(<Text name={foodTag} key={foodTag} style={styleChefListPage.foodTagTabText}>{foodTag}</Text>);  
+        for (let foodTag of this.state.foodTagArr)
+            foodTags.push(<Text name={foodTag} key={foodTag} style={styleChefListPage.foodTagTabText}>{foodTag}</Text>);
 
         var foodTagTabsView =   <View style={styleChefListPage.foodTagTabsContainer}>
                                     <Tabs selected={this.state.selectedFoodTag} style={styleChefListPage.foodTagTabsView}
                                         selectedStyle={styleChefListPage.foodTagSelectedStyle} onSelect={el=>this.showChefsWithSpecificFoodTag(el.props.name)}>
-                                    {foodTags}  
+                                    {foodTags}
                                     </Tabs>
                                 </View>
-        
+
         return (
-            <SideMenu menu={menu} isOpen={this.state.isMenuOpen} onChange={(isOpen) => this.openSideMenu(isOpen)}>
-                <View style={styles.pageWrapper}>                    
+                <View style={styles.pageWrapper}>
                     <View style={[styles.headerBannerView, styleChefListPage.customizedHeaderBannerRules]}>
-                            {/* {
-                        07/29/2017: Remove the hamburger buttom for V2.0 UI Refresh, 
-                                    uncomment code below or simply swpie right to access profile menu
-                            }*/}
-
-                          {/* <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.openSideMenu() }>
-                          <View style={styles.menuButtonView}>
-                            <Image source={menuIcon} style={styles.menuIcon}/>
-                          </View>
-                        </TouchableHighlight>   */}
-
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.upperLeftBtnView}>
                             <Image source={ballonIcon} style={styles.ballonIcon}/>
@@ -495,18 +492,46 @@ class ChefListPage extends Component {
                           <View style={styles.headerRightTextButtonView}>
                             <Image source={filterIcon} style={styles.filterIcon}/>
                           </View>
-                        </TouchableHighlight>  
+                        </TouchableHighlight>
                     </View>
-                    {updateAppBannerView} 
+                    {updateAppBannerView}
                     {foodTagTabsView}
                     {networkUnavailableView}
                     {cheflistView}
+
+                    <View style = {styles.tabBarNew}>
+                        <View style={{flex: 1, flexDirection: 'row'}}>
+                             <TouchableHighlight underlayColor={'#F5F5F5'}>
+                                 <View style={styles.tabBarButtonNew}>
+                                      <Image source={shopsOn}  style={styles.tabBarButtonImageNew}/>
+                                      <View>
+                                        <Text style={styles.tabBarButtonTextOnNew}>Shops</Text>
+                                      </View>
+                                 </View>
+                             </TouchableHighlight>
+                             <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressOrdersTabBtn()}>
+                                 <View style={styles.tabBarButtonNew}>
+                                      <Image source={ordersOff}  style={styles.tabBarButtonImageNew}/>
+                                      <View>
+                                        <Text style={styles.tabBarButtonTextOffNew}>Orders</Text>
+                                      </View>
+                                 </View>
+                             </TouchableHighlight>
+                             <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressMeTabBtn()}>
+                                 <View style={styles.tabBarButtonNew}>
+                                      <Image source={meOff}  style={styles.tabBarButtonImageNew}/>
+                                      <View>
+                                        <Text style={styles.tabBarButtonTextOffNew}>Me</Text>
+                                      </View>
+                                 </View>
+                             </TouchableHighlight>
+                        </View>
+                    </View>
                     {loadingSpinnerView}
                 </View>
-            </SideMenu>
         );
     }
-    
+
     onRefreshDone(){
         this.refs.listView.scrollTo({x:0, y:0, animated: true})
     }
@@ -549,7 +574,7 @@ class ChefListPage extends Component {
             currentPriceLevels.push(priceLevel);
         this.setState({priceRankFilter:this.state.priceRankFilter, selectedPriceLevels: currentPriceLevels});
     }
-    
+
     clickSortSelection(sortByKey){
         this.setState({[sortByKey]:!this.state[sortByKey], selectedSortKey: sortByKey});
         this.setState({sortCriteriaIcon:this.state[sortByKey]? sortCriteriaIconOrange : sortCriteriaIconGrey})
@@ -570,9 +595,9 @@ class ChefListPage extends Component {
                         this.showFavoriteChefs();
                     }.bind(this)
                 }
-            }); 
+            });
             return
-        } 
+        }
         this.state.showFavoriteChefsOnly = !this.state.showFavoriteChefsOnly;
         let displayChefs = [];
         if(this.state.showFavoriteChefsOnly==true){
@@ -595,7 +620,7 @@ class ChefListPage extends Component {
         let displayChefs = [];
         Object.keys(this.state.chefsDictionary).forEach(function(chefId) {
             let chef = self.state.chefsDictionary[chefId];
-            if (chef.foodTag == foodTag || foodTag== 'ALL') 
+            if (chef.foodTag == foodTag || foodTag== 'ALL')
                 displayChefs.push(chef);
         });
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
@@ -609,22 +634,69 @@ class ChefListPage extends Component {
             this.setState({eater:res.data.eater});
         }
     }
-    
+
     mapDone(address){
          if(address){
-            Alert.alert( '', 'Your search location is set to '+address.formatted_address,[ { text: 'OK' }]); 
-            //todo: get chef use location info;                 
+            Alert.alert( '', 'Your search location is set to '+address.formatted_address,[ { text: 'OK' }]);
+            //todo: get chef use location info;
          }
          this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, zipcode: address.postal, isMenuOpen: false, showProgress: true});
          this.componentDidMount(); //todo: we refresh it like this?
     }
-    
+
     onCancelMap(){
          this.setState({showLocSearch:false, isMenuOpen: false});
     }
-    
+
     onPressApplySearchButton(){
         this.searchChef(true);
+    }
+
+
+    onPressOrdersTabBtn(){
+        if(!this.state.eater){
+            this.props.navigator.push({
+                  name: 'LoginPage',
+                  passProps: {
+                      callback: function(eater,principal){
+                          this.setState({eater:eater,principal:principal})
+                      }.bind(this)
+                  }
+           });
+           return
+        }
+
+        this.props.navigator.push({
+            name: 'OrderPage',
+            passProps: {
+                eater: this.state.eater,
+                principal:this.state.principal,
+            }
+        });
+    }
+    onPressMeTabBtn(){
+        if(!this.state.eater){
+            this.props.navigator.push({
+                  name: 'LoginPage',
+                  passProps: {
+                      callback: function(eater,principal){
+                          this.setState({eater:eater,principal:principal})
+                      }.bind(this)
+                  }
+           });
+           return
+        }
+
+        this.props.navigator.push({
+            name: 'EaterPage',
+            passProps:{
+                eater:this.state.eater,
+                principal:this.state.principal,
+                callback: function(eater){
+                    this.props.caller.setState({eater:eater});
+                }.bind(this)
+            }
+        });
     }
 
     linkToAppStore(){
@@ -641,9 +713,9 @@ class ChefListPage extends Component {
                             this.setState({eater:eater,principal:principal})
                         }.bind(this)
                     }
-             }); 
+             });
              return
-          } 
+          }
            this.setState({showProgress:true});
         }
         return this.applySearchSettings()
@@ -670,7 +742,7 @@ class ChefListPage extends Component {
                     }
                 }else{
                     if(url.charAt(url.length-1)==='&'){
-                        url = url.substr(0, url.length-1);                   
+                        url = url.substr(0, url.length-1);
                     }
                 }
                 return this.client.getWithoutAuth(url)
@@ -706,7 +778,7 @@ class ChefListPage extends Component {
                     });
             });
     }
- 
+
     applySearchSettings(){
         let self = this;
         if(this.state.eater){
@@ -718,7 +790,7 @@ class ChefListPage extends Component {
             return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:{eaterId: this.state.eater.eaterId, chefFilterSettings: this.state.eater.chefFilterSettings}})
                 .then((res) => {
                     if (res.statusCode != 200 && res.statusCode!=202) {
-                        this.setState({showProgress:false});                                 
+                        this.setState({showProgress:false});
                         return self.responseHandler(res);
                     }
                     return AuthService.updateCacheEater(self.state.eater)
@@ -730,25 +802,24 @@ class ChefListPage extends Component {
                 }).catch((err)=>{
                     this.setState({showProgress: false});
                     commonAlert.networkError(err);
-                });                     
+                });
         }
         // if(!this.state.principal){
         //    let principal = await AuthService.getPrincipalInfo();
         //    this.setState({ principal: principal});
         // }
         this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
-        this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;      
+        this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;
         return Promise.resolve({
             priceRankFilter: this.state.priceRankFilter,
             withBestRatedSort: this.state.withBestRatedSort
         });
     }
-    
+
     navigateToShopPage(chef){
         this.setState({ isMenuOpen: false });
-        console.log('GPSproxAddress: '+this.state.GPSproxAddress)
         this.props.navigator.push({
-            name: 'ShopPage', 
+            name: 'ShopPage',
             passProps:{
                 chef:chef,
                 eater:this.state.eater,
@@ -757,9 +828,9 @@ class ChefListPage extends Component {
                 defaultDeliveryAddress: this.state.pickedAddress,//todo: this is not really the pickaddress
                 callback: this.componentDidMount.bind(this) //todo: force rerender or just setState
             }
-        });    
-    }  
-    
+        });
+    }
+
 }
 
 var Menu = React.createClass({
@@ -802,7 +873,7 @@ var Menu = React.createClass({
         if(!isAuthenticated){
            eaterProfilePic = <Image source={profileImg} style={sideMenuStyle.eaterPhoto}/>;
         }else{
-           eaterProfilePic = <Image source={profileImg} style={sideMenuStyle.eaterPhoto}/>        
+           eaterProfilePic = <Image source={profileImg} style={sideMenuStyle.eaterPhoto}/>
         }
         return (
             <View style={sideMenuStyle.sidemenu}>
@@ -844,10 +915,6 @@ var Menu = React.createClass({
         );
     },
 
-    // _handleAppStateChange: function(appState) {
-    //     var LastAppState = ; 
-    // },
-
     goToOrderHistory: function() {
         this.props.caller.setState({ isMenuOpen: false });
         if(!this.props.eater){
@@ -857,7 +924,7 @@ var Menu = React.createClass({
                     callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
                     backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
                 }
-            });  
+            });
             return;
         }
         this.props.navigator.push({
@@ -877,7 +944,7 @@ var Menu = React.createClass({
                     callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
                     backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
                 }
-            });  
+            });
             return;
         }
         this.props.navigator.push({
@@ -902,7 +969,7 @@ var Menu = React.createClass({
                     callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
                     backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
                 }
-            });  
+            });
             return;
         }
         this.props.navigator.push({
@@ -917,7 +984,7 @@ var Menu = React.createClass({
             }
         });
     },
-   
+
     goToPaymentOptionPage:function() {
         this.props.caller.setState({ isMenuOpen: false });
         if(!this.props.eater){
@@ -927,7 +994,7 @@ var Menu = React.createClass({
                     callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
                     backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
                 }
-            });  
+            });
             return;
         }
 
@@ -963,7 +1030,7 @@ var Menu = React.createClass({
         return AuthService.logOut()
         .then(()=>{
             this.props.caller.setState({eater:undefined});
-            //Alert.alert( '', 'You have successfully logged out',[ { text: 'OK' }]); 
+            //Alert.alert( '', 'You have successfully logged out',[ { text: 'OK' }]);
             this.props.caller.setState({ isMenuOpen: false });
             this.props.navigator.push({
                 name: 'LoginPage',
@@ -971,18 +1038,18 @@ var Menu = React.createClass({
                     callback: this.props.caller.componentDidMount.bind(this.props.caller),
                     backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
                 }
-            }); 
-        });    
+            });
+        });
     },
-    
+
     logIn: function(){
         this.props.caller.setState({ isMenuOpen: false });
         this.props.navigator.push({
             name: 'LoginPage',
             passProps: {
                 callback: this.props.caller.componentDidMount.bind(this.props.caller),
-            }            
-        }); 
+            }
+        });
     },
 });
 
@@ -998,8 +1065,8 @@ var sideMenuStyle = StyleSheet.create({
     eaterPhoto:{
         width:windowWidth/3.0,
         height:windowWidth/3.0,
-        borderRadius:0.5*windowWidth/3.0, 
-        borderWidth: 0, 
+        borderRadius:0.5*windowWidth/3.0,
+        borderWidth: 0,
         overflow: 'hidden',
     },
     eaterPhotoView:{
@@ -1069,7 +1136,7 @@ var sideMenuStyle = StyleSheet.create({
 
 var styleChefListPage = StyleSheet.create({
     customizedHeaderBannerRules:{
-        borderColor:'#F5F5F5', 
+        borderColor:'#F5F5F5',
         borderBottomWidth:2,
         paddingLeft:windowWidth/20.7,
     },
@@ -1093,16 +1160,16 @@ var styleChefListPage = StyleSheet.create({
         paddingLeft:windowWidth/20.7
     },
     foodTagTabText:{
-        textAlign: 'center', 
-        marginRight:windowWidth*0.07, 
+        textAlign: 'center',
+        marginRight:windowWidth*0.07,
         color:'#979797'
     },
     foodTagSelectedStyle:{
         color:'#4A4A4A',
         fontWeight: 'bold',
-        // 08/09/2017: 
+        // 08/09/2017:
         // As I set the below rules on tab selected to display the yellow underline, it just doesn't work.
-        // According to the discussion on GitHub, it seems to be a RN old version problem. 
+        // According to the discussion on GitHub, it seems to be a RN old version problem.
         // Since we're not updating to the latest RN, I just simply bolden the text for now.
         // https://github.com/facebook/react-native/issues/29
 
@@ -1157,7 +1224,7 @@ var styleChefListPage = StyleSheet.create({
        marginLeft:windowWidth*0.015,
        height:windowWidth*0.1,
        width:windowWidth*0.1,
-       borderRadius: windowWidth*0.1 / 2, 
+       borderRadius: windowWidth*0.1 / 2,
        alignItems:"center",
        justifyContent:"center",
     },
@@ -1165,14 +1232,14 @@ var styleChefListPage = StyleSheet.create({
        flex:1,
        flexDirection:'column',
        justifyContent:'space-between',
-       height:windowWidth*0.165,        
+       height:windowWidth*0.165,
     },
     shopInfoSection2:{
        flex:1,
        flexDirection:'column',
        justifyContent:'space-between',
-       height:windowWidth*0.165, 
-       alignItems:'flex-end',    
+       height:windowWidth*0.165,
+       alignItems:'flex-end',
     },
     shopInfoRow1:{
        flexDirection:'row',
@@ -1180,8 +1247,8 @@ var styleChefListPage = StyleSheet.create({
     shopNameView:{
        flex:0.93,
        flexDirection:'row',
-       alignItems:'flex-start', 
-    }, 
+       alignItems:'flex-start',
+    },
     oneShopNameText:{
        fontSize:windowHeight/34.9,
        fontWeight:'500',
@@ -1208,7 +1275,7 @@ var styleChefListPage = StyleSheet.create({
     distanceDollarSignView:{
         flexDirection:'row',
         justifyContent:'flex-end',
-        paddingTop:windowHeight*0.0075,   
+        paddingTop:windowHeight*0.0075,
     },
     distanceDollarSignText:{
         fontSize:windowHeight/47.33,
@@ -1220,6 +1287,21 @@ var styleChefListPage = StyleSheet.create({
         paddingRight:0,
         marginBottom:windowHeight/90,
     },
+    likedIconView:{
+        height:windowHeight*0.02,
+        width:windowWidth*0.04,
+    },
+    iconCircle:{
+        //TODO: make the shadow, it's just a circle for now
+        marginLeft:windowWidth*0.015,
+        height:windowWidth*0.1,
+        width:windowWidth*0.1,
+        borderWidth:windowWidth*0.001,
+        borderRadius: windowWidth*0.1 / 2,
+        alignItems:"center",
+        justifyContent:"center",
+        borderColor:"#bbb",
+    },
     shopInfoRow3:{
         flexDirection:'row',
         paddingTop:windowHeight*0.015,
@@ -1228,9 +1310,9 @@ var styleChefListPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'flex-start',
         marginRight:windowWidth*0.04,
-    },   
+    },
     labelIcon:{
-        width:1.5*windowHeight/71.0, 
+        width:1.5*windowHeight/71.0,
         height:windowHeight/71.0,
         alignSelf:'center',
     },
@@ -1263,7 +1345,7 @@ var styleChefListPage = StyleSheet.create({
         backgroundColor:'#FFFFFF',
         borderBottomWidth:1.5,
         borderBottomColor:'#FFFFFF',
-    }   
+    }
 });
 
 var styleFilterPage = StyleSheet.create({
@@ -1304,14 +1386,14 @@ var styleFilterPage = StyleSheet.create({
         width:windowWidth,
         flexDirection:'column', 
         borderColor:'#F5F5F5',
-        borderBottomWidth:1,    
+        borderBottomWidth:1,
         backgroundColor:'#FFFFFF',
     },
     sortCriteriaTitleView:{
         width:windowWidth*0.85,
         height:windowHeight*0.054,
         flexDirection:'row',
-        alignItems:'flex-start',        
+        alignItems:'flex-start',
     },
     sortCriteriaTitleText:{
         alignSelf:'center',

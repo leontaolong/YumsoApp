@@ -22,33 +22,24 @@ import React, {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   Image,
-  TextInput,
   TouchableHighlight,
   TouchableOpacity,
   ActivityIndicatorIOS,
   PushNotificationIOS,
   AsyncStorage,
+  ScrollView,
   Alert,
 } from 'react-native';
 
 const facebookPermissions = ["public_profile"];
 
-class LoginPage extends Component {
+class WelcomePage extends Component {
     constructor(props){
         super(props);
         this.state = {
             showProgress: false,
         };
-        var routeStack = this.props.navigator.state.routeStack;
-        if(routeStack && routeStack.length>0){
-            var passProps = routeStack[routeStack.length-1].passProps;
-            if(passProps){
-                this.state.callback = passProps.callback;
-                this.state.backCallback = passProps.backCallback;
-            }
-        }
 
         PushNotificationIOS.requestPermissions();
         PushNotificationIOS.checkPermissions((permissions) => {
@@ -66,65 +57,70 @@ class LoginPage extends Component {
 
       console.log('LoginPage deviceToken '+this.state.deviceToken);
 
-      var skipLoginView = null;
-      var backButtonView = null;
-      if(this.props.navigator.getCurrentRoutes() && this.props.navigator.getCurrentRoutes().length==1 && this.props.navigator.getCurrentRoutes()[0].name == "LoginPage"){
-         skipLoginView = <View style={styleLoginPage.askToSignUpView}>
-                            <Text style={styleLoginPage.askToSignUpText}>Just take a look?</Text>
-                            <Text onPress={() => this.jumpToChefList()} style={styleLoginPage.signUpText}> Skip login</Text>
-                         </View>
-         backButtonView =  <View style={styles.headerLeftView}>
-                           </View>
-      }else{
-         backButtonView = <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                              <View style={styles.backButtonView}>
-                                 <Image source={backIcon} style={styles.backButtonIcon}/>
-                              </View>
-                          </TouchableHighlight>
-      }
-
       return (
             <View style={styles.containerNew}>
-
               <Image style={styles.pageBackgroundImage} source={backgroundImage}>
-
                   <View style={styles.headerBannerViewNew}>
-                      <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                            <View style={styles.backButtonView}>
-                                <Image source={backIcon} style={styles.backButtonIcon}/>
-                            </View>
-                      </TouchableHighlight>
+                      <View style={styles.headerLeftView}>
+                      </View>
                       <View style={styles.headerRightView}>
                       </View>
                   </View>
-
                   <View style={styles.titleViewNew}>
-                      <Text style={styles.titleTextNew}>Sign In</Text>
+                      <Text style={styles.titleTextNew}>Welcome to Yumso</Text>
+                      <Text style={styleWelcomePage.pageSubTitle}>Choose one way to sign in</Text>
                   </View>
-
-                 <ScrollView scrollEnabled={false} contentContainerStyle={styleLoginPage.scrollView}>
-
-                    <Text style={styles.textFieldTitle}>Email  </Text>
-
-                    <View style={styles.loginInputViewNew}>
-                    <TextInput placeholder="" style={styles.loginInputNew} placeholderTextColor='#fff' autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                       maxLength={40} autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
-                    </View>
-
-                    <Text style={styles.textFieldTitle}>Password  </Text>
-                    <View style={styles.loginInputViewNew}>
-                    <TextInput placeholder="" style={styles.loginInputNew} placeholderTextColor='#fff' returnKeyType = {'go'} onSubmitEditing = {this.onLoginPressed.bind(this)}
-                       maxLength={12} onChangeText = {(text) => this.setState({ password: text }) } secureTextEntry={true}/>
-                    </View>
-
-                    <View style={styleLoginPage.forgotPasswordViewNew}>
-                        <Text style={styleLoginPage.forgotPasswordText} onPress={this.onPressForgotPassword.bind(this)}>Forget password?</Text>
-                    </View>
-
-                 </ScrollView>
-                 <TouchableOpacity activeOpacity={0.7} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
-                     <Text style={styleLoginPage.signInButtonText}>Sign in</Text>
-                 </TouchableOpacity>
+                  <View style={{height:windowHeightRatio*50}}>
+                  </View>
+                  <TouchableOpacity activeOpacity={0.7} style={styles.secondaryButtonView} onPress={()=>this.goToLoginPage()}>
+                      <Text style={styles.secondaryButtonText}>Sign in with Email</Text>
+                  </TouchableOpacity>
+                  <View style={{height:windowHeightRatio*15}}>
+                  </View> 
+                  <View style={styleWelcomePage.fbSignInButtonView}>
+                    <FBLogin style={styleWelcomePage.fbSignInButton}
+                        permissions={facebookPermissions}
+                        onLogin={function(data) {
+                            _this.onGettingFbToken(data.credentials);
+                            _this.setState({ user: data.credentials });
+                        } }
+                        onLogout={function() {
+                            console.log("Logged out.");
+                            _this.setState({ user: null });
+                        } }
+                        onLoginFound={function(data) {
+                            console.log("Existing login found.");
+                            _this.onGettingFbToken(data.credentials);
+                            _this.setState({ user: data.credentials });
+                        } }
+                        onLoginNotFound={function() {
+                            console.log("No user logged in.");
+                            _this.setState({ user: null });
+                        } }
+                        onError={function(data) {
+                            console.log("ERROR");
+                            console.log(data);
+                        } }
+                        onCancel={function() {
+                            console.log("User cancelled.");
+                        } }
+                        onPermissionsMissing={function(data) {
+                            console.log("Check permissions!");
+                            console.log(data);
+                        } }/>
+                  </View> 
+                  <View style={{flex:1}}>
+                  </View>
+                  <View style={{marginHorizontal: 20*windowWidthRatio}}>
+                     <Text style={styleWelcomePage.pageSubTitle}>Don't have an account?</Text>
+                  </View>
+                  <View style={{height:windowHeightRatio*14}}>
+                  </View>
+                  <TouchableOpacity activeOpacity={0.7} style={styles.secondaryWhiteButtonView} onPress={()=>this.navigateToSignUp()}>
+                      <Text style={styles.secondaryWhiteButtonText}>Sign up Now !</Text>
+                  </TouchableOpacity>
+                  <View style={{height:windowHeightRatio*40}}>
+                  </View>
               </Image>
               {loadingSpinnerView}
             </View>
@@ -161,19 +157,18 @@ class LoginPage extends Component {
               return;
            }
 
-           this.jumpToChefList();
-        //    var currentRoutes = this.props.navigator.getCurrentRoutes();
-        //    if(currentRoutes && currentRoutes.length==2 && currentRoutes[0].name == "LoginPage"){
-        //       this.jumpToChefList();
-        //    }else{
-        //       this.props.navigator.pop();
-        //    }
-        //    if(this.props.onLogin){
-        //       this.props.onLogin();
-        //    }
-        //    if(this.state.callback){
-        //       this.state.callback(eater,principal);
-        //    }
+           var currentRoutes = this.props.navigator.getCurrentRoutes();
+           if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "LoginPage"){
+              this.jumpToChefList();
+           }else{
+              this.props.navigator.pop();
+           }
+           if(this.props.onLogin){
+              this.props.onLogin();
+           }
+           if(this.state.callback){
+              this.state.callback(eater,principal);
+           }
         }catch(err){
            this.setState({ showProgress: false });
            commonAlert.networkError(err);
@@ -221,7 +216,7 @@ class LoginPage extends Component {
            //If not logged in, direct to login page,if logged in direct to cheflist page
            console.log("current routes(before): "+JSON.stringify(this.props.navigator.getCurrentRoutes()));
            var currentRoutes = this.props.navigator.getCurrentRoutes();
-           if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "LoginPage"){
+           if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "WelcomePage"){
               this.jumpToChefList();
            }else{
               this.props.navigator.pop();
@@ -243,6 +238,12 @@ class LoginPage extends Component {
     navigateToSignUp(){
         this.props.navigator.push({
             name: 'SignUpPage'
+        });
+    }
+
+    goToLoginPage(){
+        this.props.navigator.push({
+            name: 'LoginPage'
         });
     }
 
@@ -278,10 +279,9 @@ class LoginPage extends Component {
     }
 }
 
-var styleLoginPage = StyleSheet.create({
+var styleWelcomePage = StyleSheet.create({
     scrollView:{
       alignItems:'center',
-      //backgroundColor: "#cc0000",
       marginTop: 0,
       paddingTop: 64* windowHeightRatio,
       marginLeft: 20  * windowWidthRatio,
@@ -303,7 +303,6 @@ var styleLoginPage = StyleSheet.create({
     },
     signInButtonView:{
       height: 50 * windowHeightRatio,
-      //position: "relative",
       bottom: 0,
       width:windowWidth,
       backgroundColor:'#FFCC33',
@@ -347,13 +346,10 @@ var styleLoginPage = StyleSheet.create({
       height:30 * windowHeightRatio,
       flexDirection:'row',
       width:windowWidth - 40  * windowWidthRatio,
-      //marginBottom:windowWidth/49.2,
-      //justifyContent:'flex-start',
       marginTop:10 * windowHeightRatio,
     },
     forgotPasswordText:{
       fontSize:15*windowHeight/677,
-      //fontWeight:'500',
       color:'#979797',
       backgroundColor:'transparent',
     },
@@ -375,6 +371,23 @@ var styleLoginPage = StyleSheet.create({
       width: windowWidth - 40  * windowWidthRatio,
       marginTop: 12 * windowHeightRatio,
     },
+    pageSubTitle: {
+        fontSize:windowHeight/35.5,
+        fontWeight:'600',
+        color:'#4A4A4A',
+    },
+    fbSignInButtonView:{
+        flexDirection:'column', 
+        height:windowHeight*0.075, 
+        justifyContent:'center',
+        backgroundColor:'#415DAE',
+        marginHorizontal:windowWidth/20.7,
+        marginVertical:windowHeight*0.005,
+    },
+
+    fbSignInButton:{
+        alignSelf:'center',
+    }
 });
 
-module.exports = LoginPage;
+module.exports = WelcomePage;

@@ -517,6 +517,7 @@ class ShopPage extends Component {
                             <View style={styleShopPage.shopInfoRow}>
                                 <View style={styleShopPage.shopRatingView}>
                                     {rating.renderRating(this.state.chef.rating)}
+                                    <Text style={styleShopPage.reviewNumberText}>  {this.state.chef.rating} ({this.state.chef.reviewCount})</Text>
                                 </View>
                             <View style={styleShopPage.shopInfoRightColumnView}>
                                 <Text style={styleShopPage.shopInfoRightColumnText}>{this.state.chef.pickupAddressDetail.city+", "+this.state.chef.pickupAddressDetail.state}</Text>
@@ -535,7 +536,6 @@ class ShopPage extends Component {
                 </View>
 
                 <View style={styleShopPage.chefDetailRowView}>
-                {/* remove border on the left for the first item* */}
                     <TouchableHighlight key={'chefPageClickableView'} style={[styleShopPage.chefDetailView, {borderLeftWidth:0}]} underlayColor={'#F5F5F5'} onPress={() => this.navigateToChefPage()}>
                         <View style={styleShopPage.chefDetailTextView}>
                             <Text style={styleShopPage.pickupAddressText}>Chef Page</Text>
@@ -1101,8 +1101,6 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center', 
         height:windowHeight*0.03,
-        fontSize:windowHeight/40,
-        color:'#4A4A4A',
     },
     pickupAddressText:{ 
         fontSize: windowHeight/47.33, 
@@ -1113,28 +1111,23 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center', 
         height:windowHeight*0.08,
-        //backgroundColor:'#FFCC33'
     },
     openHourTitle:{
         alignSelf:'center',
         fontSize:windowHeight/46.0,
-        //color:'#FFFFFF',
         color:'#4A4A4A',
         fontWeight:'600',
         marginRight:windowWidth*0.015625,
     },
     modalPicker:{
         alignSelf:'center',
-        //backgroundColor:'#FFCC33'
     },
     modalPickerSelectText:{
         fontSize:windowHeight/46.0,
-        //color:'#FFFFFF',
         color:'#7BCBBE',
         fontWeight:'600',
     },
     modalPickerSelect:{
-        //borderColor:'#FFFFFF',
         borderColor:'#7BCBBE',
         borderWidth:1.5,
     },
@@ -1192,8 +1185,6 @@ var styleShopPage = StyleSheet.create({
         opacity:0.3,
     },
     oneDishNameDiscriptionView:{
-        // flex: 1,
-        // flexDirection: 'row',
         backgroundColor:'#FFFFFF',
         paddingHorizontal: windowWidth/20.7,
         paddingTop: windowHeight*0.03,
@@ -1366,7 +1357,7 @@ var styleShopPage = StyleSheet.create({
         marginHorizontal:windowWidth/20.7,
         marginVertical:windowHeight*0.005,
         borderColor:'#7BCBBE',
-        borderWidth:1,
+        borderWidth:2,
     },
     fullMenuButtonText: {
         fontSize:15*windowHeight/677,
@@ -1496,6 +1487,12 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row',
         marginRight:windowWidth*0.04,
     },
+    reviewNumberText:{
+        fontSize:windowHeight/47.33,
+        color:'#4A4A4A',
+        marginLeft:windowWidth*0.0187,
+        alignSelf:'center',
+     }
 });
 
 module.exports = ShopPage;
