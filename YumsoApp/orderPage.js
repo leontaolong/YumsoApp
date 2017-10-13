@@ -297,36 +297,30 @@ class OrderPage extends Component {
           <View style={styleOrderPage.placeHolderView}></View>
           <View style = {styles.tabBarNew}>
               <View style={{flex: 1, flexDirection: 'row'}}>
-                  <View style={{width: windowWidth/3, height: 44}}>
-                      <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressShopsTabBtn()}>
-                        <View style={styles.tabBarButtonNew}>
+                  <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressShopsTabBtn()}>
+                      <View style={styles.tabBarButtonNew}>
                           <Image source={shopsOff}  style={styles.tabBarButtonImageNew}/>
                           <View>
                             <Text style={styles.tabBarButtonTextOffNew}>Shops</Text>
                           </View>
-                        </View>
-                      </TouchableHighlight>
-                  </View>
-                  <View style={{width: windowWidth/3, height: 44}}>
-                      <TouchableHighlight underlayColor={'#F5F5F5'}>
-                        <View style={styles.tabBarButtonNew}>
+                      </View>
+                  </TouchableHighlight>
+                  <TouchableHighlight underlayColor={'#F5F5F5'}>
+                      <View style={styles.tabBarButtonNew}>
                           <Image source={ordersOn}  style={styles.tabBarButtonImageNew}/>
                           <View>
                             <Text style={styles.tabBarButtonTextOnNew}>Orders</Text>
                           </View>
-                        </View>
-                      </TouchableHighlight>
-                  </View>
-                  <View style={{width: windowWidth/3, height: 44}}>
-                      <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressMeTabBtn()}>
-                        <View style={styles.tabBarButtonNew}>
+                      </View>
+                  </TouchableHighlight>
+                  <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressMeTabBtn()}>
+                      <View style={styles.tabBarButtonNew}>
                           <Image source={meOff}  style={styles.tabBarButtonImageNew}/>
                           <View>
                             <Text style={styles.tabBarButtonTextOffNew}>Me</Text>
                           </View>
-                        </View>
-                      </TouchableHighlight>
-                  </View>
+                      </View>
+                  </TouchableHighlight>
               </View>
           </View>
         </View>);

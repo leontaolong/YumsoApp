@@ -668,8 +668,6 @@ module.exports = StyleSheet.create({
     },
 
     scrollViewSignUpNew:{
-    //  alignItems:'center',
-    //  backgroundColor: "#cc0000",
       marginTop: 0,
       paddingTop: 64* windowWidthRatio,
       marginLeft: 20* windowWidthRatio,
@@ -679,7 +677,6 @@ module.exports = StyleSheet.create({
 
     tabBarNew: {
       height: 55* windowWidthRatio,
-      //backgroundColor : "#000",
       width: windowWidth,
       shadowOffset:{  width: 0* windowWidthRatio,  height: -2* windowWidthRatio,  },
       shadowColor: 'black',
@@ -687,21 +684,19 @@ module.exports = StyleSheet.create({
     },
     tabBarButtonNew: {
       flexDirection:'column',
-      flex: 1,
-      height: 44* windowWidthRatio,
+      height: 55* windowWidthRatio,
       width:windowWidth/3,
       alignItems: 'center',
-
     },
     tabBarButtonImageNew: {
       height: 22 * windowHeightRatio,
       width:20 * windowWidthRatio,
       marginTop: 10 * windowHeightRatio,
-    //  marginLeft: ((windowWidth/3)/2)- (22 * windowWidthRatio)/2,
     },
     tabBarButtonTextOffNew: {
         fontSize: h5,
         color: "#979797",
+        marginTop:1*windowHeightRatio,
     },
     tabBarButtonTextOnNew: {
         fontSize: h5,

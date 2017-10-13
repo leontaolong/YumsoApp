@@ -291,36 +291,30 @@ class EaterPage extends Component {
                         </ScrollView>
                         <View style = {styles.tabBarNew}>
                             <View style={{flex: 1, flexDirection: 'row'}}>
-                                <View style={{width: windowWidth/3, height: 44}}>
-                                    <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressShopsTabBtn()}>
-                                        <View style={styles.tabBarButtonNew}>
+                                <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressShopsTabBtn()}>
+                                    <View style={styles.tabBarButtonNew}>
                                         <Image source={shopsOff}  style={styles.tabBarButtonImageNew}/>
                                         <View>
                                             <Text style={styles.tabBarButtonTextOffNew}>Shops</Text>
                                         </View>
-                                        </View>
-                                    </TouchableHighlight>
-                                </View>
-                                <View style={{width: windowWidth/3, height: 44}}>
-                                    <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressOrdersTabBtn()}>
-                                        <View style={styles.tabBarButtonNew}>
+                                    </View>
+                                </TouchableHighlight>
+                                <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressOrdersTabBtn()}>
+                                    <View style={styles.tabBarButtonNew} >
                                         <Image source={ordersOff}  style={styles.tabBarButtonImageNew}/>
                                         <View>
                                             <Text style={styles.tabBarButtonTextOffNew}>Orders</Text>
                                         </View>
-                                        </View>
-                                    </TouchableHighlight>
-                                </View>
-                                <View style={{width: windowWidth/3, height: 44}}>
-                                    <TouchableHighlight underlayColor={'#F5F5F5'}>
-                                        <View style={styles.tabBarButtonNew}>
+                                    </View>
+                                </TouchableHighlight>
+                                <TouchableHighlight underlayColor={'#F5F5F5'}>
+                                    <View style={styles.tabBarButtonNew}>
                                         <Image source={meOn}  style={styles.tabBarButtonImageNew}/>
                                         <View>
                                             <Text style={styles.tabBarButtonTextOnNew}>Me</Text>
                                         </View>
-                                        </View>
-                                    </TouchableHighlight>
-                                </View>
+                                    </View>
+                                </TouchableHighlight>
                             </View>
                         </View>
                 </View>);
