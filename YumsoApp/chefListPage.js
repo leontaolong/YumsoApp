@@ -171,7 +171,7 @@ class ChefListPage extends Component {
            var chefs = response.data.chefs;
            var chefView = {};
            var chefsDictionary = {};
-           var foodTags =['ALL']; // put foodTag 'ALL' at first
+           var foodTags =['All']; // put foodTag 'All' at first
            var hasFoodTagOther = false;
            for (var chef of chefs) {
                 if(chef){//Todo:undefined check for all
@@ -595,7 +595,7 @@ class ChefListPage extends Component {
         let displayChefs = [];
         Object.keys(this.state.chefsDictionary).forEach(function(chefId) {
             let chef = self.state.chefsDictionary[chefId];
-            if (chef.foodTag == foodTag || foodTag== 'ALL') 
+            if (chef.foodTag == foodTag || foodTag== 'All') 
                 displayChefs.push(chef);
         });
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
@@ -1170,6 +1170,7 @@ var styleChefListPage = StyleSheet.create({
     },
     shopNameView:{
        flex:0.93,
+       height:windowHeight*0.04,
        flexDirection:'row',
        alignItems:'flex-start', 
     }, 
@@ -1213,7 +1214,7 @@ var styleChefListPage = StyleSheet.create({
     },
     shopInfoRow3:{
         flexDirection:'row',
-        paddingTop:windowHeight*0.015,
+        paddingTop:windowHeight*0.0095,
     },
     labelView:{
         flexDirection:'row',
