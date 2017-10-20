@@ -986,9 +986,9 @@ var styleShopPage = StyleSheet.create({
         paddingLeft:windowWidth/20.7, 
     },
     chefPhoto:{
-        marginLeft:windowWidth*0.02,
-        height:windowWidth*0.05,
-        width:windowWidth*0.05,
+        marginLeft:windowWidth*0.024,
+        height:windowWidth*0.06,
+        width:windowWidth*0.06,
         borderRadius: 10, 
         borderWidth: 0, 
         overflow: 'hidden',
@@ -1099,15 +1099,14 @@ var styleShopPage = StyleSheet.create({
     },
     chefDetailTextView:{
         flexDirection:'row',
-        justifyContent:'center', 
-        height:windowHeight*0.03,
-        fontSize:windowHeight/40,
-        color:'#4A4A4A',
+        alignItems:'center',
+        height:windowHeight*0.05,
+        marginBottom:windowHeight*0.025,
     },
     pickupAddressText:{ 
         fontSize: windowHeight/47.33, 
-        fontWeight:'400',
-        color: '#979797'
+        color:'#4A4A4A',
+        fontWeight:'200'
     },
     timeSelectorView:{
         flexDirection:'row',
