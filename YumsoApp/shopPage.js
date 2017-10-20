@@ -54,6 +54,17 @@ import React, {
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
+var windowHeightRatio = windowHeight/677;
+var windowWidthRatio = windowWidth/375;
+
+
+var h1 = 28*windowHeight/677;
+var h2 = windowHeight/35.5;
+var h3 = windowHeight/33.41;
+var h4 = windowHeight/47.33;
+var h5 = 12;
+var b1 = 15*windowHeight/677;
+var b2 = 15*windowHeight/677;
 class ShopPage extends Component {
      constructor(props){
         super(props);      
@@ -184,7 +195,7 @@ class ShopPage extends Component {
         if (this.state.showScheduleSelection) {
             menuTitle = <View style={styleShopPage.menuTitleView1}>
                             <Text style={styleShopPage.menuTitleTextTitle}>Menu</Text>
-                            <Text style={[styleShopPage.menuTitleTextPrompt, {alignSelf:'flex-start'}]}>Select a menu at your scheduled out-for-delivery time</Text>
+                            <Text style={[styleShopPage.menuTitleTextPrompt, {alignSelf:'flex-start'}]}>Select an out-for-delivery time this chef has to offer</Text>
                         </View>
         } else {
             menuTitle = <View style={styleShopPage.menuTitleView2}>
@@ -192,7 +203,7 @@ class ShopPage extends Component {
                                 <Text style={styleShopPage.menuTitleTextTitle}>Menu · </Text>
                                 <Text style={styleShopPage.menuTitleTextPrompt}>{this.state.selectedTimeRendered}</Text>
                             </View>
-                            <Text style={[styleShopPage.menuTitleTextPrompt, {marginRight: windowWidth*0.065,textAlign:'left',color:'#7BCBBE'}]} onPress={()=>this.displaySchedule()}>Change</Text>
+                            <Text style={[styleShopPage.menuTitleTextPrompt, {marginRight: windowWidth*0.065,textAlign:'left',color:'#7BCBBE'}]} onPress={()=>this.displaySchedule()}>Change Time</Text>
                         </View>           
         }
         return (
@@ -206,7 +217,7 @@ class ShopPage extends Component {
     renderFooter(){
         if (this.state.showScheduleSelection) {
             var noScheduleAvailableView =   <View style={[styles.greyBox, {marginHorizontal:windowWidth/20.7,marginBottom:windowHeight*0.02}]}>
-                                                <Text style={styles.greyBoxText}>Currently no dishes are available to deliver</Text>
+                                                <Text style={styles.greyBoxText}>This chef has no schedule available now</Text>
                                             </View>
 
             var fullMenuButtonView = <TouchableHighlight style={styleShopPage.fullMenuButton} underlayColor={'#eee'} onPress={()=>this.selectSchedule("All Dishes")}>
@@ -499,11 +510,11 @@ class ShopPage extends Component {
                         </Swiper>
                     </View>                       
                     <View key={'shopInfoView'} style={styleShopPage.shopInfoView}>
-                        <TouchableHighlight style={[styles.iconCircle, styleShopPage.shareIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.share()}}>
+                        <TouchableHighlight style={[styles.iconCircle, styleShopPage.shareIconPositioning, styles.iconShadow]} underlayColor={'#bbb'} onPress={()=>{this.share()}}>
                             <Image source={shareIcon} style={styles.shareIconCircled}></Image>
                         </TouchableHighlight>
                         
-                        <TouchableHighlight style={[styles.iconCircle, styleShopPage.likeIconPositioning]} underlayColor={'#bbb'} onPress={()=>{this.addToFavorite()}}>
+                        <TouchableHighlight style={[styles.iconCircle, styleShopPage.likeIconPositioning, styles.iconShadow]} underlayColor={'#bbb'} onPress={()=>{this.addToFavorite()}}>
                             <Image source={likeIcon} style={styles.likeIconCircled}></Image>
                         </TouchableHighlight>
                       
@@ -783,19 +794,13 @@ class ShopPage extends Component {
                     return AuthService.updateCacheEater(eater) //todo: perhaps return the eater oject everytime update it.
                         .then(() => {
                             _this.setState({ like: isAdd });
-                            //Alert.alert('Success', isAdd ? 'Added to favorite list' : 'Removed from favorite list', [{ text: 'OK' }]);
                         });
                 }else if (res.statusCode === 401) {
                     return AuthService.logOut()
                         .then(() => {
                             delete _this.state.eater;
                             _this.props.navigator.push({
-                                name: 'LoginPage',
-                                passProps: {
-                                    callback: (eater) => {
-                                        _this.setState({ like: eater.favoriteChefs.indexOf(_this.state.chefId) !== -1 });
-                                    }
-                                }
+                                name: 'WelcomePage'
                             });
                         });
                 } else {
@@ -807,12 +812,7 @@ class ShopPage extends Component {
             }); 
         } else {
             _this.props.navigator.push({
-                name: 'LoginPage',
-                passProps: {
-                    callback: (eater) => {
-                        _this.setState({ like: eater.favoriteChefs.indexOf(_this.state.chefId) !== -1 });
-                    }
-                }
+                name: 'WelcomePage',
             });
         }
     }
@@ -1025,7 +1025,7 @@ var styleShopPage = StyleSheet.create({
        flex:0.15,
        flexDirection:'row',
        alignItems:'flex-end', 
-       justifyContent:'center'
+       justifyContent:'center',
     }, 
     likeIcon:{
         width:windowWidth*0.05,
@@ -1082,7 +1082,6 @@ var styleShopPage = StyleSheet.create({
     },  
     chefDetailRowView: {
         width: windowWidth,
-        paddingVertical: windowHeight*0.01,
         flexDirection: 'row',
         justifyContent:'center',
         borderColor: '#eee',
@@ -1095,7 +1094,8 @@ var styleShopPage = StyleSheet.create({
         alignSelf:'center',
         backgroundColor: '#fff',
         borderColor: '#eee',
-        borderLeftWidth:1,       
+        borderLeftWidth:1,   
+        paddingVertical: windowHeight*0.01,    
     },
     chefDetailTextView:{
         flexDirection:'row',
@@ -1333,6 +1333,7 @@ var styleShopPage = StyleSheet.create({
         textAlign:'left',
         fontSize:windowHeight/51.636,
         color:'#9B9B9B',
+        paddingTop:2*windowHeightRatio,
         paddingLeft:0,
         marginLeft:0,
     },

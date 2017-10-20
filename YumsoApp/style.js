@@ -335,11 +335,10 @@ module.exports = StyleSheet.create({
       color:'#4A4A4A',
     },
     dishListView:{
-        alignSelf:'stretch',
-        backgroundColor:'#F5F5F5',
+        alignSelf:'center',
         paddingBottom:20,
         flexDirection:'column',
-        height: windowHeight*9/10
+        height:windowHeight*9/10
     },
     dishListViewWhite:{
         alignSelf:'stretch',
@@ -556,14 +555,7 @@ module.exports = StyleSheet.create({
       color:'#4A4A4A',
       fontWeight:'500',
       fontWeight: "bold",
-
-    //  backgroundColor: "#cccccc",
-    //  width: windowWidth - 40 * windowWidthRatio,
       marginTop: 0,
-
-
-      //alignSelf:'center',
-      //textAlign:'center'
     },
     loginInputViewNew:{
       width:windowWidth-40 * windowWidthRatio,
@@ -575,7 +567,6 @@ module.exports = StyleSheet.create({
       alignSelf:'center',
       marginLeft: 0,
       height: 34 * windowHeightRatio,
-    //  backgroundColor: "#00cd00",
     },
 
     loginInputNew:{
@@ -633,24 +624,20 @@ module.exports = StyleSheet.create({
       paddingTop: 62 * windowHeightRatio,
       marginLeft: 20 * windowWidthRatio,
       width: windowWidth - 40 * windowWidthRatio,
-    //  backgroundColor:'#F5F5F5'
     },
     headerBannerViewNew: {
       flexDirection:'row',
       borderBottomWidth:0,
       borderColor:'#EAEAEA',
-    //  backgroundColor:'#000',
       height: 42* windowHeightRatio,
       marginTop : 20,
-    width: windowWidth/3,
+      width: windowWidth/3,
     },
 
     backButtonViewsNew:{
-    //  paddingTop: 15,
       paddingLeft: 20* windowWidthRatio,
       justifyContent:'center',
       flexDirection:'column',
-
     },
 
     backButtonIconsNew:{
@@ -687,11 +674,19 @@ module.exports = StyleSheet.create({
       height: 55* windowWidthRatio,
       width:windowWidth/3,
       alignItems: 'center',
+      justifyContent:'center'
     },
-    tabBarButtonImageNew: {
-      height: 22 * windowHeightRatio,
-      width:20 * windowWidthRatio,
-      marginTop: 10 * windowHeightRatio,
+    tabBarButtonImageMe: {
+      height: 23 * windowHeightRatio,
+      width:22 * windowHeightRatio,
+    },
+    tabBarButtonImageOrder: {
+      height: 23 * windowHeightRatio,
+      width:20 * windowHeightRatio,
+    },
+    tabBarButtonImageShop: {
+      height: 23 * windowHeightRatio,
+      width:20.5 * windowHeightRatio,
     },
     tabBarButtonTextOffNew: {
         fontSize: h5,
@@ -762,5 +757,20 @@ module.exports = StyleSheet.create({
       borderWidth:2,
       justifyContent:'center',
       height:windowHeight*0.075,
-    }
+    },
+    iconShadow:{
+      shadowOffset:{  width: 2* windowWidthRatio,  height: 3* windowWidthRatio,  },
+      shadowColor: 'black',
+      shadowOpacity: 0.3,
+    },
+    pageSubTitleView:{
+       marginHorizontal:20 * windowWidthRatio,
+       marginBottom:10*windowHeightRatio,
+       flexDirection:'row',
+    },
+    pageSubTitleText: {
+      fontSize:windowHeight/35.5,
+      fontWeight:'600',
+      color:'#4A4A4A',
+    },
 });

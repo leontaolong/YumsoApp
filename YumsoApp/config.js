@@ -1,7 +1,7 @@
 module.exports={
     //baseUrl: 'https://www.yumso.com',
-    baseUrl: 'http://ec2-52-43-125-181.us-west-2.compute.amazonaws.com',
-    //baseUrl: 'http://192.168.0.110:8080',
+    //baseUrl: 'http://ec2-52-43-125-181.us-west-2.compute.amazonaws.com',
+    baseUrl: 'http://192.168.0.110:8080',
     AppVersion:'1.7.4',
     timeoutLength:20000,
     gracePeriodLength:5,
@@ -34,6 +34,9 @@ module.exports={
     eaterPicUploadEndpoint:'/api/v1/eater/eaterPicUpload',
     addFavoriteEndpoint:'/api/v1/eater/addOrRemoveFavorite/add',
     removeFavoriteEndpoint:'/api/v1/eater/addOrRemoveFavorite/remove',
+    getCouponWallet:'/api/v1/coupon/couponWallet/retrieve/',
+    registerCoupon:'/api/v1/coupon/couponWallet/register',
+    unregisterCoupon:'/api/v1/coupon/couponWallet/unregister',
     //public
     chefDishesEndpoint:'/api/v1/public/getDishes/',
     chefSchedulesEndpoint:'/api/v1/public/getSchedules/',

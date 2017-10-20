@@ -299,7 +299,7 @@ class OrderPage extends Component {
               <View style={{flex: 1, flexDirection: 'row'}}>
                   <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressShopsTabBtn()}>
                       <View style={styles.tabBarButtonNew}>
-                          <Image source={shopsOff}  style={styles.tabBarButtonImageNew}/>
+                          <Image source={shopsOff}  style={styles.tabBarButtonImageShop}/>
                           <View>
                             <Text style={styles.tabBarButtonTextOffNew}>Shops</Text>
                           </View>
@@ -307,7 +307,7 @@ class OrderPage extends Component {
                   </TouchableHighlight>
                   <TouchableHighlight underlayColor={'#F5F5F5'}>
                       <View style={styles.tabBarButtonNew}>
-                          <Image source={ordersOn}  style={styles.tabBarButtonImageNew}/>
+                          <Image source={ordersOn}  style={styles.tabBarButtonImageOrder}/>
                           <View>
                             <Text style={styles.tabBarButtonTextOnNew}>Orders</Text>
                           </View>
@@ -315,7 +315,7 @@ class OrderPage extends Component {
                   </TouchableHighlight>
                   <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressMeTabBtn()}>
                       <View style={styles.tabBarButtonNew}>
-                          <Image source={meOff}  style={styles.tabBarButtonImageNew}/>
+                          <Image source={meOff}  style={styles.tabBarButtonImageMe}/>
                           <View>
                             <Text style={styles.tabBarButtonTextOffNew}>Me</Text>
                           </View>

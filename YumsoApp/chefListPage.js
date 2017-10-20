@@ -503,7 +503,7 @@ class ChefListPage extends Component {
                         <View style={{flex: 1, flexDirection: 'row'}}>
                              <TouchableHighlight underlayColor={'#F5F5F5'}>
                                  <View style={styles.tabBarButtonNew}>
-                                      <Image source={shopsOn}  style={styles.tabBarButtonImageNew}/>
+                                      <Image source={shopsOn}  style={styles.tabBarButtonImageShop}/>
                                       <View>
                                         <Text style={styles.tabBarButtonTextOnNew}>Shops</Text>
                                       </View>
@@ -511,7 +511,7 @@ class ChefListPage extends Component {
                              </TouchableHighlight>
                              <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressOrdersTabBtn()}>
                                  <View style={styles.tabBarButtonNew}>
-                                      <Image source={ordersOff}  style={styles.tabBarButtonImageNew}/>
+                                      <Image source={ordersOff}  style={styles.tabBarButtonImageOrder}/>
                                       <View>
                                         <Text style={styles.tabBarButtonTextOffNew}>Orders</Text>
                                       </View>
@@ -519,7 +519,7 @@ class ChefListPage extends Component {
                              </TouchableHighlight>
                              <TouchableHighlight underlayColor={'#F5F5F5'}  onPress={() => this.onPressMeTabBtn()}>
                                  <View style={styles.tabBarButtonNew}>
-                                      <Image source={meOff}  style={styles.tabBarButtonImageNew}/>
+                                      <Image source={meOff}  style={styles.tabBarButtonImageMe}/>
                                       <View>
                                         <Text style={styles.tabBarButtonTextOffNew}>Me</Text>
                                       </View>

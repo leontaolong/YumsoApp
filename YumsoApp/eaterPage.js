@@ -165,27 +165,54 @@ class EaterPage extends Component {
                         </View>
 
                         <ScrollView style={{backgroundColor:'#fff'}}>
-                                <View style={styleEaterPage.headerViewNew}>
-                                    <View style={styleEaterPage.titleViewNew2}>
-                                        <Text style={styles.titleTextNew}>One More Step ...</Text>
-                                        <Text style={styleEaterPage.pageSubTitle}>Please fill in the following fields below</Text>
-                                    </View>
+                            <View style={styleEaterPage.headerViewNew}>
+                                <View style={styleEaterPage.titleViewNew2}>
+                                    <Text style={styles.titleTextNew}>Edit Profile</Text>
                                 </View>
-                                <View style={{height:windowHeightRatio*70}}>
+                                <View>
+                                <Image source={eaterProfile} style={styleEaterPage.eaterProfilePicNew}></Image>
+                                <TouchableHighlight style={styleEaterPage.uploadPhotoButtonViewNew} underlayColor={'transparent'} onPress={() => this.uploadPic() }>
+                                    <Image source={uploadPhotoIconPen} style={styleEaterPage.uploadPhotoIconNew}/>
+                                </TouchableHighlight>
                                 </View>
+                            </View>
 
-                                <Text style={styleEaterPage.textFieldTitle}>Phone (We'll contact you when your order arrives)</Text>
-                                <View style={styles.loginInputViewNew}>
-                                    <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.phoneNumber} keyboardType = { 'phone-pad'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                        maxLength={15} onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>
-                                </View>
+                            <Text style={styleEaterPage.textFieldTitle}>First Name</Text>
+                            <View style={styles.loginInputViewNew}>
+                                <TextInput style={styleEaterPage.loginInputNew}  defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                                    maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ firstname: text }) }/>
+                            </View>
 
-                                <Text style={styleEaterPage.textFieldTitle}>Username (Appears on your comments, orders)</Text>
-                                <View style={styles.loginInputViewNew}>
-                                    <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                        maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
-                                </View>
+                            <Text style={styleEaterPage.textFieldTitle}>Last Name</Text>
+                            <View style={styles.loginInputViewNew}>
+                                <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.lastname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                                    maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ lastname: text }) }/>
+                            </View>
 
+                            <Text style={styleEaterPage.textFieldTitle}>Username</Text>
+                            <View style={styles.loginInputViewNew}>
+                                <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.eaterAlias} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                                    maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ eaterAlias: text }) }/>
+                            </View>
+
+                            <Text style={styleEaterPage.textFieldTitle}>Gender</Text>
+                            <View style={styleEaterPage.genderSelectViewNew}>
+                                <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleGender('Male') } style={styleEaterPage.oneGenderSelectView}>
+                                    <Text style={{ fontSize: h2,fontWeight: "bold" , color: this.renderGenderTextColor('Male'), alignSelf: 'center' }}>Male</Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleGender('Female') } style={styleEaterPage.oneGenderSelectMiddleView}>
+                                    <Text style={{ fontSize: h2,fontWeight: "bold" , color: this.renderGenderTextColor('Female'), alignSelf: 'center' }}>Female</Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleGender('Not to tell') } style={styleEaterPage.oneGenderSelectView}>
+                                    <Text style={{ fontSize: h2,fontWeight: "bold" , color: this.renderGenderTextColor('Not to tell'), alignSelf: 'center' }}>Not to tell</Text>
+                                </TouchableHighlight>
+                            </View>
+
+                            <Text style={styleEaterPage.textFieldTitle}>Phone</Text>
+                            <View style={styles.loginInputViewNew}>
+                                <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.phoneNumber} keyboardType = { 'phone-pad'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                                    maxLength={15} onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>
+                            </View>
                                 <Text style={styleEaterPage.textFieldTitle}>Email</Text>
                                 <View style={styles.loginInputViewNew}>
                                     <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.email} clearButtonMode={'while-editing'} returnKeyType = {'done'}
@@ -293,7 +320,7 @@ class EaterPage extends Component {
                             <View style={{flex: 1, flexDirection: 'row'}}>
                                 <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressShopsTabBtn()}>
                                     <View style={styles.tabBarButtonNew}>
-                                        <Image source={shopsOff}  style={styles.tabBarButtonImageNew}/>
+                                        <Image source={shopsOff}  style={styles.tabBarButtonImageShop}/>
                                         <View>
                                             <Text style={styles.tabBarButtonTextOffNew}>Shops</Text>
                                         </View>
@@ -301,7 +328,7 @@ class EaterPage extends Component {
                                 </TouchableHighlight>
                                 <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressOrdersTabBtn()}>
                                     <View style={styles.tabBarButtonNew} >
-                                        <Image source={ordersOff}  style={styles.tabBarButtonImageNew}/>
+                                        <Image source={ordersOff}  style={styles.tabBarButtonImageOrder}/>
                                         <View>
                                             <Text style={styles.tabBarButtonTextOffNew}>Orders</Text>
                                         </View>
@@ -309,7 +336,7 @@ class EaterPage extends Component {
                                 </TouchableHighlight>
                                 <TouchableHighlight underlayColor={'#F5F5F5'}>
                                     <View style={styles.tabBarButtonNew}>
-                                        <Image source={meOn}  style={styles.tabBarButtonImageNew}/>
+                                        <Image source={meOn}  style={styles.tabBarButtonImageMe}/>
                                         <View>
                                             <Text style={styles.tabBarButtonTextOnNew}>Me</Text>
                                         </View>
@@ -428,7 +455,7 @@ class EaterPage extends Component {
                        return;
                     }
                     this.setState({ eater: this.state.eater, edit: false, showProgress: false });
-                    this.state.callback(this.state.eater);
+                    //this.state.callback(this.state.eater);
                 }).catch((err)=>{
                     this.setState({showProgress: false});
                     alert(err.message);
@@ -532,7 +559,13 @@ class EaterPage extends Component {
     }
 
     goToCouponPage(){
-        Alert.alert('Page Coming Soon...');
+        //Alert.alert('Page Coming Soon...');
+        this.props.navigator.push({
+            name: 'CouponWalletPage',
+            passProps:{
+                eater:this.state.eater
+            }
+        });
     }
 
     goToInvitePage(){
@@ -709,7 +742,6 @@ var styleEaterPage = StyleSheet.create({
     },
 
     headerViewNew: {
-    //  flex:1,
       flexDirection:'row',
     },
 
@@ -718,7 +750,6 @@ var styleEaterPage = StyleSheet.create({
         height: picHeight,
         backgroundColor: "#00cc00",
         borderRadius: picHeight/2,
-
     },
 
     titleViewNew:{
@@ -727,6 +758,7 @@ var styleEaterPage = StyleSheet.create({
       marginTop: 0,
       marginLeft: 0,
     },
+
     titleViewNew2:{
       width:windowWidth - (40 * windowWidthRatio) - picHeight,
       height: 78 * windowHeightRatio,
@@ -738,7 +770,6 @@ var styleEaterPage = StyleSheet.create({
         position:'absolute',
         right:0,
         bottom:3 * windowHeightRatio,
-
         shadowOffset:{  width: 2* windowWidthRatio,  height: 3* windowWidthRatio,  },
         shadowColor: 'black',
         shadowOpacity: 0.3,
@@ -746,8 +777,8 @@ var styleEaterPage = StyleSheet.create({
         backgroundColor: "#fff",
         width: editBtnDin,
         height:editBtnDin,
-
     },
+
     uploadPhotoIconNew:{
         width:14* windowWidthRatio,
         height:14* windowHeightRatio,
@@ -760,8 +791,8 @@ var styleEaterPage = StyleSheet.create({
         height: pic50Height,
         backgroundColor: "#00cc00",
         borderRadius: pic50Height/2,
-
     },
+
     titleView50New:{
       width:windowWidth - 90 * windowWidthRatio,
       height: 58 * windowHeightRatio,
@@ -775,11 +806,11 @@ var styleEaterPage = StyleSheet.create({
       borderBottomWidth: 1,
 
     },
+
     profileBtnListLastNew: {
       height: 64 * windowHeightRatio,
       borderColor: "#EAEAEA",
       borderBottomWidth: 0,
-
     },
 
     profileBtnListTextNew: {

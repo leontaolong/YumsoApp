@@ -72,13 +72,7 @@ class PaymentOptionPage extends Component {
                     .then(() => {
                         delete this.state.eater;
                         this.props.navigator.push({
-                            name: 'LoginPage',
-                            passProps: {
-                                callback: function (eater) {
-                                    this.setState({ eater: eater });
-                                    this.componentDidMount();
-                                }.bind(this)
-                            }
+                            name: 'WelcomePage',
                         });
                     });
             }else{
@@ -94,15 +88,8 @@ class PaymentOptionPage extends Component {
     
     fetchPaymentOptions() {
         if (!this.state.eaterId) {
-            console.log("No eaterId!!")
             this.props.navigator.push({
-                name: 'LoginPage',
-                passProps: {
-                    callback: function (eater) {
-                        this.setState({ eater: eater, eaterId: eater.eaterId });
-                        this.fetchPaymentOptions();
-                    }.bind(this)
-                }
+                name: 'WelcomePage'
             });
         }
         this.setState({showProgress:true});
@@ -121,13 +108,6 @@ class PaymentOptionPage extends Component {
     }
 
     renderRow(card){  
-        var swipeoutBtns = [
-                                {
-                                    text: 'Delete',
-                                    backgroundColor:'#FF0000',
-                                    onPress:()=>this.removeAPayment(card),
-                                }
-                            ];
         
         if(this.state.chosenCard && this.state.chosenCard.cardType == card.cardType && this.state.chosenCard.last4 == card.last4){
            var checkBoxIcon = checkedIcon;
