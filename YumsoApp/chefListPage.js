@@ -1072,20 +1072,25 @@ var styleChefListPage = StyleSheet.create({
         flexDirection:'row',
     },
     foodTagTabsContainer:{
-        height:windowHeight*0.06,
+        height:windowHeight*0.065,
         backgroundColor:'#fff',
-        alignSelf:'flex-start',
+        alignItems:'flex-start',
+        justifyContent:'center',
+        borderBottomWidth:1,
+        borderColor:'#ddd',
     },
     foodTagTabsView:{
-        flex:1,
         flexDirection: 'row',
-        justifyContent:'flex-start',
-        alignSelf:'flex-start',
-        paddingLeft:windowWidth/20.7
+        alignItems:'stretch',
+        justifyContent:'space-around',
+        alignSelf:'center',
     },
     foodTagTabText:{
-        textAlign: 'center', 
-        marginRight:windowWidth*0.07, 
+        flexDirection:'row',
+        alignItems:'center',
+        alignSelf:'center',
+        justifyContent:'center',
+        marginHorizontal:windowWidth*0.02,
         color:'#979797'
     },
     foodTagSelectedStyle:{
