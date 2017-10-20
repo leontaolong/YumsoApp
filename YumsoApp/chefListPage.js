@@ -180,7 +180,7 @@ class ChefListPage extends Component {
            var chefs = response.data.chefs;
            var chefView = {};
            var chefsDictionary = {};
-           var foodTags =['ALL']; // put foodTag 'ALL' at first
+           var foodTags =['All']; // put foodTag 'All' at first
            var hasFoodTagOther = false;
            for (var chef of chefs) {
                 if(chef){//Todo:undefined check for all
@@ -480,7 +480,7 @@ class ChefListPage extends Component {
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.upperLeftBtnView}>
                             <Image source={ballonIcon} style={styles.ballonIcon}/>
-                            <Text style={styles.pageText}>{this.state.city?this.state.city:'unknown'} ({this.state.zipcode?this.state.zipcode:'unknown'})</Text>
+                            <Text style={[styles.pageText, {fontWeight:'300', color:'#4A4A4A'}]}>{this.state.city?this.state.city:'unknown'} ({this.state.zipcode?this.state.zipcode:'unknown'})</Text>
                         </View>
                         </TouchableHighlight>
                         <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.showFavoriteChefs()}>
@@ -620,7 +620,7 @@ class ChefListPage extends Component {
         let displayChefs = [];
         Object.keys(this.state.chefsDictionary).forEach(function(chefId) {
             let chef = self.state.chefsDictionary[chefId];
-            if (chef.foodTag == foodTag || foodTag== 'ALL')
+            if (chef.foodTag == foodTag || foodTag== 'All') 
                 displayChefs.push(chef);
         });
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
@@ -1148,20 +1148,25 @@ var styleChefListPage = StyleSheet.create({
         flexDirection:'row',
     },
     foodTagTabsContainer:{
-        height:windowHeight*0.06,
+        height:windowHeight*0.065,
         backgroundColor:'#fff',
-        alignSelf:'flex-start',
+        alignItems:'flex-start',
+        justifyContent:'center',
+        borderBottomWidth:1,
+        borderColor:'#ddd',
     },
     foodTagTabsView:{
-        flex:1,
         flexDirection: 'row',
-        justifyContent:'flex-start',
-        alignSelf:'flex-start',
-        paddingLeft:windowWidth/20.7
+        alignItems:'stretch',
+        justifyContent:'space-around',
+        alignSelf:'center',
     },
     foodTagTabText:{
-        textAlign: 'center',
-        marginRight:windowWidth*0.07,
+        flexDirection:'row',
+        alignItems:'center',
+        alignSelf:'center',
+        justifyContent:'center',
+        marginHorizontal:windowWidth*0.02,
         color:'#979797'
     },
     foodTagSelectedStyle:{
@@ -1246,6 +1251,7 @@ var styleChefListPage = StyleSheet.create({
     },
     shopNameView:{
        flex:0.93,
+       height:windowHeight*0.04,
        flexDirection:'row',
        alignItems:'flex-start',
     },
@@ -1304,7 +1310,7 @@ var styleChefListPage = StyleSheet.create({
     },
     shopInfoRow3:{
         flexDirection:'row',
-        paddingTop:windowHeight*0.015,
+        paddingTop:windowHeight*0.0095,
     },
     labelView:{
         flexDirection:'row',
@@ -1325,7 +1331,7 @@ var styleChefListPage = StyleSheet.create({
     nextDeliverTimeView:{
         marginTop:-windowHeight*0.3,
         paddingHorizontal:18,
-        paddingVertical:2,
+        paddingVertical:windowHeight*0.01,
         flexDirection: 'column',
         alignItems:'center',
         justifyContent:'center',

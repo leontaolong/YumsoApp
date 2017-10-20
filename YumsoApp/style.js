@@ -163,16 +163,16 @@ module.exports = StyleSheet.create({
       height:windowHeight*0.0235,
     },
     filterIcon:{
-      marginTop:12*windowHeight/667,
+      marginTop:11*windowHeight/667,
       marginRight:5*windowHeight/667,
-      width:20*windowHeight/667,
-      height:20*windowHeight/667,
+      width:18*windowHeight/667,
+      height:18*windowHeight/667,
     },
     likeIcon: {
-      marginTop:12*windowHeight/667,
+      marginTop:11*windowHeight/667,
       marginRight:5*windowHeight/667,
-      width:25*windowHeight/667,
-      height:21*windowHeight/667,
+      width:22*windowHeight/667,
+      height:17.5*windowHeight/667,    
     },
     ballonIcon:{
       marginVertical:2*windowHeight/667,

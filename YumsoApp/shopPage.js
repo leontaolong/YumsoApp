@@ -209,9 +209,9 @@ class ShopPage extends Component {
                                                 <Text style={styles.greyBoxText}>Currently no dishes are available to deliver</Text>
                                             </View>
 
-            var fullMenuButtonView = <TouchableHighlight style={styleShopPage.fullMenuButton} underlayColor={'#eee'} onPress={()=>this.selectSchedule("All Dishes")}>
+            var fullMenuButtonView = <TouchableOpacity style={styleShopPage.fullMenuButton} activeOpacity={'0.7'} onPress={()=>this.selectSchedule("All Dishes")}>
                                         <Text style={styleShopPage.fullMenuButtonText}>Explore Full Menu</Text> 
-                                    </TouchableHighlight>
+                                    </TouchableOpacity>
             if (this.state.renderedSchedules && this.state.renderedSchedules.length == 0) {
                 return (<View>
                         {noScheduleAvailableView} 
@@ -228,9 +228,9 @@ class ShopPage extends Component {
 
     renderRow(data){
         if (this.state.showScheduleSelection) { // schedule selection listview
-            return (<TouchableHighlight style={styleShopPage.scheduleBox} underlayColor={'#eee'} onPress={()=>this.selectSchedule(data)}>
+            return (<TouchableOpacity style={styleShopPage.scheduleBox} activeOpacity={'0.7'} onPress={()=>this.selectSchedule(data)}>
                         <Text style={styleShopPage.scheduleBoxText}>{data.label}</Text>
-                    </TouchableHighlight>);
+                    </TouchableOpacity>);
         } else { // dishes listview
             let imageSrc = defaultDishPic;
             if(data.pictures && data.pictures!=null && data.pictures.length!=0){
@@ -986,10 +986,10 @@ var styleShopPage = StyleSheet.create({
         paddingLeft:windowWidth/20.7, 
     },
     chefPhoto:{
-        marginLeft:windowWidth*0.02,
-        height:windowWidth*0.05,
-        width:windowWidth*0.05,
-        borderRadius: 10, 
+        marginLeft:windowWidth*0.024,
+        height:windowWidth*0.06,
+        width:windowWidth*0.06,
+        borderRadius: 12, 
         borderWidth: 0, 
         overflow: 'hidden',
     },
@@ -1035,13 +1035,13 @@ var styleShopPage = StyleSheet.create({
     shareIconPositioning:{
         position:'absolute',
         top: -20,
-        right: windowWidth*0.20,
+        right: windowWidth*0.155,
         backgroundColor: '#fff',
     },    
     likeIconPositioning:{
         position:'absolute',
         top: -20,
-        right: windowWidth*0.08,
+        right: windowWidth*0.04,
         backgroundColor: '#fff',
     },
     shopInfoRow:{
@@ -1099,13 +1099,14 @@ var styleShopPage = StyleSheet.create({
     },
     chefDetailTextView:{
         flexDirection:'row',
-        justifyContent:'center', 
-        height:windowHeight*0.03,
+        alignItems:'center',
+        height:windowHeight*0.05,
+        marginBottom:windowHeight*0.025,
     },
     pickupAddressText:{ 
         fontSize: windowHeight/47.33, 
-        fontWeight:'400',
-        color: '#979797'
+        color:'#4A4A4A',
+        fontWeight:'200'
     },
     timeSelectorView:{
         flexDirection:'row',
@@ -1325,14 +1326,15 @@ var styleShopPage = StyleSheet.create({
     },
     menuTitleTextTitle: {
         fontSize:windowHeight/37.06,
-        fontWeight:'600',
+        fontWeight:'700',
         color:'#4A4A4A',
     },
     menuTitleTextPrompt: {
         alignSelf:'center',
         textAlign:'left',
-        fontSize:windowHeight/51.636,
-        color:'#9B9B9B',
+        fontSize:windowHeight/48,
+        color:'#4A4A4A',
+        fontWeight:'300',
         paddingLeft:0,
         marginLeft:0,
     },
