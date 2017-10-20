@@ -989,7 +989,7 @@ var styleShopPage = StyleSheet.create({
         marginLeft:windowWidth*0.024,
         height:windowWidth*0.06,
         width:windowWidth*0.06,
-        borderRadius: 10, 
+        borderRadius: 12, 
         borderWidth: 0, 
         overflow: 'hidden',
     },
@@ -1035,13 +1035,13 @@ var styleShopPage = StyleSheet.create({
     shareIconPositioning:{
         position:'absolute',
         top: -20,
-        right: windowWidth*0.20,
+        right: windowWidth*0.155,
         backgroundColor: '#fff',
     },    
     likeIconPositioning:{
         position:'absolute',
         top: -20,
-        right: windowWidth*0.08,
+        right: windowWidth*0.04,
         backgroundColor: '#fff',
     },
     shopInfoRow:{
@@ -1333,14 +1333,15 @@ var styleShopPage = StyleSheet.create({
     },
     menuTitleTextTitle: {
         fontSize:windowHeight/37.06,
-        fontWeight:'600',
+        fontWeight:'700',
         color:'#4A4A4A',
     },
     menuTitleTextPrompt: {
         alignSelf:'center',
         textAlign:'left',
-        fontSize:windowHeight/51.636,
-        color:'#9B9B9B',
+        fontSize:windowHeight/48,
+        color:'#4A4A4A',
+        fontWeight:'300',
         paddingLeft:0,
         marginLeft:0,
     },
