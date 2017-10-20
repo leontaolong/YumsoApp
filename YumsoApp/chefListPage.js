@@ -483,7 +483,7 @@ class ChefListPage extends Component {
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.upperLeftBtnView}>
                             <Image source={ballonIcon} style={styles.ballonIcon}/>
-                            <Text style={styles.pageText}>{this.state.city?this.state.city:'unknown'} ({this.state.zipcode?this.state.zipcode:'unknown'})</Text>
+                            <Text style={[styles.pageText, {fontWeight:'300', color:'#4A4A4A'}]}>{this.state.city?this.state.city:'unknown'} ({this.state.zipcode?this.state.zipcode:'unknown'})</Text>
                         </View>
                         </TouchableHighlight>
                         <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.showFavoriteChefs()}>
@@ -1240,7 +1240,7 @@ var styleChefListPage = StyleSheet.create({
     nextDeliverTimeView:{
         marginTop:-windowHeight*0.3,
         paddingHorizontal:18,
-        paddingVertical:2,
+        paddingVertical:windowHeight*0.01,
         flexDirection: 'column',
         alignItems:'center',
         justifyContent:'center',
