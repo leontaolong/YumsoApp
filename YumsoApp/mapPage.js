@@ -647,10 +647,11 @@ var styleMapPage = StyleSheet.create({
     },
     locationSearchIconView:{
         alignSelf:'center',
+        margin:windowWidth*0.02,
     },
     searchIcon:{
-        width:30,
-        height:30,
+        width:windowWidth*0.04,
+        height:windowWidth*0.04,
     },
     locationSearchInput:{
         flex:0.9,

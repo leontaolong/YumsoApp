@@ -6,6 +6,7 @@ var backIcon = require('./icons/icon-back.png');
 var commonAlert = require('./commonModules/commonAlert');
 var commonWidget = require('./commonModules/commonWidget');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+var backgroundImage = require('./resourceImages/background@3x.jpg');
 
 import Dimensions from 'Dimensions';
 
@@ -46,7 +47,6 @@ class PaymentPage extends Component {
             scheduleMapping:scheduleMapping,
         };
         this.client = new HttpsClient(config.baseUrl, true);
-        //console.log("eater: "+this.state.eater);
     }
 
     async componentWillMount(){
@@ -62,59 +62,60 @@ class PaymentPage extends Component {
         }
         
         if(this.state.paymentOption){
-          var selectPaymentMethodView=[(<View key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonView}>
-                                            <TouchableHighlight onPress={()=>this.selectPayment()}>
+          var selectPaymentMethodView=[(<TouchableOpacity activeOpacity={0.7} key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonContainer} onPress={()=>this.selectPayment()}>
                                             <View style={stylePaymentPage.selectPaymentbutton}>
                                                 <Text style={stylePaymentPage.selectPaymentbuttonText}>Change Payment Method</Text>
                                             </View>
-                                            </TouchableHighlight> 
-                                        </View>),
+                                        </TouchableOpacity>),
                                        (<View key={'selectedPaymentTextView'} style={stylePaymentPage.selectedPaymentTextView}>
                                             <Text style={stylePaymentPage.selectedPaymentText}>
                                               {this.state.paymentOption.cardType} **** {this.state.paymentOption.last4} has been chosen for this payment
                                             </Text>
                                         </View>)];
         }else{
-           var selectPaymentMethodView=[(<View key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonView}>
-                                            <TouchableHighlight onPress={()=>this.selectPayment()}>
+           var selectPaymentMethodView=[(<TouchableOpacity activeOpacity={0.7} key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonContainer} onPress={()=>this.selectPayment()}>
                                             <View style={stylePaymentPage.selectPaymentbutton}>
-                                                <Text style={stylePaymentPage.selectPaymentbuttonText}>Select Payment Method</Text>
+                                                <Text style={stylePaymentPage.selectPaymentbuttonText}>other payment methods</Text>
                                             </View>
-                                            </TouchableHighlight> 
-                                        </View>)];
+                                        </TouchableOpacity> 
+                                        )];
         }
         
         var turnOnNotificationTextView = null
-        if(this.state.deviceToken=='No_Device_Token'){
-           turnOnNotificationTextView = <View style={stylePaymentPage.turnOnNotificationTextView}>
-                                        <Text style={stylePaymentPage.turnOnNotificationText}>We recommend you turn on notification to receive status update for your order.</Text>
-                                      </View> 
-        }
+        // if(this.state.deviceToken=='No_Device_Token'){
+        //    turnOnNotificationTextView = <View style={stylePaymentPage.turnOnNotificationTextView}>
+        //                                 <Text style={stylePaymentPage.turnOnNotificationText}>We recommend you turn on notification to receive status update for your order.</Text>
+        //                               </View> 
+        // }
                 
         return (<View style={styles.greyContainer}>
-                  <View style={styles.headerBannerView}>
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={()=>this.navigateBackToShoppingCartPage()}>
-                        <View style={styles.backButtonView}>
-                           <Image source={backIcon} style={styles.backButtonIcon}/>
-                        </View> 
-                    </TouchableHighlight>
-                    <View style={styles.titleView}>
-                        <Text style={styles.titleText}>Check Out</Text>
-                    </View>
-                    <View style={styles.headerRightView}>
-                    </View>
-                 </View>
-                 <View style={stylePaymentPage.totalAmountView}>
-                    <Text style={stylePaymentPage.totalAmountTitle}>You total amount is:</Text>
-                    <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>
-                    {turnOnNotificationTextView}    
-                 </View>
-                 {selectPaymentMethodView}
-                 <View style={{flex:1}}>
-                 </View>
+                    <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                        <View style={styles.transparentHeaderBannerView}>
+                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={()=>this.navigateBackToShoppingCartPage()}>
+                                <View style={styles.backButtonView}>
+                                    <Image source={backIcon} style={styles.backButtonIconsNew}/>
+                                </View> 
+                            </TouchableHighlight>
+                            <View style={styles.titleView}></View>
+                            <View style={styles.headerRightView}>
+                            </View>
+                        </View>
+                        <View style={stylePaymentPage.contentTextView}>
+                            <Text style={stylePaymentPage.contentTitle}>Payment</Text>
+                            <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>
+                            <Text style={stylePaymentPage.contentText}>Select a payment method</Text>
+                            {turnOnNotificationTextView}
+                            <TouchableOpacity activeOpacity={0.7} style={stylePaymentPage.secondaryButtonView} onPress={()=>this.onPressDefaultCreditCard()}>
+                                <Text style={styles.secondaryButtonText}>Default Credit Card</Text>
+                            </TouchableOpacity>
+                            {selectPaymentMethodView}
+                            <View style={{flex:1}}>
+                            </View>
+                        </View>
+                    </Image>
                  <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={()=>this.confirm()}>
                     <View style={stylePaymentPage.placeOrderButton}>
-                        <Text style={stylePaymentPage.placeOrderButtonText}>Place Order</Text>
+                        <Text style={stylePaymentPage.placeOrderButtonText}>Confirm</Text>
                     </View>
                  </TouchableOpacity>
                  {loadingSpinnerView}                 
@@ -221,6 +222,10 @@ class PaymentPage extends Component {
         this.props.navigator.pop();
     }
 
+    onPressDefaultCreditCard(){
+        Alert.alert('Feature Coming Soon..')
+    }
+
     async selectPayment() {
         let deviceToken = await AuthService.getDeviceTokenFromCache();
         if(deviceToken){
@@ -240,23 +245,25 @@ class PaymentPage extends Component {
 }
 
 var stylePaymentPage = StyleSheet.create({
-    totalAmountView:{
-      height:windowHeight*0.38,
-      justifyContent:'center',
-      alignItems:'center',
-      flexDirection:'column',
+    contentTextView:{
+        paddingHorizontal:windowWidth/20.7,
     },
-    totalAmountTitle:{
-      fontSize:20*windowHeight/667.0,
-      fontWeight:'400',
-      alignSelf:'center',
-      marginBottom:5*windowHeight/667.0,
+    contentTitle:{
+        backgroundColor: 'rgba(0,0,0,0)',        
+        fontSize:28*windowHeight/677,
+        fontWeight:'bold',
+    },
+    contentText:{
+        backgroundColor: 'rgba(0,0,0,0)',
+        fontSize:windowHeight/35.5,
+        fontWeight:'600',
+        marginBottom: windowHeight*0.02,
     },
     totalAmountText:{
-      fontSize:68*windowHeight/667.0,
-      fontWeight:'bold',
-      alignSelf:'center',
-      color:'#4A4A4A',
+      fontSize:52*windowHeight/667.0,
+      fontFamily: 'Helvetica-Bold',
+      backgroundColor: 'rgba(0,0,0,0)',
+      marginVertical:windowHeight*0.0660,      
     },
     turnOnNotificationText:{
       fontSize:16*windowHeight/667.0,
@@ -274,22 +281,23 @@ var stylePaymentPage = StyleSheet.create({
         alignItems:'center',
         flexDirection:'row',
     },
-    selectPaymentbuttonView:{
-      height:windowHeight*0.075,
-      width:windowWidth,
-      alignItems:'center',
+    selectPaymentbuttonContainer:{
+        marginVertical:windowHeight*0.02, 
+        borderWidth: 2,        
+        borderColor:'#7BCBBE',
     },
     selectPaymentbutton:{
-      height:windowHeight*0.075,
-      width:windowWidth*0.62,
-      backgroundColor:'#7BCBBE',
-      justifyContent: 'center',
+        height:windowHeight*0.075,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignSelf:'center',
+        backgroundColor: 'rgba(0,0,0,0)', 
     },
     selectPaymentbuttonText:{
-      color:'#fff',
-      fontSize:windowHeight/47.64,
-      fontWeight:'bold',
-      alignSelf:'center',
+        fontSize:windowHeight/40,
+        fontWeight:'bold',
+        color:'#7BCBBE',
+        alignSelf:'center',
     },
     selectedPaymentTextView:{
       flexDirection:'column',
@@ -297,6 +305,7 @@ var stylePaymentPage = StyleSheet.create({
       justifyContent:'flex-start',
       alignItems:'center',
       alignSelf:'center',
+      backgroundColor: 'rgba(0,0,0,0)',
     },
     selectedPaymentText:{
       color:'#A0A0A0',
@@ -315,6 +324,13 @@ var stylePaymentPage = StyleSheet.create({
       fontSize:windowHeight/37.056,
       fontWeight:'bold',
       alignSelf: 'center',
+    },
+    secondaryButtonView:{
+        flexDirection:'column',
+        marginVertical:windowHeight*0.005,
+        backgroundColor:'#7BCBBE',
+        height:windowHeight*0.075,
+        justifyContent:'center',
     },
 });
 

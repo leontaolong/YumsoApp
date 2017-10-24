@@ -18,6 +18,7 @@ var Swipeout = require('react-native-swipeout');
 var commonAlert = require('./commonModules/commonAlert');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+var backgroundImage = require('./resourceImages/background@3x.jpg');
 
 import Dimensions from 'Dimensions';
 
@@ -36,12 +37,14 @@ import React, {
   ActivityIndicatorIOS,
   AsyncStorage,
   Alert,
-  Picker
+  Picker,
+  ActionSheetIOS,
 } from 'react-native';
 
 class PaymentOptionPage extends Component {
     constructor(props){
         super(props);
+        this._showActionSheet = this.showActionSheet.bind(this);
         var ds = new ListView.DataSource({
            rowHasChanged: (r1, r2) => r1!=r2 
         }); 
@@ -59,7 +62,7 @@ class PaymentOptionPage extends Component {
             eaterId:eater?eater.eaterId: undefined,
             checkBoxesState:{},
             chosenCard:'',
-            eater:eater
+            eater:eater,
         };
         this.responseHandler = function(response){
             if(response.statusCode==400){
@@ -125,7 +128,7 @@ class PaymentOptionPage extends Component {
                                     onPress:()=>this.removeAPayment(card),
                                 }
                             ];
-              
+        
         if(this.state.chosenCard && this.state.chosenCard.cardType == card.cardType && this.state.chosenCard.last4 == card.last4){
            var checkBoxIcon = checkedIcon;
         }else{
@@ -134,67 +137,64 @@ class PaymentOptionPage extends Component {
         
         if(this.state.isFromCheckOutPage){                 
             return (
-                <Swipeout backgroundColor={'#FFFFFF'} close={true} right={swipeoutBtns}>
-                    <TouchableHighlight style={stylePaymentOptionPage.checkBoxIconView} underlayColor={'transparent'} onPress={()=>this.onCardClick(card)}>
-                    <View style={stylePaymentOptionPage.paymentMethodView}>         
-                        <View style={stylePaymentOptionPage.checkBoxIconView}>
-                                <Image style={stylePaymentOptionPage.checkBoxIcon} source={checkBoxIcon}/>
-                        </View>
-                        <View  style={stylePaymentOptionPage.paymentMethodIconView}>
-                            {this.renderPaymentMethodType(card)}
-                        </View>
-                        <View style={stylePaymentOptionPage.paymentMethodInfoView}>
-                             <Text style={stylePaymentOptionPage.paymentMethodInfoText}>**** {card.last4}</Text>
-                        </View>
+                    <View style={stylePaymentOptionPage.paymentOverview}>   
+                        <TouchableHighlight underlayColor={'transparent'} onPress={()=>this.onCardClick(card)}>
+                            <View style={stylePaymentOptionPage.paymentMethodView}>         
+                                <View  style={stylePaymentOptionPage.paymentMethodIconView}>
+                                    {this.renderPaymentMethodType(card)}
+                                </View>      
+                                <View style={stylePaymentOptionPage.paymentMethodInfoView}>
+                                    <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                                </View>
+                                <View style={stylePaymentOptionPage.checkBoxIconView}>
+                                    <Image style={stylePaymentOptionPage.checkBoxIcon} source={checkBoxIcon}/>
+                                </View>
+                            </View>
+                        </TouchableHighlight>
                     </View>
-                    </TouchableHighlight>
-                </Swipeout>
             );
         }else{
             return (
-                <Swipeout backgroundColor={'#FFFFFF'} close={true} right={swipeoutBtns}>
+                <View style={stylePaymentOptionPage.paymentOverview}>
                     <View style={stylePaymentOptionPage.paymentMethodView}>         
                         <View  style={stylePaymentOptionPage.paymentMethodIconView}>
                             {this.renderPaymentMethodType(card)}
                         </View>
                         <View style={stylePaymentOptionPage.paymentMethodInfoView}>
-                            <Text style={stylePaymentOptionPage.paymentMethodInfoText}>**** {card.last4}</Text>
+                            <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
                         </View>
+                        <Text style={stylePaymentOptionPage.deleteText} onPress={this._showActionSheet.bind(this, card)}>Delete</Text>
                     </View>
-                </Swipeout>);
+                </View>
+            );
         }
     }
     
+    showActionSheet(card) {
+        ActionSheetIOS.showActionSheetWithOptions({
+            options: [
+                'Confirm',
+                'Cancel'
+            ],
+            cancelButtonIndex: 1,
+            destructiveButtonIndex: 0,
+            title: 'Delete this payment option from your account?'
+        }, (index) => {            
+            if (index == 0) {
+                this.removeAPayment(card);
+            }
+        })
+    }
     renderFooter(){
-        if(this.state.isFromCheckOutPage){  
-          return [
-             <View style={{height:9*windowHeight/667}}></View>,
-             <TouchableHighlight underlayColor={'#F5F5F5'} onPress={()=>this.addAPayment()}>
-             <View style={stylePaymentOptionPage.addCardView}>          
-               <View style={stylePaymentOptionPage.checkBoxIconView}>
-               </View>
-               <View style={stylePaymentOptionPage.addCardIconView}>
-                  <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
-               </View>
-               <View style={stylePaymentOptionPage.addCardTitleView}>
-                  <Text style={stylePaymentOptionPage.addCardTitleText}>Add Credit/Debit Card</Text>
-               </View>
-             </View>
-             </TouchableHighlight>];
-        }else{
-          return [
-             <View style={{height:9*windowHeight/667}}></View>,
-             <TouchableHighlight underlayColor={'#F5F5F5'} onPress={()=>this.addAPayment()}>
-             <View style={stylePaymentOptionPage.addCardView}>          
-               <View style={stylePaymentOptionPage.addCardIconView}>
-                  <Image style={stylePaymentOptionPage.addCardIcon} source={plusIcon}/>
-               </View>
-               <View style={stylePaymentOptionPage.addCardTitleView}>
-                  <Text style={stylePaymentOptionPage.addCardTitleText}>Add Credit/Debit Card</Text>
-               </View>
-             </View>
-             </TouchableHighlight>];
-        }
+        return [
+            <View style={{height:9*windowHeight/667}}></View>,
+            <TouchableHighlight underlayColor={'rgba(0,0,0,0)'} onPress={()=>this.addAPayment()}>
+            <View style={stylePaymentOptionPage.addCardView}>          
+            <View style={stylePaymentOptionPage.addCardTitleView}>
+                <Text style={stylePaymentOptionPage.addCardTitleText}> + Add a card</Text>
+            </View>
+            </View>
+            </TouchableHighlight>];
     }
     
     render() {
@@ -205,13 +205,11 @@ class PaymentOptionPage extends Component {
         
         if(this.state.chosenCard && this.state.isFromCheckOutPage){
           var paymentSelectionConfirmButton= (<TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={()=>this.confirmSelection()}>
-                                                    <View style={stylePaymentOptionPage.bottomButton}>
-                                                        <Text style={stylePaymentOptionPage.bottomButtonText}>Choose this Card</Text>
-                                                    </View>
+                                                  <Text style={styles.bottomButtonView}>Confirm</Text>
                                               </TouchableOpacity>);
         }
 
-        var paymentListView = <ListView style={styles.dishListView}
+        var paymentListView = <ListView style={stylePaymentOptionPage.paymentListView}
                                 dataSource = {this.state.dataSource}
                                 renderRow={this.renderRow.bind(this)}
                                 renderFooter={this.renderFooter.bind(this)}/>
@@ -221,26 +219,37 @@ class PaymentOptionPage extends Component {
            paymentListView = null;
         }
         
-        return (
-            <View style={styles.container}>
-               <View style={styles.headerBannerView}>
-                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
-                             <View style={styles.backButtonView}>
-                                <Image source={backIcon} style={styles.backButtonIcon}/>
-                             </View> 
-                         </TouchableHighlight>
-                         <View style={styles.titleView}>
-                             <Text style={styles.titleText}>Payment Options</Text>
-                         </View>
-                         <View style={styles.headerRightView}>
-                         </View>
-               </View>
-               {networkUnavailableView}
-               {paymentListView}
-               {paymentSelectionConfirmButton}
-               {loadingSpinnerView}                    
-            </View>
-        );
+        var overallContent = (<View>
+                                <View style={styles.transparentHeaderBannerView}>
+                                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                                        <View style={styles.backButtonView}>
+                                            <Image source={backIcon} style={styles.backButtonIcon} />
+                                        </View>
+                                    </TouchableHighlight>
+                                    <View style={styles.titleView}></View>
+                                    <View style={styles.headerRightView}></View>
+                                </View>
+
+                                <View style={stylePaymentOptionPage.contentTextView}>
+                                    <Text style={stylePaymentOptionPage.contentTitle}>Payment Options</Text>
+                                
+                                    {networkUnavailableView}
+                                    {paymentListView}                   
+                                    {loadingSpinnerView} 
+                                </View>
+                                </View>);
+        if (this.state.isFromCheckOutPage) {
+            return (<View style={styles.container}>
+                        <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                            {overallContent}
+                        </Image>
+                        {paymentSelectionConfirmButton}
+                    </View>);
+        } else {
+            return (<View style={styles.container}>
+                        {overallContent}
+                    </View>);
+        }
     }
 
     navigateBack() {
@@ -326,23 +335,48 @@ class PaymentOptionPage extends Component {
 }
                         
 var stylePaymentOptionPage = StyleSheet.create({
+    contentTextView:{
+        paddingHorizontal:windowWidth/20.7,
+    },
+    contentTitle:{
+        backgroundColor: 'rgba(0,0,0,0)',        
+        fontSize:28*windowHeight/677,
+        fontWeight:'bold',
+    },
+    paymentListView:{
+        alignSelf:'stretch',
+        paddingBottom:20,
+        flexDirection:'column',
+        height: windowHeight*8/10,
+        backgroundColor: 'rgba(0,0,0,0)', 
+        marginTop:windowHeight*0.0560,        
+    }, 
+    paymentOverview:{
+        paddingVertical:windowHeight*0.01, 
+    },
     paymentMethodView:{
         flex:1,
         flexDirection:'row',
         height:windowHeight*0.075,
         paddingLeft:15*windowHeight/667.0,
-        borderTopWidth:3*windowHeight/667.0,
-        borderColor:'#F5F5F5',
+        borderBottomWidth:1,
+        borderColor:'lightgrey',
+        paddingHorizontal:windowWidth/20.7,
     },
     checkBoxIconView:{
         flex:0.1,
         flexDirection:'row',
-        justifyContent:'flex-start'  
+        justifyContent:'flex-start',
     },
     checkBoxIcon:{
-        width:25*windowHeight/667.0,
-        height:25*windowHeight/667.0,
+        width:23*windowHeight/700.0,
+        height:23*windowHeight/700.0,
         alignSelf:'center',
+    },
+    deleteText:{
+        alignSelf:'center',
+        fontSize:windowHeight/47.33,
+        color:'#60d1bc',
     },
     paymentMethodInfoView:{
         flex:0.75,
@@ -378,29 +412,18 @@ var stylePaymentOptionPage = StyleSheet.create({
         flexDirection:'row',
         height:windowHeight*0.075,
         paddingLeft:15*windowHeight/667.0,
-        backgroundColor:'#fff',
+        backgroundColor:'rgba(0,0,0,0)',
     },
     addCardTitleView:{
         flex:0.75,
         flexDirection:'row',
         justifyContent:'flex-start',
-        backgroundColor:'#FFF'
+        backgroundColor:'rgba(0,0,0,0)'
     },
     addCardTitleText:{
         alignSelf:'center',
-        fontSize:windowHeight/51.636,
-        color:'#4A4A4A',
-    },
-    addCardIconView:{
-        flex:0.15,
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        backgroundColor:'#fff',
-    },
-    addCardIcon:{
-        width:30*windowHeight/667.0,
-        height:30*windowHeight/667.0,
-        alignSelf:'center',
+        fontSize:windowHeight/40,
+        color:'#60d1bc',
     },
     bottomButton:{
       flexDirection:'row',        

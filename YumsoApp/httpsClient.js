@@ -68,8 +68,6 @@ var HttpsClient = function (host, useTokenFromStorage, username, password, authE
                 },
                 body: JSON.stringify(data)
             };
-            console.log(data);
-            console.log(options);
             return request(partialUrl, options);
         });
     };

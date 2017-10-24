@@ -24,27 +24,25 @@ import React, {
 class ContactUsPage extends Component {
       
     render() {
+        var contactUsPageUrl = config.baseUrl+"/contactus";         
         return (
-            <View style={styles.greyContainer}>
-               <View style={styles.headerBannerView}>    
+            <View style={styles.container}>
+               <View style={styles.headerBannerView}>
                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefListPage()}>
-                       <View style={styles.backButtonView}>
-                          <Image source={backIcon} style={styles.backButtonIcon}/>
-                       </View>
-                    </TouchableHighlight>    
-                    <View style={styles.titleView}>
-                       <Text style={styles.titleText}>Contact Us</Text>
-                    </View>
-                    <View style={styles.headerRightView}>            
-                    </View>
+                        <View style={styles.backButtonView}>
+                            <Image source={backIcon} style={styles.backButtonIcon} />
+                        </View>
+                    </TouchableHighlight>
+                    <View style={styles.titleView}></View>
+                    <View style={styles.headerRightView}></View>
                </View>
-               <View style={styleContactUsPage.contentTextView}>
-                  <Text style={styleContactUsPage.contentText}>If you have any question or concern about using our App, becoming a chef or just want to chat with us, don't hesitate to let us know.</Text>
-                  <Text style={styleContactUsPage.contactTitle}>Phone:</Text>
-                  <Text onPress={()=>this.dialThisNumber('2062258636')} style={styleContactUsPage.contentEmail}>(206)225-8636</Text>
-                  <Text style={styleContactUsPage.contactTitle}>Email:</Text>
-                  <Text onPress={()=>this.openEmailApp()} style={styleContactUsPage.contentEmail}>customerservice@yumso.com</Text>
-               </View>
+               <WebView
+               automaticallyAdjustContentInsets={false}
+               source={{uri: contactUsPageUrl}}
+               javaScriptEnabled={true}
+               decelerationRate="normal"
+               startInLoadingState={false}
+               scalesPageToFit={true}/>
            </View>     
         );
     }
