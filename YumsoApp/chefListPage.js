@@ -45,6 +45,9 @@ import Tabs from 'react-native-tabs';
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
+var windowHeightRatio = windowHeight / 677;
+var windowWidthRatio = windowWidth / 375;
+
 import React, {
     Component,
     StyleSheet,
@@ -180,7 +183,7 @@ class ChefListPage extends Component {
            var chefs = response.data.chefs;
            var chefView = {};
            var chefsDictionary = {};
-           var foodTags =['ALL']; // put foodTag 'ALL' at first
+           var foodTags =['All']; // put foodTag 'All' at first
            var hasFoodTagOther = false;
            for (var chef of chefs) {
                 if(chef){//Todo:undefined check for all
@@ -276,9 +279,9 @@ class ChefListPage extends Component {
                                  </View>;
         }
 
-        var yumsoExclusiveTag = "";
+        var yumsoExclusiveTag = undefined;
         if(chef.yumsoExclusiveBadge)
-           yumsoExclusiveTag = <Text style={[styleChefListPage.labelText, {color:"#7adfc3"}]}>  Yumso Exclusive</Text>
+           yumsoExclusiveTag = <Text style={[styleChefListPage.labelText, {color:"#7adfc3"}]}> Exclusive</Text>
 
 
         if(chef.chefProfilePicUrls && chef.chefProfilePicUrls.small){
@@ -325,7 +328,9 @@ class ChefListPage extends Component {
 
                        <View style={styleChefListPage.shopInfoRow3}>
                           <View style={styleChefListPage.labelView}>
-                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/><Text style={styleChefListPage.labelText}>{commonWidget.getTextLengthLimited(chef.styleTag,8)}, {commonWidget.getTextLengthLimited(chef.foodTag,10)}{yumsoExclusiveTag}</Text>
+                            <Image style={styleChefListPage.labelIcon} source={labelIcon}/>
+                            <Text style={styleChefListPage.labelText}>{chef.styleTag}, {chef.foodTag}{yumsoExclusiveTag != undefined ? ',':null}</Text>
+                            {yumsoExclusiveTag}
                           </View>
                        </View>
                     </View>
@@ -389,7 +394,7 @@ class ChefListPage extends Component {
                                                                 withBestRatedSort: this.state.withBestRatedSortOrigin,
                                                              })}>
                         <View style={styles.backButtonView}>
-                            <Image source={closeIcon} style={styles.backButtonIcon} />
+                            <Image source={closeIcon} style={styles.closeButtonIcon} />
                         </View>
                     </TouchableHighlight>
                     <View style={styles.titleView}></View>
@@ -477,21 +482,18 @@ class ChefListPage extends Component {
         return (
                 <View style={styles.pageWrapper}>
                     <View style={[styles.headerBannerView, styleChefListPage.customizedHeaderBannerRules]}>
-                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
+                        <TouchableHighlight style={styleChefListPage.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showLocSearch:true}) }>
                         <View style={styles.upperLeftBtnView}>
                             <Image source={ballonIcon} style={styles.ballonIcon}/>
-                            <Text style={styles.pageText}>{this.state.city?this.state.city:'unknown'} ({this.state.zipcode?this.state.zipcode:'unknown'})</Text>
+                            <Text style={[styles.pageText, {fontWeight:'300', color:'#4A4A4A'}]}>{this.state.city?this.state.city:'unknown'} ({this.state.zipcode?this.state.zipcode:'unknown'})</Text>
                         </View>
                         </TouchableHighlight>
-                        <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.showFavoriteChefs()}>
-                          <View style={styles.headerRightTextButtonView}>
+                        <View style={{ width: windowWidth - 220*windowWidthRatio-40*windowWidthRatio*2}}></View>
+                        <TouchableHighlight style={styleChefListPage.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.showFavoriteChefs()}>
                             <Image source={this.getCurrentLikeIcon(this.state.showFavoriteChefsOnly)} style={styles.likeIcon}/>
-                          </View>
                         </TouchableHighlight>
-                        <TouchableHighlight style={styles.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
-                          <View style={styles.headerRightTextButtonView}>
+                        <TouchableHighlight style={styleChefListPage.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
                             <Image source={filterIcon} style={styles.filterIcon}/>
-                          </View>
                         </TouchableHighlight>
                     </View>
                     {updateAppBannerView}
@@ -620,7 +622,7 @@ class ChefListPage extends Component {
         let displayChefs = [];
         Object.keys(this.state.chefsDictionary).forEach(function(chefId) {
             let chef = self.state.chefsDictionary[chefId];
-            if (chef.foodTag == foodTag || foodTag== 'ALL')
+            if (chef.foodTag == foodTag || foodTag== 'All') 
                 displayChefs.push(chef);
         });
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
@@ -1138,30 +1140,33 @@ var styleChefListPage = StyleSheet.create({
     customizedHeaderBannerRules:{
         borderColor:'#F5F5F5',
         borderBottomWidth:2,
-        paddingLeft:windowWidth/20.7,
     },
     headerIconView:{
-        flex:0.1/6.0,
-        width:windowWidth/12,
-        justifyContent:'flex-end',
+        width:40*windowWidthRatio,
+        justifyContent:'center',
         alignItems:'center',
         flexDirection:'row',
     },
     foodTagTabsContainer:{
-        height:windowHeight*0.06,
+        height:windowHeight*0.065,
         backgroundColor:'#fff',
-        alignSelf:'flex-start',
+        alignItems:'flex-start',
+        justifyContent:'center',
+        borderBottomWidth:1,
+        borderColor:'#ddd',
     },
     foodTagTabsView:{
-        flex:1,
         flexDirection: 'row',
-        justifyContent:'flex-start',
-        alignSelf:'flex-start',
-        paddingLeft:windowWidth/20.7
+        alignItems:'stretch',
+        justifyContent:'space-around',
+        alignSelf:'center',
     },
     foodTagTabText:{
-        textAlign: 'center',
-        marginRight:windowWidth*0.07,
+        flexDirection:'row',
+        alignItems:'center',
+        alignSelf:'center',
+        justifyContent:'center',
+        marginHorizontal:windowWidth*0.02,
         color:'#979797'
     },
     foodTagSelectedStyle:{
@@ -1246,6 +1251,7 @@ var styleChefListPage = StyleSheet.create({
     },
     shopNameView:{
        flex:0.93,
+       height:windowHeight*0.04,
        flexDirection:'row',
        alignItems:'flex-start',
     },
@@ -1304,7 +1310,7 @@ var styleChefListPage = StyleSheet.create({
     },
     shopInfoRow3:{
         flexDirection:'row',
-        paddingTop:windowHeight*0.015,
+        paddingTop:windowHeight*0.0095,
     },
     labelView:{
         flexDirection:'row',
@@ -1315,17 +1321,17 @@ var styleChefListPage = StyleSheet.create({
         width:1.5*windowHeight/71.0,
         height:windowHeight/71.0,
         alignSelf:'center',
+        marginRight: windowWidth / 82.8,
     },
     labelText:{
         fontSize:windowHeight/47.33,
         color:'#4A4A4A',
-        marginLeft:windowWidth/82.8,
         alignSelf:'center',
     },
     nextDeliverTimeView:{
         marginTop:-windowHeight*0.3,
         paddingHorizontal:18,
-        paddingVertical:2,
+        paddingVertical:windowHeight*0.01,
         flexDirection: 'column',
         alignItems:'center',
         justifyContent:'center',
@@ -1345,6 +1351,16 @@ var styleChefListPage = StyleSheet.create({
         backgroundColor:'#FFFFFF',
         borderBottomWidth:1.5,
         borderBottomColor:'#FFFFFF',
+    },
+    headerRightTextButtonView:{
+        justifyContent: 'center',
+        flexDirection: 'row',
+    },
+    headerLeftView:{
+        width: 220*windowWidthRatio,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        paddingLeft: 20 * windowWidthRatio
     }
 });
 
@@ -1439,5 +1455,6 @@ var styleFilterPage = StyleSheet.create({
         fontWeight:'400',
         color:'#7adfc3',
     },
+    
 });
 module.exports = ChefListPage;

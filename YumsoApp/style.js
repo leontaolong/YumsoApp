@@ -94,7 +94,7 @@ module.exports = StyleSheet.create({
        alignSelf: 'center',
     },
     backButtonIcon:{
-      width:windowWidth*0.050,
+      width:windowWidth*0.050*5/9,
       height:windowWidth*0.050,
     },
     refreshButtonIcon:{
@@ -163,16 +163,12 @@ module.exports = StyleSheet.create({
       height:windowHeight*0.0235,
     },
     filterIcon:{
-      marginTop:12*windowHeight/667,
-      marginRight:5*windowHeight/667,
-      width:20*windowHeight/667,
-      height:20*windowHeight/667,
+      width:18*windowHeight/667,
+      height:18*windowHeight/667,
     },
     likeIcon: {
-      marginTop:12*windowHeight/667,
-      marginRight:5*windowHeight/667,
-      width:25*windowHeight/667,
-      height:21*windowHeight/667,
+      width:22*windowHeight/667,
+      height:17.5*windowHeight/667,    
     },
     ballonIcon:{
       marginVertical:2*windowHeight/667,
@@ -533,6 +529,10 @@ module.exports = StyleSheet.create({
       borderBottomWidth:1,
       borderBottomColor:'#eee',
     },
+    closeButtonIcon:{
+      width:windowWidth*0.05,
+      height:windowWidth*0.05,
+    },
     
 //**** new
     titleViewNew:{
@@ -598,8 +598,8 @@ module.exports = StyleSheet.create({
     },
 
     backButtonIconNew:{
-      width:windowWidth*0.100,
-      height:windowWidth*0.100,
+      width:windowWidth*0.05*5/9,
+      height:windowWidth*0.05,
     },
 
     titleViewsNew:{
@@ -641,8 +641,8 @@ module.exports = StyleSheet.create({
     },
 
     backButtonIconsNew:{
-      width:30 * windowWidthRatio,
-      height:20 * windowHeightRatio,
+      width:windowWidth*0.05*5/9,
+      height: windowWidth * 0.05,
     },
 
     textFieldTitle: {

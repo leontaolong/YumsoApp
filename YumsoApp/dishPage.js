@@ -71,7 +71,7 @@ class DishPage extends Component {
                <View style={styles.headerBannerView}>    
                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToShop()}>
                       <View style={styles.backButtonView}>
-                         <Image source={closeIcon} style={styles.backButtonIcon}/>
+                         <Image source={closeIcon} style={styles.closeButtonIcon}/>
                       </View>
                    </TouchableHighlight>
                    <View style={styles.titleView}></View>  

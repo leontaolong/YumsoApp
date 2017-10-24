@@ -503,9 +503,9 @@ module.exports = StyleSheet.create({
       flexDirection:'column',
     },
 
-    backButtonIconNew:{
-      width:windowWidth*0.100,
-      height:windowWidth*0.100,
+    backButtonIconNew: {
+      width: windowWidth * 0.05 * 5 / 9,
+      height: windowWidth * 0.05,
     },
 
     titleViewsNew:{
@@ -549,8 +549,8 @@ module.exports = StyleSheet.create({
     },
 
     backButtonIconsNew:{
-      width:30 * windowWidthRatio,
-      height:20 * windowHeightRatio,
+      width: windowWidth * 0.05 * 5 / 9,
+      height: windowWidth * 0.05,
     },
 
     textFieldTitle: {

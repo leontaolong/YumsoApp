@@ -257,7 +257,9 @@ class ShoppingCartPage extends Component {
         
          var notesToChefEditView = <View key={'noteView'} style={styleShoppingCartPage.phoneNoEditHeaderViewWrapper}>
                                         <View style={styleShoppingCartPage.phoneNoEditHeaderView}>
-                                            <Text style={styleShoppingCartPage.orderSummaryTextNew}>Note to Chef</Text>
+                                            <View style={{flex:0.88,flexDirection:'row'}}>
+                                                <Text style={styleShoppingCartPage.orderSummaryTextNew}>Note to Chef</Text>
+                                            </View>
                                             <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={() => this.setState({showNoteInput:false})}>
                                                 <Text style={styleShoppingCartPage.okViewTextNew}>Ok</Text>
                                             </TouchableOpacity>
@@ -275,9 +277,7 @@ class ShoppingCartPage extends Component {
                                                 <Text style={styleShoppingCartPage.orderSummaryTextNew}>Coupon</Text>
                                                 {this.state.promotionCode ?
                                                 <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>{this.state.promotionCode}</Text>
-                                                :
-                                                null
-                                            }
+                                                :null}
                                             </View>
                                             <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={() => this.editPromotionCode()}>
                                                 <Text style={styleShoppingCartPage.viewTextNew}>Edit</Text>
@@ -325,7 +325,7 @@ class ShoppingCartPage extends Component {
        }
 
        if(!this.state.priceIsConfirmed){//if price not quoted
-            return [
+          return [
             notesToChefView,
             promotionDeductionView,
             (<View key={'orderSummary'} style={styleShoppingCartPage.orderSummaryNew}>
@@ -522,7 +522,7 @@ class ShoppingCartPage extends Component {
         }
 
         if(!this.state.priceIsConfirmed){
-           var payNowButtonView = <TouchableOpacity activeOpacity={1}>
+           var payNowButtonView = <TouchableOpacity activeOpacity={0.7}>
                                     <View style={styleShoppingCartPage.checkOutButtonGreyView}>
                                         <Text style={styleShoppingCartPage.bottomButtonTextGreyed}>Pay Now</Text>
                                     </View>
@@ -582,14 +582,8 @@ class ShoppingCartPage extends Component {
     }
 
     scrollToShowTotalPrice(){
-        let listViewLength = this.y+0.5*windowHeight;
-        if(this.state.quotedOrder && this.state.quotedOrder.price && this.state.quotedOrder.price.couponValue){
-           listViewLength +=0.075*windowHeight;
-        }
-        let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        if(listViewBottomToScreenBottom < 0 && this.state.priceIsConfirmed){
-           this.refs.listView.scrollTo({x:0, y:windowHeight*0.075-listViewBottomToScreenBottom, animated: true})
-        }
+        var dishNumber = Object.values(this.state.shoppingCart[this.state.selectedTime]).length
+        this.refs.listView.scrollTo({ x: 0, y: windowHeight * 1.0 + (dishNumber - 1) * 122 *windowHeightRatio , animated: true })
     }
 
     mapDone(address){
@@ -1496,6 +1490,7 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1,
         flexDirection:'row',
         height : windowHeight*0.048,
+        justifyContent:'space-between',
       // backgroundColor : "#ccaacc",
         // width: 80 * windowWidthRatio,
         alignItems:'flex-end',
@@ -1659,6 +1654,7 @@ var styleShoppingCartPage = StyleSheet.create({
     },
     phoneNoEditHeaderView:{
       justifyContent:'space-between',
+      alignItems:'center',
       flexDirection:'row',
     },
     phoneNoEditHeaderViewWrapper:{

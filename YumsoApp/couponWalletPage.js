@@ -127,11 +127,12 @@ class CouponWalletPage extends Component {
             }
         ];       
 
-        var isCouponExpired = (coupon.expireAt < new Date().getTime())
+        var isCouponExpired = (coupon.expireAt < new Date().getTime());
+
         return (
-                <Swipeout backgroundColor={'#FFFFFF'} close={true} right={swipeoutBtns}>
-                    <TouchableOpacity activeOpacity={0.7} onPress={()=>this.onPressCoupon(coupon.code)} style={[styleCouponWalletPage.oneCouponView,{opacity:isCouponExpired ? 0.5 :1}]}>     
-                        <Image  style={styleCouponWalletPage.couponBackgroundImage} source={couponBackgroundImage}>    
+                    <TouchableOpacity activeOpacity={0.7} onPress={()=>this.onPressCoupon(coupon.code)} style={styleCouponWalletPage.oneCouponView}>   
+                    <Swipeout backgroundColor={'#FFFFFF'} close={true} right={swipeoutBtns}>  
+                    <Image style={[styleCouponWalletPage.couponBackgroundImage, { opacity: isCouponExpired ? 0.5 : 1 }]} source={couponBackgroundImage}>    
                         <View  style={styleCouponWalletPage.oneCouponInfoView}>
                             <View style={styleCouponWalletPage.oneCouponInfoViewLine1}>
                                <Text style={styleCouponWalletPage.oneCouponValueText}>${coupon.value} off</Text>
@@ -144,8 +145,8 @@ class CouponWalletPage extends Component {
                             <Text style={styleCouponWalletPage.couponCodeExpireDateText}>valid until {dateRender.renderDate1(coupon.expireAt)}</Text>
                         </View>
                         </Image>
+                    </Swipeout>
                     </TouchableOpacity>
-                </Swipeout>
                 );
     }
     
