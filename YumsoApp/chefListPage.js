@@ -385,7 +385,7 @@ class ChefListPage extends Component {
         }else if(this.state.showChefSearch){
            return <View style={styles.pageWrapper}>
                 <View style={styles.headerBannerView}>
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.onDismissFilter()>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.onDismissFilter()}>
                         <View style={styles.backButtonView}>
                             <Image source={closeIcon} style={styles.closeButtonIcon} />
                         </View>
