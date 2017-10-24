@@ -368,13 +368,13 @@ class OrderPage extends Component {
     }
 
     onPressShopsTabBtn(){
-        this.props.navigator.push({
+        this.props.navigator.resetTo({
           name: 'ChefListPage',
         });
     }
 
     onPressMeTabBtn(){
-      this.props.navigator.push({
+      this.props.navigator.resetTo({
           name: 'EaterPage',
           passProps:{
               eater:this.state.eater,

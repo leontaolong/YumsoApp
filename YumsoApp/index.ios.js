@@ -41,8 +41,9 @@ import React, {
 } from 'react-native';
 
 console.disableYellowBox = true;
-let sceneConfig = Navigator.SceneConfigs.FloatFromRight;
+let sceneConfig = Navigator.SceneConfigs.HorizontalSwipeJump;
 sceneConfig.gestures.pop = {};
+sceneConfig.gestures = null;
 
 class YumsoApp extends Component {
     constructor(props){
@@ -131,9 +132,9 @@ class YumsoApp extends Component {
            return <View style={{flex:1,backgroundColor:"#FFFFFF"}}></View>
         }else{
            if(!this.state.eater){
-              return (<Navigator initialRoute={{ name: 'WelcomePage' }}  renderScene={ this.renderScene } />);
+               return (<Navigator initialRoute={{ name: 'WelcomePage' }} renderScene={this.renderScene} configureScene={(route, routeStack) => sceneConfig}/>);
            }else{
-              return (<Navigator initialRoute={{ name: 'ChefListPage' }}  renderScene={ this.renderScene } />);
+               return (<Navigator initialRoute={{ name: 'ChefListPage' }} renderScene={this.renderScene} configureScene={(route, routeStack) => sceneConfig}/>);
            }
         }
     }

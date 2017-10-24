@@ -3,7 +3,6 @@ var HttpsClient = require('./httpsClient');
 var styles = require('./style');
 var config = require('./config');
 var AuthService = require('./authService');
-var SideMenu = require('react-native-side-menu');
 var Swiper = require('react-native-swiper');
 var MapPage = require('./mapPage');
 var rating = require('./rating');
@@ -364,7 +363,6 @@ class ChefListPage extends Component {
         
     }    
     render() {
-        var menu = <Menu navigator={this.props.navigator} eater={this.state.eater} currentLocation={this.state.GPSproxAddress} principal={this.state.principal} caller = {this}/>;
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
             loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;
@@ -387,12 +385,7 @@ class ChefListPage extends Component {
         }else if(this.state.showChefSearch){
            return <View style={styles.pageWrapper}>
                 <View style={styles.headerBannerView}>
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.setState({
-                                                                showChefSearch: false,
-                                                                isMenuOpen: false,
-                                                                priceRankFilter: JSON.stringify(this.state.priceRankFilterOrigin)==undefined ? null : JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
-                                                                withBestRatedSort: this.state.withBestRatedSortOrigin,
-                                                             })}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.onDismissFilter()>
                         <View style={styles.backButtonView}>
                             <Image source={closeIcon} style={styles.closeButtonIcon} />
                         </View>
@@ -425,7 +418,7 @@ class ChefListPage extends Component {
                           <Text style={this.getShopTypeText('withRestaurantsShopType')} onPress={() => {this.clickShopType('withRestaurantsShopType')}}>Restaurants</Text>
                        </View>
                        <View style={styleFilterPage.sortCriteriaTitleView}>
-                          <Text style={this.getShopTypeText('withHomeChefShopType')} onPress={() => {this.clickShopType('withHomeChefShopType')}}>Home Chefs</Text>
+                          <Text style={this.getShopTypeText('withHomeChefShopType')} onPress={() => {this.clickShopType('withHomeChefShopType')}}>Yumso Exclusive</Text>
                        </View>
                     </View>
 
@@ -613,7 +606,7 @@ class ChefListPage extends Component {
                 displayChefs.push(this.state.chefsDictionary[chefId]);
             }
         }
-        this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
+        this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs)});
     }
 
     showChefsWithSpecificFoodTag(foodTag){
@@ -625,16 +618,7 @@ class ChefListPage extends Component {
             if (chef.foodTag == foodTag || foodTag== 'All') 
                 displayChefs.push(chef);
         });
-        this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs), isMenuOpen:false});
-    }
-
-    async openSideMenu(isOpen){
-        if(isOpen===false){return;}
-        this.setState({ isMenuOpen: true });
-        if(this.state.eater){
-            let res = await this.client.getWithAuth(config.eaterEndpoint);
-            this.setState({eater:res.data.eater});
-        }
+        this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs)});
     }
 
     mapDone(address){
@@ -642,23 +626,22 @@ class ChefListPage extends Component {
             Alert.alert( '', 'Your search location is set to '+address.formatted_address,[ { text: 'OK' }]);
             //todo: get chef use location info;
          }
-         this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, zipcode: address.postal, isMenuOpen: false, showProgress: true});
+         this.setState({showLocSearch:false, pickedAddress:address, city:address.city, state:address.state, zipcode: address.postal, showProgress: true});
          this.componentDidMount(); //todo: we refresh it like this?
     }
 
     onCancelMap(){
-         this.setState({showLocSearch:false, isMenuOpen: false});
+         this.setState({showLocSearch:false});
     }
 
     onPressApplySearchButton(){
         this.searchChef(true);
     }
 
-
     onPressOrdersTabBtn(){
         if(!this.state.eater){
-            this.props.navigator.push({
-                  name: 'LoginPage',
+            this.props.navigator.resetTo({
+                name: 'WelcomePage',
                   passProps: {
                       callback: function(eater,principal){
                           this.setState({eater:eater,principal:principal})
@@ -668,7 +651,7 @@ class ChefListPage extends Component {
            return
         }
 
-        this.props.navigator.push({
+        this.props.navigator.resetTo({
             name: 'OrderPage',
             passProps: {
                 eater: this.state.eater,
@@ -676,10 +659,11 @@ class ChefListPage extends Component {
             }
         });
     }
+
     onPressMeTabBtn(){
         if(!this.state.eater){
-            this.props.navigator.push({
-                  name: 'LoginPage',
+            this.props.navigator.resetTo({
+                  name: 'WelcomePage',
                   passProps: {
                       callback: function(eater,principal){
                           this.setState({eater:eater,principal:principal})
@@ -689,7 +673,7 @@ class ChefListPage extends Component {
            return
         }
 
-        this.props.navigator.push({
+        this.props.navigator.resetTo({
             name: 'EaterPage',
             passProps:{
                 eater:this.state.eater,
@@ -705,20 +689,32 @@ class ChefListPage extends Component {
         Linking.openURL('itms://itunes.apple.com/us/app/apple-store/id1125810059?mt=8')
     }
 
+    onDismissFilter(){
+        this.setState({
+            showChefSearch: false,
+            priceRankFilter: JSON.stringify(this.state.priceRankFilterOrigin) == undefined ? null : JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
+            withBestRatedSort: this.state.withBestRatedSortOrigin,
+        })
+    }
+
+    onClearFilter(){
+        this.setState({showChefSearch: false});
+    }
+
     searchChef(isApplySearchButtonPressed){
         if(isApplySearchButtonPressed==true){
            if(!this.state.eater){
               this.props.navigator.push({
-                    name: 'LoginPage',
+                    name: 'WelcomePage',
                     passProps: {
                         callback: function(eater,principal){
                             this.setState({eater:eater,principal:principal})
                         }.bind(this)
                     }
              });
-             return
+             return;
           }
-           this.setState({showProgress:true});
+          this.setState({showProgress:true});
         }
         return this.applySearchSettings()
             .then((settings) => {//todo: add these filter, make sure not logged in able to get as well.
@@ -774,7 +770,7 @@ class ChefListPage extends Component {
                             //todo: handle failure.
                             return self.responseHandler(res);
                         }
-                        this.setState({ showChefSearch: false, showProgress: false, isMenuOpen: false });
+                        this.setState({ showChefSearch: false, showProgress: false});
                     }).catch((err)=>{
                         commonAlert.networkError(err);
                     });
@@ -819,7 +815,6 @@ class ChefListPage extends Component {
     }
 
     navigateToShopPage(chef){
-        this.setState({ isMenuOpen: false });
         this.props.navigator.push({
             name: 'ShopPage',
             passProps:{
@@ -834,307 +829,6 @@ class ChefListPage extends Component {
     }
 
 }
-
-var Menu = React.createClass({
-
-    render: function() {
-        let isAuthenticated = this.props.eater!=undefined;
-        var profileImg = profileImgNoSignIn;
-        var orderNumbersView = null;
-        if(isAuthenticated && this.props.eater.eaterProfilePic){
-            profileImg = {uri:this.props.eater.eaterProfilePic};
-            var eater = this.props.eater;
-            orderNumbersView = <View style={sideMenuStyle.orderNumbersView}>
-                                    <View style={sideMenuStyle.oneOrderStatView}>
-                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderOngoing : 0}</Text>
-                                            <View>
-                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Order</Text>
-                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Pending</Text>
-                                            </View>
-                                    </View>
-                                    <View style={sideMenuStyle.oneOrderStatView}>
-                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderCount : 0}</Text>
-                                            <View>
-                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Order</Text>
-                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Placed</Text>
-                                            </View>
-                                    </View>
-                                    <View style={sideMenuStyle.oneOrderStatView}>
-                                            <Text style={sideMenuStyle.oneOrderStatNumberText}>{eater ? eater.orderNeedComments : 0}</Text>
-                                            <View>
-                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Need</Text>
-                                                <Text style={sideMenuStyle.oneOrderStatNumberTitle}>Review</Text>
-                                            </View>
-                                    </View>
-                               </View>
-        }else{
-            orderNumbersView = <View style={sideMenuStyle.orderNumbersView}></View>
-        }
-
-        var eaterProfilePic;
-        if(!isAuthenticated){
-           eaterProfilePic = <Image source={profileImg} style={sideMenuStyle.eaterPhoto}/>;
-        }else{
-           eaterProfilePic = <Image source={profileImg} style={sideMenuStyle.eaterPhoto}/>
-        }
-        return (
-            <View style={sideMenuStyle.sidemenu}>
-                   <TouchableHighlight style = {sideMenuStyle.eaterPhotoView} onPress={()=>this.goToEaterPage()} underlayColor={'transparent'}>
-                       {eaterProfilePic}
-                   </TouchableHighlight>
-                   {orderNumbersView}
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                       <Text style={sideMenuStyle.paddingMenuItem}></Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToOrderHistory}>
-                       <Text style={sideMenuStyle.paddingMenuItem}>My Orders</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToPaymentOptionPage}>
-                       <Text style={sideMenuStyle.paddingMenuItem}>Payment</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToAddressBookPage} >
-                       <Text style={sideMenuStyle.paddingMenuItem}>Address</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.goToEaterPage} >
-                       <Text style={sideMenuStyle.paddingMenuItem}>My Profile</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.navigateToContactUsPage}>
-                       <Text style={sideMenuStyle.paddingMenuItem}>Contact Us</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={this.navigateToInvitePage}>
-                       <Text style={sideMenuStyle.paddingMenuItem}>Invite Friends</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView}>
-                       <Text style={sideMenuStyle.paddingMenuItem}></Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemView} onPress={isAuthenticated?this.logOut:this.logIn}>
-                       <Text style={sideMenuStyle.paddingMenuItem}>{isAuthenticated?'Log out':'Log in'}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.7} style={sideMenuStyle.paddingMenuItemAboutView} onPress={this.navigateToAboutPage}>
-                       <Text style={sideMenuStyle.paddingMenuItemAbout}>About</Text>
-                    </TouchableOpacity>
-            </View>
-        );
-    },
-
-    goToOrderHistory: function() {
-        this.props.caller.setState({ isMenuOpen: false });
-        if(!this.props.eater){
-            this.props.navigator.push({
-                name: 'LoginPage',
-                passProps:{
-                    callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
-                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
-                }
-            });
-            return;
-        }
-        this.props.navigator.push({
-            name: 'HistoryOrderPage',
-            passProps: {
-               eater: this.props.eater
-            }
-        });
-    },
-
-    goToEaterPage: function() {
-        this.props.caller.setState({ isMenuOpen: false });
-        if(!this.props.eater){
-            this.props.navigator.push({
-                name: 'LoginPage',
-                passProps:{
-                    callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
-                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
-                }
-            });
-            return;
-        }
-        this.props.navigator.push({
-            name: 'EaterPage',
-            passProps:{
-                eater:this.props.eater,
-                currentLocation:this.props.currentLocation,
-                principal:this.props.principal,
-                callback: function(eater){
-                    this.props.caller.setState({eater:eater});
-                }.bind(this)
-            }
-        });
-    },
-
-    goToAddressBookPage:function() {
-        this.props.caller.setState({ isMenuOpen: false });
-        if(!this.props.eater){
-            this.props.navigator.push({
-                name: 'LoginPage',
-                passProps:{
-                    callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
-                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
-                }
-            });
-            return;
-        }
-        this.props.navigator.push({
-            name: 'AddressBookPage',
-            passProps:{
-                eater:this.props.eater,
-                currentLocation:this.props.currentLocation,
-                principal:this.props.principal,
-                callback: function(eater){
-                    this.props.caller.setState({eater:eater});
-                }.bind(this)
-            }
-        });
-    },
-
-    goToPaymentOptionPage:function() {
-        this.props.caller.setState({ isMenuOpen: false });
-        if(!this.props.eater){
-            this.props.navigator.push({
-                name: 'LoginPage',
-                passProps:{
-                    callback: this.props.caller.componentDidMount.bind(this.props.caller),//todo: change to force re-render.
-                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
-                }
-            });
-            return;
-        }
-
-        this.props.navigator.push({
-            name: 'PaymentOptionPage',//todo: fb cached will signin and redirect back right away.
-            passProps:{
-                eater:this.props.eater
-            }
-        });
-    },
-
-    navigateToAboutPage: function () {
-        this.props.caller.setState({ isMenuOpen: false });
-        this.props.navigator.push({
-            name: 'AboutPage',
-        });
-    },
-
-    navigateToContactUsPage: function () {
-        this.props.caller.setState({ isMenuOpen: false });
-        this.props.navigator.push({
-            name: 'ContactUsPage',
-        });
-    },
-
-    navigateToInvitePage: function() {
-        this.props.navigator.push({
-            name: 'InvitePage',
-        });
-    },
-    
-    logOut: function(){
-        return AuthService.logOut()
-        .then(()=>{
-            this.props.caller.setState({eater:undefined});
-            //Alert.alert( '', 'You have successfully logged out',[ { text: 'OK' }]);
-            this.props.caller.setState({ isMenuOpen: false });
-            this.props.navigator.push({
-                name: 'LoginPage',
-                passProps:{
-                    callback: this.props.caller.componentDidMount.bind(this.props.caller),
-                    backCallback: this.props.caller.componentDidMount.bind(this.props.caller)
-                }
-            });
-        });
-    },
-
-    logIn: function(){
-        this.props.caller.setState({ isMenuOpen: false });
-        this.props.navigator.push({
-            name: 'LoginPage',
-            passProps: {
-                callback: this.props.caller.componentDidMount.bind(this.props.caller),
-            }
-        });
-    },
-});
-
-var sideMenuStyle = StyleSheet.create({
-    sidemenu: {
-        flexDirection:'column',
-        height:windowHeight,
-        width:windowWidth*2/3.0,
-        backgroundColor:'#F5F5F5',
-        marginTop:20,
-        alignItems:'center',
-    },
-    eaterPhoto:{
-        width:windowWidth/3.0,
-        height:windowWidth/3.0,
-        borderRadius:0.5*windowWidth/3.0,
-        borderWidth: 0,
-        overflow: 'hidden',
-    },
-    eaterPhotoView:{
-        width:windowWidth/3.0,
-        height:windowWidth/3.0,
-        marginTop:windowWidth/7.0,
-    },
-    orderNumbersView:{
-        flexDirection:'row',
-        width:windowWidth*0.6,
-        height:windowHeight/92.0 + windowWidth/5.0,
-        borderColor:'#4A4A4A',
-        borderBottomWidth:1.5,
-        marginTop:windowWidth/30.0,
-        paddingBottom:windowHeight/92.0,
-    },
-    oneOrderStatView:{
-        flex:1/3.0,
-        flexDirection:'column',
-        height:windowWidth/5.0,
-        alignItems:'center',
-        justifyContent:'space-around',
-    },
-    oneOrderStatNumberText:{
-        fontSize:windowHeight/37.055,
-        fontWeight:'500',
-        color:'#4A4A4A',
-    },
-    oneOrderStatNumberTitle:{
-        flexDirection:'row',
-        justifyContent:'center',
-        width:windowWidth*0.2,
-        fontSize:windowHeight/52.57,
-        fontWeight:'400',
-        color:'#4A4A4A',
-        textAlign:'center',
-        alignSelf:'center',
-        flexWrap:'wrap',
-    },
-    paddingMenuItemView:{
-        width:windowWidth*2/3.0,
-        paddingVertical:windowWidth*0.0227,
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        alignItems:'center',
-        paddingLeft:windowWidth/8.28,
-    },
-    paddingMenuItem: {
-        fontSize:windowHeight/37.055,
-        fontWeight:'500',
-        color:'#4A4A4A'
-    },
-    paddingMenuItemAbout: {
-        fontSize:windowHeight/41.69,
-        color:'#4A4A4A'
-    },
-    paddingMenuItemAboutView:{
-        borderTopWidth:1,
-        borderColor:'#4A4A4A',
-        width:windowWidth*0.226,
-        paddingVertical:windowWidth*0.0227,
-        flexDirection:'row',
-        alignSelf:'flex-start',
-        marginLeft:windowWidth/8.28,
-    },
-});
 
 var styleChefListPage = StyleSheet.create({
     customizedHeaderBannerRules:{

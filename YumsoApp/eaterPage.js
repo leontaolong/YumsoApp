@@ -512,13 +512,13 @@ class EaterPage extends Component {
     }
 
     onPressShopsTabBtn(){
-        this.props.navigator.push({
+        this.props.navigator.resetTo({
             name: 'ChefListPage',
         });
     }
 
     onPressOrdersTabBtn(){
-        this.props.navigator.push({
+        this.props.navigator.resetTo({
             name: 'OrderPage',
             passProps: {
                 eater: this.state.eater,
