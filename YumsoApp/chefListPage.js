@@ -23,10 +23,8 @@ var heartLineIcon = require('./icons/icon-heart-line.png');
 var heartFillsIcon = require('./icons/icon-heart-fills.png');
 var backIcon = require('./icons/icon-back.png');
 var closeIcon = require('./icons/icon-close.png');
-var sortCriteriaIconGrey = require('./icons/icon-rating-grey-empty.webp');
-var sortCriteriaIconOrange = require('./icons/icon-rating-orange-empty.webp');
 var RefreshableListView = require('react-native-refreshable-listview');
-var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
 
 var meOff = require('./icons/me_off.png');
 var meOn = require('./icons/me_on.png');
@@ -94,7 +92,6 @@ class ChefListPage extends Component {
             zipcode:'98105',
             pickedAddress:undefined,
             priceRankFilter:{},
-            sortCriteriaIcon:sortCriteriaIconGrey,
             deviceToken: null,
             currentTime: new Date().getTime(),
             showUpdateAppBanner:false,
@@ -112,7 +109,7 @@ class ChefListPage extends Component {
                     .then(()=>{
                         delete this.state.eater;
                         this.props.navigator.push({
-                            name: 'LoginPage',//todo: fb cached will signin and redirect back right away.
+                            name: 'WelcomePage',//todo: fb cached will signin and redirect back right away.
                             passProps: {
                                 callback: function (eater) {
                                     this.setState({ eater: eater });
@@ -141,20 +138,6 @@ class ChefListPage extends Component {
             eater = await AuthService.getEater();
         }
         let principal = await AuthService.getPrincipalInfo();
-        if(eater){
-            var priceLevels = [];
-            for (let i = 0; i <=2; i++) {
-                if (eater.chefFilterSettings.priceRankFilter[i]) 
-                    priceLevels.push(i + 1); // if true, add the price level to the priceLevels array  
-            }
-           this.setState({ 
-                selectedPriceLevels: priceLevels,
-                priceRankFilter:eater.chefFilterSettings.priceRankFilter, 
-                withBestRatedSort:eater.chefFilterSettings.withBestRatedSort,             
-                priceRankFilterOrigin:JSON.parse(JSON.stringify(eater.chefFilterSettings.priceRankFilter)), 
-                withBestRatedSortOrigin:eater.chefFilterSettings.withBestRatedSort,
-                sortCriteriaIcon:eater.chefFilterSettings.withBestRatedSort ? sortCriteriaIconOrange:sortCriteriaIconGrey});
-        }
         this.setState({ principal: principal, eater: eater });
         this.fetchChefDishes();
     }
@@ -415,21 +398,14 @@ class ChefListPage extends Component {
                           <Text style={this.getShopTypeText('withAllShopType')} onPress={() => {this.clickShopType('withAllShopType')}}>All</Text>
                        </View>
                        <View style={styleFilterPage.sortCriteriaTitleView}>
-                          <Text style={this.getShopTypeText('withRestaurantsShopType')} onPress={() => {this.clickShopType('withRestaurantsShopType')}}>Restaurants</Text>
-                       </View>
-                       <View style={styleFilterPage.sortCriteriaTitleView}>
-                          <Text style={this.getShopTypeText('withHomeChefShopType')} onPress={() => {this.clickShopType('withHomeChefShopType')}}>Yumso Exclusive</Text>
+                          <Text style={this.getShopTypeText('withYumsoExclusiveShopType')} onPress={() => {this.clickShopType('withYumsoExclusiveShopType')}}>Yumso Exclusive</Text>
                        </View>
                     </View>
-
 
                     <Text style={styleFilterPage.pageSubTitle}>Sort by</Text>
                     <View style={styleFilterPage.sortCriteriaView}>
                        <View style={styleFilterPage.sortCriteriaTitleView}>
                           <Text style={this.getSortCriteriaTitleText('withBestRatedSort')} onPress={() => {this.clickSortSelection('withBestRatedSort')}}>Best Rated</Text>
-                       </View>
-                       <View style={styleFilterPage.sortCriteriaTitleView}>
-                          <Text style={this.getSortCriteriaTitleText('withMostPopularSort')} onPress={() => {this.clickSortSelection('withMostPopularSort')}}>Most Popular</Text>
                        </View>
                        <View style={styleFilterPage.sortCriteriaTitleView}>
                           <Text style={this.getSortCriteriaTitleText('withSoonestDeliveryTimeSort')} onPress={() => {this.clickSortSelection('withSoonestDeliveryTimeSort')}}>Soonest Delivery Time</Text>
@@ -571,19 +547,18 @@ class ChefListPage extends Component {
     }
 
     clickSortSelection(sortByKey){
-        this.setState({[sortByKey]:!this.state[sortByKey], selectedSortKey: sortByKey});
-        this.setState({sortCriteriaIcon:this.state[sortByKey]? sortCriteriaIconOrange : sortCriteriaIconGrey})
+        this.setState({selectedSortKey: sortByKey});
     }
 
     clickShopType(shopType) { 
         //TODO Add more code in applySearchSettings to implement newly added 'search by shopType' feature
-        this.setState({[shopType]:!this.state[shopType], selectedShopType: shopType});
+        this.setState({selectedShopType: shopType});
     }
 
     showFavoriteChefs(){
         if(!this.state.eater){
             this.props.navigator.push({
-                name: 'LoginPage',
+                name: 'WelcomePage',
                 passProps: {
                     callback: function(eater){
                         this.setState({eater:eater})
@@ -697,10 +672,6 @@ class ChefListPage extends Component {
         })
     }
 
-    onClearFilter(){
-        this.setState({showChefSearch: false});
-    }
-
     searchChef(isApplySearchButtonPressed){
         if(isApplySearchButtonPressed==true){
            if(!this.state.eater){
@@ -716,103 +687,198 @@ class ChefListPage extends Component {
           }
           this.setState({showProgress:true});
         }
-        return this.applySearchSettings()
-            .then((settings) => {//todo: add these filter, make sure not logged in able to get as well.
-                let url = config.chefListEndpoint+'?'
-                let queryLoc='';
-                if (this.state.GPSproxAddress) {
-                    queryLoc = 'lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
+
+        let url = config.chefListEndpoint + '?'
+        let queryLoc = '';
+        if (this.state.GPSproxAddress) {
+            queryLoc = 'lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
+        }
+        if (this.state.pickedAddress) {
+            queryLoc = 'lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng;
+        }
+        url += queryLoc;
+
+        if (this.state.priceRankFilter != {}){
+            url += '&priceRankFilter='
+            for (let level in this.state.priceRankFilter) {
+                if (this.state.priceRankFilter[level] == true) {
+                    url += level + ',';
                 }
-                if (this.state.pickedAddress) {
-                    queryLoc = 'lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng;
-                }
-                url+=queryLoc+'&';
-                if(settings){
-                    url+='withBestRatedSort='+settings.withBestRatedSort+'&';
-                    url+='priceRankFilter='
-                    for(let level in settings.priceRankFilter){
-                        if(settings.priceRankFilter[level]==true){
-                            url+=level+',';
-                        }
-                    }
-                    if(url.charAt(url.length-1)===','){
-                        url = url.substr(0, url.length-1);
-                    }
-                }else{
-                    if(url.charAt(url.length-1)==='&'){
-                        url = url.substr(0, url.length-1);
-                    }
-                }
-                return this.client.getWithoutAuth(url)
-                    .then((res) => {
-                        if (res.statusCode === 200 || res.statusCode === 202) {
-                            var chefs = res.data.chefs;
-                            for (var chef of chefs) {
-                                if(chef && !(this.state.chefView[chef.chefId] && this.state.chefsDictionary[chef.chefId])){
-                                   let starDishPictures=[];
-                                   if(chef.highLightDishIds){
-                                      for(var dishId in chef.highLightDishIds){
-                                          starDishPictures.push(chef.highLightDishIds[dishId]);
-                                      }
-                                   }
-                                   this.state.chefView[chef.chefId] = starDishPictures;
-                                   this.state.chefsDictionary[chef.chefId] = chef;
+            }
+        }
+
+        if (url.charAt(url.length - 1) === ',') {
+            url = url.substr(0, url.length - 1);
+        }
+
+        if (this.state.selectedShopType) {
+            switch (this.state.selectedShopType) {
+                case 'withAllShopType':
+                    url += '&withAllShopType=true';
+                    break;
+                case 'withRestaurantsShopType':
+                    url += '&withRestaurantsShopType=true';
+                    break;
+                case 'withYumsoExclusiveShopType':
+                    url += '&withYumsoExclusiveShopType=true';
+                    break;
+                default:
+                    url += '&withAllShopType=true';
+                    break;
+            }
+        }
+
+        if (this.state.selectedSortKey) {
+            switch (this.state.selectedSortKey) {
+                case 'withBestRatedSort':
+                    url += '&withBestRatedSort=true';
+                    break;
+                case 'withMostPopularSort':
+                    url += '&withMostPopularSort=true';
+                    break;
+                case 'withSoonestDeliveryTimeSort':
+                    url += '&withSoonestDeliveryTimeSort=true';
+                    break;
+                case 'withShortestDistanceSort':
+                    url += '&withShortestDistanceSort=true';
+                    break;
+                default:
+                    url += '&withBestRatedSort=true';
+                    break;
+            }
+        }
+
+        return this.client.getWithoutAuth(url)
+            .then((res) => {
+                if (res.statusCode === 200 || res.statusCode === 202) {
+                    var chefs = res.data.chefs;
+                    for (var chef of chefs) {
+                        if (chef && !(this.state.chefView[chef.chefId] && this.state.chefsDictionary[chef.chefId])) {
+                            let starDishPictures = [];
+                            if (chef.highLightDishIds) {
+                                for (var dishId in chef.highLightDishIds) {
+                                    starDishPictures.push(chef.highLightDishIds[dishId]);
                                 }
                             }
-                            this.setState({currentTime:new Date().getTime(), dataSource: this.state.dataSource.cloneWithRows(chefs) })
-
-                            if(res.statusCode === 202){
-                               this.setState({showUpdateAppBanner:true});
-                            }
-                            // this.onRefreshDone();
-                        } else {
-                            // this.onRefreshDone();
-                            //todo: handle failure.
-                            return self.responseHandler(res);
+                            this.state.chefView[chef.chefId] = starDishPictures;
+                            this.state.chefsDictionary[chef.chefId] = chef;
                         }
-                        this.setState({ showChefSearch: false, showProgress: false});
-                    }).catch((err)=>{
-                        commonAlert.networkError(err);
-                    });
+                    }
+                    this.setState({ currentTime: new Date().getTime(), dataSource: this.state.dataSource.cloneWithRows(chefs) })
+
+                    if (res.statusCode === 202) {
+                        this.setState({ showUpdateAppBanner: true });
+                    }
+                    // this.onRefreshDone();
+                } else {
+                    // this.onRefreshDone();
+                    //todo: handle failure.
+                    return self.responseHandler(res);
+                }
+                this.setState({ showChefSearch: false, showProgress: false });
+            }).catch((err) => {
+                commonAlert.networkError(err);
             });
+
+
+        // return this.applySearchSettings()
+        //     .then((settings) => {//todo: add these filter, make sure not logged in able to get as well.
+        //         let url = config.chefListEndpoint+'?'
+        //         let queryLoc='';
+        //         if (this.state.GPSproxAddress) {
+        //             queryLoc = 'lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
+        //         }
+        //         if (this.state.pickedAddress) {
+        //             queryLoc = 'lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng;
+        //         }
+        //         url+=queryLoc+'&';
+        //         if(settings){
+        //             url+='withBestRatedSort='+settings.withBestRatedSort+'&';
+        //             url+='priceRankFilter='
+        //             for(let level in settings.priceRankFilter){
+        //                 if(settings.priceRankFilter[level]==true){
+        //                     url+=level+',';
+        //                 }
+        //             }
+        //             if(url.charAt(url.length-1)===','){
+        //                 url = url.substr(0, url.length-1);
+        //             }
+        //         }else{
+        //             if(url.charAt(url.length-1)==='&'){
+        //                 url = url.substr(0, url.length-1);
+        //             }
+        //         }
+        //         return this.client.getWithoutAuth(url)
+        //             .then((res) => {
+        //                 if (res.statusCode === 200 || res.statusCode === 202) {
+        //                     var chefs = res.data.chefs;
+        //                     for (var chef of chefs) {
+        //                         if(chef && !(this.state.chefView[chef.chefId] && this.state.chefsDictionary[chef.chefId])){
+        //                            let starDishPictures=[];
+        //                            if(chef.highLightDishIds){
+        //                               for(var dishId in chef.highLightDishIds){
+        //                                   starDishPictures.push(chef.highLightDishIds[dishId]);
+        //                               }
+        //                            }
+        //                            this.state.chefView[chef.chefId] = starDishPictures;
+        //                            this.state.chefsDictionary[chef.chefId] = chef;
+        //                         }
+        //                     }
+        //                     this.setState({currentTime:new Date().getTime(), dataSource: this.state.dataSource.cloneWithRows(chefs) })
+
+        //                     if(res.statusCode === 202){
+        //                        this.setState({showUpdateAppBanner:true});
+        //                     }
+        //                     // this.onRefreshDone();
+        //                 } else {
+        //                     // this.onRefreshDone();
+        //                     //todo: handle failure.
+        //                     return self.responseHandler(res);
+        //                 }
+        //                 this.setState({ showChefSearch: false, showProgress: false});
+        //             }).catch((err)=>{
+        //                 commonAlert.networkError(err);
+        //             });
+        //     });
     }
 
-    applySearchSettings(){
-        let self = this;
-        if(this.state.eater){
-            if(!this.state.eater.chefFilterSettings){//todo: remove this since the object should be exist when creating
-                this.state.eater.chefFilterSettings = {};
-            }
-            this.state.eater.chefFilterSettings['priceRankFilter'] = this.state.priceRankFilter;
-            this.state.eater.chefFilterSettings['withBestRatedSort'] = this.state.withBestRatedSort;
-            return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:{eaterId: this.state.eater.eaterId, chefFilterSettings: this.state.eater.chefFilterSettings}})
-                .then((res) => {
-                    if (res.statusCode != 200 && res.statusCode!=202) {
-                        this.setState({showProgress:false});
-                        return self.responseHandler(res);
-                    }
-                    return AuthService.updateCacheEater(self.state.eater)
-                        .then(() => {
-                            self.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(self.state.priceRankFilter));
-                            self.state.withBestRatedSortOrigin = self.state.withBestRatedSort;
-                            return self.state.eater.chefFilterSettings;
-                        });
-                }).catch((err)=>{
-                    this.setState({showProgress: false});
-                    commonAlert.networkError(err);
-                });
-        }
-        // if(!this.state.principal){
-        //    let principal = await AuthService.getPrincipalInfo();
-        //    this.setState({ principal: principal});
-        // }
-        this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
-        this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;
-        return Promise.resolve({
-            priceRankFilter: this.state.priceRankFilter,
-            withBestRatedSort: this.state.withBestRatedSort
-        });
-    }
+//    //Deprecated Function
+//     applySearchSettings(){
+//         let self = this;
+//         if(this.state.eater){
+//             if(!this.state.eater.chefFilterSettings){//todo: remove this since the object should be exist when creating
+//                 this.state.eater.chefFilterSettings = {};
+//             }
+//             this.state.eater.chefFilterSettings['priceRankFilter'] = this.state.priceRankFilter;
+//             this.state.eater.chefFilterSettings['withBestRatedSort'] = this.state.withBestRatedSort;
+//             return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:{eaterId: this.state.eater.eaterId, chefFilterSettings: this.state.eater.chefFilterSettings}})
+//                 .then((res) => {
+//                     if (res.statusCode != 200 && res.statusCode!=202) {
+//                         this.setState({showProgress:false});
+//                         return self.responseHandler(res);
+//                     }
+//                     return AuthService.updateCacheEater(self.state.eater)
+//                         .then(() => {
+//                             self.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(self.state.priceRankFilter));
+//                             self.state.withBestRatedSortOrigin = self.state.withBestRatedSort;
+//                             return self.state.eater.chefFilterSettings;
+//                         });
+//                 }).catch((err)=>{
+//                     this.setState({showProgress: false});
+//                     commonAlert.networkError(err);
+//                 });
+//         }
+//         // if(!this.state.principal){
+//         //    let principal = await AuthService.getPrincipalInfo();
+//         //    this.setState({ principal: principal});
+//         // }
+//         this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
+//         this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;
+//         return Promise.resolve({
+//             priceRankFilter: this.state.priceRankFilter,
+//             withBestRatedSort: this.state.withBestRatedSort
+//         });
+//     }
 
     navigateToShopPage(chef){
         this.props.navigator.push({

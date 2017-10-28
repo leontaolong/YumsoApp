@@ -55,7 +55,7 @@ class WelcomePage extends Component {
           loadingSpinnerView =<LoadingSpinnerViewFullScreen/>;
       }
 
-      console.log('LoginPage deviceToken '+this.state.deviceToken);
+      console.log('WelcomePage deviceToken '+this.state.deviceToken);
 
       return (
             <View style={styles.containerNew}>
@@ -127,77 +127,6 @@ class WelcomePage extends Component {
         );
     }
 
-    async onLoginPressed(){
-        if(!this.state.email || !this.state.email.trim()){
-            Alert.alert( 'Warning', 'Please enter your email',[ { text: 'OK' }]);
-            return;
-        }
-
-        if(this.state.email && !validator.isEmail(this.state.email)){
-            Alert.alert( 'Warning', 'Invalid email.',[ { text: 'OK' }]);
-            return;
-        }
-
-        if(!this.state.password){
-            Alert.alert( 'Warning', 'Please enter your password',[ { text: 'OK' }]);
-            return;
-        }
-
-        this.setState({showProgress:true});
-        let deviceToken = await AuthService.getDeviceTokenFromCache();
-        try{
-           let eater = await AuthService.loginWithEmail(this.state.email.trim(), this.state.password, deviceToken);
-           this.setState({ showProgress: false });
-           if(!eater){
-              return;
-           }
-           let principal = await AuthService.getPrincipalInfo();
-           if(!eater.phoneNumber || !eater.phoneNumber.trim()|| !eater.email || !eater.email.trim() || !eater.eaterAlias || !eater.eaterAlias.trim()){
-              this.navigateToEaterPage(eater,principal);
-              return;
-           }
-
-           var currentRoutes = this.props.navigator.getCurrentRoutes();
-           if(currentRoutes && currentRoutes.length==1 && currentRoutes[0].name == "LoginPage"){
-              this.jumpToChefList();
-           }else{
-              this.props.navigator.pop();
-           }
-           if(this.props.onLogin){
-              this.props.onLogin();
-           }
-           if(this.state.callback){
-              this.state.callback(eater,principal);
-           }
-        }catch(err){
-           this.setState({ showProgress: false });
-           commonAlert.networkError(err);
-        }
-    }
-    async onPressForgotPassword(){
-        if(!this.state.email || !this.state.email.trim()){
-            Alert.alert( 'Warning', 'Please enter your email',[ { text: 'OK' }]);
-            return;
-        }
-
-        if(this.state.email && !validator.isEmail(this.state.email)){
-            Alert.alert( 'Warning', 'Invalid email.',[ { text: 'OK' }]);
-            return;
-        }
-
-        this.setState({showProgress:true});
-        try{
-           let result = await AuthService.forgotPasswordWithEmail(this.state.email.trim());
-           if(result==false){
-              this.setState({ showProgress: false });
-              return;
-           }
-           this.setState({ showProgress: false });
-        }catch(err){
-           this.setState({ showProgress: false });
-           commonAlert.networkError(err);
-        }
-    }
     async onGettingFbToken(credentials){
         let token  = credentials.token;
         this.setState({showProgress:true});
@@ -269,13 +198,6 @@ class WelcomePage extends Component {
         this.props.navigator.push({
             name: 'ChefListPage'
         });
-    }
-
-    navigateBack() {
-        if (this.state.backCallback) {
-            this.state.backCallback();
-        }
-        this.props.navigator.pop();
     }
 }
 

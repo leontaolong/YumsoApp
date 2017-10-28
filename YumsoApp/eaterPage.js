@@ -167,7 +167,7 @@ class EaterPage extends Component {
                         <ScrollView style={{backgroundColor:'#fff'}}>
                             <View style={styleEaterPage.headerViewNew}>
                                 <View style={styleEaterPage.titleViewNew2}>
-                                    <Text style={styles.titleTextNew}>Edit Profile</Text>
+                                    <Text style={styles.titleTextNew}>Profile</Text>
                                 </View>
                                 <View>
                                 <Image source={eaterProfile} style={styleEaterPage.eaterProfilePicNew}></Image>
@@ -264,7 +264,7 @@ class EaterPage extends Component {
                         <View style={styleEaterPage.profileBtnListNew}>
                             <TouchableHighlight style={styleEaterPage.profileBtnListNew} underlayColor={'#F5F5F5'} onPress={() => this.onPressEdit()}>
                                 <View style={styleEaterPage.headerRightTextButtonView}>
-                                    <Text style={styleEaterPage.profileBtnListTextNew}>Edit Profile</Text>
+                                    <Text style={styleEaterPage.profileBtnListTextNew}>Profile</Text>
                                 </View>
                             </TouchableHighlight>
                         </View>
@@ -819,7 +819,6 @@ var styleEaterPage = StyleSheet.create({
       fontSize: h2,
       paddingTop : 17 * windowHeightRatio,
       color: "#4A4A4A",
-
     },
 
     scrollView:{
