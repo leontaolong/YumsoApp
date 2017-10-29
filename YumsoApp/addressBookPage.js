@@ -146,9 +146,9 @@ class addressBookPage extends Component {
                                                 {aptNumberHomeView}
                                             </View>
                                         </View>
-                                        <TouchableHighlight style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.setState({ editHomeAddress: true }) }>
+                                        <TouchableOpacity activeOpacity={0.7} style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.setState({ editHomeAddress: true }) }>
                                             <Text style={styleAddressBookPage.addressEditText}>Edit</Text>
-                                        </TouchableHighlight>
+                                        </TouchableOpacity>
 
                                 </View>),
                                 (<View key={'Work'} style={styleAddressBookPage.addressView}>
@@ -161,9 +161,9 @@ class addressBookPage extends Component {
                                                 {aptNumberWorkView}
                                             </View>
                                         </View>
-                                        <TouchableHighlight style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.setState({ editWorkAddress: true }) }>
+                                        <TouchableOpacity activeOpacity={0.7} style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.setState({ editWorkAddress: true }) }>
                                             <Text style={styleAddressBookPage.addressEditText}>Edit</Text>
-                                        </TouchableHighlight>
+                                        </TouchableOpacity>
                                 </View>),
                                 otherAddressListRendered,
                                 (<View key={'AddNewAddress'} style={styleAddressBookPage.addNewAddressClickableView}>

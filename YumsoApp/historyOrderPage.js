@@ -15,7 +15,7 @@ var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
 var LoadMoreBottomComponent = require('./loadMoreBottomComponent');
 const eaterOrderPageSize = 7;
-const firstTimeLoadPageSize = 14;
+const firstTimeLoadPageSize = 20;
 var lastDataCount = 0;
 
 import React, {
@@ -94,13 +94,7 @@ class HistoryOrderPage extends Component {
                     .then(() => {
                         delete this.state.eater;
                         this.props.navigator.push({
-                            name: 'LoginPage',
-                            passProps: {
-                                callback: function (eater) {
-                                    this.setState({ eater: eater });
-                                    this.componentDidMount();
-                                }.bind(this)
-                            }
+                            name: 'WelcomePage',
                         });
                     });
             } else {
@@ -116,7 +110,7 @@ class HistoryOrderPage extends Component {
         return this.fetchOrderAndComments();
     }
 
-    async fetchOrderAndComments() {
+    async fetchOrderAndComments(){
         const currentTime = new Date().getTime();
         const end = 'end=' + currentTime;
         const nextString = 'next=' + eaterOrderPageSize;
@@ -360,19 +354,6 @@ class HistoryOrderPage extends Component {
 
         return (
             <View style={styles.containerNew}>
-              {/* <View style={styles.headerBannerView}>
-                   <TouchableHighlight style={styles.headerLeftView} underlayColor={'#000'} onPress={() => this.navigateBackToChefList()}>
-                      <View style={styles.backButtonView}>
-                        <Image source={backIcon} style={styles.backButtonIcon}/>
-                      </View>
-                   </TouchableHighlight>
-                   <View style={styles.titleView}>
-                      <Text style={styles.titleText}>My Orders</Text>
-                   </View>
-                   <View style={styles.headerRightView}>
-                   </View>
-               </View> */}
-
                <View style={styles.headerBannerViewNew}>
 
                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#fff'} onPress={() => this.navigateBackToChefList()}>
@@ -387,25 +368,6 @@ class HistoryOrderPage extends Component {
                <View style={styles.titleViewNew}>
                    <Text style={styles.titleTextNew}>{selectedHeader}</Text>
                </View>
-
-            {/*}   <View style={styleHistoryOrderPage.orderListSelectView}>
-                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderPending') }
-                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                    backgroundColor:this.renderOrderListOnSelectColor('orderPending')}}>
-                      <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Pending</Text>
-                   </TouchableHighlight>
-                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderNeedReview') }
-                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',borderColor:'#F5F5F5', borderLeftWidth:1,borderRightWidth:1,
-                    backgroundColor:this.renderOrderListOnSelectColor('orderNeedReview')}}>
-                      <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Need Review</Text>
-                   </TouchableHighlight>
-                   <TouchableHighlight underlayColor={'transparent'} onPress = {() => this.toggleOrderList('orderCompleted') }
-                    style={{flex:1/3,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                    backgroundColor:this.renderOrderListOnSelectColor('orderCompleted')}}>
-                      <Text style={styleHistoryOrderPage.oneOrderListSelectText}>Completed</Text>
-                   </TouchableHighlight>
-                </View> */}
-
                {networkUnavailableView}
                {noOrderText}
                {orderListView}
@@ -469,7 +431,8 @@ class HistoryOrderPage extends Component {
     }
 
     navigateToOrderDetailPage(order){
-        this.setState({ isMenuOpen: false });
+        console.log('navigateToOrderDetailPage_historyorderPage ' + this.state.eater);
+
         this.props.navigator.push({
             name: 'OrderDetailPage',
             passProps:{
