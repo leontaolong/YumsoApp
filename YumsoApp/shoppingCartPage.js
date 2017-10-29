@@ -216,27 +216,25 @@ class ShoppingCartPage extends Component {
                 <Image source={imageSrc} style={styleShoppingCartPage.dishPhotoNew}/>
                 <View style={styleShoppingCartPage.orderInfoViewNew}>
                     <Text style={styleShoppingCartPage.dishNameTextNew}>{dish.dishName}</Text>
-                    <View style={styleShoppingCartPage.bottomViewNew}>
-                            <View style={styleShoppingCartPage.quantityView2New}>
+                    <View style={styleShoppingCartPage.chooseQuantityView}>
+                            <View style={styleShoppingCartPage.leftQuantityAndPriceView}>
                                   <Text style={styleShoppingCartPage.dishPriceTextNew}>${(dish.price*quantity).toFixed(2)}</Text>
-                                  <Text style={styleShoppingCartPage.quantityTextNew}>10 serves left</Text>
+                                  <Text style={styleShoppingCartPage.quantityTextNew}>{this.state.scheduleMapping[this.state.selectedTime][dish.dishId].leftQuantity} left</Text>
                             </View>
 
                             <View style={styleShoppingCartPage.quantityViewNew}>
-                                <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.plusMinusIconView} onPress={()=>this.removeFromShoppingCart(dish)}>
+                                <TouchableOpacity activeOpacity={0.5} style={styleShoppingCartPage.plusMinusIconView} onPress={()=>this.removeFromShoppingCart(dish)}>
                                     <Image source={minusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
                                 </TouchableOpacity>
                                 <View style={styleShoppingCartPage.quantityTextView}>
                                     <Text style={styleShoppingCartPage.quantityText}>{this.state.shoppingCart[this.state.selectedTime][dish.dishId]?this.state.shoppingCart[this.state.selectedTime][dish.dishId].quantity:'  '}</Text>
                                 </View>
-
-                                <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.plusMinusIconView} onPress={()=>this.addToShoppingCart(dish)}>
+                                <TouchableOpacity activeOpacity={0.5} style={styleShoppingCartPage.plusMinusIconView} onPress={()=>this.addToShoppingCart(dish)}>
                                     <Image source={plusIcon} style={styleShoppingCartPage.plusMinusIcon}/>
                                 </TouchableOpacity>
                             </View>
-                        </View>
+                    </View>
                 </View>
-
                 <View style={{backgroundColor: "#EAEAEA", height: 1,}}>
                 </View>
             </View>
@@ -1185,23 +1183,6 @@ var styleShoppingCartPage = StyleSheet.create({
         width:windowWidth/2.76,
         height:windowWidth/2.76,
     },
-    shoppingCartInfoView:{
-        flex:1,
-        height:windowWidth/2.76,
-        flexDirection:'column',
-        paddingLeft:windowWidth/20.7,
-        paddingRight:windowWidth/27.6,
-        paddingVertical:windowHeight/73.6,
-    },
-    dishNamePriceView:{
-        height:windowHeight/16.23,
-        flexDirection:'row',
-    },
-    dishNameView:{
-        flex:0.7,
-        alignItems:'flex-start',
-        flexDirection:'row',
-    },
     dishNameText:{
         fontSize:windowHeight/40.89,
         fontWeight:'500',
@@ -1258,12 +1239,11 @@ var styleShoppingCartPage = StyleSheet.create({
         height: windowHeight/27.6,
     },
     plusMinusIconView:{
-        flex:0.4,
-        flexDirection:'column',
-        justifyContent:'center',
-        alignItems:'center',
-        paddingLeft:7 * windowWidthRatio,
-        paddingRight:7* windowWidthRatio,
+        width: 0.12 * windowWidth,
+        height: 0.11 * windowWidth,
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: 'column',
     },
     quantityText:{
         fontSize:h3,
@@ -1275,8 +1255,6 @@ var styleShoppingCartPage = StyleSheet.create({
         justifyContent:'flex-end',
         alignItems:'center',
         flexDirection:'column',
-        // marginLeft: 7* windowWidthRatio,
-        // marginRight: 7* windowWidthRatio,
     },
     addPromoCodeIcon:{
         width: windowHeight/23.0,
@@ -1422,8 +1400,6 @@ var styleShoppingCartPage = StyleSheet.create({
         flexDirection:'row',
         flex:1,
         borderColor:'#EAEAEA',
-        //borderTopWidth:1,
-        marginRight: 20 * windowWidthRatio,
         marginLeft:20 * windowWidthRatio,
         borderColor:"#EAEAEA",
         borderBottomWidth:1,
@@ -1434,15 +1410,13 @@ var styleShoppingCartPage = StyleSheet.create({
         height:112 * windowHeightRatio,
     },
     orderInfoViewNew:{
-        flex:1,
-        height: 112 * windowHeightRatio,
-        flexDirection:'column',
-        paddingLeft:10 * windowWidthRatio,
-        //paddingRight:windowWidth/27.6,
-        marginBottom: 10 * windowHeightRatio,
-        paddingBottom: 10 * windowHeightRatio,
-        position: "relative",
-        //paddingVertical:windowHeight/73.6,
+        flex: 1,
+        height: 123 * windowHeightRatio,
+        flexDirection: 'column',
+        backgroundColor: '#FFFFFF',
+        paddingLeft: windowWidth / 20.7,
+        paddingRight: 7 * windowWidthRatio,
+        paddingVertical: windowHeight / 73.6,
     },
     dishNameTextNew:{
         fontSize:h2,
@@ -1453,11 +1427,29 @@ var styleShoppingCartPage = StyleSheet.create({
     bottomViewNew: {
       position: "absolute",
       bottom:0,
-    //  backgroundColor:"#000",
       right:0,
       left:0,
       flexDirection:'row',
       paddingLeft:10 * windowWidthRatio,
+    },
+    shoppingCartInfoView: {
+        flex: 1,
+        height: windowWidth / 2.76,
+        flexDirection: 'column',
+        backgroundColor: '#FFFFFF',
+        paddingLeft: windowWidth / 20.7,
+        paddingRight: 7 * windowWidthRatio,
+        paddingTop: windowHeight / 73.6,
+    },
+
+    chooseQuantityView: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        marginTop: windowHeight * 0.01,
+        marginBottom: windowHeight * 0.02,
     },
 
     dishPriceTextNew:{
@@ -1474,28 +1466,11 @@ var styleShoppingCartPage = StyleSheet.create({
         height:windowHeight*0.032,
     },
 
-
-
-    quantityView2New:{
-        //flex:1,
-        flexDirection:'column',
-      //  height : windowHeight*0.062,
-      //  backgroundColor : "#ffaacc",
-      // width: 170 * windowWidthRatio,
-        alignItems:'flex-start',
-        //left: 0 ,
-    },
-
     quantityViewNew:{
-        flex:1,
-        flexDirection:'row',
-        height : windowHeight*0.048,
-        justifyContent:'space-between',
-      // backgroundColor : "#ccaacc",
-        // width: 80 * windowWidthRatio,
-        alignItems:'flex-end',
-        //left: 0 ,
-        right:0,
+        width: 0.30 * windowWidth,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end'
     },
 
     subtotalViewNew:{
@@ -1540,6 +1515,12 @@ var styleShoppingCartPage = StyleSheet.create({
     },
 
     //*****
+    leftQuantityAndPriceView: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+    },
 
     orderSummaryBoxNew: {
         backgroundColor: "#FFFFFF",
