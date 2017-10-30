@@ -212,6 +212,7 @@ class ShoppingCartPage extends Component {
         }
 
         return (
+        <View>
             <View style={styleShoppingCartPage.oneListingViewNew}>
                 <Image source={imageSrc} style={styleShoppingCartPage.dishPhotoNew}/>
                 <View style={styleShoppingCartPage.orderInfoViewNew}>
@@ -235,9 +236,10 @@ class ShoppingCartPage extends Component {
                             </View>
                     </View>
                 </View>
-                <View style={{backgroundColor: "#EAEAEA", height: 1,}}>
-                </View>
             </View>
+            <View style={styleShoppingCartPage.oneListingBorderView}>
+            </View>
+        </View>
         );
     }
 
@@ -251,7 +253,7 @@ class ShoppingCartPage extends Component {
                                         <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={() => this.onPressAddNote()}>
                                             <Text style={styleShoppingCartPage.viewTextNew}>Edit</Text>
                                         </TouchableOpacity>
-                                    </View>);
+                                  </View>);
         
          var notesToChefEditView = <View key={'noteView'} style={styleShoppingCartPage.phoneNoEditHeaderViewWrapper}>
                                         <View style={styleShoppingCartPage.phoneNoEditHeaderView}>
@@ -360,9 +362,9 @@ class ShoppingCartPage extends Component {
                 <View style={styleShoppingCartPage.lineBackgroundNew}>
                     <Text style= {styleShoppingCartPage.lineNew}></Text>
                 </View>
-             </View>),
+            </View>),
 
-             (<View key={'discountView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+            (<View key={'discountView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                  <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                      <View style={styleShoppingCartPage.priceTitleView}>
                          <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Discount</Text>
@@ -374,10 +376,9 @@ class ShoppingCartPage extends Component {
                  <View style={styleShoppingCartPage.lineBackgroundNew}>
                      <Text style= {styleShoppingCartPage.lineNew}></Text>
                  </View>
+            </View>),
 
-              </View>),
-
-              (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+            (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                   <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                       <View style={styleShoppingCartPage.priceTitleView}>
                           <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Tax</Text>
@@ -390,7 +391,8 @@ class ShoppingCartPage extends Component {
                       <Text style= {styleShoppingCartPage.lineNew}></Text>
                   </View>
 
-               </View>),
+            </View>),
+
             (<View key={'totalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                 <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                     <View style={styleShoppingCartPage.priceTitleView}>
@@ -402,11 +404,10 @@ class ShoppingCartPage extends Component {
                 </View>
              </View>),
 
-             (
-             <View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
+             (<View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
                  <Image source={receiptBottom} style={styleShoppingCartPage.receiptBottomImageNew} />
              </View>),
-                    ];
+            ];
        }else{//if price quoted
             if(this.state.quotedOrder && this.state.quotedOrder.price && this.state.quotedOrder.price.couponValue){
                 /*promotionDeductionView=(<View key={'promotionDeductionView'} style={styleShoppingCartPage.promotionDeductionView}>
@@ -420,21 +421,17 @@ class ShoppingCartPage extends Component {
             }
 
             return [
-              notesToChefView,
-              promotionDeductionView,
-              (
-            <View key={'orderSummary'} style={styleShoppingCartPage.orderSummaryNew}>
+            notesToChefView,
+            promotionDeductionView,
+            (<View key={'orderSummary'} style={styleShoppingCartPage.orderSummaryNew}>
                 <Text style={styleShoppingCartPage.orderSummaryTextNew}>Order Summary</Text>
             </View>),
 
-            (
-            <View key={'receiptTop'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
+            (<View key={'receiptTop'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
                 <Image source={receiptTop} style={styleShoppingCartPage.receiptTopImageNew} />
             </View>),
 
-
-
-           (<View key={'subtotalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+            (<View key={'subtotalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                 <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                     <View style={styleShoppingCartPage.priceTitleView}>
                         <Text style={styleShoppingCartPage.orderSummaryBoxTitleTopNew}>Subtotal</Text>
@@ -474,10 +471,9 @@ class ShoppingCartPage extends Component {
                  <View style={styleShoppingCartPage.lineBackgroundNew}>
                      <Text style= {styleShoppingCartPage.lineNew}></Text>
                  </View>
+             </View>),
 
-              </View>),
-
-              (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+             (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                   <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                       <View style={styleShoppingCartPage.priceTitleView}>
                           <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Tax</Text>
@@ -489,8 +485,8 @@ class ShoppingCartPage extends Component {
                   <View style={styleShoppingCartPage.lineBackgroundNew}>
                       <Text style= {styleShoppingCartPage.lineNew}></Text>
                   </View>
+             </View>),
 
-               </View>),
             (<View key={'totalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                 <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                     <View style={styleShoppingCartPage.priceTitleView}>
@@ -500,10 +496,9 @@ class ShoppingCartPage extends Component {
                         <Text style={styleShoppingCartPage.orderSummaryBoxBoldValueNew}>${this.state.quotedOrder.price.grandTotal}</Text>
                     </View>
                 </View>
-
              </View>),
-             (
-             <View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
+
+            (<View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
                  <Image source={receiptBottom} style={styleShoppingCartPage.receiptBottomImageNew} />
              </View>),
             ];
@@ -1399,11 +1394,20 @@ var styleShoppingCartPage = StyleSheet.create({
         backgroundColor:'#FFFFFF',
         flexDirection:'row',
         flex:1,
-        borderColor:'#EAEAEA',
+        //borderColor:'#EAEAEA',
         marginLeft:20 * windowWidthRatio,
-        borderColor:"#EAEAEA",
-        borderBottomWidth:1,
+        //borderColor:"#EAEAEA",
+        //borderBottomWidth:1,
         paddingTop:10*windowHeightRatio,
+    },
+    oneListingBorderView:{
+        backgroundColor: '#FFFFFF',
+        flexDirection: 'row',
+        flex: 1,
+        marginHorizontal: 20 * windowWidthRatio,
+        borderColor: '#EAEAEA',
+        borderTopWidth: 1,
+        paddingTop: 2 * windowWidthRatio
     },
     dishPhotoNew:{
         width:162 * windowWidthRatio,

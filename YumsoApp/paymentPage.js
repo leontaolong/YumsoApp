@@ -64,7 +64,7 @@ class PaymentPage extends Component {
         if(this.state.paymentOption){
           var selectPaymentMethodView=[(<TouchableOpacity activeOpacity={0.7} key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonContainer} onPress={()=>this.selectPayment()}>
                                             <View style={stylePaymentPage.selectPaymentbutton}>
-                                                <Text style={stylePaymentPage.selectPaymentbuttonText}>Change Payment Method</Text>
+                                                <Text style={stylePaymentPage.selectPaymentbuttonText}>Change Card Selection</Text>
                                             </View>
                                         </TouchableOpacity>),
                                        (<View key={'selectedPaymentTextView'} style={stylePaymentPage.selectedPaymentTextView}>
@@ -75,7 +75,7 @@ class PaymentPage extends Component {
         }else{
            var selectPaymentMethodView=[(<TouchableOpacity activeOpacity={0.7} key={'selectPaymentbuttonView'} style={stylePaymentPage.selectPaymentbuttonContainer} onPress={()=>this.selectPayment()}>
                                             <View style={stylePaymentPage.selectPaymentbutton}>
-                                                <Text style={stylePaymentPage.selectPaymentbuttonText}>other payment methods</Text>
+                                                <Text style={stylePaymentPage.selectPaymentbuttonText}>Select Credit Card</Text>
                                             </View>
                                         </TouchableOpacity> 
                                         )];
@@ -87,7 +87,11 @@ class PaymentPage extends Component {
         //                                 <Text style={stylePaymentPage.turnOnNotificationText}>We recommend you turn on notification to receive status update for your order.</Text>
         //                               </View> 
         // }
-                
+
+            // < Text style= { stylePaymentPage.contentText } > Select a payment method</Text>
+            // <TouchableOpacity activeOpacity={0.7} style={stylePaymentPage.secondaryButtonView} onPress={() => this.onPressDefaultCreditCard()}>
+            //         <Text style={styles.secondaryButtonText}>Default Credit Card</Text>
+            // </TouchableOpacity>
         return (<View style={styles.greyContainer}>
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                         <View style={styles.transparentHeaderBannerView}>
@@ -105,9 +109,6 @@ class PaymentPage extends Component {
                             <Text style={stylePaymentPage.totalAmountText}>${this.state.orderDetail.price.grandTotal}</Text>
                             <Text style={stylePaymentPage.contentText}>Select a payment method</Text>
                             {turnOnNotificationTextView}
-                            <TouchableOpacity activeOpacity={0.7} style={stylePaymentPage.secondaryButtonView} onPress={()=>this.onPressDefaultCreditCard()}>
-                                <Text style={styles.secondaryButtonText}>Default Credit Card</Text>
-                            </TouchableOpacity>
                             {selectPaymentMethodView}
                             <View style={{flex:1}}>
                             </View>
