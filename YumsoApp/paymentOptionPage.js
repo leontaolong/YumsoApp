@@ -137,7 +137,6 @@ class PaymentOptionPage extends Component {
         
         if(this.state.isFromCheckOutPage){                 
             return (
-                    <View style={stylePaymentOptionPage.paymentOverview}>   
                         <TouchableHighlight underlayColor={'transparent'} onPress={()=>this.onCardClick(card)}>
                             <View style={stylePaymentOptionPage.paymentMethodView}>         
                                 <View  style={stylePaymentOptionPage.paymentMethodIconView}>
@@ -151,7 +150,6 @@ class PaymentOptionPage extends Component {
                                 </View>
                             </View>
                         </TouchableHighlight>
-                    </View>
             );
         }else{
             return (
@@ -191,7 +189,7 @@ class PaymentOptionPage extends Component {
             <TouchableHighlight underlayColor={'rgba(0,0,0,0)'} onPress={()=>this.addAPayment()}>
             <View style={stylePaymentOptionPage.addCardView}>          
             <View style={stylePaymentOptionPage.addCardTitleView}>
-                <Text style={stylePaymentOptionPage.addCardTitleText}> + Add a card</Text>
+                <Text style={stylePaymentOptionPage.addCardTitleText}>+ Add a card</Text>
             </View>
             </View>
             </TouchableHighlight>];
@@ -351,20 +349,15 @@ var stylePaymentOptionPage = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0)', 
         marginTop:windowHeight*0.0560,        
     }, 
-    paymentOverview:{
-        paddingVertical:windowHeight*0.01, 
-    },
     paymentMethodView:{
-        flex:1,
+        flex:0,
         flexDirection:'row',
         height:windowHeight*0.075,
-        paddingLeft:15*windowHeight/667.0,
         borderBottomWidth:1,
         borderColor:'lightgrey',
-        paddingHorizontal:windowWidth/20.7,
     },
     checkBoxIconView:{
-        flex:0.1,
+        flex:0,
         flexDirection:'row',
         justifyContent:'flex-start',
     },
@@ -410,8 +403,7 @@ var stylePaymentOptionPage = StyleSheet.create({
     addCardView:{
         flex:1,
         flexDirection:'row',
-        height:windowHeight*0.075,
-        paddingLeft:15*windowHeight/667.0,
+        height:windowHeight*0.035,
         backgroundColor:'rgba(0,0,0,0)',
     },
     addCardTitleView:{
