@@ -36,7 +36,7 @@ class OrderConfirmation extends Component {
                     <View style={styles.transparentHeaderBannerView}>
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
                             <View style={styles.backButtonView}>
-                                <Image source={closeIcon} style={styles.backButtonIcon} />
+                                <Image source={closeIcon} style={styles.closeButtonIcon} />
                             </View>
                         </TouchableHighlight>
                     </View>
@@ -45,9 +45,9 @@ class OrderConfirmation extends Component {
                         <Image source={mealIcon} style={styleConfirmationPage.mealIconView}/>
                         <Text style={styleConfirmationPage.contentText}>Order#</Text>
                         <Text style={styleConfirmationPage.contentText}>We have confirm your order. Your food will be ready and out for delivery by the time you selected. Enjoy!</Text>
-                        <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.viewOrderButtonContainer} onPress={()=>this.navigateToOrderList()}>
+                        <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.viewOrderButtonContainer} onPress={()=>this.navigateToOrderPage()}>
                             <View style={styleConfirmationPage.viewOrderButton}>
-                              <Text style={styleConfirmationPage.viewOrderText}>View Orders</Text>
+                              <Text style={styleConfirmationPage.viewOrderText}>View Your Order</Text>
                             </View>
                         </TouchableOpacity>   
                     </View>
@@ -70,9 +70,9 @@ class OrderConfirmation extends Component {
         });
     }
     
-    navigateToOrderList() {
+    navigateToOrderPage() {
         this.props.navigator.push({
-            name: 'HistoryOrderPage',
+            name: 'OrderPage',
             passProps:{
                 eater:this.eater
             }

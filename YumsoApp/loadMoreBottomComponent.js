@@ -7,36 +7,37 @@ import React, {
   Text,
   View,
   TouchableHighlight,
+  TouchableOpacity,
   ActivityIndicatorIOS,
 } from 'react-native';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
-class LoadMoreBottomComponent extends Component {    
+class LoadMoreBottomComponent extends Component {
     render() {
         if(!this.props.isAllItemsLoaded){
            if(this.props.isloading){
               return (
                 <View style={loadMoreBottomComponentStyle.loaderView} onPress={()=>this.props.pressToLoadMore()}>
                     <ActivityIndicatorIOS animating={true} color={'#4A4A4A'}  size="small"/>
-                </View> 
+                </View>
                );
            }else{
               return (
-                <TouchableHighlight style={loadMoreBottomComponentStyle.loaderView} onPress={()=>this.props.pressToLoadMore()}>
+                <TouchableOpacity style={loadMoreBottomComponentStyle.loaderView}  onPress={()=>this.props.pressToLoadMore()}>
                     <Text style={loadMoreBottomComponentStyle.loadMoreText}>Load more</Text>
-                </TouchableHighlight> 
+                </TouchableOpacity>
               );
            }
         }else{
            return (
                 <View style={loadMoreBottomComponentStyle.loaderView}>
                     <Text style={loadMoreBottomComponentStyle.endOfAllItemsText}>End of all {this.props.itemsName}</Text>
-                </View> 
+                </View>
            );
         }
-        
+
     }
 }
 
@@ -59,6 +60,5 @@ var loadMoreBottomComponentStyle = StyleSheet.create({
         fontWeight:'400',
     },
 });
-    
-module.exports = LoadMoreBottomComponent;
 
+module.exports = LoadMoreBottomComponent;

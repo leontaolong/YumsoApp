@@ -27,12 +27,24 @@ import React, {
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
+var windowHeightRatio = windowHeight/677;
+var windowWidthRatio = windowWidth/375;
+
+var h1 = 28*windowHeight/677;
+var h2 = windowHeight/35.5;
+var h3 = windowHeight/33.41;
+var h4 = windowHeight/47.33;
+var h5 = 12;
+var b1 = 15*windowHeight/677;
+var b2 = 15*windowHeight/677;
+
+
 class addressBookPage extends Component {
      constructor(props){
         super(props);
         var routeStack = this.props.navigator.state.routeStack;
         let eater = routeStack[routeStack.length-1].passProps.eater;
-        let currentLocation = routeStack[routeStack.length-1].passProps.currentLocation;  
+        let currentLocation = routeStack[routeStack.length-1].passProps.currentLocation;
         let principal = routeStack[routeStack.length-1].passProps.principal;
         let callback = routeStack[routeStack.length-1].passProps.callback;
         let backcallback = routeStack[routeStack.length-1].passProps.backcallback;
@@ -50,7 +62,7 @@ class addressBookPage extends Component {
 
         this.responseHandler = function (response, msg) {
             if(response.statusCode==400){
-               Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);              
+               Alert.alert( 'Warning', response.data,[ { text: 'OK' }]);
             }else if (response.statusCode === 401) {
                 return AuthService.logOut()
                     .then(() => {
@@ -65,18 +77,18 @@ class addressBookPage extends Component {
                         });
                     });
             } else {
-                 Alert.alert( 'Network or server error', 'Please try again later',[ { text: 'OK' }]);   
+                 Alert.alert( 'Network or server error', 'Please try again later',[ { text: 'OK' }]);
             }
         };
         this.client = new HttpsClient(config.baseUrl, true);
     }
-    
-     render() {         
+
+     render() {
          var loadingSpinnerView = null;
          if (this.state.showProgress) {
-             loadingSpinnerView = <LoadingSpinnerViewFullScreen/> 
+             loadingSpinnerView = <LoadingSpinnerViewFullScreen/>
          }
-         
+
          if (this.state.addMoreAddress) {
              return (<MapPage onSelectAddress={this.mapDoneForAddAddress.bind(this) } currentAddress={this.state.currentLocation} onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
          }
@@ -86,7 +98,7 @@ class addressBookPage extends Component {
          if (this.state.editWorkAddress) {
              return (<MapPage onSelectAddress={this.mapDoneForWorkAddress.bind(this) } initialLoc = {this.state.eater.workAddress}  onCancel={this.onCancelMap.bind(this) } specificAddressMode={true} showHouseIcon={false}/>);
          }
-        
+
         var otherAddressListRendered = [];
         for (let i = 0; i < this.state.eater.addressList.length; i++) {
              let aptNumberView = null;
@@ -97,15 +109,16 @@ class addressBookPage extends Component {
              }
              otherAddressListRendered.push(
                      <View key={i} style={styleAddressBookPage.addressView}>
-                         <View style={styleAddressBookPage.addressTitleView}>
-                             <Image source={houseIcon} style={styleAddressBookPage.houseIcon}/>
-                             <Text style={styleAddressBookPage.addressTitleText}>Other</Text>
-                         </View>
-                         <View style={styleAddressBookPage.addressTextView}>
-                             <Text style={styleAddressBookPage.addressText}>
-                                 {this.state.eater.addressList[i].formatted_address}
-                             </Text>
-                             {aptNumberView}
+                         <View  style={styleAddressBookPage.addressViewRow}>
+                             <Text style={styleAddressBookPage.addressTitleTextNew}>Other</Text>
+
+                             <View style={styleAddressBookPage.addressTextView}>
+                                 <Text style={styleAddressBookPage.addressText}>
+                                     {this.state.eater.addressList[i].formatted_address}
+
+                                 </Text>
+                                 {aptNumberHomeView}
+                             </View>
                          </View>
                          <TouchableHighlight style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.removeAddress(this.state.eater.addressList[i]) }>
                              <Text style={styleAddressBookPage.addressEditText}>Delete</Text>
@@ -122,55 +135,56 @@ class addressBookPage extends Component {
              if (this.state.eater.workAddress != null && this.state.eater.workAddress.apartmentNumber && this.state.eater.workAddress.apartmentNumber.trim()) {
                  var aptNumberWorkView = <Text style={styleAddressBookPage.addressText}>{'Apt/Suite#: ' + this.state.eater.workAddress.apartmentNumber}</Text>;
              }
-                          
+
              var addAddressView =[ (<View key={'Home'} style={styleAddressBookPage.addressView}>
-                                        <View style={styleAddressBookPage.addressTitleView}>
-                                            <Image source={houseIcon} style={styleAddressBookPage.houseIcon}/>
-                                            <Text style={styleAddressBookPage.addressTitleText}>Home</Text>
+                                        <View  style={styleAddressBookPage.addressViewRow}>
+                                            <Text style={styleAddressBookPage.addressTitleTextNew}>Home</Text>
+                                            <View style={styleAddressBookPage.addressTextView}>
+                                                <Text style={styleAddressBookPage.addressText}>
+                                                    {this.state.eater.homeAddress != null ? this.state.eater.homeAddress.formatted_address : ''}
+                                                </Text>
+                                                {aptNumberHomeView}
+                                            </View>
                                         </View>
-                                        <View style={styleAddressBookPage.addressTextView}>
-                                            <Text style={styleAddressBookPage.addressText}>
-                                                {this.state.eater.homeAddress != null ? this.state.eater.homeAddress.formatted_address : ''}
-                                            </Text>
-                                            {aptNumberHomeView}
-                                        </View>
-                                        <TouchableHighlight style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.setState({ editHomeAddress: true }) }>
+                                        <TouchableOpacity activeOpacity={0.7} style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.setState({ editHomeAddress: true }) }>
                                             <Text style={styleAddressBookPage.addressEditText}>Edit</Text>
-                                        </TouchableHighlight>
+                                        </TouchableOpacity>
+
                                 </View>),
                                 (<View key={'Work'} style={styleAddressBookPage.addressView}>
-                                        <View style={styleAddressBookPage.addressTitleView}>
-                                            <Image source={houseIcon} style={styleAddressBookPage.houseIcon}/>
-                                            <Text style={styleAddressBookPage.addressTitleText}>Work</Text>
+                                        <View  style={styleAddressBookPage.addressViewRow}>
+                                            <Text style={styleAddressBookPage.addressTitleTextNew}>Work</Text>
+                                            <View style={styleAddressBookPage.addressTextView}>
+                                                <Text style={styleAddressBookPage.addressText}>
+                                                    {this.state.eater.workAddress != null ? this.state.eater.workAddress.formatted_address : ''}
+                                                </Text>
+                                                {aptNumberWorkView}
+                                            </View>
                                         </View>
-                                        <View style={styleAddressBookPage.addressTextView}>
-                                            <Text style={styleAddressBookPage.addressText}>
-                                                {this.state.eater.workAddress != null ? this.state.eater.workAddress.formatted_address : ''}
-                                            </Text>
-                                            {aptNumberWorkView}
-                                        </View>
-                                        <TouchableHighlight style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.setState({ editWorkAddress: true }) }>
+                                        <TouchableOpacity activeOpacity={0.7} style={styleAddressBookPage.addressEditView} underlayColor={'transparent'} onPress = {() => this.setState({ editWorkAddress: true }) }>
                                             <Text style={styleAddressBookPage.addressEditText}>Edit</Text>
-                                        </TouchableHighlight>
+                                        </TouchableOpacity>
                                 </View>),
                                 otherAddressListRendered,
                                 (<View key={'AddNewAddress'} style={styleAddressBookPage.addNewAddressClickableView}>
                                         <Text onPress = {() => this.setState({ addMoreAddress: true }) } style={styleAddressBookPage.addNewAddressClickableText}>+ Add a new address</Text>
                                 </View>)];
-             return (<View style={styles.container}>
-                        <View style={styles.headerBannerView}>
+             return (<View style={styles.containerNew}>
+                        <View style={styles.headerBannerViewNew}>
                             <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={()=>this.navigateBack()}>
-                                <View style={styles.backButtonView}>
-                                   <Image source={backIcon} style={styles.backButtonIcon}/>
-                                </View> 
+                                <View style={styles.backButtonViewsNew}>
+                                   <Image source={backIcon} style={styles.backButtonIconsNew}/>
+                                </View>
                             </TouchableHighlight>
-                            <View style={styles.titleView}>
-                                <Text style={styles.titleText}>My Address</Text>
-                            </View>
+
                             <View style={styles.headerRightView}>
                             </View>
                         </View>
-                        <ScrollView style={{backgroundColor:'#F5F5F5'}}>
+
+                        <ScrollView style={{backgroundColor:'#fff'}}>
+                        <View style={styles.titleViewNew}>
+                            <Text style={styles.titleTextNew}>My Address</Text>
+                        </View>
                             {addAddressView}
                             {loadingSpinnerView}
                         </ScrollView>
@@ -198,10 +212,10 @@ class addressBookPage extends Component {
            }else{
               for(let oneAddress of this.state.eater.addressList){
                   if(address.formatted_address===oneAddress.formatted_address){
-                     Alert.alert('Warning', 'Address already exists', [{ text: 'OK' }]);          
+                     Alert.alert('Warning', 'Address already exists', [{ text: 'OK' }]);
                     return;
                   }
-              } 
+              }
               if(eater.addressList){
                  eater.addressList.push(address);
               }else{
@@ -214,7 +228,7 @@ class addressBookPage extends Component {
         return this.client.postWithAuth(config.eaterUpdateEndpoint, { eater: eater })
             .then((res) => {
                 if (res.statusCode != 200 && res.statusCode != 202) {
-                    this.setState({ showProgress: false });                
+                    this.setState({ showProgress: false });
                     return this.responseHandler(res);
                 }
                 for(let prop in eater){
@@ -234,22 +248,22 @@ class addressBookPage extends Component {
             commonAlert.networkError(err);
         });
     }
-    
+
     mapDoneForHomeAddress(address){
          this.submitAddress(address,'home');
          this.setState({editHomeAddress:false});
     }
-    
+
     mapDoneForWorkAddress(address){
          this.submitAddress(address,'work');
          this.setState({editWorkAddress:false});
     }
-    
+
     mapDoneForAddAddress(address){
          this.submitAddress(address,'other');
-         this.setState({addMoreAddress:false}); 
+         this.setState({addMoreAddress:false});
     }
-    
+
     onCancelMap(){
          this.setState({editWorkAddress:false, editHomeAddress:false, addMoreAddress:false});
     }
@@ -257,7 +271,7 @@ class addressBookPage extends Component {
     navigateBack(){
         this.props.navigator.pop();
     }
-    
+
     removeAddress(address){
         this.submitAddress(address,'other',true);
     }
@@ -269,11 +283,40 @@ var styleAddressBookPage = StyleSheet.create({
         height:windowHeight*0.0375,
         alignSelf:'center',
     },
+
+
+
+    addNewAddressClickableView:{
+        height:windowHeight*0.075,
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        paddingLeft:20 * windowWidthRatio,
+    },
+    addNewAddressClickableText:{
+        fontSize:h3,
+        color:'#7bcbbe',
+        alignSelf:'center',
+
+    },
+
+    // *** new
+
+    addressTitleTextNew: {
+        fontSize: h2,
+        fontWeight: "bold",
+        marginTop: 10 * windowHeightRatio,
+        color: "#4A4A4A",
+    },
+    addressViewRow:{
+        flex:1,
+    },
     addressView:{
         flex:1,
         flexDirection:'row',
         borderColor:'#D7D7D7',
         borderBottomWidth: 1,
+        marginLeft: 20 * windowWidthRatio,
+        marginRight: 20 * windowWidthRatio,
     },
     addressTitleView:{
         flex:0.24,
@@ -288,37 +331,31 @@ var styleAddressBookPage = StyleSheet.create({
         color:'#9B9B9B',
     },
     addressTextView:{
-        marginLeft:windowWidth*0.025,
-        flex:0.51,
+        marginLeft:0,
         justifyContent:'flex-end',
-        paddingVertical:windowWidth*0.0427,
+        marginBottom: 10 * windowHeightRatio,
     },
     addressText:{
-        fontSize:windowHeight/44.467,
-    },
-    addressEditView:{
-        flex:0.15,
-        flexDirection:'row',
-        marginRight:windowWidth*0.04,
-        justifyContent:'flex-end',
-        height:windowHeight*0.075,
+        fontSize:h4,
+        paddingRight: 5 * windowWidthRatio,
+        color: "#4A4A4A",
     },
     addressEditText:{
-        fontSize:windowHeight/44.467,
-        color:'#FFCC33',
+        fontSize: h2,
+        color:'#7bcbbe',
         alignSelf:'center',
     },
-    addNewAddressClickableView:{
-        height:windowHeight*0.075,
+    addressEditView:{
         flexDirection:'row',
-        justifyContent:'flex-start',
-        paddingLeft:windowWidth*0.04,
+        //marginRight:windowWidth*0.04,
+        justifyContent:'flex-end',
+        alignItems: "center",
+        height: 60 * windowHeightRatio,
+        width: 70 * windowWidthRatio,
+        marginTop: 10 * windowHeightRatio,
+        paddingTop: 10 * windowHeightRatio,
     },
-    addNewAddressClickableText:{
-        fontSize:windowHeight/44.467,
-        color:'#FFCC33',
-        alignSelf:'center',
-    },    
+    // *** end new
 });
 
 module.exports = addressBookPage;

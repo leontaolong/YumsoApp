@@ -40,10 +40,12 @@ class chefIntroPage extends Component {
     render() {
 
         // placeholders
-        var introPlaceholder = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-        var imgPlaceholder = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBu4EToVRDElSv5pyfmL5z1qtl39ux94YOyciIqYGZTHDxp65Plw';
+        var introPlaceholder1 = this.state.chef.chefDescription;
+        var introPlaceholder2 = this.state.chef.storeDescription;
+        var imgPlaceholder1 = this.state.chef.shopPictures[0];
+        var imgPlaceholder2 = this.state.chef.shopPictures[1];
 
-        var myKitchenImages = [imgPlaceholder, imgPlaceholder];
+        var myKitchenImages = [imgPlaceholder1, imgPlaceholder2];
 
         var kitchenImgView = [];
         var index = 0;
@@ -68,11 +70,18 @@ class chefIntroPage extends Component {
                     <View style={styles.pageTitleView}>
                         <Text style={styles.pageTitle}>Introduction</Text>
                     </View>
-                    <View style={styleChefIntroPage.introContentView}>
-                        <Text style={styles.pageText}>{introPlaceholder}</Text>
-                    </View>
+                    {introPlaceholder1 != undefined ?
+                        <View style={styleChefIntroPage.introContentView}>
+                            <Text style={styles.pageText}>{introPlaceholder1}</Text>
+                        </View>:null
+                    }
+                    {introPlaceholder2 != undefined ?
+                        <View style={styleChefIntroPage.introContentView}>
+                            <Text style={styles.pageText}>{introPlaceholder2}</Text>
+                        </View> : null
+                    }
                     <View style={styleChefIntroPage.chefMyKitchenView}>
-                        <Text style={styles.pageSubTitle}>My Kitchen</Text>
+                        <Text style={styles.pageSubTitle}></Text>
                         <View style={styleChefIntroPage.kitchenImgView}>
                             {kitchenImgView}
                         </View>
