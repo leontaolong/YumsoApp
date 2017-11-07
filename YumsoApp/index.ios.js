@@ -24,7 +24,8 @@ var styles = require('./style');
 var VerificationPage = require('./verificationPage');
 var InvitePage = require('./invitePage');
 var OrderPage = require('./orderPage');
-var WelcomePage = require('./welcomePage')
+var WelcomePage = require('./welcomePage');
+var CouponWalletPage = require('./couponWalletPage');
 
 import React, {
   AppRegistry,
@@ -40,8 +41,9 @@ import React, {
 } from 'react-native';
 
 console.disableYellowBox = true;
-let sceneConfig = Navigator.SceneConfigs.FloatFromRight;
+let sceneConfig = Navigator.SceneConfigs.HorizontalSwipeJump;
 sceneConfig.gestures.pop = {};
+sceneConfig.gestures = null;
 
 class YumsoApp extends Component {
     constructor(props){
@@ -130,9 +132,9 @@ class YumsoApp extends Component {
            return <View style={{flex:1,backgroundColor:"#FFFFFF"}}></View>
         }else{
            if(!this.state.eater){
-              return (<Navigator initialRoute={{ name: 'WelcomePage' }}  renderScene={ this.renderScene } />);
+               return (<Navigator initialRoute={{ name: 'WelcomePage' }} renderScene={this.renderScene} configureScene={(route, routeStack) => sceneConfig}/>);
            }else{
-              return (<Navigator initialRoute={{ name: 'ChefListPage' }}  renderScene={ this.renderScene } />);
+               return (<Navigator initialRoute={{ name: 'ChefListPage' }} renderScene={this.renderScene} configureScene={(route, routeStack) => sceneConfig}/>);
            }
         }
     }
@@ -188,6 +190,8 @@ class YumsoApp extends Component {
             return <OrderPage navigator={navigator}/>
         }else if (route.name==='WelcomePage'){
             return <WelcomePage navigator={navigator}/>
+        }else if(route.name==='CouponWalletPage'){
+            return <CouponWalletPage navigator={navigator}/>
         }
     }
 }

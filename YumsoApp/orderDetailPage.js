@@ -78,11 +78,13 @@ class OrderDetailPage extends Component {
         var routeStack = this.props.navigator.state.routeStack;
         let order = routeStack[routeStack.length-1].passProps.order;
         let eater = routeStack[routeStack.length-1].passProps.eater;
+        console.log('eater'+eater);
         this.callback = routeStack[routeStack.length-1].passProps.callback;
         this.state = {
             dataSource: ds.cloneWithRows(Object.values(order.orderList)),
             showProgress:false,
             order:order,
+            eater:eater,
             orderStatus:order.orderStatus,
             starRating:order.comment? order.comment.starRating : '',
             comment:order.comment? order.comment.eaterComment : '',
@@ -104,12 +106,7 @@ class OrderDetailPage extends Component {
                     .then(() => {
                         delete this.state.eater;
                         this.props.navigator.push({
-                            name: 'LoginPage',
-                            passProps: {
-                                callback: function (eater) {
-                                    this.setState({ eater: eater });
-                                }.bind(this)
-                            }
+                            name: 'WelcomePage',
                         });
                     });
             } else {
@@ -163,61 +160,6 @@ class OrderDetailPage extends Component {
     renderHeader(){
         var ETAView=null;
         if(this.state.showDeliverStatusView){
-            //Render 'delivered' status
-           if(this.state.order.orderStatus.toLowerCase()=='delivered'){
-              var deliverTimeView = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverTimeView}>
-                                        <Text style={styleOrderDetailPage.deliverTimeText}>
-                                           Your order was delivered at {dateRender.renderDate2(this.state.order.orderStatusModifiedTime)}
-                                        </Text>
-                                     </View>);
-           }else if(this.state.order.orderStatus.toLowerCase()=='cancelled'){
-              var deliverTimeView = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverTimeView}>
-                                        <Text style={styleOrderDetailPage.deliverTimeText}>Your order has been cancelled</Text>
-                                     </View>);
-           }else{
-                //Render 'Order received' status
-               var currentTime = new Date().getTime();
-               if(this.state.order.orderStatus.toLowerCase() == 'new'){
-                  var newStatusTextColor = "#FFFFFF";
-                  var cookingStatusTextColor = "#b89467";
-                  var DeliveringStatusTextColor = "#b89467";
-                  if(currentTime > this.state.order.orderDeliverTime - 0.3*60*60*1000){
-                     cookingStatusTextColor = "#FFFFFF";
-                  }
-               }else if(this.state.order.orderStatus.toLowerCase() == 'delivering'){
-                  var newStatusTextColor = "#FFFFFF";
-                  var cookingStatusTextColor = "#FFFFFF";
-                  var DeliveringStatusTextColor = "#FFFFFF";
-               }
-
-               var deliverTimeView = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverStatusView}>
-                                            <View style={styleOrderDetailPage.oneStatusView}>
-                                                <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Order</Text>
-                                                <Text style={{color:newStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Received</Text>
-                                            </View>
-                                            <View style={styleOrderDetailPage.oneStatusView}>
-                                                <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
-                                            </View>
-                                            <View style={styleOrderDetailPage.oneStatusView}>
-                                                <Text style={{color:cookingStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Cooking</Text>
-                                            </View>
-                                            <View style={styleOrderDetailPage.oneStatusView}>
-                                                <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>---------</Text>
-                                            </View>
-                                            <View style={styleOrderDetailPage.oneStatusView}>
-                                                <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Out For</Text>
-                                                <Text style={{color:DeliveringStatusTextColor, fontWeight:'bold',fontSize:windowHeight/51.64, alignSelf:'center',}}>Delivery</Text>
-                                            </View>
-                                       </View>);
-                if(this.state.order.estimatedDeliverTimeRange){
-                   ETAView = <View key={'ETAView'} style={styleOrderDetailPage.ETAView}>
-                                <Text style={styleOrderDetailPage.ETAText}>
-                                Expect arrival between {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.min)} and {dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.max)}
-                                </Text>
-                             </View>;
-                }
-            }
-
             var headerNew = <View style={styles.titleViewNew}>
                                 <Text style={styles.titleTextNew}>Order Details</Text>
                             </View>
@@ -239,7 +181,7 @@ class OrderDetailPage extends Component {
                }
             }    
 
-            var deliverTimeViewNew = (<View key={'deliverTimeView'} style={styleOrderDetailPage.deliverTimeViewNew}>
+            var deliverTimeViewNew = (<View key={'deliverTimeViewNew'} style={styleOrderDetailPage.deliverTimeViewNew}>
                                         <View style={{flexDirection: "row"}}>
                                             <Text style={styleOrderDetailPage.deliverTimeTextNew}>
                                                 Order from
@@ -260,7 +202,7 @@ class OrderDetailPage extends Component {
                                    </Text>
                                 </View>
 
-            var itemsTextNew = <View style={{paddingTop: 20 * windowHeightRatio, paddingBottom:20* windowHeightRatio, paddingLeft: 20 * windowWidthRatio}}>
+            var itemsTextNew = <View key={'itemsTextNew'} style={{paddingTop: 20 * windowHeightRatio, paddingBottom:20* windowHeightRatio, paddingLeft: 20 * windowWidthRatio}}>
                                   <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Item(s)</Text>
                                </View>
 
@@ -269,7 +211,6 @@ class OrderDetailPage extends Component {
     }
 
     renderFooter(){
-
 
       var notesToChefView = null;
       if(this.state.order.notesToChef && this.state.order.notesToChef.trim()){
@@ -443,6 +384,7 @@ class OrderDetailPage extends Component {
              rIcon = star5;
            }
 
+           console.log('this.state.eater '+this.state.eater)
            commentBoxView = [(<View style={styleOrderDetailPage.commentBoxNew}>
                                  <View style={{paddingTop: 30 * windowHeightRatio, paddingBottom:20* windowHeightRatio}}>
                                      <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Reviews</Text>
@@ -455,7 +397,7 @@ class OrderDetailPage extends Component {
                                     }
 
                                      <View  style={{paddingLeft:16*windowWidthRatio}}>
-                                         <Text style={{fontSize:12, color:'#4A4A4A'}}>natalieh</Text>
+                                         <Text style={{fontSize:12, color:'#4A4A4A'}}>{this.state.eater.eaterAlias}</Text>
                                          <Image source={rIcon} style={{height:10*windowHeightRatio,marginTop:5*windowHeightRatio, width: 70*windowWidthRatio}}/>
                                      </View>
                                      <View style={styleOrderDetailPage.commentTimeView}>
@@ -468,14 +410,13 @@ class OrderDetailPage extends Component {
                             </View>),
                               chefReplyView];
        }else if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.ratingSucceed){
-// }else if(1 == 1){
             commentBoxView = <View style={styleOrderDetailPage.commentBoxNew}>
                                   <View style={{paddingTop: 30 * windowHeightRatio, paddingBottom:20* windowHeightRatio}}>
                                       <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Reviews</Text>
                                   </View>
                                   <View style={{ height:img36Height, flexDirection:'row'}}>
                                       <View  style={{paddingLeft:16*windowWidthRatio}}>
-                                          <Text style={{fontSize:12, color:'#4A4A4A'}}>natalieh</Text>
+                                          <Text style={{fontSize:12, color:'#4A4A4A'}}>{this.state.eater.eaterAlias}</Text>
                                           <Image source={star5} style={{height:10*windowHeightRatio,marginTop:5*windowHeightRatio, width: 70*windowWidthRatio}}/>
                                       </View>
                                       <View style={styleOrderDetailPage.commentTimeView}>
@@ -483,7 +424,7 @@ class OrderDetailPage extends Component {
                                       </View>
                                   </View>
                                   <View style={{marginLeft: 52 * windowWidthRatio, marginTop:10 * windowHeightRatio}}>
-                                      <Text style={{fontSize:b2, color:'#4A4A4A'}}>Love it! I will totally order it adain!</Text>
+                                          <Text style={{ fontSize: b2, color: '#4A4A4A' }}>{this.state.comment.trim() ? this.state.comment : 'No comment'}</Text>
                                   </View>
                              </View>
       }else if(commonWidget.isOrderCommentable(this.state.order)){//if the order is commentable, show commet input area
@@ -491,7 +432,8 @@ class OrderDetailPage extends Component {
                                     <View style={{paddingTop: 30 * windowHeightRatio, paddingBottom:20* windowHeightRatio}}>
                                         <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Reviews</Text>
                                     </View>
-                                    <TextInput  placeholder="Please leave your comments."  multiline={true} style={styleOrderDetailPage.commentTextInputNew}></TextInput>
+                                    <TextInput placeholder="Leave your comment here" style={styleOrderDetailPage.commentTextInputNew} multiline={true} returnKeyType={'default'} autoCorrect={false}
+                                        maxLength={500} onChangeText={(text) => this.setState({ comment: text })} onFocus={(() => this._onFocus()).bind(this)} onBlur={() => this.scrollToCommentBoxtoBottom()} /> 
                                     <View style={{ paddingBottom:5* windowHeightRatio}}>
                                         <Text style={{fontSize:h3 , color:"#4a4a4a"}}>Overall Rate</Text>
                                     </View>
@@ -936,7 +878,7 @@ var styleOrderDetailPage = StyleSheet.create({
         padding:15 * windowWidthRatio,
         fontSize:b2,
         color:'#4A4A4A',
-        backgroundColor: "#EAEAEA",
+        backgroundColor: "#F5F5F5",
         marginBottom:20 * windowHeightRatio,
         height: 84 * windowHeightRatio,
     },

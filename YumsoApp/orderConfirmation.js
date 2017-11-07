@@ -36,7 +36,7 @@ class OrderConfirmation extends Component {
                     <View style={styles.transparentHeaderBannerView}>
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefList()}>
                             <View style={styles.backButtonView}>
-                                <Image source={closeIcon} style={styles.backButtonIcon} />
+                                <Image source={closeIcon} style={styles.closeButtonIcon} />
                             </View>
                         </TouchableHighlight>
                     </View>

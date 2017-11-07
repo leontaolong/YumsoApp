@@ -94,6 +94,7 @@ class OrderPage extends Component {
   componentDidMount(){
     this.client = new HttpsClient(config.baseUrl, true);
     this.setState({showProgress: true});
+    this.onOpenOrderPage();
     return this.fetchOrders();
 }
 
@@ -193,7 +194,7 @@ class OrderPage extends Component {
             }
 
             this.setState({
-                          dataSourceOrderPending: this.state.dataSourceOrderPending.cloneWithRows(this.state.orders),
+                          dataSourceOrderPending: this.state.dataSourceOrderPending.cloneWithRows(orderPending),
                           showProgress:false,
                           showProgressBottom:false,
                           orderPending:orderPending,
@@ -259,7 +260,7 @@ class OrderPage extends Component {
           <View>
               <View style={styleOrderPage.ongoingView}>
                 <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
-                    <Text style={styleOrderPage.ongoingTextTop}>Ongoing Orders</Text>
+                  <Text style={styleOrderPage.ongoingTextTop}>Ongoing Orders ({this.state.eater.orderOngoing})</Text>
                 </TouchableOpacity>
                 </View>
                 <View style={{height: n * 80 * windowHeightRatio, alignItems: 'center', width:windowWidth - 76 * windowWidthRatio, marginLeft: 56 * windowWidthRatio, paddingBottom: 15 * windowHeightRatio,}}>
@@ -273,14 +274,14 @@ class OrderPage extends Component {
           </View> :
           <TouchableOpacity style={styleOrderPage.ongoingTouchable} onPress={this.ShowHideTextComponentView}>
               <View style={styleOrderPage.ongoingView}>
-                 <Text style={styleOrderPage.ongoingText2Top}>Ongoing Orders</Text>
+                <Text style={styleOrderPage.ongoingText2Top}>Ongoing Orders ({this.state.eater.orderOngoing})</Text>
               </View>
           </TouchableOpacity>}
 
           <View style={styleOrderPage.dividerView}><Text style={styleOrderPage.dividerLineTop}></Text></View>
           <TouchableOpacity style={styleOrderPage.ongoingTouchable}  onPress={() => this.onPressNeedReviewsOrdersBtn()}>
               <View style={styleOrderPage.reviewsView}>
-                 <Text style={styleOrderPage.ongoingText}>Orders Need Review</Text>
+              <Text style={styleOrderPage.ongoingText}>Orders Need Review ({this.state.eater.orderNeedComments})</Text>
                   {this.state.hasOrderToReview ? newMessage : null}
               </View>
           </TouchableOpacity>
@@ -288,7 +289,7 @@ class OrderPage extends Component {
           <View style={styleOrderPage.dividerView}><Text style={styleOrderPage.dividerLine}></Text></View>
           <TouchableOpacity style={styleOrderPage.ongoingTouchable}  onPress={() => this.onPressCompleteOrdersBtn()}>
               <View style={styleOrderPage.reviewsView}>
-                  <Text style={styleOrderPage.ongoingText}>Completed Orders</Text>
+              <Text style={styleOrderPage.ongoingText}>Completed Orders ({this.state.eater.orderCount - this.state.eater.orderOngoing - this.state.eater.orderNeedComments})</Text>
               </View>
           </TouchableOpacity>
 
@@ -299,7 +300,7 @@ class OrderPage extends Component {
               <View style={{flex: 1, flexDirection: 'row'}}>
                   <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressShopsTabBtn()}>
                       <View style={styles.tabBarButtonNew}>
-                          <Image source={shopsOff}  style={styles.tabBarButtonImageNew}/>
+                          <Image source={shopsOff}  style={styles.tabBarButtonImageShop}/>
                           <View>
                             <Text style={styles.tabBarButtonTextOffNew}>Shops</Text>
                           </View>
@@ -307,7 +308,7 @@ class OrderPage extends Component {
                   </TouchableHighlight>
                   <TouchableHighlight underlayColor={'#F5F5F5'}>
                       <View style={styles.tabBarButtonNew}>
-                          <Image source={ordersOn}  style={styles.tabBarButtonImageNew}/>
+                          <Image source={ordersOn}  style={styles.tabBarButtonImageOrder}/>
                           <View>
                             <Text style={styles.tabBarButtonTextOnNew}>Orders</Text>
                           </View>
@@ -315,7 +316,7 @@ class OrderPage extends Component {
                   </TouchableHighlight>
                   <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressMeTabBtn()}>
                       <View style={styles.tabBarButtonNew}>
-                          <Image source={meOff}  style={styles.tabBarButtonImageNew}/>
+                          <Image source={meOff}  style={styles.tabBarButtonImageMe}/>
                           <View>
                             <Text style={styles.tabBarButtonTextOffNew}>Me</Text>
                           </View>
@@ -324,6 +325,14 @@ class OrderPage extends Component {
               </View>
           </View>
         </View>);
+    }
+
+    async onOpenOrderPage() {
+      this.setState({ isMenuOpen: true });
+      if (this.state.eater) {
+        let res = await this.client.getWithAuth(config.eaterEndpoint);
+        this.setState({ eater: res.data.eater });
+      }
     }
 
     loadMoreOrders(){
@@ -342,7 +351,7 @@ class OrderPage extends Component {
       this.props.navigator.push({
           name: 'HistoryOrderPage',
           passProps: {
-             eater: this.props.eater,
+             eater: this.state.eater,
              orderType:'orderCompleted'
           }
       });
@@ -352,20 +361,20 @@ class OrderPage extends Component {
       this.props.navigator.push({
           name: 'HistoryOrderPage',
           passProps: {
-             eater: this.props.eater,
+             eater: this.state.eater,
              orderType:'orderNeedReview'
           }
       });
     }
 
     onPressShopsTabBtn(){
-        this.props.navigator.push({
+        this.props.navigator.resetTo({
           name: 'ChefListPage',
         });
     }
 
     onPressMeTabBtn(){
-      this.props.navigator.push({
+      this.props.navigator.resetTo({
           name: 'EaterPage',
           passProps:{
               eater:this.state.eater,
@@ -378,7 +387,7 @@ class OrderPage extends Component {
     }
 
     navigateToOrderDetailPage(order){
-      this.setState({ isMenuOpen: false });
+      console.log('navigateToOrderDetailPage_orderPage ' + this.state.eater);
       this.props.navigator.push({
           name: 'OrderDetailPage',
           passProps:{

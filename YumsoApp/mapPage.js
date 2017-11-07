@@ -153,7 +153,7 @@ class MapPage extends Component {
                     <View style={styles.headerBannerView}>    
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
                             <View style={styles.backButtonView}>
-                                <Image source={closeIcon} style={styles.backButtonIcon}/>
+                                <Image source={closeIcon} style={styles.closeButtonIcon}/>
                             </View>
                         </TouchableHighlight>
                         <View style={styles.titleView}></View>  
