@@ -86,7 +86,6 @@ class ShoppingCartPage extends Component {
             eater:eater,
             priceIsConfirmed:false,
             promotionCode:promotionCode,
-            showPromotionCodeInput:false,
             showNoteInput:false,
             phoneNumber:eater? eater.phoneNumber:undefined,
         };
@@ -297,32 +296,13 @@ class ShoppingCartPage extends Component {
 
         {this.state.editPromotionCode == true ? promotionDeductionView = promotionDeductionEditView  :  promotionDeductionView =  promotionDeductionMainView}
 
-
-       if(this.state.showPromotionCodeInput){
-          var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.showPromoCodeView}>
-                                           <Text style={styleShoppingCartPage.showPromoCodeText}>{this.state.promotionCode}</Text>
-                                        </View>),
-                                       (<TouchableHighlight key={'RemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'#F5F5F5'} onPress={()=>this.onPressRemoveCoupon()}>
-                                           <Image source={removePromoCodeIcon} style={styleShoppingCartPage.removePromoCodeIcon}/>
-                                        </TouchableHighlight>)];
-       }else{
-          var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}>
-                                           <TextInput defaultValue={this.state.promotionCode} style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text.trim()})}
-                                            maxLength={20} onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
-                                        </View>),
-                                       (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'#F5F5F5'} onPress={()=>this.onPressAddCoupon()}>
-                                           <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
-                                        </TouchableHighlight>)];
-       }
-
-
-       var noteInputView = null;
-       if(this.state.showNoteInput){
-          noteInputView = <View key={'noteInputView'} style={styleShoppingCartPage.commentBox}>
+        var noteInputView = null;
+        if(this.state.showNoteInput){
+           noteInputView = <View key={'noteInputView'} style={styleShoppingCartPage.commentBox}>
                                 <TextInput defaultValue={this.state.notesToChef} style={styleShoppingCartPage.commentInput} multiline={true} returnKeyType = {'default'} autoCorrect={false}
-                                    maxLength={500} onChangeText = {(text) => this.setState({ notesToChef: text }) } onFocus={(()=>this._onFocusPromoCode()).bind(this)}/>
-                          </View>;
-       }
+                                    maxLength={500} onChangeText = {(text) => this.setState({ notesToChef: text }) } onFocus={(()=>this._onFocusNoteInput()).bind(this)}/>
+                           </View>;
+        }
 
        if(!this.state.priceIsConfirmed){//if price not quoted
           return [
@@ -562,13 +542,7 @@ class ShoppingCartPage extends Component {
         this.y = event.nativeEvent.layout.y;
     }
 
-    _onFocus() {
-        let listViewLength = this.y+0.5*windowHeight;
-        let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        this.refs.listView.scrollTo({x:0, y:keyboardHeight - listViewBottomToScreenBottom, animated: true})
-    }
-
-    _onFocusPromoCode() {
+    _onFocusNoteInput() {
         let listViewLength = this.y;
         let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
         this.refs.listView.scrollTo({x:0, y:25+keyboardHeight - listViewBottomToScreenBottom, animated: true})
@@ -580,18 +554,18 @@ class ShoppingCartPage extends Component {
     }
 
     mapDone(address){
-         let aptmentNumberText = address.apartmentNumber ? ' Apt/Suite# '+address.apartmentNumber : '';
-         if(address){
-             Alert.alert( '', 'Your delivery location is set to '+address.formatted_address+aptmentNumberText,[ { text: 'OK' }]);
-         }
-         if(this.state.deliveryAddress && this.state.deliveryAddress.formatted_address!==address.formatted_address){
-             this.setState({priceIsConfirmed:false});
-         }
-         this.setState({selectDeliveryAddress:false, deliveryAddress:address});
+        let aptmentNumberText = address.apartmentNumber ? ' Apt/Suite# '+address.apartmentNumber : '';
+        if(address){
+           Alert.alert( '', 'Your delivery location is set to '+address.formatted_address+aptmentNumberText,[ { text: 'OK' }]);
+        }
+        if(this.state.deliveryAddress && this.state.deliveryAddress.formatted_address!==address.formatted_address){
+           this.setState({priceIsConfirmed:false});
+        }
+        this.setState({selectDeliveryAddress:false, deliveryAddress:address});
     }
 
     onCancelMap(){
-         this.setState({selectDeliveryAddress:false});
+        this.setState({selectDeliveryAddress:false});
     }
 
     addToShoppingCart(dish){
@@ -652,26 +626,9 @@ class ShoppingCartPage extends Component {
         this.setState({shoppingCart:this.state.shoppingCart, totalPrice:total, priceIsConfirmed:false, dataSource:this.state.dataSource.cloneWithRows(newShoppingCart[this.state.selectedTime])});
     }
 
-    onPressRemoveCoupon(){
-        this.setState({promotionCode:'',showPromotionCodeInput:false});
-        if(this.state.priceIsConfirmed){
-           this.getPrice();
-        }
-    }
-
     onPressAddNote(){
         this.setState({showNoteInput:!this.state.showNoteInput});
         this.refs.listView.scrollTo({x:0, y: windowHeight - 140* windowHeightRatio, animated: true})
-    }
-
-    onPressAddCoupon(){
-        if(!this.state.promotionCode || !this.state.promotionCode.trim()){
-          return;
-        }
-        this.setState({showPromotionCodeInput:true});
-        if(this.state.priceIsConfirmed){
-           this.getPrice();
-        }
     }
 
     editAddress() {
@@ -691,6 +648,7 @@ class ShoppingCartPage extends Component {
           this.setState({editPhoneNo: true})
         }
     }
+
     editChefNote() {
         if (this.state.editChefNote == true) {
             this.setState({editChefNote: false})
@@ -699,6 +657,7 @@ class ShoppingCartPage extends Component {
           this.setState({editChefNote: true})
         }
     }
+    
     editPromotionCode() {
         this.props.navigator.push({
             name: 'CouponWalletPage',
@@ -710,18 +669,6 @@ class ShoppingCartPage extends Component {
                 }.bind(this)
             }
         });
-        // if (this.state.editPromotionCode == true) {
-        //     this.setState({editPromotionCode: false})
-        // }
-        // else{
-        //   this.setState({editPromotionCode: true})
-        // }
-    }
-
-
-    changeDeliveryAddress(){
-        //todo: onSelect address list and assign it to deliveryAddress set State.
-        //todo: shall we have a sepreate component for displaying saved addresses?
     }
 
     getPrice(){

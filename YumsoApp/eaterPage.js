@@ -111,7 +111,7 @@ class EaterPage extends Component {
                     .then(() => {
                         delete this.state.eater;
                         this.props.navigator.push({
-                            name: 'LoginPage',
+                            name: 'WelcomePage',
                             passProps: {
                                 callback: function (eater) {
                                     this.setState({ eater: eater });

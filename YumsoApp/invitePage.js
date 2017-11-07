@@ -4,6 +4,9 @@ var backIcon = require('./icons/icon-back.png');
 var config = require('./config');
 var inviteIcon = require('./icons/icon-invite.png');
 var backgroundImage = require('./resourceImages/background@3x.jpg');
+var HttpsClient = require('./httpsClient');
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
+var commonAlert = require('./commonModules/commonAlert');
 
 import Dimensions from 'Dimensions';
 var windowHeight = Dimensions.get('window').height;
@@ -31,10 +34,38 @@ class InvitePage extends Component {
         let eater = routeStack[routeStack.length - 1].passProps.eater;
         this.state = {
             eater: eater,
+            showProgress: false,
         };
+
+        this.responseHandler = function (response, msg) {
+            if (response.statusCode == 400) {
+                Alert.alert('Warning', response.data, [{ text: 'OK' }]);
+            } else if (response.statusCode === 401) {
+                return AuthService.logOut()
+                    .then(() => {
+                        delete this.state.eater;
+                        this.props.navigator.push({
+                            name: 'WelcomePage',
+                            passProps: {
+                                callback: function (eater) {
+                                    this.setState({ eater: eater });
+                                }.bind(this)
+                            }
+                        });
+                    });
+            } else {
+                Alert.alert('Network or server error', 'Please try again later', [{ text: 'OK' }]);
+            }
+        };
+        this.client = new HttpsClient(config.baseUrl, true);
     }
 
     render() {
+        var loadingSpinnerView = null;
+        if (this.state.showProgress) {
+            loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;
+        }
+
         return (
             <View style={styles.greyContainer}>
                 <Image style={styles.pageBackgroundImage} source={backgroundImage}>
@@ -51,15 +82,20 @@ class InvitePage extends Component {
                         <ScrollView keyboardShouldPersistTaps={true} ref="scrollView">    
                             <Text style={styleInvitePage.contentTitle}>Invite Friends</Text>
                             <Image source={inviteIcon} style={styleInvitePage.inviteIconView}/>
-                            <Text style={styleInvitePage.contentText}>Invite your friends to Yumso! Your friend will have $6 off at first order and then you will have $5 coupon in your next order!</Text>
+                            <Text style={styleInvitePage.contentText}>Invite your friends to Yumso! Your friend will get $5 off at the first order and then you will have $3 coupon !</Text>
+                            <Text style={styleInvitePage.inputTitleText}>First Name of Your Friend</Text>
+                            <View style={styleInvitePage.emailInputView}>
+                                <TextInput style={styleInvitePage.emailInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType={'done'} maxLength={40} autoCorrect={false}
+                                onChangeText={(text) => { this._onFocus(); this.setState({ friendFirstname: text }) }} onFocus={(() => this._onFocus()).bind(this)} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)} />
+                            </View>
                             <Text style={styleInvitePage.inputTitleText}>Email</Text>
                             <View style={styleInvitePage.emailInputView}>
                                 <TextInput style={styleInvitePage.emailInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType={'done'} maxLength={40} autoCorrect={false} 
-                                onChangeText={(text) => { this._onFocus();this.setState({ email: text })}} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)}/>
+                                onChangeText={(text) => { this._onFocus(); this.setState({ email: text })}} onFocus={(()=>this._onFocus()).bind(this)} onSubmitEditing={this.onKeyBoardDonePressed.bind(this)}/>
                             </View>
-                            <View style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>
                         </ScrollView>
                     </View>
+                    {loadingSpinnerView}
                 </Image>
                 <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress = {() => this.sendInviteEmail() }>
                     <Text style={styles.bottomButtonView}>Invite</Text>
@@ -68,15 +104,9 @@ class InvitePage extends Component {
         );
     }
 
-    _onLayout(event) {
-        this.y = event.nativeEvent.layout.y;
-    }
 
     _onFocus() {
-        // this.setState({showPasswordRequirment:true});
-        let scrollViewLength = this.y;
-        let scrollViewBottomToScreenBottom = windowHeight - (scrollViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        this.refs.scrollView.scrollTo({x:0, y:keyboardHeight - scrollViewBottomToScreenBottom, animated: true})
+        this.refs.scrollView.scrollTo({ x: 0, y: windowHeight * 0.1, animated: true})
     }
 
     onKeyBoardDonePressed(){
@@ -88,10 +118,33 @@ class InvitePage extends Component {
     }
 
     sendInviteEmail(){
+        if (!this.state.friendFirstname || !this.state.friendFirstname.trim()) {
+            Alert.alert('Error', 'Please enter your friend\'s first name', [{ text: 'OK' }]);
+            return;
+        }
+
         if (!this.state.email || !this.state.email.trim()) {
             Alert.alert('Error', 'Please enter an email', [{ text: 'OK' }]);
             return;
         }
+
+        this.setState({ showProgress: true });
+        let reqBody = { 
+                        eaterId: this.state.eater.eaterId, 
+                        friendFirstname: this.state.friendFirstname, 
+                        friendEmail: this.state.email 
+                      };
+        return this.client.postWithAuth(config.eaterInviteFriendsEndpoint, reqBody)
+            .then((res) => {
+                if (res.statusCode != 200 && res.statusCode != 202) {
+                    this.setState({ showProgress: false });
+                    return this.responseHandler(res);
+                }
+                this.setState({ showProgress: false });
+            }).catch((err) => {
+                this.setState({ showProgress: false });
+                commonAlert.networkError(err);
+            });
 
     }
 }

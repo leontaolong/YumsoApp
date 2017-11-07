@@ -335,14 +335,14 @@ class ChefListPage extends Component {
 
     renderPromoBanner() {
         var promoBannerView = null;
-        if (this.state.showPromoAppBanner) {
-        // placeholder, in real practice, will only be rendered after the data gets fetched back
-        promoBannerView = <View style={styles.promoBannerView}>
-                                   <Text style={styles.infoBannerText}>
-                                      Promotion Banner Goes Here 
-                                   </Text>
-                            </View>
-        }
+        // if (this.state.showPromoAppBanner) {
+        // // placeholder, in real practice, will only be rendered after the data gets fetched back
+        // promoBannerView = <View style={styles.promoBannerView}>
+        //                            <Text style={styles.infoBannerText}>
+        //                               Promotion Banner Goes Here 
+        //                            </Text>
+        //                     </View>
+        // }
         return promoBannerView;
         
     }    
