@@ -22,6 +22,7 @@ var backgroundImage = require('./resourceImages/background@3x.jpg');
 
 import Dimensions from 'Dimensions';
 
+
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
@@ -39,6 +40,7 @@ import React, {
   Alert,
   Picker,
   ActionSheetIOS,
+  Animated
 } from 'react-native';
 
 class PaymentOptionPage extends Component {
@@ -63,6 +65,9 @@ class PaymentOptionPage extends Component {
             checkBoxesState:{},
             chosenCard:'',
             eater:eater,
+            chosenDeleteCard:'',
+            modalY: new Animated.Value(windowHeight)
+            
         };
         this.responseHandler = function(response){
             if(response.statusCode==400){
@@ -72,13 +77,7 @@ class PaymentOptionPage extends Component {
                     .then(() => {
                         delete this.state.eater;
                         this.props.navigator.push({
-                            name: 'LoginPage',
-                            passProps: {
-                                callback: function (eater) {
-                                    this.setState({ eater: eater });
-                                    this.componentDidMount();
-                                }.bind(this)
-                            }
+                            name: 'WelcomePage',
                         });
                     });
             }else{
@@ -94,15 +93,8 @@ class PaymentOptionPage extends Component {
     
     fetchPaymentOptions() {
         if (!this.state.eaterId) {
-            console.log("No eaterId!!")
             this.props.navigator.push({
-                name: 'LoginPage',
-                passProps: {
-                    callback: function (eater) {
-                        this.setState({ eater: eater, eaterId: eater.eaterId });
-                        this.fetchPaymentOptions();
-                    }.bind(this)
-                }
+                name: 'WelcomePage'
             });
         }
         this.setState({showProgress:true});
@@ -121,13 +113,6 @@ class PaymentOptionPage extends Component {
     }
 
     renderRow(card){  
-        var swipeoutBtns = [
-                                {
-                                    text: 'Delete',
-                                    backgroundColor:'#FF0000',
-                                    onPress:()=>this.removeAPayment(card),
-                                }
-                            ];
         
         if(this.state.chosenCard && this.state.chosenCard.cardType == card.cardType && this.state.chosenCard.last4 == card.last4){
            var checkBoxIcon = checkedIcon;
@@ -137,7 +122,6 @@ class PaymentOptionPage extends Component {
         
         if(this.state.isFromCheckOutPage){                 
             return (
-                    <View style={stylePaymentOptionPage.paymentOverview}>   
                         <TouchableHighlight underlayColor={'transparent'} onPress={()=>this.onCardClick(card)}>
                             <View style={stylePaymentOptionPage.paymentMethodView}>         
                                 <View  style={stylePaymentOptionPage.paymentMethodIconView}>
@@ -151,7 +135,6 @@ class PaymentOptionPage extends Component {
                                 </View>
                             </View>
                         </TouchableHighlight>
-                    </View>
             );
         }else{
             return (
@@ -163,35 +146,38 @@ class PaymentOptionPage extends Component {
                         <View style={stylePaymentOptionPage.paymentMethodInfoView}>
                             <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
                         </View>
-                        <Text style={stylePaymentOptionPage.deleteText} onPress={this._showActionSheet.bind(this, card)}>Delete</Text>
+                        <Text style={stylePaymentOptionPage.deleteText} onPress={()=>this.onDeleteClick(card)}>Delete</Text>
                     </View>
                 </View>
             );
         }
     }
     
-    showActionSheet(card) {
-        ActionSheetIOS.showActionSheetWithOptions({
-            options: [
-                'Confirm',
-                'Cancel'
-            ],
-            cancelButtonIndex: 1,
-            destructiveButtonIndex: 0,
-            title: 'Delete this payment option from your account?'
-        }, (index) => {            
-            if (index == 0) {
-                this.removeAPayment(card);
-            }
-        })
+    showActionSheet(){
+        return (
+            <Animated.View style={[{ transform: [{translateY: this.state.modalY}] }]}>
+                <View style={stylePaymentOptionPage.actionSheetBorder}>
+                    <View style={stylePaymentOptionPage.actionSheetView}>
+                                <Text style={stylePaymentOptionPage.actionSheetText}>Delete this payment option from your account?</Text>
+                                <TouchableOpacity style={stylePaymentOptionPage.actionSheetConfirmButton} activeOpacity={0.7} onPress={() => this.removeAPayment(this.state.chosenDeleteCard)}>
+                                    <Text style={stylePaymentOptionPage.actionSheetConfirmText}>Confirm</Text> 
+                                </TouchableOpacity>
+                                <TouchableOpacity style={stylePaymentOptionPage.actionSheetDeleteButton} activeOpacity={0.7} onPress={() => this.cancelActionSheet()}>
+                                    <Text style={stylePaymentOptionPage.actionSheetDeleteText}>Cancel</Text> 
+                                </TouchableOpacity>
+                    </View>
+                </View>
+            </Animated.View>
+        );
     }
+
     renderFooter(){
         return [
             <View style={{height:9*windowHeight/667}}></View>,
             <TouchableHighlight underlayColor={'rgba(0,0,0,0)'} onPress={()=>this.addAPayment()}>
             <View style={stylePaymentOptionPage.addCardView}>          
             <View style={stylePaymentOptionPage.addCardTitleView}>
-                <Text style={stylePaymentOptionPage.addCardTitleText}> + Add a card</Text>
+                <Text style={stylePaymentOptionPage.addCardTitleText}>+ Add a card</Text>
             </View>
             </View>
             </TouchableHighlight>];
@@ -247,7 +233,10 @@ class PaymentOptionPage extends Component {
                     </View>);
         } else {
             return (<View style={styles.container}>
-                        {overallContent}
+                        <TouchableOpacity activeOpacity={1} style={styles.pageBackgroundImage} onPress={()=>this.closeModal()}>
+                            {overallContent}
+                        </TouchableOpacity>
+                        {this.showActionSheet()}
                     </View>);
         }
     }
@@ -262,6 +251,29 @@ class PaymentOptionPage extends Component {
         this.setState({dataSource:this.state.dataSource.cloneWithRows(_paymentList)});
     }
     
+    onDeleteClick(card) {
+        this.setState({chosenDeleteCard:card});
+        this.openModal();
+    }
+
+    openModal() {
+        Animated.timing(this.state.modalY, {
+            duration: 300,
+            toValue: 0
+         }).start();
+    }
+    
+    closeModal() {
+        Animated.timing(this.state.modalY, {
+            duration: 300,
+            toValue: windowHeight
+        }).start();
+    }
+
+    cancelActionSheet() {
+        this.closeModal();
+    }
+
     confirmSelection(){
         if(this.onPaymentSelected){
            this.onPaymentSelected(this.state.chosenCard);
@@ -286,6 +298,7 @@ class PaymentOptionPage extends Component {
     
     addAPayment(){
         this.setState({showProgress:true});
+        this.closeModal();
         var client = new HttpsClient(config.baseUrl, true);
         client.getWithAuth(config.paymentTokenEndpoint)
             .then((res) => {
@@ -331,6 +344,7 @@ class PaymentOptionPage extends Component {
                 this.setState({showProgress: false});
                 commonAlert.networkError(err);
             });
+        this.closeModal();
     }
 }
                         
@@ -351,20 +365,15 @@ var stylePaymentOptionPage = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0)', 
         marginTop:windowHeight*0.0560,        
     }, 
-    paymentOverview:{
-        paddingVertical:windowHeight*0.01, 
-    },
     paymentMethodView:{
-        flex:1,
+        flex:0,
         flexDirection:'row',
         height:windowHeight*0.075,
-        paddingLeft:15*windowHeight/667.0,
         borderBottomWidth:1,
         borderColor:'lightgrey',
-        paddingHorizontal:windowWidth/20.7,
     },
     checkBoxIconView:{
-        flex:0.1,
+        flex:0,
         flexDirection:'row',
         justifyContent:'flex-start',
     },
@@ -410,8 +419,7 @@ var stylePaymentOptionPage = StyleSheet.create({
     addCardView:{
         flex:1,
         flexDirection:'row',
-        height:windowHeight*0.075,
-        paddingLeft:15*windowHeight/667.0,
+        height:windowHeight*0.035,
         backgroundColor:'rgba(0,0,0,0)',
     },
     addCardTitleView:{
@@ -437,6 +445,52 @@ var stylePaymentOptionPage = StyleSheet.create({
       fontWeight:'bold',
       alignSelf: 'center',
     },
+    actionSheetView: {
+        flex: 0.5,
+        flexDirection:'column',
+        height:windowHeight*0.3,
+        backgroundColor:'rgba(0,0,0,0)',
+    },
+    actionSheetText: {
+        fontSize:14*windowHeight/677,
+        fontWeight:'bold',
+        marginTop: windowHeight*0.033,
+        marginBottom: windowHeight*0.04,
+        paddingLeft: windowWidth/20.7,
+    },
+    actionSheetConfirmButton: {
+        paddingVertical:windowHeight*0.025,
+        marginHorizontal:windowWidth/20,
+        marginVertical:windowHeight*0.007,
+        borderColor:'#7BCBBE',
+        borderWidth:2,
+        backgroundColor: '#7BCBBE',
+    },
+    actionSheetConfirmText: {
+        color: 'white',
+        fontSize:14*windowHeight/677,
+        fontWeight:'bold',
+        alignSelf: 'center',
+    },
+    actionSheetDeleteButton: {
+        paddingVertical:windowHeight*0.025,
+        marginHorizontal:windowWidth/20,
+        marginVertical:windowHeight*0.005,
+        borderColor:'#7BCBBE',
+        borderWidth:2,
+    },
+    actionSheetDeleteText: {
+        color: '#7BCBBE',
+        fontSize:14*windowHeight/677,
+        fontWeight:'bold',
+        alignSelf: 'center',
+    },
+    actionSheetBorder: {
+        shadowOffset: {width: 0, height: 0},
+        shadowColor: 'grey',
+        shadowOpacity: 0.5,
+        shadowRadius: 2.5,
+    }
 });                
                         
 module.exports = PaymentOptionPage;

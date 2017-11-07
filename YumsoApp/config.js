@@ -34,6 +34,9 @@ module.exports={
     eaterPicUploadEndpoint:'/api/v1/eater/eaterPicUpload',
     addFavoriteEndpoint:'/api/v1/eater/addOrRemoveFavorite/add',
     removeFavoriteEndpoint:'/api/v1/eater/addOrRemoveFavorite/remove',
+    getCouponWallet:'/api/v1/coupon/couponWallet/retrieve/',
+    registerCoupon:'/api/v1/coupon/couponWallet/register',
+    unregisterCoupon:'/api/v1/coupon/couponWallet/unregister',
     //public
     chefDishesEndpoint:'/api/v1/public/getDishes/',
     chefSchedulesEndpoint:'/api/v1/public/getSchedules/',
