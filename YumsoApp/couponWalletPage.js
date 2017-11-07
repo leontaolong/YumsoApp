@@ -111,6 +111,9 @@ class CouponWalletPage extends Component {
                     return this.responseHandler(res);
                 }
                 let couponList = res.data.couponWallet;
+                couponList.sort((a, b) => {
+                    return b.expireAt - a.expireAt;
+                });
                 this.setState({ dataSource: this.state.dataSource.cloneWithRows(couponList),couponList:couponList, showProgress: false, showNetworkUnavailableScreen:false});
             }).catch((err)=>{
                 this.setState({showProgress: false,showNetworkUnavailableScreen:true});
@@ -129,9 +132,9 @@ class CouponWalletPage extends Component {
 
         var isCouponExpired = (coupon.expireAt < new Date().getTime());
 
-        return (
-                    <TouchableOpacity activeOpacity={0.7} onPress={()=>this.onPressCoupon(coupon.code)} style={styleCouponWalletPage.oneCouponView}>   
-                    <Swipeout backgroundColor={'#FFFFFF'} close={true} right={swipeoutBtns}>  
+        return (<View style={styleCouponWalletPage.oneCouponView}>
+                    <Swipeout backgroundColor={'#FFFFFF'} close={true} right={swipeoutBtns}>
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => this.onPressCoupon(coupon.code)}>
                     <Image style={[styleCouponWalletPage.couponBackgroundImage, { opacity: isCouponExpired ? 0.5 : 1 }]} source={couponBackgroundImage}>    
                         <View  style={styleCouponWalletPage.oneCouponInfoView}>
                             <View style={styleCouponWalletPage.oneCouponInfoViewLine1}>
@@ -145,9 +148,9 @@ class CouponWalletPage extends Component {
                             <Text style={styleCouponWalletPage.couponCodeExpireDateText}>valid until {dateRender.renderDate1(coupon.expireAt)}</Text>
                         </View>
                         </Image>
-                    </Swipeout>
                     </TouchableOpacity>
-                );
+                    </Swipeout>
+                </View>);
     }
     
     render() {
@@ -190,7 +193,7 @@ class CouponWalletPage extends Component {
                         </View>
                     </View>
                     <View style={styleCouponWalletPage.promoCodeInputView}> 
-                        <TextInput style={styleCouponWalletPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ newPromotionCode: text.trim()})} 
+                    <TextInput style={styleCouponWalletPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ newPromotionCode: text.trim()})} 
                        maxLength={20} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
                     </View>
                     <View style={{height:40*windowHeightRatio}}>

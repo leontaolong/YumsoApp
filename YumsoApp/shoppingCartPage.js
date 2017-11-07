@@ -86,7 +86,6 @@ class ShoppingCartPage extends Component {
             eater:eater,
             priceIsConfirmed:false,
             promotionCode:promotionCode,
-            showPromotionCodeInput:false,
             showNoteInput:false,
             phoneNumber:eater? eater.phoneNumber:undefined,
         };
@@ -212,6 +211,7 @@ class ShoppingCartPage extends Component {
         }
 
         return (
+        <View>
             <View style={styleShoppingCartPage.oneListingViewNew}>
                 <Image source={imageSrc} style={styleShoppingCartPage.dishPhotoNew}/>
                 <View style={styleShoppingCartPage.orderInfoViewNew}>
@@ -235,9 +235,10 @@ class ShoppingCartPage extends Component {
                             </View>
                     </View>
                 </View>
-                <View style={{backgroundColor: "#EAEAEA", height: 1,}}>
-                </View>
             </View>
+            <View style={styleShoppingCartPage.oneListingBorderView}>
+            </View>
+        </View>
         );
     }
 
@@ -251,7 +252,7 @@ class ShoppingCartPage extends Component {
                                         <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={() => this.onPressAddNote()}>
                                             <Text style={styleShoppingCartPage.viewTextNew}>Edit</Text>
                                         </TouchableOpacity>
-                                    </View>);
+                                  </View>);
         
          var notesToChefEditView = <View key={'noteView'} style={styleShoppingCartPage.phoneNoEditHeaderViewWrapper}>
                                         <View style={styleShoppingCartPage.phoneNoEditHeaderView}>
@@ -295,32 +296,13 @@ class ShoppingCartPage extends Component {
 
         {this.state.editPromotionCode == true ? promotionDeductionView = promotionDeductionEditView  :  promotionDeductionView =  promotionDeductionMainView}
 
-
-       if(this.state.showPromotionCodeInput){
-          var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.showPromoCodeView}>
-                                           <Text style={styleShoppingCartPage.showPromoCodeText}>{this.state.promotionCode}</Text>
-                                        </View>),
-                                       (<TouchableHighlight key={'RemoveCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'#F5F5F5'} onPress={()=>this.onPressRemoveCoupon()}>
-                                           <Image source={removePromoCodeIcon} style={styleShoppingCartPage.removePromoCodeIcon}/>
-                                        </TouchableHighlight>)];
-       }else{
-          var promotionCodeInputView = [(<View key={'promotionCodeInputView'} style={styleShoppingCartPage.promoCodeInputView}>
-                                           <TextInput defaultValue={this.state.promotionCode} style={styleShoppingCartPage.promoCodeInput} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text.trim()})}
-                                            maxLength={20} onFocus={(()=>this._onFocusPromoCode()).bind(this)} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
-                                        </View>),
-                                       (<TouchableHighlight key={'AddCouponButtonView'} style={styleShoppingCartPage.AddRemoveCouponButtonView} underlayColor={'#F5F5F5'} onPress={()=>this.onPressAddCoupon()}>
-                                           <Image source={addPromoCodeIcon} style={styleShoppingCartPage.addPromoCodeIcon}/>
-                                        </TouchableHighlight>)];
-       }
-
-
-       var noteInputView = null;
-       if(this.state.showNoteInput){
-          noteInputView = <View key={'noteInputView'} style={styleShoppingCartPage.commentBox}>
+        var noteInputView = null;
+        if(this.state.showNoteInput){
+           noteInputView = <View key={'noteInputView'} style={styleShoppingCartPage.commentBox}>
                                 <TextInput defaultValue={this.state.notesToChef} style={styleShoppingCartPage.commentInput} multiline={true} returnKeyType = {'default'} autoCorrect={false}
-                                    maxLength={500} onChangeText = {(text) => this.setState({ notesToChef: text }) } onFocus={(()=>this._onFocusPromoCode()).bind(this)}/>
-                          </View>;
-       }
+                                    maxLength={500} onChangeText = {(text) => this.setState({ notesToChef: text }) } onFocus={(()=>this._onFocusNoteInput()).bind(this)}/>
+                           </View>;
+        }
 
        if(!this.state.priceIsConfirmed){//if price not quoted
           return [
@@ -360,9 +342,9 @@ class ShoppingCartPage extends Component {
                 <View style={styleShoppingCartPage.lineBackgroundNew}>
                     <Text style= {styleShoppingCartPage.lineNew}></Text>
                 </View>
-             </View>),
+            </View>),
 
-             (<View key={'discountView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+            (<View key={'discountView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                  <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                      <View style={styleShoppingCartPage.priceTitleView}>
                          <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Discount</Text>
@@ -374,10 +356,9 @@ class ShoppingCartPage extends Component {
                  <View style={styleShoppingCartPage.lineBackgroundNew}>
                      <Text style= {styleShoppingCartPage.lineNew}></Text>
                  </View>
+            </View>),
 
-              </View>),
-
-              (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+            (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                   <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                       <View style={styleShoppingCartPage.priceTitleView}>
                           <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Tax</Text>
@@ -390,7 +371,8 @@ class ShoppingCartPage extends Component {
                       <Text style= {styleShoppingCartPage.lineNew}></Text>
                   </View>
 
-               </View>),
+            </View>),
+
             (<View key={'totalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                 <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                     <View style={styleShoppingCartPage.priceTitleView}>
@@ -402,11 +384,10 @@ class ShoppingCartPage extends Component {
                 </View>
              </View>),
 
-             (
-             <View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
+             (<View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
                  <Image source={receiptBottom} style={styleShoppingCartPage.receiptBottomImageNew} />
              </View>),
-                    ];
+            ];
        }else{//if price quoted
             if(this.state.quotedOrder && this.state.quotedOrder.price && this.state.quotedOrder.price.couponValue){
                 /*promotionDeductionView=(<View key={'promotionDeductionView'} style={styleShoppingCartPage.promotionDeductionView}>
@@ -420,21 +401,17 @@ class ShoppingCartPage extends Component {
             }
 
             return [
-              notesToChefView,
-              promotionDeductionView,
-              (
-            <View key={'orderSummary'} style={styleShoppingCartPage.orderSummaryNew}>
+            notesToChefView,
+            promotionDeductionView,
+            (<View key={'orderSummary'} style={styleShoppingCartPage.orderSummaryNew}>
                 <Text style={styleShoppingCartPage.orderSummaryTextNew}>Order Summary</Text>
             </View>),
 
-            (
-            <View key={'receiptTop'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
+            (<View key={'receiptTop'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
                 <Image source={receiptTop} style={styleShoppingCartPage.receiptTopImageNew} />
             </View>),
 
-
-
-           (<View key={'subtotalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+            (<View key={'subtotalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                 <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                     <View style={styleShoppingCartPage.priceTitleView}>
                         <Text style={styleShoppingCartPage.orderSummaryBoxTitleTopNew}>Subtotal</Text>
@@ -474,10 +451,9 @@ class ShoppingCartPage extends Component {
                  <View style={styleShoppingCartPage.lineBackgroundNew}>
                      <Text style= {styleShoppingCartPage.lineNew}></Text>
                  </View>
+             </View>),
 
-              </View>),
-
-              (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
+             (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                   <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                       <View style={styleShoppingCartPage.priceTitleView}>
                           <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Tax</Text>
@@ -489,8 +465,8 @@ class ShoppingCartPage extends Component {
                   <View style={styleShoppingCartPage.lineBackgroundNew}>
                       <Text style= {styleShoppingCartPage.lineNew}></Text>
                   </View>
+             </View>),
 
-               </View>),
             (<View key={'totalView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                 <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                     <View style={styleShoppingCartPage.priceTitleView}>
@@ -500,10 +476,9 @@ class ShoppingCartPage extends Component {
                         <Text style={styleShoppingCartPage.orderSummaryBoxBoldValueNew}>${this.state.quotedOrder.price.grandTotal}</Text>
                     </View>
                 </View>
-
              </View>),
-             (
-             <View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
+
+            (<View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
                  <Image source={receiptBottom} style={styleShoppingCartPage.receiptBottomImageNew} />
              </View>),
             ];
@@ -567,13 +542,7 @@ class ShoppingCartPage extends Component {
         this.y = event.nativeEvent.layout.y;
     }
 
-    _onFocus() {
-        let listViewLength = this.y+0.5*windowHeight;
-        let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
-        this.refs.listView.scrollTo({x:0, y:keyboardHeight - listViewBottomToScreenBottom, animated: true})
-    }
-
-    _onFocusPromoCode() {
+    _onFocusNoteInput() {
         let listViewLength = this.y;
         let listViewBottomToScreenBottom = windowHeight - (listViewLength + windowHeight*0.066 + 15);//headerbanner+windowMargin
         this.refs.listView.scrollTo({x:0, y:25+keyboardHeight - listViewBottomToScreenBottom, animated: true})
@@ -585,18 +554,18 @@ class ShoppingCartPage extends Component {
     }
 
     mapDone(address){
-         let aptmentNumberText = address.apartmentNumber ? ' Apt/Suite# '+address.apartmentNumber : '';
-         if(address){
-             Alert.alert( '', 'Your delivery location is set to '+address.formatted_address+aptmentNumberText,[ { text: 'OK' }]);
-         }
-         if(this.state.deliveryAddress && this.state.deliveryAddress.formatted_address!==address.formatted_address){
-             this.setState({priceIsConfirmed:false});
-         }
-         this.setState({selectDeliveryAddress:false, deliveryAddress:address});
+        let aptmentNumberText = address.apartmentNumber ? ' Apt/Suite# '+address.apartmentNumber : '';
+        if(address){
+           Alert.alert( '', 'Your delivery location is set to '+address.formatted_address+aptmentNumberText,[ { text: 'OK' }]);
+        }
+        if(this.state.deliveryAddress && this.state.deliveryAddress.formatted_address!==address.formatted_address){
+           this.setState({priceIsConfirmed:false});
+        }
+        this.setState({selectDeliveryAddress:false, deliveryAddress:address});
     }
 
     onCancelMap(){
-         this.setState({selectDeliveryAddress:false});
+        this.setState({selectDeliveryAddress:false});
     }
 
     addToShoppingCart(dish){
@@ -657,26 +626,9 @@ class ShoppingCartPage extends Component {
         this.setState({shoppingCart:this.state.shoppingCart, totalPrice:total, priceIsConfirmed:false, dataSource:this.state.dataSource.cloneWithRows(newShoppingCart[this.state.selectedTime])});
     }
 
-    onPressRemoveCoupon(){
-        this.setState({promotionCode:'',showPromotionCodeInput:false});
-        if(this.state.priceIsConfirmed){
-           this.getPrice();
-        }
-    }
-
     onPressAddNote(){
         this.setState({showNoteInput:!this.state.showNoteInput});
         this.refs.listView.scrollTo({x:0, y: windowHeight - 140* windowHeightRatio, animated: true})
-    }
-
-    onPressAddCoupon(){
-        if(!this.state.promotionCode || !this.state.promotionCode.trim()){
-          return;
-        }
-        this.setState({showPromotionCodeInput:true});
-        if(this.state.priceIsConfirmed){
-           this.getPrice();
-        }
     }
 
     editAddress() {
@@ -696,6 +648,7 @@ class ShoppingCartPage extends Component {
           this.setState({editPhoneNo: true})
         }
     }
+
     editChefNote() {
         if (this.state.editChefNote == true) {
             this.setState({editChefNote: false})
@@ -704,6 +657,7 @@ class ShoppingCartPage extends Component {
           this.setState({editChefNote: true})
         }
     }
+    
     editPromotionCode() {
         this.props.navigator.push({
             name: 'CouponWalletPage',
@@ -715,18 +669,6 @@ class ShoppingCartPage extends Component {
                 }.bind(this)
             }
         });
-        // if (this.state.editPromotionCode == true) {
-        //     this.setState({editPromotionCode: false})
-        // }
-        // else{
-        //   this.setState({editPromotionCode: true})
-        // }
-    }
-
-
-    changeDeliveryAddress(){
-        //todo: onSelect address list and assign it to deliveryAddress set State.
-        //todo: shall we have a sepreate component for displaying saved addresses?
     }
 
     getPrice(){
@@ -1399,11 +1341,20 @@ var styleShoppingCartPage = StyleSheet.create({
         backgroundColor:'#FFFFFF',
         flexDirection:'row',
         flex:1,
-        borderColor:'#EAEAEA',
+        //borderColor:'#EAEAEA',
         marginLeft:20 * windowWidthRatio,
-        borderColor:"#EAEAEA",
-        borderBottomWidth:1,
+        //borderColor:"#EAEAEA",
+        //borderBottomWidth:1,
         paddingTop:10*windowHeightRatio,
+    },
+    oneListingBorderView:{
+        backgroundColor: '#FFFFFF',
+        flexDirection: 'row',
+        flex: 1,
+        marginHorizontal: 20 * windowWidthRatio,
+        borderColor: '#EAEAEA',
+        borderTopWidth: 1,
+        paddingTop: 2 * windowWidthRatio
     },
     dishPhotoNew:{
         width:162 * windowWidthRatio,

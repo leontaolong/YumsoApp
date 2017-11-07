@@ -99,6 +99,7 @@ class ChefListPage extends Component {
             selectedSortKey: null,
             selectedShopType: null,
             selectedPriceLevels: [],
+            priceRankFilter:{1:false,2:false,3:false},
         };
 
         this.responseHandler = function (response, msg) {
@@ -334,14 +335,14 @@ class ChefListPage extends Component {
 
     renderPromoBanner() {
         var promoBannerView = null;
-        if (this.state.showPromoAppBanner) {
-        // placeholder, in real practice, will only be rendered after the data gets fetched back
-        promoBannerView = <View style={styles.promoBannerView}>
-                                   <Text style={styles.infoBannerText}>
-                                      Promotion Banner Goes Here 
-                                   </Text>
-                            </View>
-        }
+        // if (this.state.showPromoAppBanner) {
+        // // placeholder, in real practice, will only be rendered after the data gets fetched back
+        // promoBannerView = <View style={styles.promoBannerView}>
+        //                            <Text style={styles.infoBannerText}>
+        //                               Promotion Banner Goes Here 
+        //                            </Text>
+        //                     </View>
+        // }
         return promoBannerView;
         
     }    
@@ -366,31 +367,32 @@ class ChefListPage extends Component {
         if(this.state.showLocSearch){
            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);
         }else if(this.state.showChefSearch){
-           return <View style={styles.pageWrapper}>
-                <View style={styles.headerBannerView}>
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.onDismissFilter()}>
-                        <View style={styles.backButtonView}>
-                            <Image source={closeIcon} style={styles.closeButtonIcon} />
-                        </View>
-                    </TouchableHighlight>
-                    <View style={styles.titleView}></View>
-                    <View style={styles.headerRightView}></View>
-                </View>
-                <View style={[styles.pageTitleView, {paddingLeft:windowWidth/20.7, marginBottom:windowHeight*0.04}]}>
+           console.log('closeIcon ' + closeIcon);
+           var ret = (<View style={styles.pageWrapper}>
+                    <View style={styles.headerBannerView}>
+                        <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.onDismissFilter()}>
+                            <View style={styles.backButtonView}>
+                                <Image source={closeIcon} style={styles.closeButtonIcon} />
+                            </View>
+                        </TouchableHighlight>
+                        <View style={styles.titleView}></View>
+                        <View style={styles.headerRightView}></View>
+                    </View>
+                    <View style={[styles.pageTitleView, {paddingLeft:windowWidth/20.7, marginBottom:windowHeight*0.04}]}>
                         <Text style={styles.pageTitle}>Filter</Text>
-                </View>
+                    </View>
                     <Text style={styleFilterPage.pageSubTitle}>Price</Text>
-                           <View style={styleFilterPage.dollarSignSelectionView}>
-                              <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(1)}>
-                                    <Text style={this.getDollarSign(1)}>$</Text>
-                              </TouchableHighlight>
-                              <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(2)}>
-                                    <Text style={this.getDollarSign(2)}>$$</Text>
-                              </TouchableHighlight>
-                              <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(3)}>
-                                    <Text style={this.getDollarSign(3)}>$$$</Text>
-                              </TouchableHighlight>
-                           </View>
+                    <View style={styleFilterPage.dollarSignSelectionView}>
+                        <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(1)}>
+                            <Text style={this.getDollarSign(1)}>$</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(2)}>
+                            <Text style={this.getDollarSign(2)}>$$</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight underlayColor={'transparent'} style={styleFilterPage.dollarSignView} onPress={() => this.clickDollarSign(3)}>
+                            <Text style={this.getDollarSign(3)}>$$$</Text>
+                        </TouchableHighlight>
+                    </View>
 
                     <Text style={styleFilterPage.pageSubTitle}>Shop Type</Text>
                     <View style={styleFilterPage.sortCriteriaView}>
@@ -420,7 +422,8 @@ class ChefListPage extends Component {
                     <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.onPressApplySearchButton()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply</Text>
                     </TouchableOpacity>                
-               </View>                    
+                </View>);
+                return ret;                    
         }
 
         var updateAppBannerView=null;
