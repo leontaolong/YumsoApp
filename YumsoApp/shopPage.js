@@ -57,6 +57,7 @@ var windowWidth = Dimensions.get('window').width;
 var windowHeightRatio = windowHeight/677;
 var windowWidthRatio = windowWidth/375;
 
+const DISH_LIST_ROWS = 500; // initial list size for ShopPage dishListView
 
 var h1 = 28*windowHeight/677;
 var h2 = windowHeight/35.5;
@@ -601,6 +602,7 @@ class ShopPage extends Component {
         }else{
            dishListView = <ListView style={styles.dishListView}
                             dataSource = {this.state.dataSource}
+                            initialListSize = {DISH_LIST_ROWS}
                             renderRow={this.renderRow.bind(this) } 
                             renderHeader={this.renderHeader.bind(this)}
                             renderFooter={this.renderFooter.bind(this)}
