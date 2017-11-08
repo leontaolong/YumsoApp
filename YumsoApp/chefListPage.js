@@ -37,7 +37,6 @@ var shopsOn = require('./icons/shops_on.png');
 
 
 import Dimensions from 'Dimensions';
-import Tabs from 'react-native-tabs';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
@@ -52,6 +51,7 @@ import React, {
     View,
     Image,
     ListView,
+    ScrollView,
     TouchableHighlight,
     TouchableOpacity,
     ActivityIndicatorIOS,
@@ -86,7 +86,7 @@ class ChefListPage extends Component {
             chefView: {},
             chefsDictionary: {},
             foodTagArr: [],
-            selectedFoodTag: null,
+            selectedFoodTag: "All",
             city:'Seattle',
             state:'WA',
             zipcode:'98105',
@@ -345,7 +345,16 @@ class ChefListPage extends Component {
         // }
         return promoBannerView;
         
-    }    
+    }  
+    
+    renderFoodTagTabs() {
+        var foodTags = [];
+        for (let foodTag of this.state.foodTagArr) 
+            foodTags.push(<Text name={foodTag} key={foodTag} style={this.getFoodTagTabStyle(foodTag)} onPress={() => this.foodTagSelected(foodTag)}>{foodTag}</Text>);
+        
+        return <ScrollView horizontal={true} style={styleChefListPage.foodTagTabsView} showsHorizontalScrollIndicator={false}>{foodTags}</ScrollView>
+    }
+
     render() {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
@@ -440,16 +449,7 @@ class ChefListPage extends Component {
                                  </View>
         }
 
-        var foodTags = [];
-        for (let foodTag of this.state.foodTagArr)
-            foodTags.push(<Text name={foodTag} key={foodTag} style={styleChefListPage.foodTagTabText}>{foodTag}</Text>);
-
-        var foodTagTabsView =   <View style={styleChefListPage.foodTagTabsContainer}>
-                                    <Tabs selected={this.state.selectedFoodTag} style={styleChefListPage.foodTagTabsView}
-                                        selectedStyle={styleChefListPage.foodTagSelectedStyle} onSelect={el=>this.showChefsWithSpecificFoodTag(el.props.name)}>
-                                    {foodTags}
-                                    </Tabs>
-                                </View>
+        var foodTagTabsView = this.renderFoodTagTabs();
 
         return (
                 <View style={styles.pageWrapper}>
@@ -538,6 +538,13 @@ class ChefListPage extends Component {
             return styleFilterPage.dollarSignGrey;
     }
 
+    getFoodTagTabStyle(selectedFoodTag) {
+        if (this.state.selectedFoodTag == selectedFoodTag)
+            return  [styleChefListPage.foodTagTabText, styleChefListPage.foodTagSelectedStyle];
+        else
+            return  styleChefListPage.foodTagTabText;
+    }
+
     clickDollarSign(priceLevel){
         this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];
         var currentPriceLevels = this.state.selectedPriceLevels;     
@@ -587,7 +594,7 @@ class ChefListPage extends Component {
         this.setState({ dataSource: this.state.dataSource.cloneWithRows(displayChefs)});
     }
 
-    showChefsWithSpecificFoodTag(foodTag){
+    foodTagSelected(foodTag){
         let self = this;
         this.setState({selectedFoodTag:foodTag});
         let displayChefs = [];
@@ -910,30 +917,26 @@ var styleChefListPage = StyleSheet.create({
         alignItems:'center',
         flexDirection:'row',
     },
-    foodTagTabsContainer:{
-        height:windowHeight*0.065,
-        backgroundColor:'#fff',
-        alignItems:'flex-start',
-        justifyContent:'center',
-        borderBottomWidth:1,
-        borderColor:'#ddd',
-    },
     foodTagTabsView:{
-        flexDirection: 'row',
-        alignItems:'stretch',
-        justifyContent:'space-around',
-        alignSelf:'center',
+        flex:0.07,
+        height:windowHeight*0.065,
+        borderColor:'#F5F5F5',
+        borderBottomWidth:2,
+        paddingHorizontal:windowWidth/20.7,
     },
     foodTagTabText:{
         flexDirection:'row',
         alignItems:'center',
         alignSelf:'center',
         justifyContent:'center',
-        marginHorizontal:windowWidth*0.02,
-        color:'#979797'
+        fontWeight:'300', 
+        color:'#4A4A4A',
+        fontSize:15*windowHeight/677,
+        paddingTop:windowHeight*0.012,
+        paddingBottom:windowHeight*0.002,
+        marginRight:windowWidth*0.05,
     },
     foodTagSelectedStyle:{
-        color:'#4A4A4A',
         fontWeight: 'bold',
         // 08/09/2017:
         // As I set the below rules on tab selected to display the yellow underline, it just doesn't work.
