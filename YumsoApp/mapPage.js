@@ -195,7 +195,7 @@ class MapPage extends Component {
                     </MapView>   
                   
                     <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.doneSelectAddress()}>
-                        <Text style={styleMapPage.confirmAddressButtonText}>{this.isSpecific && !this.state.showApartmentNumber ? 'Next': 'Use this Address'}</Text>
+                        <Text style={styles.bottomButtonView}>{this.isSpecific && !this.state.showApartmentNumber ? 'Next': 'Use this Address'}</Text>
                     </TouchableOpacity>
                     {searchAddressResultViewWrapper}
                     {addressSelectionView}

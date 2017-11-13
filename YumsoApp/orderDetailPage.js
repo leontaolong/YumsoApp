@@ -49,9 +49,6 @@ var b2 = 15*windowHeight/677;
 
 var img36Height = 36* windowHeightRatio;
 
-//let fullDeliveryAddress = this.state.order.shippingAddress.apartmentNumber ? 'Apt/Suite '+this.state.order.shippingAddress.apartmentNumber+' '+this.state.order.shippingAddress.formatted_address:this.state.order.shippingAddress.formatted_address;
-let fullDeliveryAddressNew = "P.No. 67, Demo ,demo, demo demo (302012)";
-
 import React, {
   Component,
   StyleSheet,
@@ -65,7 +62,6 @@ import React, {
   AsyncStorage,
   Alert,
   Linking,
-  ScrollView,
 } from 'react-native';
 
 
@@ -225,47 +221,47 @@ class OrderDetailPage extends Component {
       var promotionDeductionView = null;
       if(this.state.order.price && this.state.order.price.couponValue){
          promotionDeductionView = <View key={'promotionDeductionView'} style={styleShoppingCartPage.orderSummaryRowNew}>
-                                    <View style={styleShoppingCartPage.orderSummaryBoxNew}>
+                                     <View style={styleShoppingCartPage.orderSummaryBoxNew}>
                                         <View style={styleShoppingCartPage.priceTitleView}>
                                             <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Discount</Text>
                                         </View>
                                         <View style={styleShoppingCartPage.priceNumberView}>
                                             <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>-${this.state.order.price.couponValue}</Text>
                                         </View>
-                                    </View>
-                                    <View style={styleShoppingCartPage.lineBackgroundNew}>
+                                     </View>
+                                     <View style={styleShoppingCartPage.lineBackgroundNew}>
                                         <Text style= {styleShoppingCartPage.lineNew}></Text>
-                                    </View>
+                                     </View>
                                  </View>
       }
 
 
-      let fullDeliveryAddress = ''; 
+      let fullDeliveryAddress = null; 
       var line1 = this.state.order.shippingAddress.streetNumber + ' ' + this.state.order.shippingAddress.streetName;
       var line2 = this.state.order.shippingAddress.apartmentNumber;
       var line3 = this.state.order.shippingAddress.city + ', ' + this.state.order.shippingAddress.state + ', ' + this.state.order.shippingAddress.postal;
 
-      if (line2 == null) {
-          fullDeliveryAddress =  <View>
-                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueAddressTopNew}>{line1}</Text>
-                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueAddressBottomNew}>{line3}</Text>
-                                 </View>
+      if (!line2 || !line2.trim()) {
+          fullDeliveryAddress = <View style={styleShoppingCartPage.addressTextView}>
+                                    <Text style={styleShoppingCartPage.addressText}>{line1}</Text>
+                                    <Text style={styleShoppingCartPage.addressText}>{line3}</Text>
+                                </View>
       } else {
-         fullDeliveryAddress = <View>
-                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueAddressTopNew}>{line1}</Text>
-                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueNew}>{line2}</Text>
-                                    <Text style={styleShoppingCartPage.orderSummaryBoxValueAddressBottomNew}>{line3}</Text>
+          fullDeliveryAddress = <View style={styleShoppingCartPage.addressTextView}>
+                                    <Text style={styleShoppingCartPage.addressText}>{line1}</Text>
+                                    <Text style={styleShoppingCartPage.addressText}>{line2}</Text>
+                                    <Text style={styleShoppingCartPage.addressText}>{line3}</Text>
                                 </View>
       }
 
 
-      var costBreakDownView = [(notesToChefView),
+      var costBreakDownView = [ (notesToChefView),
                                 (<View key={'orderSummary'} style={styleShoppingCartPage.orderSummaryNew}>
-                                    <Text style={styleShoppingCartPage.orderSummaryTextNew}>Order Summary</Text>
+                                      <Text style={styleShoppingCartPage.orderSummaryTextNew}>Order Summary</Text>
                                 </View>),
 
                                 (<View key={'receiptTop'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
-                                    <Image source={receiptTop} style={styleShoppingCartPage.receiptTopImageNew} />
+                                      <Image source={receiptTop} style={styleShoppingCartPage.receiptTopImageNew} />
                                 </View>),
 
                                 (<View key={'orderIdView'} style={styleShoppingCartPage.orderSummaryRowNew}>
@@ -302,7 +298,7 @@ class OrderDetailPage extends Component {
                                            <Text style={styleShoppingCartPage.orderSummaryBoxTitleNew}>Deliver to</Text>
                                        </View>
                                        <View style={styleShoppingCartPage.orderSummaryBoxViewAddressNew}>
-                                        {fullDeliveryAddress}
+                                       {fullDeliveryAddress}
                                        </View>
                                    </View>
                                    <View style={styleShoppingCartPage.lineBackgroundNew}>
@@ -322,9 +318,9 @@ class OrderDetailPage extends Component {
                                     <View style={styleShoppingCartPage.lineBackgroundNew}>
                                         <Text style= {styleShoppingCartPage.lineNew}></Text>
                                     </View>
-                                 </View>),
+                                </View>),
 
-                                 promotionDeductionView,
+                                promotionDeductionView,
 
                                 (<View key={'taxView'} style={styleShoppingCartPage.orderSummaryRowNew}>
                                       <View style={styleShoppingCartPage.orderSummaryBoxNew}>
@@ -349,11 +345,11 @@ class OrderDetailPage extends Component {
                                             <Text style={styleShoppingCartPage.orderSummaryBoxBoldValueNew}>${this.state.order.price.grandTotal}</Text>
                                         </View>
                                     </View>
-                                 </View>),
+                                </View>),
 
-                                 (<View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
+                                (<View key={'receiptBottom'} style={styleShoppingCartPage.receiptTopBottomImageViewNew}>
                                      <Image source={receiptBottom} style={styleShoppingCartPage.receiptBottomImageNew} />
-                                 </View>)];
+                                </View>)];
         var commentBoxView = [];
         if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.order.comment && this.state.order.comment.starRating){//if rated,show rating/comment
            if(this.state.order.comment.chefComment && this.state.order.comment.chefComment.trim()){//if chef replied,show reply content
@@ -365,50 +361,49 @@ class OrderDetailPage extends Component {
                                         </View>
                                     </View>
                                     <Text style={{fontSize:b2, color:'#4A4A4A',marginBottom: 40*windowHeightRatio}}>{this.state.order.comment.chefComment}</Text>
-                                  </View>
+                                 </View>
            }
 
-          var rIcon = null
+           var rIcon = null
 
            if (this.state.order.comment.starRating == 0) {
-              rIcon = star0;
+               rIcon = star0;
            } else if (this.state.order.comment.starRating == 1) {
-             rIcon = star1;
+               rIcon = star1;
            } else if (this.state.order.comment.starRating == 2) {
-             rIcon = star2;
+               rIcon = star2;
            } else if (this.state.order.comment.starRating == 3) {
-             rIcon = star3;
+               rIcon = star3;
            } else if (this.state.order.comment.starRating == 4) {
-             rIcon = star4;
+               rIcon = star4;
            } else if (this.state.order.comment.starRating == 5) {
-             rIcon = star5;
+               rIcon = star5;
            }
 
-           console.log('this.state.eater '+this.state.eater)
            commentBoxView = [(<View style={styleOrderDetailPage.commentBoxNew}>
                                  <View style={{paddingTop: 30 * windowHeightRatio, paddingBottom:20* windowHeightRatio}}>
-                                     <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Reviews</Text>
+                                     <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Review</Text>
                                  </View>
                                  <View style={{ height:img36Height, flexDirection:'row'}}>
-                                    {this.state.order.eaterProfilePic ?
-                                        <Image source={{uri:this.state.order.eaterProfilePic}} style={{height:img36Height, width: img36Height, borderRadius: img36Height*0.5}}/>
-                                        :
-                                        <Image source={defaultAvatar} style={{height:img36Height, width: img36Height, borderRadius: img36Height*0.5}}/>
+                                    {
+                                    this.state.eater.eaterProfilePic ?
+                                    <Image source={{ uri: this.state.eater.eaterProfilePic}} style={{height:img36Height, width: img36Height, borderRadius: img36Height*0.5}}/>
+                                    :
+                                    <Image source={defaultAvatar} style={{height:img36Height, width: img36Height, borderRadius: img36Height*0.5}}/>
                                     }
-
-                                     <View  style={{paddingLeft:16*windowWidthRatio}}>
+                                    <View  style={{paddingLeft:16*windowWidthRatio}}>
                                          <Text style={{fontSize:12, color:'#4A4A4A'}}>{this.state.eater.eaterAlias}</Text>
                                          <Image source={rIcon} style={{height:10*windowHeightRatio,marginTop:5*windowHeightRatio, width: 70*windowWidthRatio}}/>
-                                     </View>
-                                     <View style={styleOrderDetailPage.commentTimeView}>
+                                    </View>
+                                    <View style={styleOrderDetailPage.commentTimeView}>
                                          <Text style={styleOrderDetailPage.commentTimeText}>{dateRender.renderDate3(this.state.order.comment.eaterCommentTime)}</Text>
-                                     </View>
+                                    </View>
                                  </View>
                                  <View style={{marginLeft: 52 * windowWidthRatio, marginTop:10 * windowHeightRatio}}>
-                                     <Text style={{fontSize:b2, color:'#4A4A4A'}}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
+                                    <Text style={{fontSize:b2, color:'#4A4A4A'}}>{this.state.order.comment.eaterComment ? this.state.order.comment.eaterComment :'No comment'}</Text>
                                  </View>
                             </View>),
-                              chefReplyView];
+                            chefReplyView];
        }else if(this.state.order.orderStatus.toLowerCase() == 'delivered' && this.state.ratingSucceed){
             commentBoxView = <View style={styleOrderDetailPage.commentBoxNew}>
                                   <View style={{paddingTop: 30 * windowHeightRatio, paddingBottom:20* windowHeightRatio}}>
@@ -424,7 +419,7 @@ class OrderDetailPage extends Component {
                                       </View>
                                   </View>
                                   <View style={{marginLeft: 52 * windowWidthRatio, marginTop:10 * windowHeightRatio}}>
-                                          <Text style={{ fontSize: b2, color: '#4A4A4A' }}>{this.state.comment.trim() ? this.state.comment : 'No comment'}</Text>
+                                       <Text style={{ fontSize: b2, color: '#4A4A4A' }}>{this.state.comment.trim() ? this.state.comment : 'No comment'}</Text>
                                   </View>
                              </View>
       }else if(commonWidget.isOrderCommentable(this.state.order)){//if the order is commentable, show commet input area
@@ -438,7 +433,7 @@ class OrderDetailPage extends Component {
                                         <Text style={{fontSize:h3 , color:"#4a4a4a"}}>Overall Rate</Text>
                                     </View>
 
-                                   <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                    <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
                                             <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper} onPress={()=>this.pressedRatingIcon(1)}>
                                             <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
@@ -458,19 +453,18 @@ class OrderDetailPage extends Component {
                                         </View>
                                     </View>
                                     <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.submitCommentButton} onPress={()=>this.submitComment()}>
-                                            <Text style={styleOrderDetailPage.submitCommentButtonText}>Submit</Text>
+                                        <Text style={styleOrderDetailPage.submitCommentButtonText}>Submit</Text>
                                     </TouchableHighlight>
                                  </View>),
                                 (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
         }else if(new Date().getTime()-this.state.order.orderDeliverTime > 7*24*60*60*1000){//if the order expired for comment, show disabled commentbox
             commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBoxNew}>
-
                                     <View style={{paddingTop: 30 * windowHeightRatio, paddingBottom:20* windowHeightRatio}}>
                                         <Text style={{fontSize:h3, fontWeight:'bold', color:"#4a4a4a"}}>Reviews</Text>
                                     </View>
                                     <TextInput placeholder="Order created 7 days ago is closed for review" style={styleOrderDetailPage.commentTextInput2New} editable={false}/>
-                                 </View>),
-                                (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
+                               </View>),
+                              (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
        }else if(this.state.order.orderStatus.toLowerCase() != 'delivered'){//if order is not delivered,show comment suggestion
             commentBoxView = [(<View key={'commentBoxView'} style={styleOrderDetailPage.commentBoxNew}>
                                     <View style={{paddingTop: 30 * windowHeightRatio, paddingBottom:20* windowHeightRatio}}>
@@ -481,7 +475,7 @@ class OrderDetailPage extends Component {
                                         <Text style={{fontSize:h3 , color:"#4a4a4a"}}>Overall Rate</Text>
                                     </View>
 
-                                   <View style={styleOrderDetailPage.ratingCommentTimeView}>
+                                    <View style={styleOrderDetailPage.ratingCommentTimeView}>
                                         <View style={styleOrderDetailPage.ratingView}>
                                             <TouchableHighlight underlayColor={'transparent'} style={styleOrderDetailPage.ratingIconWrapper}>
                                             <Image source={this.state.ratingIcon1} style={styleOrderDetailPage.ratingIcon}/>
@@ -500,11 +494,11 @@ class OrderDetailPage extends Component {
                                             </TouchableHighlight>
                                         </View>
                                     </View>
-                                 </View>),
+                               </View>),
                                (<View key={'commentBoxBottomView'} style={{height:0}} onLayout={((event)=>this._onLayout(event)).bind(this)}></View>)];
         }
-        return costBreakDownView.concat(commentBoxView);
-
+        var bottomMarginView = <View style={{height:50*windowHeightRatio}}></View>;
+        return costBreakDownView.concat(commentBoxView, bottomMarginView);
     }
 
 
@@ -530,8 +524,8 @@ class OrderDetailPage extends Component {
                                         renderHeader={this.renderHeader.bind(this)}
                                         renderRow={this.renderRow.bind(this) }
                                         renderFooter={this.renderFooter.bind(this)}/>
-                {loadingSpinnerView}
-                </View>);
+               {loadingSpinnerView}
+               </View>);
     }
 
     _onLayout(event) {
@@ -648,18 +642,17 @@ var styleOrderDetailPage = StyleSheet.create({
         backgroundColor:'#FFCC33'
     },
     oneStatusView:{
-       flexDirection:'column',
-       alignItems:'center',
-       justifyContent:'center',
-       height:windowHeight*0.0974,
-       width:windowWidth/6.0,
+        flexDirection:'column',
+        alignItems:'center',
+        justifyContent:'center',
+        height:windowHeight*0.0974,
+        width:windowWidth/6.0,
     },
     deliverTimeTextView:{
         flex:0.9,
         flexDirection:'row',
         justifyContent:'center',
         alignSelf:'center',
-
     },
     deliverTimeText:{
         color:'#4A4A4A',
@@ -667,30 +660,18 @@ var styleOrderDetailPage = StyleSheet.create({
         fontSize:windowHeight/51.64,
     },
     deleteBannerIcon:{
-       width:windowHeight*0.0528,
-       height:windowHeight*0.0528,
+        width:windowHeight*0.0528,
+        height:windowHeight*0.0528,
     },
     deleteBannerIconView:{
-       flex:0.1,
-       justifyContent:'center',
-       alignItems:'center'
+        flex:0.1,
+        justifyContent:'center',
+        alignItems:'center'
     },
     dishListView:{
         flex:1,
         backgroundColor:'#fff',
         flexDirection:'column',
-        paddingBottom:10,
-    },
-    oneListingView:{
-        backgroundColor:'#FFFFFF',
-        flexDirection:'row',
-        flex:1,
-        borderColor:'#EAEAEA',
-        borderTopWidth:1,
-    },
-    dishPhoto:{
-        width:windowWidth*0.344,
-        height:windowWidth*0.344,
     },
     orderInfoView:{
         flex:1,
@@ -700,28 +681,9 @@ var styleOrderDetailPage = StyleSheet.create({
         paddingRight:windowWidth/27.6,
         paddingVertical:windowHeight/73.6,
     },
-    dishNameText:{
-        fontSize:windowHeight/47.64,
-        fontWeight:'bold',
-        color:'#4A4A4A',
-    },
-    dishPriceText:{
-        fontSize:windowHeight/37.056,
-        fontWeight:'bold',
-        color:'#F8C84E',
-    },
-    dishIngredientView:{
-        flex:1,
-        height:windowHeight*0.0792,
-    },
-    dishIngredientText:{
-        fontSize:windowHeight/51.636,
-        color:'#9B9B9B',
-    },
     commentBox:{
         alignSelf:'center',
         backgroundColor:'#FFFFFF',
-        //width:windowWidth*0.93,
         marginTop:windowHeight*0.0224,
     },
     submitCommentButton:{
@@ -735,7 +697,6 @@ var styleOrderDetailPage = StyleSheet.create({
         fontWeight:'bold',
         alignSelf:'center',
         fontSize: b1,
-
     },
     ratingView:{
         flex:0.6,
@@ -781,8 +742,8 @@ var styleOrderDetailPage = StyleSheet.create({
         borderRadius:8,
     },
     chefReplyContentView:{
-         flex:5/6,
-         backgroundColor:"#4A4A4A",
+        flex:5/6,
+        backgroundColor:"#4A4A4A",
     },
     chefReplyText:{
         padding:15,
@@ -791,7 +752,6 @@ var styleOrderDetailPage = StyleSheet.create({
     },
     ratingCommentTimeView:{
         flexDirection:'row',
-      //  height:windowHeight*0.048,
         flex:1,
     },
     commentTimeView:{
@@ -804,9 +764,7 @@ var styleOrderDetailPage = StyleSheet.create({
         alignSelf:'center',
         fontSize:12,
         color:'#9B9B9B',
-      //  fontWeight:'600',
     },
-
     dishPhotoNew:{
         width:162 * windowWidthRatio,
         height:112 * windowHeightRatio,
@@ -831,7 +789,6 @@ var styleOrderDetailPage = StyleSheet.create({
         color:'#4A4A4A',
         fontSize:windowHeight/51.64,
     },
-
     dishNameTextNew:{
         fontSize:h3,
         fontWeight:'bold',
@@ -857,8 +814,8 @@ var styleOrderDetailPage = StyleSheet.create({
         color:'#9B9B9B',
     },
     bottomViewNew: {
-      position: "absolute",
-      bottom:0,
+        position: "absolute",
+        bottom:0,
     },
     commentTextNew:{
         padding:15 * windowWidthRatio,
@@ -873,7 +830,6 @@ var styleOrderDetailPage = StyleSheet.create({
         width:windowWidth - (40 * windowWidthRatio),
         marginTop:windowHeight*0.0224,
     },
-
     commentTextInputNew:{
         padding:15 * windowWidthRatio,
         fontSize:b2,
@@ -890,7 +846,6 @@ var styleOrderDetailPage = StyleSheet.create({
         marginBottom:20 * windowHeightRatio,
         height: 50 * windowHeightRatio,
     },
-
     uploadImageViewNew: {
         marginBottom: 30 * windowHeightRatio,
         flexDirection: 'row',
@@ -919,414 +874,76 @@ var styleOrderDetailPage = StyleSheet.create({
         paddingLeft: 15 * windowWidthRatio,
         paddingRight : 15 * windowWidthRatio,
     },
-
 });
 
 var styleShoppingCartPage = StyleSheet.create({
-    subtotalView:{
-        flexDirection:'row',
-        height:windowHeight/14.72,
-        paddingHorizontal:windowWidth/27.6,
-        borderTopWidth:1,
-        borderBottomWidth:1,
-        borderColor:'#F5F5F5',
-        justifyContent:'center'
-    },
-    noteView:{
-        flexDirection:'row',
-        height:windowHeight/14.72,
-        paddingLeft:windowWidth/27.6,
-        borderTopWidth:1,
-        borderBottomWidth:1,
-        borderColor:'#F5F5F5',
-        justifyContent:'center'
-    },
-    taxView:{
-        flexDirection:'row',
-        height:windowHeight/14.72,
-        paddingHorizontal:windowWidth/27.6,
-        borderTopWidth:1,
-        borderBottomWidth:1,
-        borderColor:'#F5F5F5',
-        justifyContent:'center',
-    },
-    promotionDeductionView:{
-        flexDirection:'row',
-        height:windowHeight/14.72,
-        paddingHorizontal:windowWidth/27.6,
-        borderBottomWidth:1,
-        borderColor:'#F5F5F5',
-        justifyContent:'center',
-    },
-    deliveryFeeView:{
-        flexDirection:'row',
-        height:windowHeight/14.72,
-        paddingHorizontal:windowWidth/27.6,
-        justifyContent:'center'
-    },
-    addressView:{
-        flexDirection:'row',
-        height:windowHeight/14.72,
-        paddingHorizontal:windowWidth/27.6,
-        borderTopWidth:1,
-        borderBottomWidth:1,
-        borderColor:'#F5F5F5',
-        justifyContent:'center',
-    },
-    addressTitleView:{
-        flex:0.4,
-        width:windowWidth*0.4,
-        alignItems:'flex-start',
-        alignSelf:'center',
-    },
-    addressTitleText:{
-        fontSize:windowHeight/36.8,
-        fontWeight:'500',
-        color:'#4A4A4A',
-    },
     addressTextView:{
-        flex:0.6,
-        width:windowWidth*0.6,
-        alignItems:'flex-end',
-        alignSelf:'center',
+        marginVertical: 20 * windowHeightRatio,
+        marginRight: 15 * windowWidthRatio,
+        flexDirection: 'column',
+        alignItems: 'flex-end'
     },
-    promotionCodeView:{
-        flexDirection:'row',
-        height:windowHeight/14.72,
-        paddingHorizontal:windowWidth/27.6,
-        borderBottomWidth:1,
-        borderColor:'#F5F5F5',
-        justifyContent:'center'
-    },
-    totalView:{
-        flexDirection:'row',
-        height:windowHeight/10,
-        paddingHorizontal:windowWidth/27.6,
-        paddingTop:windowHeight/20.0,
-        borderColor:'#F5F5F5',
-        justifyContent:'center',
-        marginBottom:20,
-    },
-    totalPriceTitleText:{
-        fontSize:windowHeight/36.8,
-        fontWeight:'500',
-        color:'#4A4A4A',
-    },
-    totalPriceNumberText:{
-        fontSize:windowHeight/36.66,
-        fontWeight:'500',
-        color:'#4A4A4A',
-    },
-    addressLine:{
-        color:'#4A4A4A',
-        fontSize:windowHeight/49.06,
-        marginTop:windowHeight/147.2,
-    },
-    addressChangeButtonWrapper:{
-        width:windowWidth*0.34375,
-        height:windowWidth*0.34375*3.0/13.0,
-        borderColor:'#ffcc33',
-        borderWidth:1,
-        borderRadius:6,
-        overflow: 'hidden',
-        alignSelf:'flex-start',
-        justifyContent:'center',
-        marginRight:windowWidth*0.003,
-    },
-    addressChangeButtonText:{
-        fontSize:windowHeight/49.06,
-        color:'#ffcc33',
-        fontWeight:'500',
-        alignSelf:'center',
-    },
-    removeCouponText:{
-        fontSize:windowHeight/49.06,
-        color:'#ffcc33',
-        fontWeight:'500',
-        alignSelf:'center',
-        paddingLeft:10,
-    },
-    addressChangeButtonView:{
-        flex:0.43,
-        flexDirection:'row',
-        alignItems:'flex-end',
+    addressText:{
+        fontSize: h4,
+        color: '#4A4A4A',
     },
     priceTitleView:{
         flex:1/2.0,
         alignItems:'flex-start',
         alignSelf:'center',
     },
-    notesToChefTitleView:{
-        flex:0.35,
-        alignItems:'flex-start',
-        alignSelf:'center',
-    },
-    couponTitleView:{
-        flex:0.75,
-        flexDirection:'row',
-        alignItems:'flex-start',
-        alignSelf:'center',
-    },
-    notesToChefTextView:{
-        flex:0.5,
-        alignItems:'flex-start',
-        alignSelf:'center',
-    },
-    notesToChefText:{
-        fontSize:windowHeight/47.33,
-        color:'#979797',
-        alignSelf:'center',
-    },
-    notesToChefButtonView:{
-        flex:0.14,
-        alignItems:'flex-end',
-        alignSelf:'stretch',
-        justifyContent:'center',
-        paddingHorizontal:windowWidth/27.6,
-    },
-    notesToChefButtonText:{
-        fontSize:windowHeight/36.8,
-        fontWeight:'500',
-        color:'#FFCC33',
-        alignSelf:'center',
-    },
-    couponNumberView:{
-        flex:0.25,
-        alignItems:'flex-end',
-        alignSelf:'center',
-    },
-    priceTitleText:{
-        fontSize:windowHeight/40.89,
-        fontWeight:'500',
-        color:'#4A4A4A',
-    },
     priceNumberView:{
         flex:1/2.0,
         alignItems:'flex-end',
         alignSelf:'center',
-    },
-    promotionCodeTitleView:{
-        flex:0.375,
-        alignItems:'flex-start',
-        alignSelf:'center',
-    },
-    showPromoCodeView:{
-        flexDirection:'row',
-        width:windowWidth*0.5,
-        justifyContent:'center',
-    },
-    showPromoCodeText:{
-        fontSize:windowHeight/47.33,
-        color:'#9B9B9B',
-        alignSelf:'center',
-    },
-    promoCodeInputView:{
-        height:28,
-        flexDirection:'row',
-        borderColor:'#F2F2F2',
-        borderWidth:1,
-        borderRadius:5,
-        flex:0.53,
-        alignSelf:'center',
-    },
-    AddRemoveCouponButtonView:{
-        flex:0.095,
-        alignItems:'flex-end',
-        alignSelf:'center',
-    },
-    priceNumberText:{
-        fontSize:windowHeight/33.45,
-        fontWeight:'500',
-        color:'#4A4A4A',
-    },
-    oneListingView:{
-        backgroundColor:'#FFFFFF',
-        flexDirection:'row',
-        flex:1,
-    },
-    dishPhoto:{
-        width:windowWidth/2.76,
-        height:windowWidth/2.76,
-    },
-    shoppingCartInfoView:{
-        flex:1,
-        height:windowWidth/2.76,
-        flexDirection:'column',
-        paddingLeft:windowWidth/20.7,
-        paddingRight:windowWidth/27.6,
-        paddingVertical:windowHeight/73.6,
-    },
-    dishNamePriceView:{
-        height:20,
-        flexDirection:'row',
-    },
-    dishNameView:{
-        flex:0.7,
-        alignItems:'flex-start',
-    },
-    dishNameText:{
-        fontSize:windowHeight/40.89,
-        fontWeight:'500',
-        color:'#4A4A4A'
-    },
-    dishPriceView:{
-        flex:0.3,
-        alignItems:'flex-end',
     },
     dishPriceText:{
         fontSize:windowHeight/40.89,
         fontWeight:'600',
         color:'#9B9B9B',
     },
-    dishIngredientView:{
-        height:windowHeight*0.065,
-    },
-    dishIngredientText:{
-        fontSize:windowHeight/47.33,
-        color:'#9B9B9B',
-    },
-    actualQuantityView:{
-        height:windowHeight*0.032,
-    },
-    actualQuantityText:{
-        fontSize:windowHeight/47.33,
-        color:'#FF6347',
-    },
-    quantityTotalPriceView:{
-        flex:1,
-        flexDirection:'row',
-    },
-    quantityView:{
-        flex:0.5,
-        flexDirection:'row',
-        alignItems:'flex-start',
-    },
-    totalPriceView:{
-        flex:0.5,
-        alignItems:'flex-end',
-    },
-    totalPriceText:{
-        fontSize:windowHeight/33.45,
-        fontWeight:'500',
-        color:'#4A4A4A'
-    },
-    plusMinusIcon:{
-        width: windowHeight/27.6,
-        height: windowHeight/27.6,
-    },
-    plusIconView:{
-        marginRight:windowWidth/27.6,
-    },
-    minusIconView:{
-        marginLeft:windowWidth/27.6,
-    },
-    quantityText:{
-        marginTop:windowHeight/147.2,
-        fontSize:windowHeight/46.0,
-        fontWeight:'500',
-        color:'#ffcc33',
-    },
-    addPromoCodeIcon:{
-        width: windowHeight/24.53,
-        height: windowHeight/24.53,
-    },
-    removePromoCodeIcon:{
-        width: windowHeight/24.53,
-        height: windowHeight/24.53,
-    },
-    footerView:{
-        flexDirection:'row',
-        height:windowHeight*0.075,
-    },
-    getPriceButtonView:{
-        width:windowWidth*0.5,
-        flex:1,
-        flexDirection:'row',
-        justifyContent: 'center',
-        backgroundColor:'#FF9933',
-    },
-    checkOutButtonView:{
-        width:windowWidth*0.5,
-        flex:1,
-        flexDirection:'row',
-        justifyContent: 'center',
-        backgroundColor:'#FFCC33',
-    },
-    checkOutButtonGreyView:{
-        width:windowWidth*0.5,
-        flex:1,
-        flexDirection:'row',
-        justifyContent: 'center',
-        backgroundColor:'#9B9B9B',
-    },
-    bottomButtonText:{
-        fontSize:windowHeight/30.6,
-        fontWeight:'400',
-        color:'#fff',
-        alignSelf:'center',
-    },
-    bottomButtonTextGreyed:{
-        fontSize:windowHeight/30.6,
-        fontWeight:'400',
-        color:'#D5D5D5',
-        alignSelf:'center',
-    },
-
     orderSummaryNew: {
-      // marginLeft:20 * windowWidthRatio,
-      // marginRight:20 * windowWidthRatio,
-      backgroundColor: "#F5F5F5",
-     paddingLeft:20 * windowWidthRatio,
-      height: 54 * windowHeightRatio,
-    //  alignItems: "center",
-      justifyContent: "center",
+        marginTop:20*windowHeightRatio,
+        backgroundColor: "#F5F5F5",
+        paddingLeft:20 * windowWidthRatio,
+        height: 54 * windowHeightRatio,
+        justifyContent: "center",
     },
     orderSummaryTextNew:{
-      fontSize: h3,
-      fontWeight:"bold",
-      color:"#4A4A4A",
+        fontSize: h3,
+        fontWeight:"bold",
+        color:"#4A4A4A",
     },
     receiptTopBottomImageViewNew: {
         backgroundColor: "#F5F5F5",
-
     },
     receiptTopImageNew: {
-      height:8 * windowHeightRatio,
-      width: windowWidth - (20 * windowWidthRatio)*2,
-      backgroundColor: "#F5F5F5",
-     marginLeft:20 * windowWidthRatio,
-     marginRight:20 * windowWidthRatio,
+        height:8 * windowHeightRatio,
+        width: windowWidth - (20 * windowWidthRatio)*2,
+        backgroundColor: "#F5F5F5",
+        marginLeft:20 * windowWidthRatio,
+        marginRight:20 * windowWidthRatio,
     },
-
     receiptBottomImageNew: {
-      height:8 * windowHeightRatio,
-      width: windowWidth - (20 * windowWidthRatio)*2,
-      backgroundColor: "#F5F5F5",
-     marginLeft:20 * windowWidthRatio,
-     marginRight:20 * windowWidthRatio,
-     marginBottom: 30 * windowHeightRatio,
+        height:8 * windowHeightRatio,
+        width: windowWidth - (20 * windowWidthRatio)*2,
+        backgroundColor: "#F5F5F5",
+        marginLeft:20 * windowWidthRatio,
+        marginRight:20 * windowWidthRatio,
+        marginBottom: 30 * windowHeightRatio,
     },
-
     orderSummaryRowNew: {
-      backgroundColor: "#F5F5F5",
-  //    paddingLeft:20 * windowWidthRatio,
-      //height: 65 * windowHeightRatio,
-      justifyContent: "center",
-
+        backgroundColor: "#F5F5F5",
+        justifyContent: "center",
     },
-
     orderSummaryBoxNew: {
         backgroundColor: "#FFFFFF",
         marginLeft:20 * windowWidthRatio,
         marginRight:20 * windowWidthRatio,
         flexDirection:'row',
         justifyContent:'center',
-        //height: 65 * windowHeightRatio,
-        // borderColor: "#EAEAEA",
-        // borderBottomWidth: 3,
         width: windowWidth - (20 * windowWidthRatio)*2,
     },
-
     orderSummaryBoxTitleNew:{
         fontSize:h4,
         fontWeight:'bold',
@@ -1334,26 +951,11 @@ var styleShoppingCartPage = StyleSheet.create({
         marginLeft: 15 * windowWidthRatio,
         marginTop:20 * windowHeightRatio,
         marginBottom: 20 * windowHeightRatio,
-
     },
-
     orderSummaryBoxValueNew:{
         fontSize:h4,
         color:'#4A4A4A',
         marginRight: 15 * windowWidthRatio,
-    },
-    orderSummaryBoxValueAddressTopNew:{
-        fontSize:h4,
-        color:'#4A4A4A',
-        marginRight: 15 * windowWidthRatio,
-        marginTop:20 * windowHeightRatio,
-    },
-    orderSummaryBoxValueAddressBottomNew:{
-        fontSize:h4,
-        color:'#4A4A4A',
-        marginRight: 15 * windowWidthRatio,
-        marginBottom: 20 * windowHeightRatio,
-
     },
     orderSummaryBoxBoldValueNew:{
         fontSize:h4,
@@ -1361,14 +963,12 @@ var styleShoppingCartPage = StyleSheet.create({
         marginRight: 15 * windowWidthRatio,
         fontWeight: "bold",
     },
-
     addressMoreButtonTextNew:{
         fontSize:h4,
         color:'#7bcbbe',
         alignSelf:'center',
         paddingTop: 23* windowWidthRatio,
     },
-
     orderSummaryBoxValueAddressNew:{
         fontSize:h4,
         color:'#4A4A4A',
@@ -1377,7 +977,6 @@ var styleShoppingCartPage = StyleSheet.create({
         flex:1/2.0,
         alignItems:'flex-end',
         alignSelf:'center',
-
     },
     lineBackgroundNew: {
         backgroundColor: "#FFFFFF",
@@ -1385,55 +984,35 @@ var styleShoppingCartPage = StyleSheet.create({
         marginRight:20 * windowWidthRatio,
         flexDirection:'row',
         justifyContent:'center',
-        // borderColor: "#EAEAEA",
-        // borderBottomWidth: 3,
-        // paddingLeft:20 * windowWidthRatio,
-        // paddingRight:20 * windowWidthRatio,
-
     },
     lineNew: {
-      backgroundColor: "#EAEAEA",
-      height: 1,
-      width:windowWidth - (35 * windowWidthRatio)*2,
-      // marginLeft:30 * windowWidthRatio,
-      // marginRight:30 * windowWidthRatio,
-
+        backgroundColor: "#EAEAEA",
+        height: 1,
+        width:windowWidth - (35 * windowWidthRatio)*2,
     },
-
     noteViewNew:{
         flexDirection:'row',
-        //height:70 * windowHeightRatio,
-        //paddingLeft:windowWidth/27.6,
         borderBottomWidth:1,
         borderColor:'#EAEAEA',
         justifyContent:'center',
         marginLeft:20 * windowWidthRatio,
         marginRight:20 * windowWidthRatio,
-
-
     },
     subtotalViewNew:{
         flexDirection:'row',
-        //height:70 * windowHeightRatio,
-        //paddingHorizontal:windowWidth/27.6,
         borderBottomWidth:1,
         borderColor:'#EAEAEA',
         justifyContent:'center',
         marginLeft:20 * windowWidthRatio,
         marginRight:20 * windowWidthRatio,
         marginBottom:35 * windowHeightRatio,
-
-
     },
     viewTextNew:{
         fontSize: h2,
         color:'#7bcbbe',
         alignSelf:'center',
-        // marginBottom: 20 * windowHeightRatio,
-         marginTop: 30 * windowHeightRatio,
+        marginTop: 30 * windowHeightRatio,
         height:60 * windowHeightRatio
-
-      //  backgroundColor: "#aaaa00",
     },
     notesToChefTitleViewNew:{
         flex:0.35,
@@ -1442,17 +1021,10 @@ var styleShoppingCartPage = StyleSheet.create({
         marginBottom: 20 * windowHeightRatio,
         marginTop: 20 * windowHeightRatio,
     },
-
     notesToChefTitleAddressView:{
         flex:0.35,
         alignItems:'flex-start',
-      //  alignSelf:'center',
     },
-
-
-
-
-
 });
 
 module.exports = OrderDetailPage;
