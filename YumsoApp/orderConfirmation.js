@@ -26,7 +26,12 @@ class OrderConfirmation extends Component {
     constructor(props){
         super(props);
         let routeStack = props.navigator.state.routeStack;
-        this.eater = routeStack[routeStack.length-1].passProps.eater;        
+        var eater = routeStack[routeStack.length-1].passProps.eater; 
+        var orderIdShort = routeStack[routeStack.length - 1].passProps.orderIdShort; 
+        this.state = {
+            eater: eater,
+            orderIdShort: orderIdShort,
+        };       
     }
     
     render() {  
@@ -43,8 +48,9 @@ class OrderConfirmation extends Component {
                     <View style={styleConfirmationPage.contentTextView}>
                         <Text style={styleConfirmationPage.contentTitle}>Enjoy your meal!</Text>
                         <Image source={mealIcon} style={styleConfirmationPage.mealIconView}/>
-                        <Text style={styleConfirmationPage.contentText}>Order#</Text>
-                        <Text style={styleConfirmationPage.contentText}>We have confirm your order. Your food will be ready and out for delivery by the time you selected. Enjoy!</Text>
+                        <Text style={styleConfirmationPage.contentText}>Order# {this.state.orderIdShort}</Text>
+                        <Text style={styleConfirmationPage.contentText}>We have confirmed your order.</Text>
+                        <Text style={styleConfirmationPage.contentText}>Please pay attention to your cell phone and turn on notification to receive status update. We may also call you when your order arrives.</Text>
                         <TouchableOpacity activeOpacity={0.7} style={styleConfirmationPage.viewOrderButtonContainer} onPress={()=>this.navigateToOrderPage()}>
                             <View style={styleConfirmationPage.viewOrderButton}>
                               <Text style={styleConfirmationPage.viewOrderText}>View Your Order</Text>
@@ -64,9 +70,6 @@ class OrderConfirmation extends Component {
     navigateBackToChefList(){
         this.props.navigator.push({
             name: 'ChefListPage',
-            passProps:{
-                eater:this.eater
-            }
         });
     }
     
@@ -74,7 +77,7 @@ class OrderConfirmation extends Component {
         this.props.navigator.push({
             name: 'OrderPage',
             passProps:{
-                eater:this.eater
+                eater:this.state.eater
             }
         });
     }

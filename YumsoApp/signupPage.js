@@ -129,7 +129,7 @@ class SignUpPage extends Component {
                         </ScrollView>
                     </Image>
                     <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress = {this.onSignUpPressed.bind(this)}>
-                         <Text style={styleSignUpPage.signUpButtonText}>Next</Text>
+                        <Text style={styles.bottomButtonView}>Next</Text>
                     </TouchableOpacity>
                     {loadingSpinnerView}
                 </View>

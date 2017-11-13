@@ -179,7 +179,7 @@ module.exports = StyleSheet.create({
     },
     bottomButtonView:{
       color:'#fff',
-      fontSize:windowHeight/30.6,
+      fontSize:h2,
       fontWeight:'bold',
       alignSelf:'center',
     },

@@ -123,7 +123,7 @@ class LoginPage extends Component {
 
                  </ScrollView>
                  <TouchableOpacity activeOpacity={0.7} onPress = {this.onLoginPressed.bind(this) } style={styleLoginPage.signInButtonView}>
-                     <Text style={styleLoginPage.signInButtonText}>Sign in</Text>
+                     <Text style={styleLoginPage.signInButtonText}>Sign In</Text>
                  </TouchableOpacity>
               </Image>
               {loadingSpinnerView}

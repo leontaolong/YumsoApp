@@ -36,7 +36,7 @@ var loadingSpinnerViewFullScreenStyle = StyleSheet.create({
       marginTop:windowHeight*(1-0.618)-0.5*70*windowHeight/667,
       justifyContent:'center',
       alignItems:'center',
-      backgroundColor:'#7c7c7c',
+      backgroundColor:'#5a5a5a',
       height:70*windowHeight/667,
       width:70*windowHeight/667,
       opacity:0.7,
