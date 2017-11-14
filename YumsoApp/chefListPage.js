@@ -95,7 +95,6 @@ class ChefListPage extends Component {
             deviceToken: null,
             currentTime: new Date().getTime(),
             showUpdateAppBanner:false,
-            showPromoAppBanner:true,
             selectedSortKey: null,
             selectedShopType: null,
             selectedPriceLevels: [],
@@ -335,16 +334,11 @@ class ChefListPage extends Component {
 
     renderPromoBanner() {
         var promoBannerView = null;
-        // if (this.state.showPromoAppBanner) {
-        // // placeholder, in real practice, will only be rendered after the data gets fetched back
-        // promoBannerView = <View style={styles.promoBannerView}>
-        //                            <Text style={styles.infoBannerText}>
-        //                               Promotion Banner Goes Here 
-        //                            </Text>
-        //                     </View>
-        // }
-        return promoBannerView;
         
+        if (this.state.eater && this.state.eater.promoBannerImage) {
+            promoBannerView = <Image style={{ width: windowWidth, height: windowWidth * 340 / 1600.0 }} source={{uri:this.state.eater.promoBannerImage}}/>
+        }
+        return promoBannerView;
     }  
     
     renderFoodTagTabs() {

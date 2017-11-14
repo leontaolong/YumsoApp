@@ -663,8 +663,9 @@ class ShoppingCartPage extends Component {
         this.setState({promotionCode:null});
     }
 
-    checkCouponAndGetPrice(){
-        if (!this.state.promotionCode && this.state.eater.orderCount == 0 && this.state.eater.couponWallet && this.state.eater.couponWallet.length > 0) {
+    async checkCouponAndGetPrice(){
+        let res = await this.client.getWithAuth(config.getCouponWallet+this.state.eater.eaterId);
+        if (!this.state.promotionCode && res && res.data && res.data.couponWallet && res.data.couponWallet.length>0) {
             Alert.alert('You have a coupon',
                 'Do you want to use it?',
                 [

@@ -33,6 +33,10 @@ class OrderConfirmation extends Component {
             orderIdShort: orderIdShort,
         };       
     }
+
+    componentDidMount() {
+        this.client = new HttpsClient(config.baseUrl, true);
+    }
     
     render() {  
         return (
@@ -67,9 +71,13 @@ class OrderConfirmation extends Component {
         );
     }
    
-    navigateBackToChefList(){
+    async navigateBackToChefList(){
+        let res = await this.client.getWithAuth(config.eaterEndpoint);
         this.props.navigator.push({
             name: 'ChefListPage',
+            passProps: {
+                eater: res.data.eater
+            }
         });
     }
     

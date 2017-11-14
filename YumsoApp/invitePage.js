@@ -26,6 +26,13 @@ import React, {
   Alert
 } from 'react-native';
 
+var h1 = 28 * windowHeight / 677;
+var h2 = windowHeight / 35.5;
+var h3 = windowHeight / 33.41;
+var h4 = windowHeight / 47.33;
+var h5 = 12;
+var b1 = 15 * windowHeight / 677;
+var b2 = 15 * windowHeight / 677;
 
 class InvitePage extends Component {
     constructor(props){
@@ -141,6 +148,7 @@ class InvitePage extends Component {
                     return this.responseHandler(res);
                 }
                 this.setState({ showProgress: false });
+                Alert.alert('Invitation Sent', 'By registering through the link provided in the email, Your friend will get the coupon for his or her first order.', [{ text: 'OK' }])
             }).catch((err) => {
                 this.setState({ showProgress: false });
                 commonAlert.networkError(err);
@@ -160,7 +168,7 @@ var styleInvitePage = StyleSheet.create({
     },
     contentText:{
         backgroundColor: 'rgba(0,0,0,0)',
-        fontSize:windowHeight/35.5,
+        fontSize:h2,
         fontWeight:'600',
         marginBottom:windowHeight*0.0550,        
     },
@@ -176,7 +184,7 @@ var styleInvitePage = StyleSheet.create({
     emailInput:{
         width:windowWidth*0.9,
         height:windowHeight*0.06,
-        fontSize:windowHeight/35.5,
+        fontSize:h2,
         fontWeight:'600',
         textAlign:'left',
     },

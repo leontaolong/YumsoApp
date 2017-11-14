@@ -572,7 +572,7 @@ module.exports = StyleSheet.create({
     loginInputNew:{
       width:windowWidth-40 * windowWidthRatio,
       height:34  * windowHeightRatio,
-      fontSize:b2,
+      fontSize:h2,
       fontWeight:'bold',
       color: '#4A4A4A',
       borderBottomWidth:1,
@@ -713,10 +713,10 @@ module.exports = StyleSheet.create({
         fontWeight:'400',
         color:'#4A4A4A',
         alignSelf:'center',
-        marginRight:3*windowWidthRatio,
+        marginRight:5*windowWidthRatio,
     },
     infoBannerLinkViewNew:{
-        fontSize:12  * windowHeightRatio,
+        fontSize: 12 * windowHeightRatio,
         flexDirection:'row',
         justifyContent:'flex-start',
         alignItems:'center',

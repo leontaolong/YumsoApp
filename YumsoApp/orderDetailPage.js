@@ -155,6 +155,16 @@ class OrderDetailPage extends Component {
 
     renderHeader(){
         var ETAView=null;
+        var contactUsText = null
+        if(this.state.order.contactUsNumber){
+            contactUsText = <Text style={styles.infoBannerLinkViewNew} onPress={() => this.dialThisNumber(this.state.order.contactUsNumber)}>
+                            ({this.state.order.contactUsNumber.substring(0, 3)}){this.state.order.contactUsNumber.substring(3, 6)}-{this.state.order.contactUsNumber.substring(6, 10)}
+                            </Text>
+        }else{
+           contactUsText = <Text style={styles.infoBannerLinkViewNew} onPress={() => this.dialThisNumber('2062258636')}>
+                            (206)225-8686
+                           </Text>
+        }
         if(this.state.showDeliverStatusView){
             var headerNew = <View style={styles.titleViewNew}>
                                 <Text style={styles.titleTextNew}>Order Details</Text>
@@ -193,9 +203,7 @@ class OrderDetailPage extends Component {
                                    <Text style={styles.infoBannerTextNew}>
                                       Got problem with your order? Call us at
                                    </Text>
-                                   <Text style={styles.infoBannerLinkViewNew} onPress={()=>this.dialThisNumber('2062258636')}>
-                                      (206)225-8686
-                                   </Text>
+                                   {contactUsText}
                                 </View>
 
             var itemsTextNew = <View key={'itemsTextNew'} style={{paddingTop: 20 * windowHeightRatio, paddingBottom:20* windowHeightRatio, paddingLeft: 20 * windowWidthRatio}}>
