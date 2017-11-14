@@ -25,6 +25,7 @@ var backIcon = require('./icons/icon-back.png');
 var closeIcon = require('./icons/icon-close.png');
 var RefreshableListView = require('react-native-refreshable-listview');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
+var backgroundImage = require('./resourceImages/background@3x.jpg');
 
 var meOff = require('./icons/me_off.png');
 var meOn = require('./icons/me_on.png');
@@ -371,17 +372,19 @@ class ChefListPage extends Component {
            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);
         }else if(this.state.showChefSearch){
            console.log('closeIcon ' + closeIcon);
-           var ret = (<View style={styles.pageWrapper}>
-                    <View style={styles.headerBannerView}>
+           var ret = 
+            (<View style={styles.pageWrapper}>
+                <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                    <View style={styles.headerBannerViewNew}>
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.onDismissFilter()}>
-                            <View style={styles.backButtonView}>
+                            <View style={styles.backButtonViewsNew}>
                                 <Image source={closeIcon} style={styles.closeButtonIcon} />
                             </View>
                         </TouchableHighlight>
-                        <View style={styles.titleView}></View>
-                        <View style={styles.headerRightView}></View>
+                        <View style={styles.headerRightView}>
+                        </View>
                     </View>
-                    <View style={[styles.pageTitleView, {paddingLeft:windowWidth/20.7, marginBottom:windowHeight*0.04}]}>
+                    <View style={[styles.pageTitleView, {paddingLeft:windowWidth/20.7, backgroundColor:'transparent', marginBottom:windowHeight*0.04}]}>
                         <Text style={styles.pageTitle}>Filter</Text>
                     </View>
                     <Text style={styleFilterPage.pageSubTitle}>Price</Text>
@@ -424,9 +427,10 @@ class ChefListPage extends Component {
                     </View>
                     <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.onPressApplySearchButton()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply</Text>
-                    </TouchableOpacity>                
-                </View>);
-                return ret;                    
+                    </TouchableOpacity> 
+                </Image>               
+            </View>);
+            return ret;                    
         }
 
         var updateAppBannerView=null;
@@ -456,7 +460,7 @@ class ChefListPage extends Component {
                         </TouchableHighlight>
                         <View style={{ width: windowWidth - 220*windowWidthRatio-40*windowWidthRatio*2}}></View>
                         <TouchableHighlight style={styleChefListPage.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.showFavoriteChefs()}>
-                            <Image source={this.getCurrentLikeIcon(this.state.showFavoriteChefsOnly)} style={styles.likeIcon}/>
+                        <Image source={this.getCurrentLikeIcon(this.state.showFavoriteChefsOnly)} style={{width: windowWidth * 0.06, height: windowWidth * 0.06 * 80/95,}}/>
                         </TouchableHighlight>
                         <TouchableHighlight style={styleChefListPage.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
                             <Image source={filterIcon} style={styles.filterIcon}/>
@@ -1131,7 +1135,7 @@ var styleFilterPage = StyleSheet.create({
         borderColor:'#F5F5F5',
         borderBottomWidth:1,
         alignItems:'center',
-        backgroundColor:'#FFFFFF',
+        backgroundColor:'transparent',
     },
     dollarSignView:{
         flexDirection:'row',
@@ -1163,7 +1167,7 @@ var styleFilterPage = StyleSheet.create({
         flexDirection:'column', 
         borderColor:'#F5F5F5',
         borderBottomWidth:1,
-        backgroundColor:'#FFFFFF',
+        backgroundColor:'transparent',
     },
     sortCriteriaTitleView:{
         width:windowWidth*0.85,
@@ -1204,6 +1208,7 @@ var styleFilterPage = StyleSheet.create({
         color:'#4A4A4A',
         marginVertical:windowHeight*0.0200,
         paddingLeft:windowWidth/20.7,
+        backgroundColor: 'transparent'
     },
     dollarSignGrey:{
         fontSize:windowHeight/35.5,

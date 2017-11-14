@@ -73,6 +73,17 @@ class InvitePage extends Component {
             loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;
         }
 
+        var couponValueForInviter = 3;
+        var couponValueForInvitee = 5;
+
+        if (this.state.eater && this.state.eater.couponValueForInviter){
+            couponValueForInviter = this.state.eater.couponValueForInviter;
+        }
+
+        if (this.state.eater && this.state.eater.couponValueForInvitee) {
+            couponValueForInvitee = this.state.eater.couponValueForInvitee;
+        }
+
         return (
             <View style={styles.greyContainer}>
                 <Image style={styles.pageBackgroundImage} source={backgroundImage}>
@@ -89,7 +100,7 @@ class InvitePage extends Component {
                         <ScrollView keyboardShouldPersistTaps={true} ref="scrollView">    
                             <Text style={styleInvitePage.contentTitle}>Invite Friends</Text>
                             <Image source={inviteIcon} style={styleInvitePage.inviteIconView}/>
-                            <Text style={styleInvitePage.contentText}>Invite your friends to Yumso! Your friend will get $5 off at the first order and then you will have $3 coupon !</Text>
+                            <Text style={styleInvitePage.contentText}>Invite your friends to Yumso! Your friend will get ${couponValueForInvitee} off at the first order and then you will have ${couponValueForInviter} coupon !</Text>
                             <Text style={styleInvitePage.inputTitleText}>First Name of Your Friend</Text>
                             <View style={styleInvitePage.emailInputView}>
                                 <TextInput style={styleInvitePage.emailInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType={'done'} maxLength={40} autoCorrect={false}

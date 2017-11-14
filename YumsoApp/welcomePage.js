@@ -73,7 +73,7 @@ class WelcomePage extends Component {
                   <View style={{height:windowHeightRatio*50}}>
                   </View>
                   <TouchableOpacity activeOpacity={0.7} style={styles.secondaryButtonView} onPress={()=>this.goToLoginPage()}>
-                      <Text style={styles.secondaryButtonText}>Sign in with Email</Text>
+                      <Text style={styles.secondaryButtonText}>Sign In with Email</Text>
                   </TouchableOpacity>
                   <View style={{height:windowHeightRatio*15}}>
                   </View> 
@@ -117,7 +117,7 @@ class WelcomePage extends Component {
                   <View style={{height:windowHeightRatio*14}}>
                   </View>
                   <TouchableOpacity activeOpacity={0.7} style={styles.secondaryWhiteButtonView} onPress={()=>this.navigateToSignUp()}>
-                      <Text style={styles.secondaryWhiteButtonText}>Sign up Now !</Text>
+                      <Text style={styles.secondaryWhiteButtonText}>Sign Up Now !</Text>
                   </TouchableOpacity>
                   <View style={{height:windowHeightRatio*40}}>
                   </View>

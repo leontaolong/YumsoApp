@@ -280,7 +280,7 @@ class ShoppingCartPage extends Component {
                                                 :null}
                                             </View>
                                             <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={this.state.promotionCode ? () => this.removePromotionCode() : () => this.editPromotionCode()}>
-                                                <Text style={styleShoppingCartPage.viewTextNew}>{this.state.promotionCode ? 'Remove' : 'Add'}</Text>
+                                                <Text style={styleShoppingCartPage.viewTextNew}>{this.state.promotionCode ? 'Undo' : 'Add'}</Text>
                                             </TouchableOpacity>
                                         </View>);
 
@@ -654,6 +654,7 @@ class ShoppingCartPage extends Component {
                 isFromCheckOutPage:true,
                 onCouponSelected: function(couponCode){
                     this.setState({promotionCode:couponCode});
+                    this.getPrice();
                 }.bind(this)
             }
         });
@@ -661,6 +662,7 @@ class ShoppingCartPage extends Component {
 
     removePromotionCode(){
         this.setState({promotionCode:null});
+        this.getPrice();
     }
 
     async checkCouponAndGetPrice(){

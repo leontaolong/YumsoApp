@@ -71,12 +71,11 @@ class OrderConfirmation extends Component {
         );
     }
    
-    async navigateBackToChefList(){
-        let res = await this.client.getWithAuth(config.eaterEndpoint);
+    navigateBackToChefList(){
         this.props.navigator.push({
             name: 'ChefListPage',
             passProps: {
-                eater: res.data.eater
+                eater:this.state.eater
             }
         });
     }

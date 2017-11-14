@@ -847,8 +847,8 @@ var styleOrderDetailPage = StyleSheet.create({
         height: 84 * windowHeightRatio,
     },
     commentTextInput2New:{
-        padding:15 * windowWidthRatio,
-        fontSize:b2,
+        padding:10 * windowWidthRatio,
+        fontSize: h5,
         color:'#4A4A4A',
         backgroundColor: "#F5F5F5",
         marginBottom:20 * windowHeightRatio,
