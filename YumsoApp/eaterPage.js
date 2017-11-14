@@ -53,13 +53,6 @@ import React, {
   ScrollView
 } from 'react-native';
 
-var windowHeight = Dimensions.get('window').height;
-var windowWidth = Dimensions.get('window').width;
-
-var windowHeightRatio = windowHeight/677;
-var windowWidthRatio = windowWidth/375;
-
-
 var h1 = 28*windowHeight/677;
 var h2 = windowHeight/35.5;
 var h3 = windowHeight/33.41;
@@ -67,7 +60,6 @@ var h4 = windowHeight/47.33;
 var h5 = 12;
 var b1 = 15*windowHeight/677;
 var b2 = 15*windowHeight/677;
-
 
 class EaterPage extends Component {
      constructor(props){
@@ -87,17 +79,6 @@ class EaterPage extends Component {
             editWorkAddress:false,
             showResetPassword:false,
         };
-
-        if(routeStack.length >1 && routeStack[routeStack.length-2].name == "LoginPage"){
-            this.state.fromLoginPage = true;
-            this.state.edit = true;
-            this.state.firstname = this.state.eater.firstname;
-            this.state.lastname = this.state.eater.lastname;
-            this.state.eaterAlias = this.state.eater.eaterAlias;
-            this.state.gender = this.state.eater.gender;
-            this.state.phoneNumber = this.state.eater.phoneNumber;
-            this.state.email = this.state.eater.email;
-        }
 
         this.responseHandler = function (response, msg) {
             if(response.statusCode==400){
@@ -133,56 +114,44 @@ class EaterPage extends Component {
         }
 
         if (this.state.edit) {
-          var eaterProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
-            if(this.state.fromLoginPage){
-               var profilePageTitle = "Tell us about yourself";
-               var backButtonView = <View style={styles.headerBannerViewNew}></View>
-            }else{
-               var backButtonView = <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'}  onPress = {() => { this.setState({ edit: false })}}>
+            var eaterProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
+            var backButtonView = <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'}  onPress = {() => { this.setState({ edit: false })}}>
                                          <View style={styles.backButtonViewsNew}>
                                             <Image source={backIcon} style={styles.backButtonIconsNew}/>
                                          </View>
-                                     </TouchableHighlight>
-               var profilePageTitle = "ABOUT";
-            }
-
+                                 </TouchableHighlight>
             return (
-
                 <View style={styles.containerNew}>
                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                         <View style={styles.headerBannerViewNew}>
                             {backButtonView}
-
-                            <TouchableHighlight style={styles.headerRightView} underlayColor={'#F5F5F5'} onPress = {this.submit.bind(this)}>
-                                <View style={styles.headerRightTextButtonView}>
-                                    <Text style={styles.headerRightTextButtonText}></Text>
-                                </View>
-                            </TouchableHighlight>
+                            <View style={styles.headerRightView}>
+                            </View>
                         </View>
 
-                        <ScrollView style={{backgroundColor:'#fff'}}>
+                        <ScrollView ref={'scrollView'}style={{backgroundColor:'transparent'}}>
                             <View style={styleEaterPage.headerViewNew}>
                                 <View style={styleEaterPage.titleViewNew2}>
                                     <Text style={styles.titleTextNew}>Profile</Text>
                                 </View>
                                 <View>
-                                <Image source={eaterProfile} style={styleEaterPage.eaterProfilePicNew}></Image>
-                                <TouchableHighlight style={styleEaterPage.uploadPhotoButtonViewNew} underlayColor={'transparent'} onPress={() => this.uploadPic() }>
-                                    <Image source={uploadPhotoIconPen} style={styleEaterPage.uploadPhotoIconNew}/>
-                                </TouchableHighlight>
+                                    <Image source={eaterProfile} style={styleEaterPage.eaterProfilePicNew}></Image>
+                                    <TouchableHighlight style={styleEaterPage.uploadPhotoButtonViewNew} underlayColor={'transparent'} onPress={() => this.uploadPic() }>
+                                        <Image source={uploadPhotoIconPen} style={styleEaterPage.uploadPhotoIconNew}/>
+                                    </TouchableHighlight>
                                 </View>
                             </View>
 
                             <Text style={styleEaterPage.textFieldTitle}>First Name</Text>
                             <View style={styles.loginInputViewNew}>
                                 <TextInput style={styleEaterPage.loginInputNew}  defaultValue={this.state.eater.firstname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                    maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ firstname: text }) }/>
+                                    maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ firstname: text })}/>
                             </View>
 
                             <Text style={styleEaterPage.textFieldTitle}>Last Name</Text>
                             <View style={styles.loginInputViewNew}>
                                 <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.lastname} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                    maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ lastname: text }) }/>
+                                    maxLength={30} autoCorrect={false} onChangeText = {(text) => this.setState({ lastname: text })}/>
                             </View>
 
                             <Text style={styleEaterPage.textFieldTitle}>Username</Text>
@@ -207,17 +176,18 @@ class EaterPage extends Component {
                             <Text style={styleEaterPage.textFieldTitle}>Phone</Text>
                             <View style={styles.loginInputViewNew}>
                                 <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.phoneNumber} keyboardType = { 'phone-pad'} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                    maxLength={15} onChangeText = {(text) => this.setState({ phoneNumber: text }) }/>
+                                    maxLength={15} onChangeText={(text) => this.setState({ phoneNumber: text })} onFocus={(() => this.onFocusPhoneEmailInput()).bind(this)} onBlur={(() => this.onOffFocusPhoneEmailInput()).bind(this)}/>
                             </View>
-                                <Text style={styleEaterPage.textFieldTitle}>Email</Text>
-                                <View style={styles.loginInputViewNew}>
-                                    <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.email} clearButtonMode={'while-editing'} returnKeyType = {'done'}
-                                        autoCapitalize={'none'} maxLength={40} autoCorrect={false} onChangeText = {(text) => this.setState({ email: text }) }/>
-                                </View>
 
-                                <TouchableOpacity activeOpacity={0.7} >
-                                     <Text style={styleEaterPage.textFieldTitle}>{this.state.principal.identityProvider === 'Yumso' ? `Logged in with Email: ${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
-                                </TouchableOpacity>
+                            <Text style={styleEaterPage.textFieldTitle}>Email</Text>
+                            <View style={styles.loginInputViewNew}>
+                                 <TextInput style={styleEaterPage.loginInputNew} defaultValue={this.state.eater.email} clearButtonMode={'while-editing'} returnKeyType = {'done'}
+                                    autoCapitalize={'none'} maxLength={40} autoCorrect={false} onChangeText={(text) => this.setState({ email: text })} onFocus={(() => this.onFocusPhoneEmailInput()).bind(this)} onBlur={(() => this.onOffFocusPhoneEmailInput()).bind(this)}/>
+                            </View>
+
+                            <TouchableOpacity activeOpacity={0.7} >
+                                  <Text style={styleEaterPage.textFieldTitle}>{this.state.principal.identityProvider === 'Yumso' ? `Logged in with Email: ${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
+                            </TouchableOpacity>
                             {loadingSpinnerView}
                         </ScrollView>
 
@@ -244,9 +214,10 @@ class EaterPage extends Component {
             }
 
             return (<View style={styles.containerNew}>
+                    <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                         <View style={styles.headerBannerViewNew}>
                         </View>
-                        <ScrollView style={styleEaterPage.scrollView}>
+                        <View style={styleEaterPage.menuView}>
                         <View style={styleEaterPage.headerViewNew}>
                             <View style={styleEaterPage.titleViewNew}>
                                 <Text style={styles.titleTextNew}>{this.state.eater.firstname} {this.state.eater.lastname}</Text>
@@ -254,7 +225,6 @@ class EaterPage extends Component {
                             <View>
                                 <Image source={eaterProfile} style={styleEaterPage.eaterProfilePic50New}>
                                 </Image>
-
                             </View>
                         </View>
                         <View style={styleEaterPage.profileBtnListNew}>
@@ -311,7 +281,7 @@ class EaterPage extends Component {
                             </TouchableHighlight>
                         </View>
 
-                        </ScrollView>
+                        </View>
                         <View style = {styles.tabBarNew}>
                             <View style={{flex: 1, flexDirection: 'row'}}>
                                 <TouchableHighlight underlayColor={'#F5F5F5'} onPress={() => this.onPressShopsTabBtn()}>
@@ -340,6 +310,7 @@ class EaterPage extends Component {
                                 </TouchableHighlight>
                             </View>
                         </View>
+                </Image>
                 </View>);
            }
      }
@@ -462,6 +433,14 @@ class EaterPage extends Component {
         });
     }
 
+    onFocusPhoneEmailInput(){
+        this.refs.scrollView.scrollTo({ x: 0, y: 130*windowHeightRatio, animated: true })
+    }
+
+    onOffFocusPhoneEmailInput() {
+        this.refs.scrollView.scrollTo({ x: 0, y: 0, animated: true })
+    }
+
     onPressEdit(){
          this.setState({
                                  edit: true,
@@ -475,10 +454,6 @@ class EaterPage extends Component {
                                  workAddress: this.state.eater.workAddress,
                                  addressList: this.state.eater.addressList
                       })
-    }
-
-    onPressAddressBook(){
-
     }
 
     onCancelPasswordReset(){
@@ -601,15 +576,6 @@ var styleEaterPage = StyleSheet.create({
     eaterProfilePic:{
         width: windowWidth,
         height: windowHeight/2.63,
-    },
-    eaterPageRowView:{
-        flex: 1,
-        paddingHorizontal: windowWidth/20.7,
-        paddingTop: windowWidth/20.7,
-        paddingBottom: windowWidth/41.4,
-        borderColor: '#F5F5F5',
-        borderTopWidth: 0,
-        backgroundColor: '#fff',
     },
     eaterNameText:{
         fontSize:windowHeight/36.8,
@@ -823,6 +789,17 @@ var styleEaterPage = StyleSheet.create({
       marginLeft: 20 * windowWidthRatio,
       width: windowWidth - 40 * windowWidthRatio,
       flexDirection:'column',
+      backgroundColor:'transparent',
+    },
+
+    menuView: {
+        marginTop: 0,
+        paddingTop: 0,
+        marginLeft: 20 * windowWidthRatio,
+        width: windowWidth - 40 * windowWidthRatio,
+        flex:1,
+        flexDirection: 'column',
+        backgroundColor: 'transparent',
     },
 
     pageSubTitle: {

@@ -416,9 +416,11 @@ class MapPage extends Component {
                 return;   
             }
             if(this.state.showApartmentNumber && (!this.state.apartmentNumber || !this.state.apartmentNumber.trim())){
-                Alert.alert( 'Warning', 
+                Alert.alert( 'Apt. Number', 
                              'Wouldn\'t you specify your Apt./Suite number ?',
-                             [ { text: 'Not Applicable', onPress:()=>{
+                             [   
+                                 { text: 'Set it' },
+                                 { text: 'No', onPress:()=>{
                                         this.state.selectedAddress.apartmentNumber = null;
                                         if (this.state.selectedAddress) {
                                             if (this.state.eater) {
@@ -440,10 +442,9 @@ class MapPage extends Component {
                                             }
                                        }
                                    }
-                               },
-                               { text: 'Set Apt./Suite Number'} ,
-                              ]
-                           );
+                               }
+                            ]
+                          );
                 return;
             }
             if (this.state.apartmentNumber === undefined && !this.usedSavedAddress) {     

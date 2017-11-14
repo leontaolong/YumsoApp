@@ -26,6 +26,7 @@ var InvitePage = require('./invitePage');
 var OrderPage = require('./orderPage');
 var WelcomePage = require('./welcomePage');
 var CouponWalletPage = require('./couponWalletPage');
+var OnBoardPage = require('./onBoardPage.js');
 
 import React, {
   AppRegistry,
@@ -192,6 +193,8 @@ class YumsoApp extends Component {
             return <WelcomePage navigator={navigator}/>
         }else if(route.name==='CouponWalletPage'){
             return <CouponWalletPage navigator={navigator}/>
+        }else if(route.name ==='OnBoardPage'){
+            return <OnBoardPage navigator={navigator} />
         }
     }
 }

@@ -350,7 +350,7 @@ class ChefListPage extends Component {
     renderFoodTagTabs() {
         var foodTags = [];
         for (let foodTag of this.state.foodTagArr) 
-            foodTags.push(<Text name={foodTag} key={foodTag} style={this.getFoodTagTabStyle(foodTag)} onPress={() => this.foodTagSelected(foodTag)}>{foodTag}</Text>);
+             foodTags.push(<Text name={foodTag} key={foodTag} style={this.getFoodTagTabStyle(foodTag)} onPress={() => this.foodTagSelected(foodTag)}>{foodTag}</Text>);
         
         return <ScrollView horizontal={true} style={styleChefListPage.foodTagTabsView} showsHorizontalScrollIndicator={false}>{foodTags}</ScrollView>
     }
@@ -909,7 +909,7 @@ class ChefListPage extends Component {
 var styleChefListPage = StyleSheet.create({
     customizedHeaderBannerRules:{
         borderColor:'#F5F5F5',
-        borderBottomWidth:2,
+        borderBottomWidth:1,
     },
     headerIconView:{
         width:40*windowWidthRatio,
@@ -921,7 +921,7 @@ var styleChefListPage = StyleSheet.create({
         flex:0.07,
         height:windowHeight*0.065,
         borderColor:'#F5F5F5',
-        borderBottomWidth:2,
+        borderBottomWidth:1,
         paddingHorizontal:windowWidth/20.7,
     },
     foodTagTabText:{

@@ -132,7 +132,7 @@ class ShoppingCartPage extends Component {
                                         <Text style={styleShoppingCartPage.viewTextNew}>Edit</Text>
                                 </TouchableOpacity>) :
                                 (<TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={()=>this.setState({selectDeliveryAddress:true})}>
-                                        <Text style={styleShoppingCartPage.addAddressViewTextNew}>Edit</Text>
+                                        <Text style={styleShoppingCartPage.viewTextNew}>Add</Text>
                                 </TouchableOpacity>)}
                             </View>
 
@@ -162,9 +162,11 @@ class ShoppingCartPage extends Component {
 
         var phoneNoEditHeader = <View key={'phoneNoHeader'} style={styleShoppingCartPage.phoneNoEditHeaderViewWrapper}>
                                     <View style={styleShoppingCartPage.phoneNoEditHeaderView}>
-                                        <Text style={styleShoppingCartPage.orderSummaryTextNew}>Phone</Text>
+                                        <View style={{ flex: 0.88, flexDirection: 'row' }}>
+                                            <Text style={styleShoppingCartPage.orderSummaryTextNew}>Phone</Text>
+                                        </View>
                                         <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={() => this.editPhoneNo()}>
-                                        <Text style={styleShoppingCartPage.okViewTextNew}>Ok</Text>
+                                            <Text style={styleShoppingCartPage.okViewTextNew}>Ok</Text>
                                         </TouchableOpacity>
                                     </View>
                                     <TextInput style={styleShoppingCartPage.inputText} placeholder={phoneNumberToShow} placeholderTextColor='#4A4A4A' clearButtonMode={'while-editing'}
@@ -270,31 +272,17 @@ class ShoppingCartPage extends Component {
 
       {this.state.showNoteInput == true ? notesToChefView = notesToChefEditView  :  notesToChefView =  notesToChefMainView}
 
-      var promotionDeductionView = null;
-      var promotionDeductionMainView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalViewNew}>
+      var promotionDeductionView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalViewNew}>
                                             <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
                                                 <Text style={styleShoppingCartPage.orderSummaryTextNew}>Coupon</Text>
                                                 {this.state.promotionCode ?
                                                 <Text style={{fontSize:b2, color:"#4a4a4a", width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>{this.state.promotionCode}</Text>
                                                 :null}
                                             </View>
-                                            <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={() => this.editPromotionCode()}>
-                                                <Text style={styleShoppingCartPage.viewTextNew}>Edit</Text>
+                                            <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={this.state.promotionCode ? () => this.removePromotionCode() : () => this.editPromotionCode()}>
+                                                <Text style={styleShoppingCartPage.viewTextNew}>{this.state.promotionCode ? 'Remove' : 'Add'}</Text>
                                             </TouchableOpacity>
                                         </View>);
-
-        var promotionDeductionEditView = (<View key={'promotionDeductionView'} style={styleShoppingCartPage.subtotalViewNew}>
-                                            <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
-                                                <Text style={styleShoppingCartPage.orderSummaryTextNew}>Promotion Code</Text>
-                                                <TextInput placeholder="Promotion Code" placeholderTextColor='#4A4A4A' defaultValue={this.state.promotionCode} style={styleShoppingCartPage.inputText} clearButtonMode={'while-editing'} returnKeyType = {'done'} onChangeText = {(text) => this.setState({ promotionCode: text.trim()})}
-                                                maxLength={20} autoCorrect={false} autoCapitalize={'characters'} onSubmitEditing={()=>this.onPressAddCoupon()}/>
-                                            </View>
-                                            <TouchableOpacity activeOpacity={0.7} style={styleShoppingCartPage.notesToChefButtonView} onPress={() => this.editPromotionCode()}>
-                                                <Text style={styleShoppingCartPage.okViewTextNew}>Ok</Text>
-                                            </TouchableOpacity>
-                                         </View>);
-
-        {this.state.editPromotionCode == true ? promotionDeductionView = promotionDeductionEditView  :  promotionDeductionView =  promotionDeductionMainView}
 
         var noteInputView = null;
         if(this.state.showNoteInput){
@@ -527,7 +515,7 @@ class ShoppingCartPage extends Component {
                                 renderFooter={this.renderFooter.bind(this)}/>
                {loadingSpinnerView}
                <View style={styleShoppingCartPage.footerView}>
-                    <TouchableHighlight onPress={() => this.getPrice() }>
+                    <TouchableHighlight onPress={() => this.checkCouponAndGetPrice() }>
                         <View style={styleShoppingCartPage.getPriceButtonView}>
                             <Text style={styleShoppingCartPage.bottomButtonText}>Get Price</Text>
                         </View>
@@ -657,7 +645,7 @@ class ShoppingCartPage extends Component {
           this.setState({editChefNote: true})
         }
     }
-    
+
     editPromotionCode() {
         this.props.navigator.push({
             name: 'CouponWalletPage',
@@ -669,6 +657,24 @@ class ShoppingCartPage extends Component {
                 }.bind(this)
             }
         });
+    }
+
+    removePromotionCode(){
+        this.setState({promotionCode:null});
+    }
+
+    checkCouponAndGetPrice(){
+        if (!this.state.promotionCode && this.state.eater.orderCount == 0 && this.state.eater.couponWallet && this.state.eater.couponWallet.length > 0) {
+            Alert.alert('You have a coupon',
+                'Do you want to use it?',
+                [
+                    { text: 'No', onPress: () => this.getPrice()},
+                    { text: 'Yes, add a coupon', onPress: () => this.editPromotionCode() }
+                ]
+            );
+        }else{
+            this.getPrice();
+        }
     }
 
     getPrice(){
@@ -696,6 +702,7 @@ class ShoppingCartPage extends Component {
         if(commonWidget.alertWhenGracePeriodTimeOut(this.state.shoppingCart,this.state.scheduleMapping,this.state.selectedTime)){
            return;
         }
+
         this.setState({showProgress:true});
         var orderList = {};
         for (var cartItemKey in this.state.shoppingCart[this.state.selectedTime]) {
@@ -1303,7 +1310,7 @@ var styleShoppingCartPage = StyleSheet.create({
         color:'#7bcbbe',
         alignSelf:'center',
         // marginBottom: 20 * windowHeightRatio,
-        marginTop: 35 * windowHeightRatio,
+        marginTop: 2 * windowHeightRatio,
         height:60 * windowHeightRatio
     },
 

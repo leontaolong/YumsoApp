@@ -213,7 +213,7 @@ class OrderDetailPage extends Component {
          notesToChefView = (<View key={'noteView'} style={styleShoppingCartPage.noteViewNew}>
                                 <View style={styleShoppingCartPage.notesToChefTitleViewNew}>
                                     <Text style={styleShoppingCartPage.orderSummaryTextNew}>Note to Chef</Text>
-                                    <Text style={{fontSize:b2, color:'#4A4A4A', width:windowWidth - 80 * windowWidthRatio, height:22*windowHeightRatio}}>{this.state.order.notesToChef}</Text>
+                                    <Text style={{fontSize:b2, color:'#4A4A4A', width:windowWidth - 80 * windowWidthRatio}}>{this.state.order.notesToChef}</Text>
                                 </View>
                             </View>);
       }

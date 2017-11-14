@@ -157,7 +157,7 @@ class LoginPage extends Component {
            }
            let principal = await AuthService.getPrincipalInfo();
            if(!eater.phoneNumber || !eater.phoneNumber.trim()|| !eater.email || !eater.email.trim() || !eater.eaterAlias || !eater.eaterAlias.trim()){
-              this.navigateToEaterPage(eater,principal);
+              this.navigateToOnBoardPage(eater,principal);
               return;
            }
 
@@ -215,7 +215,7 @@ class LoginPage extends Component {
            }
            let principal = await AuthService.getPrincipalInfo();
            if(!eater.phoneNumber || !eater.phoneNumber.trim()|| !eater.email || !eater.email.trim() || !eater.eaterAlias || !eater.eaterAlias.trim()){
-              this.navigateToEaterPage(eater,principal);
+              this.navigateToOnBoardPage(eater,principal);
               return;
            }
            //If not logged in, direct to login page,if logged in direct to cheflist page
@@ -246,16 +246,12 @@ class LoginPage extends Component {
         });
     }
 
-    navigateToEaterPage(eater,principal){
+    navigateToOnBoardPage(eater,principal){
         this.props.navigator.push({
-            name: 'EaterPage',
+            name: 'OnBoardPage',
             passProps:{
                 eater: eater,
                 principal:principal,
-                backcallback:this.state.callback,
-                callback: function(eater){
-                    this.props.caller.setState({eater:eater, edit:true});
-                }.bind(this)
             }
         });
     }
