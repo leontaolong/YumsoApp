@@ -21,10 +21,10 @@ var notlikedIcon = require('./icons/icon-unliked.png')
 var likedIcon = require('./icons/icon-liked-red.png');
 var heartLineIcon = require('./icons/icon-heart-line.png');
 var heartFillsIcon = require('./icons/icon-heart-fills.png');
-var backIcon = require('./icons/icon-back.png');
 var closeIcon = require('./icons/icon-close.png');
 var RefreshableListView = require('react-native-refreshable-listview');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
+var backgroundImage = require('./resourceImages/background@3x.jpg');
 
 var meOff = require('./icons/me_off.png');
 var meOn = require('./icons/me_on.png');
@@ -91,15 +91,15 @@ class ChefListPage extends Component {
             state:'WA',
             zipcode:'98105',
             pickedAddress:undefined,
-            priceRankFilter:{},
             deviceToken: null,
             currentTime: new Date().getTime(),
             showUpdateAppBanner:false,
-            showPromoAppBanner:true,
+            selectedPriceLevels: { 1: false, 2: false, 3: false },
             selectedSortKey: null,
             selectedShopType: null,
-            selectedPriceLevels: [],
-            priceRankFilter:{1:false,2:false,3:false},
+            priceRankFilter: { 1: false, 2: false, 3: false },
+            sortKeyFilter: null,
+            shopTypeFilter: null,
         };
 
         this.responseHandler = function (response, msg) {
@@ -335,22 +335,17 @@ class ChefListPage extends Component {
 
     renderPromoBanner() {
         var promoBannerView = null;
-        // if (this.state.showPromoAppBanner) {
-        // // placeholder, in real practice, will only be rendered after the data gets fetched back
-        // promoBannerView = <View style={styles.promoBannerView}>
-        //                            <Text style={styles.infoBannerText}>
-        //                               Promotion Banner Goes Here 
-        //                            </Text>
-        //                     </View>
-        // }
-        return promoBannerView;
         
+        if (this.state.eater && this.state.eater.promoBannerImage) {
+            promoBannerView = <Image style={{ width: windowWidth, height: windowWidth * 340 / 1600.0 }} source={{uri:this.state.eater.promoBannerImage}}/>
+        }
+        return promoBannerView;
     }  
     
     renderFoodTagTabs() {
         var foodTags = [];
         for (let foodTag of this.state.foodTagArr) 
-            foodTags.push(<Text name={foodTag} key={foodTag} style={this.getFoodTagTabStyle(foodTag)} onPress={() => this.foodTagSelected(foodTag)}>{foodTag}</Text>);
+             foodTags.push(<Text name={foodTag} key={foodTag} style={this.getFoodTagTabStyle(foodTag)} onPress={() => this.foodTagSelected(foodTag)}>{foodTag}</Text>);
         
         return <ScrollView horizontal={true} style={styleChefListPage.foodTagTabsView} showsHorizontalScrollIndicator={false}>{foodTags}</ScrollView>
     }
@@ -377,17 +372,19 @@ class ChefListPage extends Component {
            return(<MapPage onSelectAddress={this.mapDone.bind(this)} onCancel={this.onCancelMap.bind(this)} eater={this.state.eater} city={this.state.city} currentAddress={this.state.GPSproxAddress} showHouseIcon={true}/>);
         }else if(this.state.showChefSearch){
            console.log('closeIcon ' + closeIcon);
-           var ret = (<View style={styles.pageWrapper}>
-                    <View style={styles.headerBannerView}>
+           var ret = 
+            (<View style={styles.containerNew}>
+                <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                    <View style={styles.headerBannerViewNew}>
                         <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.onDismissFilter()}>
-                            <View style={styles.backButtonView}>
+                            <View style={styles.backButtonViewsNew}>
                                 <Image source={closeIcon} style={styles.closeButtonIcon} />
                             </View>
                         </TouchableHighlight>
-                        <View style={styles.titleView}></View>
-                        <View style={styles.headerRightView}></View>
+                        <View style={styles.headerRightView}>
+                        </View>
                     </View>
-                    <View style={[styles.pageTitleView, {paddingLeft:windowWidth/20.7, marginBottom:windowHeight*0.04}]}>
+                    <View style={[styles.pageTitleView, {paddingLeft:windowWidth/20.7, backgroundColor:'transparent', marginBottom:windowHeight*0.04}]}>
                         <Text style={styles.pageTitle}>Filter</Text>
                     </View>
                     <Text style={styleFilterPage.pageSubTitle}>Price</Text>
@@ -430,9 +427,10 @@ class ChefListPage extends Component {
                     </View>
                     <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.onPressApplySearchButton()}>
                         <Text style={styleFilterPage.applySearchButtonText}>Apply</Text>
-                    </TouchableOpacity>                
-                </View>);
-                return ret;                    
+                    </TouchableOpacity> 
+                </Image>               
+            </View>);
+            return ret;                    
         }
 
         var updateAppBannerView=null;
@@ -462,9 +460,9 @@ class ChefListPage extends Component {
                         </TouchableHighlight>
                         <View style={{ width: windowWidth - 220*windowWidthRatio-40*windowWidthRatio*2}}></View>
                         <TouchableHighlight style={styleChefListPage.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.showFavoriteChefs()}>
-                            <Image source={this.getCurrentLikeIcon(this.state.showFavoriteChefsOnly)} style={styles.likeIcon}/>
+                        <Image source={this.getCurrentLikeIcon(this.state.showFavoriteChefsOnly)} style={{width: windowWidth * 0.06, height: windowWidth * 0.06 * 80/95,}}/>
                         </TouchableHighlight>
-                        <TouchableHighlight style={styleChefListPage.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.setState({showChefSearch:true})}>
+                        <TouchableHighlight style={styleChefListPage.headerIconView} underlayColor={'#F5F5F5'} onPress={() => this.onOpenFilter()}>
                             <Image source={filterIcon} style={styles.filterIcon}/>
                         </TouchableHighlight>
                     </View>
@@ -532,7 +530,7 @@ class ChefListPage extends Component {
     }
 
     getDollarSign(priceLevel) {
-        if (this.state.selectedPriceLevels.includes(priceLevel))
+        if (this.state.selectedPriceLevels[priceLevel])
             return styleFilterPage.dollarSignGreen;
         else 
             return styleFilterPage.dollarSignGrey;
@@ -546,23 +544,26 @@ class ChefListPage extends Component {
     }
 
     clickDollarSign(priceLevel){
-        this.state.priceRankFilter[priceLevel] = !this.state.priceRankFilter[priceLevel];
-        var currentPriceLevels = this.state.selectedPriceLevels;     
-        // toggle price level selection for display
-        if (currentPriceLevels.includes(priceLevel))
-            currentPriceLevels = currentPriceLevels.filter((ele) => ele !== priceLevel);
-        else
-            currentPriceLevels.push(priceLevel);
-        this.setState({priceRankFilter:this.state.priceRankFilter, selectedPriceLevels: currentPriceLevels});
+        this.state.selectedPriceLevels[priceLevel] = !this.state.selectedPriceLevels[priceLevel];
+        let selectedPriceLevels = JSON.parse(JSON.stringify(this.state.selectedPriceLevels));
+        this.setState({ selectedPriceLevels: selectedPriceLevels})
     }
 
     clickSortSelection(sortByKey){
-        this.setState({selectedSortKey: sortByKey});
+        if (this.state.selectedSortKey == sortByKey){
+            this.setState({ selectedSortKey: null });
+        }else{
+            this.setState({ selectedSortKey: sortByKey });
+        }
     }
 
     clickShopType(shopType) { 
         //TODO Add more code in applySearchSettings to implement newly added 'search by shopType' feature
-        this.setState({selectedShopType: shopType});
+        if (this.state.selectedShopType == shopType) {
+            this.setState({ selectedShopType: null });
+        } else {
+            this.setState({ selectedShopType: shopType });
+        }
     }
 
     showFavoriteChefs(){
@@ -674,11 +675,21 @@ class ChefListPage extends Component {
         Linking.openURL('itms://itunes.apple.com/us/app/apple-store/id1125810059?mt=8')
     }
 
+    onOpenFilter(){
+        this.setState({
+            showChefSearch : true,
+            selectedPriceLevels : JSON.parse(JSON.stringify(this.state.priceRankFilter)),
+            selectedSortKey : this.state.sortKeyFilter,
+            selectedShopType : this.state.shopTypeFilter,
+        });
+    }
+
     onDismissFilter(){
         this.setState({
-            showChefSearch: false,
-            priceRankFilter: JSON.stringify(this.state.priceRankFilterOrigin) == undefined ? null : JSON.parse(JSON.stringify(this.state.priceRankFilterOrigin)),
-            withBestRatedSort: this.state.withBestRatedSortOrigin,
+            showChefSearch : false,//When dismissing filter, should we restore to default filer or just close the filter page (like Yelp)
+            selectedPriceLevels : null,
+            selectedSortKey : null,
+            selectedShopType : null,
         })
     }
 
@@ -708,10 +719,10 @@ class ChefListPage extends Component {
         }
         url += queryLoc;
 
-        if (this.state.priceRankFilter != {}){
+        if (this.state.selectedPriceLevels != {}){
             url += '&priceRankFilter='
-            for (let level in this.state.priceRankFilter) {
-                if (this.state.priceRankFilter[level] == true) {
+            for (let level in this.state.selectedPriceLevels) {
+                if (this.state.selectedPriceLevels[level] == true) {
                     url += level + ',';
                 }
             }
@@ -786,109 +797,18 @@ class ChefListPage extends Component {
                     return self.responseHandler(res);
                 }
                 this.setState({ showChefSearch: false, showProgress: false });
+
+                this.setState({
+                    showChefSearch: false,
+                    showProgress: false,
+                    priceRankFilter : JSON.parse(JSON.stringify(this.state.selectedPriceLevels)),
+                    sortKeyFilter : this.state.selectedSortKey,
+                    shopTypeFilter : this.state.selectedShopType,
+                });
             }).catch((err) => {
                 commonAlert.networkError(err);
             });
-
-
-        // return this.applySearchSettings()
-        //     .then((settings) => {//todo: add these filter, make sure not logged in able to get as well.
-        //         let url = config.chefListEndpoint+'?'
-        //         let queryLoc='';
-        //         if (this.state.GPSproxAddress) {
-        //             queryLoc = 'lat=' + this.state.GPSproxAddress.lat + '&lng=' + this.state.GPSproxAddress.lng;
-        //         }
-        //         if (this.state.pickedAddress) {
-        //             queryLoc = 'lat=' + this.state.pickedAddress.lat + '&lng=' + this.state.pickedAddress.lng;
-        //         }
-        //         url+=queryLoc+'&';
-        //         if(settings){
-        //             url+='withBestRatedSort='+settings.withBestRatedSort+'&';
-        //             url+='priceRankFilter='
-        //             for(let level in settings.priceRankFilter){
-        //                 if(settings.priceRankFilter[level]==true){
-        //                     url+=level+',';
-        //                 }
-        //             }
-        //             if(url.charAt(url.length-1)===','){
-        //                 url = url.substr(0, url.length-1);
-        //             }
-        //         }else{
-        //             if(url.charAt(url.length-1)==='&'){
-        //                 url = url.substr(0, url.length-1);
-        //             }
-        //         }
-        //         return this.client.getWithoutAuth(url)
-        //             .then((res) => {
-        //                 if (res.statusCode === 200 || res.statusCode === 202) {
-        //                     var chefs = res.data.chefs;
-        //                     for (var chef of chefs) {
-        //                         if(chef && !(this.state.chefView[chef.chefId] && this.state.chefsDictionary[chef.chefId])){
-        //                            let starDishPictures=[];
-        //                            if(chef.highLightDishIds){
-        //                               for(var dishId in chef.highLightDishIds){
-        //                                   starDishPictures.push(chef.highLightDishIds[dishId]);
-        //                               }
-        //                            }
-        //                            this.state.chefView[chef.chefId] = starDishPictures;
-        //                            this.state.chefsDictionary[chef.chefId] = chef;
-        //                         }
-        //                     }
-        //                     this.setState({currentTime:new Date().getTime(), dataSource: this.state.dataSource.cloneWithRows(chefs) })
-
-        //                     if(res.statusCode === 202){
-        //                        this.setState({showUpdateAppBanner:true});
-        //                     }
-        //                     // this.onRefreshDone();
-        //                 } else {
-        //                     // this.onRefreshDone();
-        //                     //todo: handle failure.
-        //                     return self.responseHandler(res);
-        //                 }
-        //                 this.setState({ showChefSearch: false, showProgress: false});
-        //             }).catch((err)=>{
-        //                 commonAlert.networkError(err);
-        //             });
-        //     });
     }
-
-//    //Deprecated Function
-//     applySearchSettings(){
-//         let self = this;
-//         if(this.state.eater){
-//             if(!this.state.eater.chefFilterSettings){//todo: remove this since the object should be exist when creating
-//                 this.state.eater.chefFilterSettings = {};
-//             }
-//             this.state.eater.chefFilterSettings['priceRankFilter'] = this.state.priceRankFilter;
-//             this.state.eater.chefFilterSettings['withBestRatedSort'] = this.state.withBestRatedSort;
-//             return this.client.postWithAuth(config.eaterUpdateEndpoint, {eater:{eaterId: this.state.eater.eaterId, chefFilterSettings: this.state.eater.chefFilterSettings}})
-//                 .then((res) => {
-//                     if (res.statusCode != 200 && res.statusCode!=202) {
-//                         this.setState({showProgress:false});
-//                         return self.responseHandler(res);
-//                     }
-//                     return AuthService.updateCacheEater(self.state.eater)
-//                         .then(() => {
-//                             self.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(self.state.priceRankFilter));
-//                             self.state.withBestRatedSortOrigin = self.state.withBestRatedSort;
-//                             return self.state.eater.chefFilterSettings;
-//                         });
-//                 }).catch((err)=>{
-//                     this.setState({showProgress: false});
-//                     commonAlert.networkError(err);
-//                 });
-//         }
-//         // if(!this.state.principal){
-//         //    let principal = await AuthService.getPrincipalInfo();
-//         //    this.setState({ principal: principal});
-//         // }
-//         this.state.priceRankFilterOrigin = JSON.parse(JSON.stringify(this.state.priceRankFilter));
-//         this.state.withBestRatedSortOrigin = this.state.withBestRatedSort;
-//         return Promise.resolve({
-//             priceRankFilter: this.state.priceRankFilter,
-//             withBestRatedSort: this.state.withBestRatedSort
-//         });
-//     }
 
     navigateToShopPage(chef){
         this.props.navigator.push({
@@ -909,7 +829,7 @@ class ChefListPage extends Component {
 var styleChefListPage = StyleSheet.create({
     customizedHeaderBannerRules:{
         borderColor:'#F5F5F5',
-        borderBottomWidth:2,
+        borderBottomWidth:1,
     },
     headerIconView:{
         width:40*windowWidthRatio,
@@ -921,7 +841,7 @@ var styleChefListPage = StyleSheet.create({
         flex:0.07,
         height:windowHeight*0.065,
         borderColor:'#F5F5F5',
-        borderBottomWidth:2,
+        borderBottomWidth:1,
         paddingHorizontal:windowWidth/20.7,
     },
     foodTagTabText:{
@@ -1137,7 +1057,7 @@ var styleFilterPage = StyleSheet.create({
         borderColor:'#F5F5F5',
         borderBottomWidth:1,
         alignItems:'center',
-        backgroundColor:'#FFFFFF',
+        backgroundColor:'transparent',
     },
     dollarSignView:{
         flexDirection:'row',
@@ -1169,7 +1089,7 @@ var styleFilterPage = StyleSheet.create({
         flexDirection:'column', 
         borderColor:'#F5F5F5',
         borderBottomWidth:1,
-        backgroundColor:'#FFFFFF',
+        backgroundColor:'transparent',
     },
     sortCriteriaTitleView:{
         width:windowWidth*0.85,
@@ -1210,6 +1130,7 @@ var styleFilterPage = StyleSheet.create({
         color:'#4A4A4A',
         marginVertical:windowHeight*0.0200,
         paddingLeft:windowWidth/20.7,
+        backgroundColor: 'transparent'
     },
     dollarSignGrey:{
         fontSize:windowHeight/35.5,

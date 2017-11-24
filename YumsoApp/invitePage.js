@@ -26,6 +26,13 @@ import React, {
   Alert
 } from 'react-native';
 
+var h1 = 28 * windowHeight / 677;
+var h2 = windowHeight / 35.5;
+var h3 = windowHeight / 33.41;
+var h4 = windowHeight / 47.33;
+var h5 = 12;
+var b1 = 15 * windowHeight / 677;
+var b2 = 15 * windowHeight / 677;
 
 class InvitePage extends Component {
     constructor(props){
@@ -66,6 +73,17 @@ class InvitePage extends Component {
             loadingSpinnerView = <LoadingSpinnerViewFullScreen/>;
         }
 
+        var couponValueForInviter = 3;
+        var couponValueForInvitee = 5;
+
+        if (this.state.eater && this.state.eater.couponValueForInviter){
+            couponValueForInviter = this.state.eater.couponValueForInviter;
+        }
+
+        if (this.state.eater && this.state.eater.couponValueForInvitee) {
+            couponValueForInvitee = this.state.eater.couponValueForInvitee;
+        }
+
         return (
             <View style={styles.greyContainer}>
                 <Image style={styles.pageBackgroundImage} source={backgroundImage}>
@@ -82,7 +100,7 @@ class InvitePage extends Component {
                         <ScrollView keyboardShouldPersistTaps={true} ref="scrollView">    
                             <Text style={styleInvitePage.contentTitle}>Invite Friends</Text>
                             <Image source={inviteIcon} style={styleInvitePage.inviteIconView}/>
-                            <Text style={styleInvitePage.contentText}>Invite your friends to Yumso! Your friend will get $5 off at the first order and then you will have $3 coupon !</Text>
+                            <Text style={styleInvitePage.contentText}>Invite your friends to Yumso! Your friend will get ${couponValueForInvitee} off at the first order and then you will have ${couponValueForInviter} coupon !</Text>
                             <Text style={styleInvitePage.inputTitleText}>First Name of Your Friend</Text>
                             <View style={styleInvitePage.emailInputView}>
                                 <TextInput style={styleInvitePage.emailInput} autoCapitalize={'none'} clearButtonMode={'while-editing'} returnKeyType={'done'} maxLength={40} autoCorrect={false}
@@ -141,6 +159,7 @@ class InvitePage extends Component {
                     return this.responseHandler(res);
                 }
                 this.setState({ showProgress: false });
+                Alert.alert('Invitation Sent', 'By registering through the link provided in the email, Your friend will get the coupon for his or her first order.', [{ text: 'OK' }])
             }).catch((err) => {
                 this.setState({ showProgress: false });
                 commonAlert.networkError(err);
@@ -160,7 +179,7 @@ var styleInvitePage = StyleSheet.create({
     },
     contentText:{
         backgroundColor: 'rgba(0,0,0,0)',
-        fontSize:windowHeight/35.5,
+        fontSize:h2,
         fontWeight:'600',
         marginBottom:windowHeight*0.0550,        
     },
@@ -176,7 +195,7 @@ var styleInvitePage = StyleSheet.create({
     emailInput:{
         width:windowWidth*0.9,
         height:windowHeight*0.06,
-        fontSize:windowHeight/35.5,
+        fontSize:h2,
         fontWeight:'600',
         textAlign:'left',
     },

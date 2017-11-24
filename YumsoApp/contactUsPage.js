@@ -2,10 +2,12 @@
 var styles = require('./style');
 var backIcon = require('./icons/icon-back.png');
 var config = require('./config');
+var backgroundImage = require('./resourceImages/background@3x.jpg');
 import Dimensions from 'Dimensions';
 
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
+var windowWidthRatio = windowWidth / 375;
 
 import React, {
   Component,
@@ -26,23 +28,29 @@ class ContactUsPage extends Component {
     render() {
         var contactUsPageUrl = config.baseUrl+"/contactus";         
         return (
-            <View style={styles.container}>
-               <View style={styles.headerBannerView}>
-                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToChefListPage()}>
-                        <View style={styles.backButtonView}>
-                            <Image source={backIcon} style={styles.backButtonIcon} />
+            <View style={styles.containerNew}>
+            <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                    <View style={styles.headerBannerViewNew}>
+                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>
+                        <View style={styles.backButtonViewsNew}>
+                            <Image source={backIcon} style={styles.backButtonIconsNew} />
                         </View>
                     </TouchableHighlight>
-                    <View style={styles.titleView}></View>
-                    <View style={styles.headerRightView}></View>
+                    <View style={styles.headerRightView}>
+                    </View>
+               </View>
+               <View style={styles.titleViewNew}>
+                   <Text style={styles.titleTextNew}>Contact Us</Text>
                </View>
                <WebView
+               style={{marginHorizontal:10*windowWidthRatio, backgroundColor:'transparent'}}
                automaticallyAdjustContentInsets={false}
                source={{uri: contactUsPageUrl}}
                javaScriptEnabled={true}
                decelerationRate="normal"
                startInLoadingState={false}
                scalesPageToFit={true}/>
+           </Image>
            </View>     
         );
     }
@@ -55,7 +63,7 @@ class ContactUsPage extends Component {
         Linking.openURL("tel:"+phoneNumber);
     }
 
-    navigateBackToChefListPage(){
+    navigateBack(){
         this.props.navigator.pop();
     }
 }

@@ -7,7 +7,8 @@ var AuthService = require('./authService');
 var MapPage = require('./mapPage');
 var backIcon = require('./icons/icon-back.png');
 var houseIcon = require('./icons/icon-grey-house.png');
-var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen')
+var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
+var backgroundImage = require('./resourceImages/background@3x.jpg');
 import Dimensions from 'Dimensions';
 
 import React, {
@@ -48,6 +49,7 @@ class addressBookPage extends Component {
         let principal = routeStack[routeStack.length-1].passProps.principal;
         let callback = routeStack[routeStack.length-1].passProps.callback;
         let backcallback = routeStack[routeStack.length-1].passProps.backcallback;
+        this.isOnBoarding = routeStack[routeStack.length - 1].passProps.isOnBoarding;
         this.state = {
             eater:eater,
             currentLocation:currentLocation,
@@ -68,7 +70,7 @@ class addressBookPage extends Component {
                     .then(() => {
                         delete this.state.eater;
                         this.props.navigator.push({
-                            name: 'LoginPage',
+                            name: 'WelcomePage',
                             passProps: {
                                 callback: function (eater) {
                                     this.setState({ eater: eater });
@@ -170,24 +172,43 @@ class addressBookPage extends Component {
                                         <Text onPress = {() => this.setState({ addMoreAddress: true }) } style={styleAddressBookPage.addNewAddressClickableText}>+ Add a new address</Text>
                                 </View>)];
              return (<View style={styles.containerNew}>
+                     <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                         <View style={styles.headerBannerViewNew}>
-                            <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={()=>this.navigateBack()}>
-                                <View style={styles.backButtonViewsNew}>
-                                   <Image source={backIcon} style={styles.backButtonIconsNew}/>
-                                </View>
-                            </TouchableHighlight>
-
+                            {this.isOnBoarding ?
+                            (<View style={styles.headerLeftView}>
+                            </View>)
+                            :
+                            (<TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={()=>this.navigateBack()}>
+                                    <View style={styles.backButtonViewsNew}>
+                                    <Image source={backIcon} style={styles.backButtonIconsNew}/>
+                                    </View>
+                            </TouchableHighlight>)
+                            }
                             <View style={styles.headerRightView}>
                             </View>
                         </View>
 
-                        <ScrollView style={{backgroundColor:'#fff'}}>
-                        <View style={styles.titleViewNew}>
+                        <ScrollView style={{backgroundColor:'transparent'}}>
+                        {this.isOnBoarding ?
+                        (<View style={styles.titleViewNew}>
+                            <Text style={styles.titleTextNew}>One last step...</Text>
+                        </View>)
+                        :
+                        (<View style={styles.titleViewNew}>
                             <Text style={styles.titleTextNew}>My Address</Text>
-                        </View>
-                            {addAddressView}
-                            {loadingSpinnerView}
+                        </View>)
+                        }
+                        {addAddressView}
+                        {loadingSpinnerView}
                         </ScrollView>
+                        {this.isOnBoarding ?
+                        (<TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={this.navigateToChefListPage.bind(this)}>
+                             <Text style={styles.bottomButtonView}>Done</Text>
+                        </TouchableOpacity>)
+                        :
+                        null
+                        }
+                    </Image>
                     </View>);
      }
 
@@ -238,7 +259,7 @@ class addressBookPage extends Component {
                 .then(() => {
                     //Alert.alert('Success', 'Successfully updated your address', [{ text: 'OK' }]);
                     this.setState({ eater: this.state.eater, showProgress: false });
-                    this.state.callback(this.state.eater);
+                    //this.state.callback(this.state.eater);
                 }).catch((err)=>{
                     this.setState({showProgress: false});
                     alert(err.message);
@@ -275,6 +296,16 @@ class addressBookPage extends Component {
     removeAddress(address){
         this.submitAddress(address,'other',true);
     }
+
+    navigateToChefListPage(){
+        if(!this.state.eater.homeAddress){
+          Alert.alert('Home Address', 'Home Address is required.', [{ text: 'OK' }])
+          return;
+        }
+        this.props.navigator.resetTo({
+            name: 'ChefListPage',
+        });
+    }
 }
 
 var styleAddressBookPage = StyleSheet.create({
@@ -304,7 +335,6 @@ var styleAddressBookPage = StyleSheet.create({
     addressTitleTextNew: {
         fontSize: h2,
         fontWeight: "bold",
-        marginTop: 10 * windowHeightRatio,
         color: "#4A4A4A",
     },
     addressViewRow:{
@@ -317,6 +347,7 @@ var styleAddressBookPage = StyleSheet.create({
         borderBottomWidth: 1,
         marginLeft: 20 * windowWidthRatio,
         marginRight: 20 * windowWidthRatio,
+        paddingTop: 10 * windowHeightRatio,
     },
     addressTitleView:{
         flex:0.24,
@@ -347,13 +378,9 @@ var styleAddressBookPage = StyleSheet.create({
     },
     addressEditView:{
         flexDirection:'row',
-        //marginRight:windowWidth*0.04,
         justifyContent:'flex-end',
-        alignItems: "center",
-        height: 60 * windowHeightRatio,
         width: 70 * windowWidthRatio,
-        marginTop: 10 * windowHeightRatio,
-        paddingTop: 10 * windowHeightRatio,
+        marginTop: 2 * windowHeightRatio,
     },
     // *** end new
 });

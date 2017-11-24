@@ -26,6 +26,14 @@ import Dimensions from 'Dimensions';
 var windowHeight = Dimensions.get('window').height;
 var windowWidth = Dimensions.get('window').width;
 
+var h1 = 28 * windowHeight / 677;
+var h2 = windowHeight / 35.5;
+var h3 = windowHeight / 33.41;
+var h4 = windowHeight / 47.33;
+var h5 = 12;
+var b1 = 15 * windowHeight / 677;
+var b2 = 15 * windowHeight / 677;
+
 import React, {
   Component,
   StyleSheet,
@@ -128,7 +136,7 @@ class PaymentOptionPage extends Component {
                                     {this.renderPaymentMethodType(card)}
                                 </View>      
                                 <View style={stylePaymentOptionPage.paymentMethodInfoView}>
-                                    <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                                    <Text style={stylePaymentOptionPage.paymentMethodInfoText}>**** {card.last4}</Text>
                                 </View>
                                 <View style={stylePaymentOptionPage.checkBoxIconView}>
                                     <Image style={stylePaymentOptionPage.checkBoxIcon} source={checkBoxIcon}/>
@@ -144,7 +152,7 @@ class PaymentOptionPage extends Component {
                             {this.renderPaymentMethodType(card)}
                         </View>
                         <View style={stylePaymentOptionPage.paymentMethodInfoView}>
-                            <Text style={stylePaymentOptionPage.paymentMethodInfoText}>xxxx xxxx xxxx {card.last4}</Text>
+                            <Text style={stylePaymentOptionPage.paymentMethodInfoText}>**** {card.last4}</Text>
                         </View>
                         <Text style={stylePaymentOptionPage.deleteText} onPress={()=>this.onDeleteClick(card)}>Delete</Text>
                     </View>
@@ -223,7 +231,7 @@ class PaymentOptionPage extends Component {
                                     {paymentListView}                   
                                     {loadingSpinnerView} 
                                 </View>
-                                </View>);
+                            </View>);
         if (this.state.isFromCheckOutPage) {
             return (<View style={styles.container}>
                         <Image style={styles.pageBackgroundImage} source={backgroundImage}>
@@ -233,10 +241,12 @@ class PaymentOptionPage extends Component {
                     </View>);
         } else {
             return (<View style={styles.container}>
-                        <TouchableOpacity activeOpacity={1} style={styles.pageBackgroundImage} onPress={()=>this.closeModal()}>
+                        <Image style={styles.pageBackgroundImage} source={backgroundImage}>
+                            <TouchableOpacity activeOpacity={1} style={styles.pageBackgroundImage} onPress={()=>this.closeModal()}>
                             {overallContent}
-                        </TouchableOpacity>
-                        {this.showActionSheet()}
+                            </TouchableOpacity>
+                            {this.showActionSheet()}
+                        </Image>
                     </View>);
         }
     }
@@ -383,9 +393,9 @@ var stylePaymentOptionPage = StyleSheet.create({
         alignSelf:'center',
     },
     deleteText:{
-        alignSelf:'center',
-        fontSize:windowHeight/47.33,
-        color:'#60d1bc',
+        fontSize: h2,
+        color: '#7bcbbe',
+        alignSelf: 'center',
     },
     paymentMethodInfoView:{
         flex:0.75,
@@ -430,8 +440,8 @@ var stylePaymentOptionPage = StyleSheet.create({
     },
     addCardTitleText:{
         alignSelf:'center',
-        fontSize:windowHeight/40,
-        color:'#60d1bc',
+        fontSize:h3,
+        color:'#7bcbbe',
     },
     bottomButton:{
       flexDirection:'row',        

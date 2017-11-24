@@ -211,7 +211,7 @@ class OrderPage extends Component {
 
     renderRow(order){
       return  (
-        <TouchableOpacity  onPress={()=>this.navigateToOrderDetailPage(order)} activeOpacity={0.7}>
+        <TouchableOpacity onPress={()=>this.navigateToOrderDetailPage(order)} activeOpacity={0.7}>
         <View style={styleOrderPage.cell}>
             <View style={styleOrderPage.oneListingView}>
                 <View style={styleOrderPage.orderInfoView}>
@@ -247,6 +247,7 @@ class OrderPage extends Component {
 
       return(
         <View style={styles.containerNew}>
+        <Image style={styles.pageBackgroundImage} source={backgroundImage}>
           <View style={styles.headerBannerViewNew}>
               <View style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBackToHistoryOrderPage()}>
               </View>
@@ -324,6 +325,7 @@ class OrderPage extends Component {
                   </TouchableHighlight>
               </View>
           </View>
+        </Image>
         </View>);
     }
 
@@ -461,10 +463,6 @@ class OrderPage extends Component {
     borderBottomWidth: 1,
     borderColor: "#EAEAEA",
     width:windowWidth - 76 * windowWidthRatio,
-  //  paddingBottom:20,
-
-    // marginRight:20 * windowWidthRatio,
-  //  marginLeft:56 * windowWidthRatio,
   },
   oneListingView:{
       backgroundColor:'#FFFFFF',

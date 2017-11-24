@@ -207,8 +207,21 @@ class ShopPage extends Component {
                             <Text style={[styleShopPage.menuTitleTextPrompt, {marginRight: windowWidth*0.065,textAlign:'left',color:'#7BCBBE'}]} onPress={()=>this.displaySchedule()}>Change Time</Text>
                         </View>           
         }
+
+        var chefNoticeView = null
+        if (this.state.chef.chefNotice) {
+            chefNoticeView = [
+                (<View key={'greyBorderView'} style={styles.greyBorderView}></View>),
+                (<View key={'chefNoticeView'} style={styleShopPage.chefNoticeView}>
+                    <Text style={styleShopPage.menuTitleTextTitle}>Chef Notice</Text>
+                    <Text style={[styleShopPage.menuTitleTextPrompt, { alignSelf: 'flex-start' }]}>{this.state.chef.chefNotice}</Text>
+                </View>)
+            ]
+        }
+
         return (
             <View>
+                {chefNoticeView}
                 <View style={styles.greyBorderView}></View>
                 {menuTitle}
             </View>
@@ -383,7 +396,7 @@ class ShopPage extends Component {
                                     </TouchableOpacity>
                                     <View style={styleShoppingCartPage.shoppingCartInfoView}>
                                         <View style={styleShoppingCartPage.dishNameView}>
-                                            <Text style={styleShoppingCartPage.dishNameText}>{commonWidget.getTextLengthLimited(data.dishName,28)}</Text>
+                                            <Text numberOfLines={2} style={styleShoppingCartPage.dishNameText}>{data.dishName}</Text>
                                         </View>                                                            
                                         {chooseQuantityView}                  
                                     </View>
@@ -398,43 +411,6 @@ class ShopPage extends Component {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
             loadingSpinnerView =<LoadingSpinnerViewFullScreen/>;  
-        }
-
-
-        var chefNoticeView = null
-        if(this.state.chef.chefNotice){
-           if(this.state.chef.chefNotice.length<=25){
-              chefNoticeView = <View style={styleShopPage.chefNoticeView}>
-                                    <View style={styleShopPage.chefNoticeTextView}>
-                                        <Text style={styleShopPage.chefNoticeText}>
-                                            {this.state.chef.chefNotice}
-                                        </Text>
-                                    </View>
-                                </View>
-            }else{
-               chefNoticeView = <View style={styleShopPage.chefNoticeView}>
-                                        <View style={styleShopPage.chefNoticeTextView}>
-                                            <Text style={styleShopPage.chefNoticeText}>
-                                                Chef Notice: {commonWidget.getTextLengthLimited(this.state.chef.chefNotice,25)}
-                                            </Text>
-                                        </View>
-                                        <TouchableOpacity style={styleShopPage.chefNoticeButtonView} onPress={()=>this.setState({isChefNoticeExtended:true})} activeOpacity={0.7}>
-                                            <Image source={downIconWhite} style={styleShopPage.chefNoticeIcon}/>
-                                        </TouchableOpacity>
-                                    </View>;
-               if(this.state.isChefNoticeExtended){
-                  chefNoticeView = <View style={styleShopPage.chefNoticeExtendedView}>
-                                            <View style={styleShopPage.chefNoticeTextView}>
-                                                <Text style={styleShopPage.chefNoticeText}>
-                                                    Chef Notice: {this.state.chef.chefNotice}
-                                                </Text>
-                                            </View>
-                                            <TouchableOpacity style={styleShopPage.chefNoticeButtonView} onPress={()=>this.setState({isChefNoticeExtended:false})} activeOpacity={0.7}>
-                                                <Image source={upIconWhite} style={styleShopPage.chefNoticeIcon}/>
-                                            </TouchableOpacity>
-                                  </View>;
-               }
-            }
         }
         
         var updateAppBannerView=null;
@@ -1314,6 +1290,13 @@ var styleShopPage = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'flex-end',
         alignItems:'center',
+    },
+    chefNoticeView: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        paddingVertical: windowHeight * 0.025,
+        marginHorizontal: windowWidth / 20.7,
     },
     menuTitleView1: {
         flexDirection:'column',
