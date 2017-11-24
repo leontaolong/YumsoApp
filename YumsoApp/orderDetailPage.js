@@ -162,7 +162,7 @@ class OrderDetailPage extends Component {
                             </Text>
         }else{
            contactUsText = <Text style={styles.infoBannerLinkViewNew} onPress={() => this.dialThisNumber('2062258636')}>
-                            (206)225-8686
+                            (206)225-8636
                            </Text>
         }
         if(this.state.showDeliverStatusView){

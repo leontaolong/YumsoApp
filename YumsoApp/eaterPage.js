@@ -103,6 +103,13 @@ class EaterPage extends Component {
         this.client = new HttpsClient(config.baseUrl, true);
      }
 
+    async componentWillMount() {
+        if (!this.state.principal) {
+            let principal = await AuthService.getPrincipalInfo();
+            this.setState({ principal: principal});
+        }
+    }
+
      render() {
         var loadingSpinnerView = null;
         if (this.state.showProgress) {
@@ -186,7 +193,7 @@ class EaterPage extends Component {
                             </View>
 
                             <TouchableOpacity activeOpacity={0.7} >
-                                  <Text style={styleEaterPage.textFieldTitle}>{this.state.principal.identityProvider === 'Yumso' ? `Logged in with Email: ${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
+                                <Text style={styleEaterPage.textFieldTitle}>{this.state.principal && this.state.principal.identityProvider === 'Yumso' ? `Logged in with Email: ${this.state.eater.email}` : 'Logged in using Facebook'}</Text>
                             </TouchableOpacity>
                             {loadingSpinnerView}
                         </ScrollView>
@@ -199,12 +206,12 @@ class EaterPage extends Component {
          }else{
             var eaterProfile = this.state.eater.eaterProfilePic == null ? defaultAvatar : { uri: this.state.eater.eaterProfilePic };
             var emailView = null;
-            if (this.state.eater.email && this.state.principal.identityProvider !== 'Yumso') {
+            if (this.state.eater.email && this.state.principal && this.state.principal.identityProvider !== 'Yumso') {
                 emailView = <Text style={styleEaterPage.eaterPageGreyText}>{'Email: ' + this.state.eater.email}</Text>;
             }
 
             var resetPasswordButton = null;
-            if (this.state.eater.email && this.state.principal.identityProvider === 'Yumso') {
+            if (this.state.eater.email && this.state.principal && this.state.principal.identityProvider === 'Yumso') {
                 resetPasswordButton = <Text style={styleEaterPage.eaterPageClickableText} onPress={()=> this.setState({showResetPassword:true})}>Reset Password</Text>
             }
 

@@ -58,14 +58,14 @@ class DishPage extends Component {
 
     
     render() {
-        var notesView;
-        if (this.state.dish.notes)
-            notesView = <Text style={styles.pageText}></Text>;
-        else {
-            notesView = <View style={styles.greyBox}>
-                            <Text style={styles.greyBoxText}>No notes were left</Text>
-                        </View>
+        var notesView = null;
+        if (this.state.dish.description && this.state.dish.description.trim()){
+            notesView = (<View style={styleDishPage.oneDishNotesView}>
+                            <Text style={styles.pageSubTitle}>Notes</Text>
+                            <Text style={styles.pageText}>{this.state.dish.description}</Text>
+                        </View>);
         }
+
         return (
             <View style={styles.container}>
                <View style={styles.headerBannerView}>    
@@ -89,17 +89,11 @@ class DishPage extends Component {
                                 }) }
                     </Swiper>
                 </View>
-                <View style={styleDishPage.oneDishNameDiscriptionView}> 
-                        <Text style={styles.pageText}>{this.state.dish.description}</Text>             
-                </View>
                 <View style={styleDishPage.oneDishIngredientView}> 
                     <Text style={styles.pageSubTitle}>Ingredients</Text>
                     <Text style={styles.pageText}>{this.state.dish.ingredients}</Text>
                 </View>
-                <View style={styleDishPage.oneDishNotesView}> 
-                    <Text style={styles.pageSubTitle}>Notes</Text>
-                    {notesView}
-                </View>
+                {notesView}
                 </ScrollView>
             </View>
         );
@@ -168,23 +162,18 @@ var styleDishPage = StyleSheet.create({
         width: windowWidth,
         height: windowHeight*0.4419,
     },
-    oneDishNameDiscriptionView:{
-        flex: 1,
-        flexDirection: 'column',
-        paddingTop: windowHeight*0.010,
-        paddingBottom:windowHeight*0.030,
-        borderBottomWidth:1,
-        borderColor:'#EAEAEA',
-    },
     oneDishIngredientView: {
+        marginTop: windowHeight * 0.035,
         paddingBottom:windowHeight*0.025,
-        borderBottomWidth:1,
         borderColor:'#EAEAEA', 
+        borderTopWidth: 1,
     },   
     oneDishNotesView: {
         flex: 1,
         flexDirection: 'column',
         paddingBottom:windowHeight*0.070,
+        borderColor: '#EAEAEA',
+        borderTopWidth: 1,
     },
     chooseQuantityView:{
         flex: 0.34,

@@ -28,7 +28,7 @@ class ContactUsPage extends Component {
     render() {
         var contactUsPageUrl = config.baseUrl+"/contactus";         
         return (
-            <View style={styles.container}>
+            <View style={styles.containerNew}>
             <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                     <View style={styles.headerBannerViewNew}>
                     <TouchableHighlight style={styles.headerLeftView} underlayColor={'#F5F5F5'} onPress={() => this.navigateBack()}>

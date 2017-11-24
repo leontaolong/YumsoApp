@@ -396,7 +396,7 @@ class ShopPage extends Component {
                                     </TouchableOpacity>
                                     <View style={styleShoppingCartPage.shoppingCartInfoView}>
                                         <View style={styleShoppingCartPage.dishNameView}>
-                                            <Text style={styleShoppingCartPage.dishNameText}>{commonWidget.getTextLengthLimited(data.dishName,28)}</Text>
+                                            <Text numberOfLines={2} style={styleShoppingCartPage.dishNameText}>{data.dishName}</Text>
                                         </View>                                                            
                                         {chooseQuantityView}                  
                                     </View>
