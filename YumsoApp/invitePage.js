@@ -124,7 +124,7 @@ class InvitePage extends Component {
 
 
     _onFocus() {
-        this.refs.scrollView.scrollTo({ x: 0, y: windowHeight * 0.1, animated: true})
+        this.refs.scrollView.scrollTo({ x: 0, y: windowHeight * 0.2, animated: true})
     }
 
     onKeyBoardDonePressed(){
