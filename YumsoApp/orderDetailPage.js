@@ -181,9 +181,9 @@ class OrderDetailPage extends Component {
                var deliverTimeTextNew = 'Your order has been cancelled';
             }else{
                if(this.state.order.estimatedDeliverTimeRange){
-                  var deliverTimeTextNew = 'Your order is out for delivery. Expect arrival between ' + dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.min)+' and '+dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.max);
+                  var deliverTimeTextNew = 'Your order is received. Expect arrival between ' + dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.min)+' and '+dateRender.formatTime2StringShort(this.state.order.estimatedDeliverTimeRange.max)+'.';
                }else{
-                  var deliverTimeTextNew = 'Your order is out for delivery.';
+                  var deliverTimeTextNew = 'Your order is received.';
                }
             }    
 

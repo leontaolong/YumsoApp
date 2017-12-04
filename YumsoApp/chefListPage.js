@@ -239,7 +239,7 @@ class ChefListPage extends Component {
         });
     }
 
-      renderRow(chef) {
+    renderRow(chef) {
         if(!chef){
            return null;
         }
@@ -407,6 +407,9 @@ class ChefListPage extends Component {
                        </View>
                        <View style={styleFilterPage.sortCriteriaTitleView}>
                           <Text style={this.getShopTypeText('withYumsoExclusiveShopType')} onPress={() => {this.clickShopType('withYumsoExclusiveShopType')}}>Yumso Exclusive</Text>
+                       </View>
+                       <View style={styleFilterPage.sortCriteriaTitleView}>
+                          <Text style={this.getShopTypeText('withSpecialOfferShopType')} onPress={() => { this.clickShopType('withSpecialOfferShopType') }}>Special Offer</Text>
                        </View>
                     </View>
 
@@ -742,6 +745,9 @@ class ChefListPage extends Component {
                     break;
                 case 'withYumsoExclusiveShopType':
                     url += '&withYumsoExclusiveShopType=true';
+                    break;
+                case 'withSpecialOfferShopType':
+                    url += '&withSpecialOfferShopType=true';
                     break;
                 default:
                     url += '&withAllShopType=true';
