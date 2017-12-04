@@ -658,9 +658,9 @@ class ShopPage extends Component {
                     }
                 }
                 if(isAllSoldOut){
-                    deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label) + "(Sold Out)"}); 
+                    deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate5(oneTimeString.label) + "(Sold Out)"}); 
                 }else{
-                    deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate2(oneTimeString.label)});
+                    deliveryTimeRendered.push({key:oneTimeString.label, label: dateRender.renderDate5(oneTimeString.label)});
                 }
             }
         }

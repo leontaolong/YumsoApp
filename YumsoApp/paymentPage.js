@@ -116,7 +116,7 @@ class PaymentPage extends Component {
                     </Image>
                  <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={()=>this.confirm()}>
                     <View style={stylePaymentPage.placeOrderButton}>
-                        <Text style={stylePaymentPage.placeOrderButtonText}>Confirm</Text>
+                         <Text style={styles.bottomButtonView}>Place Order</Text>
                     </View>
                  </TouchableOpacity>
                  {loadingSpinnerView}                 
@@ -189,7 +189,8 @@ class PaymentPage extends Component {
                    this.props.navigator.push({
                         name: 'OrderConfirmation',
                         passProps:{
-                            eater: this.state.eater
+                            eater: this.state.eater,
+                            orderIdShort: response.data.orderIdShort
                         }
                     }); 
                 }else{

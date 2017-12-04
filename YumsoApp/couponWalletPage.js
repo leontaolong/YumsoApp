@@ -213,12 +213,6 @@ class CouponWalletPage extends Component {
         this.props.navigator.pop();
     }
     
-    onCardClick(card){
-        this.setState({chosenCard:card});
-        var _paymentList = JSON.parse(JSON.stringify(this.state.paymentList));
-        this.setState({dataSource:this.state.dataSource.cloneWithRows(_paymentList)});
-    }
-
     onPressCoupon(couponCode){
         if(this.onCouponSelected){
            this.onCouponSelected(couponCode);

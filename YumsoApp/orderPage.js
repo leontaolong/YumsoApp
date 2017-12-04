@@ -69,8 +69,8 @@ class OrderPage extends Component {
   constructor(props) {
     super(props);
     var routeStack = this.props.navigator.state.routeStack;
-    let eater = routeStack[routeStack.length-1].passProps.eater;
-    let principal = routeStack[routeStack.length-1].passProps.principal;
+    let eater = routeStack[0].passProps.eater;
+    let principal = routeStack[0].passProps.principal;
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       eater: eater,

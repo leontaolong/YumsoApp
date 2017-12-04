@@ -195,7 +195,7 @@ class MapPage extends Component {
                     </MapView>   
                   
                     <TouchableOpacity activeOpacity={0.7} style={styles.footerView} onPress={() => this.doneSelectAddress()}>
-                        <Text style={styleMapPage.confirmAddressButtonText}>{this.isSpecific && !this.state.showApartmentNumber ? 'Next': 'Use this Address'}</Text>
+                        <Text style={styles.bottomButtonView}>{this.isSpecific && !this.state.showApartmentNumber ? 'Next': 'Use this Address'}</Text>
                     </TouchableOpacity>
                     {searchAddressResultViewWrapper}
                     {addressSelectionView}
@@ -724,7 +724,7 @@ var styleMapPage = StyleSheet.create({
         flexDirection:'column',
         backgroundColor:'#fff', 
         position:'absolute',
-        top:windowHeight/16.4+windowHeight/36.8+windowWidth*0.7/8+windowHeight/147.2+windowWidth*0.5/5+15,
+        top:windowHeight/16.4+windowHeight/36.8+windowWidth*0.7/8+windowHeight/147.2+windowWidth*0.5/5+21.5,
         left:0,
         right:0,
         height:windowHeight-(windowHeight/16.4+windowHeight/36.8+windowWidth*0.7/8+windowHeight/147.2+windowWidth*0.5/5+15),
