@@ -220,7 +220,7 @@ class OrderPage extends Component {
                     Order Placed: {dateRender.renderDate2(order.orderCreatedTime)}
                     </Text>
                     <Text style={styleOrderPage.completeTimeText}>
-                    Status: processing
+                    Status: {order.orderStatus}
                     </Text>
                 </View>
                 <Image source={enterPic} style={styleOrderPage.enterPicNew}/>

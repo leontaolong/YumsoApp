@@ -758,7 +758,7 @@ var styleEaterPage = StyleSheet.create({
     eaterProfilePic50New:{
         width: pic50Height,
         height: pic50Height,
-        backgroundColor: "#00cc00",
+        backgroundColor: "#F5F5F5",
         borderRadius: pic50Height/2,
     },
 
