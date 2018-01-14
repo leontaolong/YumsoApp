@@ -42,9 +42,14 @@ import React, {
 } from 'react-native';
 
 console.disableYellowBox = true;
+
+// 01/09/2018: To enable swipe back for this update, we simply 
+// remove the previous custom navigation configs:
+/*
 let sceneConfig = Navigator.SceneConfigs.HorizontalSwipeJump;
 sceneConfig.gestures.pop = {};
 sceneConfig.gestures = null;
+*/
 
 class YumsoApp extends Component {
     constructor(props){
@@ -132,11 +137,22 @@ class YumsoApp extends Component {
            //return <Image style={styles.pageBackgroundImage} source={backgroundImage}></Image>
            return <View style={{flex:1,backgroundColor:"#FFFFFF"}}></View>
         }else{
-           if(!this.state.eater){
-               return (<Navigator initialRoute={{ name: 'WelcomePage' }} renderScene={this.renderScene} configureScene={(route, routeStack) => sceneConfig}/>);
-           }else{
-               return (<Navigator initialRoute={{ name: 'ChefListPage' }} renderScene={this.renderScene} configureScene={(route, routeStack) => sceneConfig}/>);
-           }
+            /*
+            01/09/2018: To enable swipe back for this update, we simply 
+            remove the previous custom navigation configs:
+
+            if(!this.state.eater){
+                return (<Navigator initialRoute={{ name: 'WelcomePage' }} renderScene={this.renderScene} configureScene={(route, routeStack) => sceneConfig}/>);
+            }else{
+                return (<Navigator initialRoute={{ name: 'ChefListPage' }} renderScene={this.renderScene} configureScene={(route, routeStack) => sceneConfig}/>);
+            }
+            */
+            
+            if(!this.state.eater){
+                return (<Navigator initialRoute={{ name: 'WelcomePage' }} renderScene={this.renderScene} />);
+            }else{
+                return (<Navigator initialRoute={{ name: 'ChefListPage' }} renderScene={this.renderScene} />);
+            }
         }
     }
 
