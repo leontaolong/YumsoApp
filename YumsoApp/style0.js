@@ -260,7 +260,7 @@ module.exports = StyleSheet.create({
     loginInputNew:{
       width:windowWidth-40 * windowWidthRatio,
       height:34  * windowHeightRatio,
-      fontSize:b2,
+      fontSize:h2,
       fontWeight:'bold',
       color: '#4A4A4A',
       borderBottomWidth:1,

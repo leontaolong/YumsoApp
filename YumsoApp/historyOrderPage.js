@@ -14,6 +14,7 @@ var commonWidget = require('./commonModules/commonWidget');
 var NetworkUnavailableScreen = require('./networkUnavailableScreen');
 var LoadingSpinnerViewFullScreen = require('./loadingSpinnerViewFullScreen');
 var LoadMoreBottomComponent = require('./loadMoreBottomComponent');
+var backgroundImage = require('./resourceImages/background@3x.jpg');
 const eaterOrderPageSize = 7;
 const firstTimeLoadPageSize = 20;
 var lastDataCount = 0;
@@ -337,11 +338,9 @@ class HistoryOrderPage extends Component {
               //console.log('completed')
 
              if(this.state.orderCompleted && this.state.orderCompleted.length==0 && !this.state.showProgress){
-                 var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order completed.</Text>
-              }
-              else{
-
-                  var orderListView = <ListView
+                var noOrderText = <Text style={styles.listViewEmptyText}>You do not have any order completed.</Text>
+             }else{
+                var orderListView = <ListView
                                        dataSource = {this.state.dataSourceCompleted}
                                        renderRow={this.renderRow.bind(this) }
                                        renderFooter={ this.renderFooter.bind(this) }
@@ -354,8 +353,8 @@ class HistoryOrderPage extends Component {
 
         return (
             <View style={styles.containerNew}>
+            <Image style={styles.pageBackgroundImage} source={backgroundImage}>
                <View style={styles.headerBannerViewNew}>
-
                    <TouchableHighlight style={styles.headerLeftView} underlayColor={'#fff'} onPress={() => this.navigateBackToChefList()}>
                       <View style={styles.backButtonViewsNew}>
                         <Image source={backIcon} style={styles.backButtonIconsNew}/>
@@ -372,6 +371,7 @@ class HistoryOrderPage extends Component {
                {noOrderText}
                {orderListView}
                {loadingSpinnerView}
+            </Image>
             </View>
         );
     }

@@ -173,7 +173,7 @@ class PaymentPage extends Component {
                     .then(() => {
                         delete this.state.eater;
                         this.props.navigator.push({
-                            name: 'LoginPage',//todo: fb cached will signin and redirect back right away.
+                            name: 'WelcomePage',//todo: fb cached will signin and redirect back right away.
                             passProps: {
                                 callback: function (eater) {
                                     this.setState({ eater: eater });
